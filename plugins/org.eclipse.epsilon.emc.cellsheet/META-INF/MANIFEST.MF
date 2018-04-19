@@ -5,3 +5,4 @@ Bundle-SymbolicName: org.eclipse.epsilon.emc.cellsheet
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.epsilon.eol.engine;bundle-version="1.4.0"
