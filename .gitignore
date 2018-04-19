@@ -1,0 +1,7 @@
+# Eclipse Workspace
+.metadata
+
+# Binaries
+bin/
+target
+*.zip
