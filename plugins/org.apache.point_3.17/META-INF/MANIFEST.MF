@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache POI 3.17
+Bundle-SymbolicName: org.apache.poi_3.17
+Bundle-Version: 3.17
+Bundle-ClassPath: .
+Bundle-Vendor: The Apache Software Foundation
+Export-Package: org.apache.poi.hssf.record,
+ org.apache.poi.hssf.usermodel,
+ org.apache.poi.poifs.crypt.xor,
+ org.apache.poi.sl.draw.binding,
+ org.apache.poi.ss.formula,
+ org.apache.poi.ss.formula.functions
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

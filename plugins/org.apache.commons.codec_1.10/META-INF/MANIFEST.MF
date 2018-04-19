@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache Commons Codec
+Bundle-SymbolicName: org.apache.commons.codec
+Bundle-Version: 1.10
+Bundle-Vendor: The Apache Software Foundation
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

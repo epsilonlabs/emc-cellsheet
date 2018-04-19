@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache XmlBeans
+Bundle-SymbolicName: org.apache.xmlbeans_2.6.0
+Bundle-Version: 2.6.0
+Bundle-ClassPath: .
+Bundle-Vendor: The Apache Software Foundation
+Export-Package: org.apache.xmlbeans.impl.jam,
+ org.apache.xmlbeans.impl.regex,
+ org.apache.xmlbeans.impl.store,
+ org.apache.xmlbeans.impl.values,
+ org.apache.xmlbeans.impl.xb.xsdschema,
+ org.apache.xmlbeans.impl.xb.xsdschema.impl
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

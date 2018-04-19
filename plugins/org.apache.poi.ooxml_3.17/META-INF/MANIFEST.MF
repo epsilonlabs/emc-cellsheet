@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache POI OOXML
+Bundle-SymbolicName: org.apache.poi.ooxml_3.17
+Bundle-Version: 3.17
+Bundle-Vendor: The Apache Software Foundation
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

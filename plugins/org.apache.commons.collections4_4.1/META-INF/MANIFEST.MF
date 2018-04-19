@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache Commons Collections
+Bundle-SymbolicName: org.apache.commons.collections4_4.1.0
+Bundle-Version: 4.1.0
+Bundle-Vendor: The Apache Software Foundation
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
