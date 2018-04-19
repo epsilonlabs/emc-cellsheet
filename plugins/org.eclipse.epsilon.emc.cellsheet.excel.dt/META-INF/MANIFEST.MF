@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Microsoft Excel Cellsheet EMC Developer Tools
+Bundle-SymbolicName: org.eclipse.epsilon.emc.cellsheet.excel.dt
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.epsilon.emc.cellsheet.excel.dt.Activator
+Bundle-Vendor: eclipse.org
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
