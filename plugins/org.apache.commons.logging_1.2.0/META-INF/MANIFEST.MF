@@ -5,3 +5,5 @@ Bundle-SymbolicName: org.apache.commons.logging_1.2.0
 Bundle-Version: 1.2.0
 Bundle-Vendor: The Apache Software Foundation
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.apache.commons.logging,
+ org.apache.commons.logging.impl

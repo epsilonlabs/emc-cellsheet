@@ -4,3 +4,10 @@ Bundle-Name: Microsoft Excel Cellsheet EMC Driver
 Bundle-SymbolicName: org.eclipse.epsilon.emc.cellsheet.excel
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.e4.core.services,
+ org.slf4j.api;bundle-version="1.7.2",
+ org.eclipse.epsilon.emc.cellsheet;bundle-version="1.0.0";visibility:=reexport,
+ org.eclipse.epsilon.emc.cellsheet.excel.dependencies;bundle-version="1.0.0";visibility:=reexport
+Bundle-Vendor: eclipse.org
+Export-Package: org.eclipse.epsilon.emc.cellsheet.excel

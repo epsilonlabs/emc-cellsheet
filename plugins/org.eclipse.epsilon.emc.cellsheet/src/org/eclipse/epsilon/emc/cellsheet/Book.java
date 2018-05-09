@@ -17,6 +17,8 @@ import org.eclipse.epsilon.eol.models.IModel;
  *
  */
 public interface Book extends IModel, Iterator<Sheet> {
+	
+	public static final String TYPENAME = "Book";
 
 	// Model related methods
 	public Sheet getSheet(int index);

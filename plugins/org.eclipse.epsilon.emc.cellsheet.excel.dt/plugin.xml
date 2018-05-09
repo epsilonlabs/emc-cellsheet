@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.epsilon.common.dt.modelType">
+      <modelType
+            class="org.eclipse.epsilon.emc.cellsheet.excel.ExcelBook"
+            dialog="org.eclipse.epsilon.emc.cellsheet.excel.dt.ExcelBookConfigurationDialog"
+            icon="icons/spreadsheet.png"
+            label="Microsoft Excel Cellsheet"
+            stable="false"
+            type="ExcelBook">
+      </modelType>
+   </extension>
+
+</plugin>

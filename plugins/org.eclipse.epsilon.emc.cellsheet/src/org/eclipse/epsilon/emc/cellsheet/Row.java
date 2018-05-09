@@ -3,6 +3,8 @@ package org.eclipse.epsilon.emc.cellsheet;
 import java.util.Iterator;
 
 public interface Row extends Iterable<Cell> {
+	
+	public static final String TYPENAME = "Row";
 
 	public int getIndex();
 	public void setIndex(int idx);

@@ -10,4 +10,5 @@ public interface IDResolver {
 	public String getSheetPart(String id);
 	public String getRowPart(String id);
 	public String getColumnPart(String id);
+	
 }

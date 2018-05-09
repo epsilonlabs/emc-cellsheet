@@ -2,6 +2,8 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 public interface Cell {
 
+	public static final String TYPENAME = "Cell";
+	
 	public int getRowIdx();
 	public Row getRow();
 	public void setRow(Row row);
