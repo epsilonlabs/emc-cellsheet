@@ -1,1 +1,9 @@
-Excel.getSheet(1).println();
+for (i in Excel.sheets) {
+	i.println();
+}
+
+for (s in Excel.sheets) {
+	for (r in s.rows) {
+		r.println();
+	}
+}

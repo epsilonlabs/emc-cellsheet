@@ -1,6 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.epsilon.eol.models.IModel;
 
@@ -10,24 +11,31 @@ import org.eclipse.epsilon.eol.models.IModel;
  * Book is analogous to a model in the Epsilon architecture. This was chosen to
  * maintain the overall Spreadsheet methodology.
  * 
- * Element ID's should be implemented as cell references where possible
- * TODO: Determine correct way to ID individual columns and rows
+ * Element ID's should be implemented as cell references where possible TODO:
+ * Determine correct way to ID individual columns and rows
  * 
  * @author Jonathan Co
  *
  */
-public interface IBook extends IModel, Iterator<ISheet> {
-	
+public interface IBook extends IModel, Iterable<ISheet> {
+
 	public static final String TYPENAME = "Book";
+
+	public void addSheet(int index, ISheet sheet);
+
+	public void addSheet(ISheet sheet);
+
+	// Driver related methods
+	public IDResolver getIDResolver();
 
 	// Model related methods
 	public ISheet getSheet(int index);
+
 	public ISheet getSheet(String name);
-	public Iterator<ISheet> sheetIterator();
-	public void addSheet(ISheet sheet);
-	public void addSheet(int index, ISheet sheet);
-	
-	// Driver related methods
-	public IDResolver getIDResolver();
+
 	public void setIDResolver(IDResolver idResolver);
+
+	public Iterator<ISheet> sheetIterator();
+
+	public List<ISheet> sheets();
 }

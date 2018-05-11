@@ -1,19 +1,22 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.common.util.StringProperties;
+import org.eclipse.epsilon.emc.cellsheet.AbstractBook;
+import org.eclipse.epsilon.emc.cellsheet.HasRaw;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IColumn;
-import org.eclipse.epsilon.emc.cellsheet.HasRaw;
 import org.eclipse.epsilon.emc.cellsheet.IDResolver;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
@@ -23,87 +26,108 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundExce
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
-import org.eclipse.epsilon.eol.models.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
+public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 
 	public static final String EXCEL_FILE = "EXCEL_FILE";
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExcelBook.class);
 
 	// Lower level access fields
 	protected Workbook raw = null;
 	protected File excelFile = null;
-	
-	// Abstracted elements
-	protected Map<Object, ISheet> sheets;
-	
-	public ExcelBook() {
-		this.sheets = new Hashtable<Object, ISheet>();
+
+	@Override
+	public void addSheet(int index, ISheet sheet) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void load() throws EolModelLoadingException {
-		try {
-			this.raw = WorkbookFactory.create(excelFile) ;
-		} catch (Exception e) {
-			throw new EolModelLoadingException(e, this);
-		}
-	}
-
-	@Override
-	public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
-		super.load(properties, resolver);
-		
-		final String excelFilePath = properties.getProperty(ExcelBook.EXCEL_FILE);
-		final String resolvedPath = resolver.resolve(excelFilePath);
-
-		LOGGER.info("Excel Filepath: " + excelFilePath);
-		LOGGER.info("Resolved Excel Filepath " + resolvedPath);
-		
-		try {
-			this.setExcelFile(resolvedPath);
-		} catch (Exception e) {
-			throw new EolModelLoadingException(e, this);
-		}
-		
-		this.load();
-	}
-	
-	public void setExcelFile(final String filepath) {
-		final File file = new File(filepath);
-		if (!file.exists()) {
-			final IllegalArgumentException e =  new IllegalArgumentException("Bad filepath given: " + filepath);
-			LOGGER.error(e.getMessage(), e);
-			throw e;
-		}
-		this.excelFile = file;
-	}
-	
-	@Override
-	public Object getEnumerationValue(String enumeration, String label) throws EolEnumerationValueNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+	public void addSheet(ISheet sheet) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Collection<?> allContents() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Collection<?> getAllOfType(String type) throws EolModelElementTypeNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+	public Object createInstance(String type)
+			throws EolModelElementTypeNotFoundException, EolNotInstantiableModelElementTypeException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void deleteElement(Object instance) throws EolRuntimeException {
+		throw new UnsupportedOperationException();
+
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof ExcelBook))
+			return false;
+		ExcelBook other = (ExcelBook) obj;
+		if (excelFile == null) {
+			if (other.excelFile != null)
+				return false;
+		} else if (!excelFile.equals(other.excelFile))
+			return false;
+		if (raw == null) {
+			if (other.raw != null)
+				return false;
+		} else if (!raw.equals(other.raw))
+			return false;
+		return true;
 	}
 
 	@Override
 	public Collection<?> getAllOfKind(String type) throws EolModelElementTypeNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Collection<?> getAllOfType(String type) throws EolModelElementTypeNotFoundException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object getElementById(String id) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object getEnumerationValue(String enumeration, String label) throws EolEnumerationValueNotFoundException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public IDResolver getIDResolver() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Workbook getRaw() {
+		return this.raw;
+	}
+
+	@Override
+	public ISheet getSheet(int index) {
+		if (index < 0 || index >= this.raw.getNumberOfSheets())
+			throw new IndexOutOfBoundsException();
+		return new ExcelSheet(this, this.raw.getSheetAt(index));
+	}
+
+	@Override
+	public ISheet getSheet(String name) {
+		return this.getSheet(this.raw.getSheetIndex(name));
 	}
 
 	@Override
@@ -128,137 +152,97 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	}
 
 	@Override
-	public Object createInstance(String type)
-			throws EolModelElementTypeNotFoundException, EolNotInstantiableModelElementTypeException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object getElementById(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getElementId(Object instance) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setElementId(Object instance, String newId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deleteElement(Object instance) throws EolRuntimeException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean owns(Object instance) {
-		// TODO Auto-generated method stub
-		return false;
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((excelFile == null) ? 0 : excelFile.hashCode());
+		result = prime * result + ((raw == null) ? 0 : raw.hashCode());
+		return result;
 	}
 
 	@Override
 	public boolean isInstantiable(String type) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public boolean hasType(String type) {
-		// TODO Auto-generated method stub
-		return false;
+	public Iterator<ISheet> iterator() {
+		return new TransformIterator<Sheet, ISheet>(this.raw.sheetIterator(), new Transformer<Sheet, ISheet>() {
+			@Override
+			public ISheet transform(Sheet sheet) {
+				return new ExcelSheet(ExcelBook.this, sheet);
+			}
+		});
 	}
 
 	@Override
-	public boolean store(String location) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean store() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean hasNext() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public ISheet next() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ISheet getSheet(int index) {
-		ISheet sheet = this.sheets.get(index);
-		
-		if (sheet == null) {
-			final Sheet rawSheet = this.raw.getSheetAt(index);
-			sheet = new ExcelSheet(rawSheet);
-			this.sheets.put(index, sheet);
+	public void load() throws EolModelLoadingException {
+		try {
+			this.raw = WorkbookFactory.create(excelFile);
+		} catch (Exception e) {
+			throw new EolModelLoadingException(e, this);
 		}
-		
-		return sheet;
 	}
 
 	@Override
-	public ISheet getSheet(String name) {
-		ISheet sheet = this.sheets.get(name);
-		
-		if (sheet == null) {
-			final Sheet rawSheet = this.raw.getSheet(name);
-			sheet = new ExcelSheet(rawSheet);
-			this.sheets.put(name, sheet);
+	public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
+		super.load(properties, resolver);
+
+		final String excelFilePath = properties.getProperty(ExcelBook.EXCEL_FILE);
+		final String resolvedPath = resolver.resolve(excelFilePath);
+
+		LOGGER.info("Excel Filepath: " + excelFilePath);
+		LOGGER.info("Resolved Excel Filepath " + resolvedPath);
+
+		try {
+			this.setExcelFile(resolvedPath);
+		} catch (Exception e) {
+			throw new EolModelLoadingException(e, this);
 		}
-		
-		return sheet;
+
+		this.load();
 	}
 
 	@Override
-	public Iterator<ISheet> sheetIterator() {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean owns(Object instance) {
+		if (this.equals(instance))
+			return true;
+
+		if (instance instanceof ISheet)
+			return ((ISheet) instance).getBook().equals(this);
+
+		if (instance instanceof IRow)
+			return this.owns(((IRow) instance).getSheet());
+
+		if (instance instanceof IColumn)
+			return this.owns(((IColumn) instance).getSheet());
+
+		if (instance instanceof ICell)
+			return this.owns(((ICell) instance).getRow());
+
+		return false;
 	}
 
 	@Override
-	public void addSheet(ISheet sheet) {
-		// TODO Auto-generated method stub
+	public void setElementId(Object instance, String newId) {
+		throw new UnsupportedOperationException();
 
 	}
 
-	@Override
-	public void addSheet(int index, ISheet sheet) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public IDResolver getIDResolver() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setExcelFile(final String filepath) {
+		final File file = new File(filepath);
+		if (!file.exists()) {
+			final IllegalArgumentException e = new IllegalArgumentException("Bad filepath given: " + filepath);
+			LOGGER.error(e.getMessage(), e);
+			throw e;
+		}
+		this.excelFile = file;
 	}
 
 	@Override
 	public void setIDResolver(IDResolver idResolver) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 
-	}
-
-	@Override
-	public Workbook getRaw() {
-		return this.raw;
 	}
 
 	@Override
@@ -266,4 +250,36 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		this.raw = raw;
 	}
 
+	@Override
+	public Iterator<ISheet> sheetIterator() {
+		return this.iterator();
+	}
+
+	@Override
+	public List<ISheet> sheets() {
+		final List<ISheet> sheets = new ArrayList<ISheet>();
+		final Iterator<ISheet> it = sheetIterator();
+
+		while (it.hasNext()) {
+			final ExcelSheet next = (ExcelSheet) it.next();
+			sheets.add(next);
+		}
+
+		return sheets;
+	}
+
+	@Override
+	public boolean store() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean store(String location) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String toString() {
+		return "[" + this.excelFile.getName().toString() + "]";
+	}
 }
