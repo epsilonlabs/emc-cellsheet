@@ -16,16 +16,16 @@ import org.eclipse.epsilon.eol.models.IModel;
  * @author Jonathan Co
  *
  */
-public interface Book extends IModel, Iterator<Sheet> {
+public interface EBook extends IModel, Iterator<ESheet> {
 	
 	public static final String TYPENAME = "Book";
 
 	// Model related methods
-	public Sheet getSheet(int index);
-	public Sheet getSheet(String name);
-	public Iterator<Sheet> sheetIterator();
-	public void addSheet(Sheet sheet);
-	public void addSheet(int index, Sheet sheet);
+	public ESheet getSheet(int index);
+	public ESheet getSheet(String name);
+	public Iterator<ESheet> sheetIterator();
+	public void addSheet(ESheet sheet);
+	public void addSheet(int index, ESheet sheet);
 	
 	// Driver related methods
 	public IDResolver getIDResolver();
