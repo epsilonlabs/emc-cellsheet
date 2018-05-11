@@ -1,32 +1,32 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import org.eclipse.epsilon.emc.cellsheet.ECell;
-import org.eclipse.epsilon.emc.cellsheet.EColumn;
+import org.eclipse.epsilon.emc.cellsheet.ICell;
+import org.eclipse.epsilon.emc.cellsheet.IColumn;
 import org.eclipse.epsilon.emc.cellsheet.IDResolver;
-import org.eclipse.epsilon.emc.cellsheet.ERow;
-import org.eclipse.epsilon.emc.cellsheet.ESheet;
+import org.eclipse.epsilon.emc.cellsheet.IRow;
+import org.eclipse.epsilon.emc.cellsheet.ISheet;
 
 public class ExcelIDResolver implements IDResolver {
 
 	public static final String NULL = "-1"; // TODO: change representation to something more general
 	
 	@Override
-	public String getID(ESheet sheet) {
+	public String getID(ISheet sheet) {
 		return sheet.getName();
 	}
 
 	@Override
-	public String getID(ERow row) {
+	public String getID(IRow row) {
 		return this.getID(row.getSheet()) + "!$" + row.getIndex() + NULL;
 	}
 
 	@Override
-	public String getID(EColumn column) {
+	public String getID(IColumn column) {
 		return this.getID(column.getSheet()) + "!" + NULL + "$" + column.getIndex();
 	}
 
 	@Override
-	public String getID(ECell cell) {
+	public String getID(ICell cell) {
 		// TODO Auto-generated method stub
 		return null;
 	}

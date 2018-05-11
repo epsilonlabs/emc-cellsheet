@@ -10,13 +10,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.common.util.StringProperties;
-import org.eclipse.epsilon.emc.cellsheet.EBook;
-import org.eclipse.epsilon.emc.cellsheet.ECell;
-import org.eclipse.epsilon.emc.cellsheet.EColumn;
+import org.eclipse.epsilon.emc.cellsheet.IBook;
+import org.eclipse.epsilon.emc.cellsheet.ICell;
+import org.eclipse.epsilon.emc.cellsheet.IColumn;
 import org.eclipse.epsilon.emc.cellsheet.HasRaw;
 import org.eclipse.epsilon.emc.cellsheet.IDResolver;
-import org.eclipse.epsilon.emc.cellsheet.ERow;
-import org.eclipse.epsilon.emc.cellsheet.ESheet;
+import org.eclipse.epsilon.emc.cellsheet.IRow;
+import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
@@ -27,7 +27,7 @@ import org.eclipse.epsilon.eol.models.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExcelBook extends Model implements EBook, HasRaw<Workbook> {
+public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 
 	public static final String EXCEL_FILE = "EXCEL_FILE";
 	
@@ -38,10 +38,10 @@ public class ExcelBook extends Model implements EBook, HasRaw<Workbook> {
 	protected File excelFile = null;
 	
 	// Abstracted elements
-	protected Map<Object, ESheet> sheets;
+	protected Map<Object, ISheet> sheets;
 	
 	public ExcelBook() {
-		this.sheets = new Hashtable<Object, ESheet>();
+		this.sheets = new Hashtable<Object, ISheet>();
 	}
 
 	@Override
@@ -109,16 +109,16 @@ public class ExcelBook extends Model implements EBook, HasRaw<Workbook> {
 	@Override
 	public String getTypeNameOf(Object instance) {
 		LOGGER.trace("Called " + this.name + ".getTypeNameOf: " + instance);
-		if (instance instanceof ESheet)
-			return ESheet.TYPENAME;
-		if (instance instanceof ERow)
-			return ERow.TYPENAME;
-		if (instance instanceof EColumn)
-			return EColumn.TYPENAME;
-		if (instance instanceof ECell)
-			return ECell.TYPENAME;
-		if (instance instanceof EBook)
-			return EBook.TYPENAME;
+		if (instance instanceof ISheet)
+			return ISheet.TYPENAME;
+		if (instance instanceof IRow)
+			return IRow.TYPENAME;
+		if (instance instanceof IColumn)
+			return IColumn.TYPENAME;
+		if (instance instanceof ICell)
+			return ICell.TYPENAME;
+		if (instance instanceof IBook)
+			return IBook.TYPENAME;
 
 		// TODO: Should this return null instead?
 		final IllegalArgumentException e = new IllegalArgumentException(
@@ -195,14 +195,14 @@ public class ExcelBook extends Model implements EBook, HasRaw<Workbook> {
 	}
 
 	@Override
-	public ESheet next() {
+	public ISheet next() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ESheet getSheet(int index) {
-		ESheet sheet = this.sheets.get(index);
+	public ISheet getSheet(int index) {
+		ISheet sheet = this.sheets.get(index);
 		
 		if (sheet == null) {
 			final Sheet rawSheet = this.raw.getSheetAt(index);
@@ -214,8 +214,8 @@ public class ExcelBook extends Model implements EBook, HasRaw<Workbook> {
 	}
 
 	@Override
-	public ESheet getSheet(String name) {
-		ESheet sheet = this.sheets.get(name);
+	public ISheet getSheet(String name) {
+		ISheet sheet = this.sheets.get(name);
 		
 		if (sheet == null) {
 			final Sheet rawSheet = this.raw.getSheet(name);
@@ -227,19 +227,19 @@ public class ExcelBook extends Model implements EBook, HasRaw<Workbook> {
 	}
 
 	@Override
-	public Iterator<ESheet> sheetIterator() {
+	public Iterator<ISheet> sheetIterator() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void addSheet(ESheet sheet) {
+	public void addSheet(ISheet sheet) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void addSheet(int index, ESheet sheet) {
+	public void addSheet(int index, ISheet sheet) {
 		// TODO Auto-generated method stub
 
 	}

@@ -3,12 +3,12 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import java.util.Iterator;
 
 import org.apache.poi.ss.usermodel.Sheet;
-import org.eclipse.epsilon.emc.cellsheet.EBook;
-import org.eclipse.epsilon.emc.cellsheet.ERow;
-import org.eclipse.epsilon.emc.cellsheet.ESheet;
+import org.eclipse.epsilon.emc.cellsheet.IBook;
+import org.eclipse.epsilon.emc.cellsheet.IRow;
+import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.eclipse.epsilon.emc.cellsheet.HasRaw;
 
-public class ExcelSheet implements ESheet, HasRaw<Sheet> {
+public class ExcelSheet implements ISheet, HasRaw<Sheet> {
 	
 	protected Sheet raw;
 
@@ -17,7 +17,7 @@ public class ExcelSheet implements ESheet, HasRaw<Sheet> {
 	}
 	
 	@Override
-	public Iterator<ERow> iterator() {
+	public Iterator<IRow> iterator() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -33,37 +33,37 @@ public class ExcelSheet implements ESheet, HasRaw<Sheet> {
 	}
 
 	@Override
-	public EBook getBook() {
+	public IBook getBook() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setBook(EBook book) {
+	public void setBook(IBook book) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public ERow getRow(int rowIdx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Iterator<ERow> rowIterator() {
+	public IRow getRow(int rowIdx) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void createRow(ERow row) {
+	public Iterator<IRow> rowIterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createRow(IRow row) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void createRow(int rowIdx, ERow row) {
+	public void createRow(int rowIdx, IRow row) {
 		// TODO Auto-generated method stub
 
 	}

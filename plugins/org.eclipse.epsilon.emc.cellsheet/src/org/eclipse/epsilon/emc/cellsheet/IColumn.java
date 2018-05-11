@@ -1,12 +1,12 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-public interface EColumn extends HasId {
+public interface IColumn extends HasId {
 	
 	public static final String TYPENAME = "Column";
 
 	public int getIndex();
 	public void setIndex(int idx);
 	
-	public ESheet getSheet();
+	public ISheet getSheet();
 	public void setSheet();
 }
