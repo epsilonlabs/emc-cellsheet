@@ -17,7 +17,7 @@ import org.eclipse.epsilon.eol.models.IModel;
  * @author Jonathan Co
  *
  */
-public interface IBook extends IModel, Iterable<ISheet> {
+public interface IBook extends IModel {
 
 	public static final String TYPENAME = "Book";
 
@@ -35,7 +35,7 @@ public interface IBook extends IModel, Iterable<ISheet> {
 
 	public void setIDResolver(IDResolver idResolver);
 
-	public Iterator<ISheet> sheetIterator();
+	public <T extends ISheet> Iterator<T> sheetIterator();
 
-	public List<ISheet> sheets();
+	public List<? extends ISheet> sheets();
 }

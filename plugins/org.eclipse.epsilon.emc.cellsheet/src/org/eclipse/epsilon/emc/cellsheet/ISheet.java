@@ -3,7 +3,7 @@ package org.eclipse.epsilon.emc.cellsheet;
 import java.util.Iterator;
 import java.util.List;
 
-public interface ISheet extends HasId, Iterable<IRow> {
+public interface ISheet extends HasId {
 
 	public static final String TYPENAME = "Sheet";
 

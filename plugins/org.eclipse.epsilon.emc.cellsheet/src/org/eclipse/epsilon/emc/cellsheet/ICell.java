@@ -3,6 +3,8 @@ package org.eclipse.epsilon.emc.cellsheet;
 public interface ICell extends HasId {
 
 	public static final String TYPENAME = "Cell";
+	
+	public ISheet getSheet();
 
 	public int getColIdx();
 
@@ -22,5 +24,5 @@ public interface ICell extends HasId {
 
 	public void setRow(IRow row);
 
-	public Object setValue();
+	public void setValue();
 }
