@@ -119,14 +119,14 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 	}
 
 	@Override
-	public ISheet getSheet(int index) {
+	public ExcelSheet getSheet(int index) {
 		if (index < 0 || index >= this.raw.getNumberOfSheets())
 			throw new IndexOutOfBoundsException();
 		return new ExcelSheet(this, this.raw.getSheetAt(index));
 	}
 
 	@Override
-	public ISheet getSheet(String name) {
+	public ExcelSheet getSheet(String name) {
 		return this.getSheet(this.raw.getSheetIndex(name));
 	}
 
@@ -165,15 +165,16 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public Iterator<ISheet> iterator() {
-		return new TransformIterator<Sheet, ISheet>(this.raw.sheetIterator(), new Transformer<Sheet, ISheet>() {
-			@Override
-			public ISheet transform(Sheet sheet) {
-				return new ExcelSheet(ExcelBook.this, sheet);
-			}
-		});
-	}
+	// @Override
+	// public Iterator<ExcelSheet> iterator() {
+	// return new TransformIterator<Sheet, ExcelSheet>(this.raw.sheetIterator(),
+	// new Transformer<Sheet, ExcelSheet>() {
+	// @Override
+	// public ExcelSheet transform(Sheet sheet) {
+	// return new ExcelSheet(ExcelBook.this, sheet);
+	// }
+	// });
+	// }
 
 	@Override
 	public void load() throws EolModelLoadingException {
@@ -252,12 +253,17 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 
 	@Override
 	public Iterator<ISheet> sheetIterator() {
-		return this.iterator();
+		return new TransformIterator<Sheet, ISheet>(this.raw.sheetIterator(), new Transformer<Sheet, ExcelSheet>() {
+			@Override
+			public ExcelSheet transform(Sheet sheet) {
+				return new ExcelSheet(ExcelBook.this, sheet);
+			}
+		});
 	}
 
 	@Override
-	public List<ISheet> sheets() {
-		final List<ISheet> sheets = new ArrayList<ISheet>();
+	public List<ExcelSheet> sheets() {
+		final List<ExcelSheet> sheets = new ArrayList<ExcelSheet>();
 		final Iterator<ISheet> it = sheetIterator();
 
 		while (it.hasNext()) {
@@ -282,4 +288,5 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 	public String toString() {
 		return "[" + this.excelFile.getName().toString() + "]";
 	}
+
 }

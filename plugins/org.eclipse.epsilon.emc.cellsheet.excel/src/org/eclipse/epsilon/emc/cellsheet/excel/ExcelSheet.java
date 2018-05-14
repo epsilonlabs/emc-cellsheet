@@ -18,7 +18,7 @@ public class ExcelSheet extends AbstractSheet implements ISheet, HasRaw<Sheet> {
 
 	protected Sheet raw;
 
-	public ExcelSheet(ExcelBook book, Sheet sheet) {
+	public ExcelSheet(IBook book, Sheet sheet) {
 		super(book);
 		this.raw = sheet;
 	}
@@ -69,18 +69,13 @@ public class ExcelSheet extends AbstractSheet implements ISheet, HasRaw<Sheet> {
 	}
 
 	@Override
-	public Iterator<IRow> iterator() {
-		return new TransformIterator<Row, IRow>(this.raw.rowIterator(), new Transformer<Row, IRow>() {
+	public Iterator<IRow> rowIterator() {
+		return new TransformIterator<Row, IRow>(this.raw.rowIterator(), new Transformer<Row, ExcelRow>() {
 			@Override
-			public IRow transform(Row row) {
+			public ExcelRow transform(Row row) {
 				return new ExcelRow(ExcelSheet.this, row);
 			}
 		});
-	}
-
-	@Override
-	public Iterator<IRow> rowIterator() {
-		return this.iterator();
 	}
 
 	@Override
