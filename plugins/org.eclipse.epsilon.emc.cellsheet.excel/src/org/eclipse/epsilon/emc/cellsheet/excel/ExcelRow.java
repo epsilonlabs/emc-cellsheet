@@ -23,18 +23,6 @@ public class ExcelRow extends AbstractRow implements HasRaw<Row> {
 	}
 
 	@Override
-	public void createCell(ICell cell) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void createCell(int colIdx, ICell cell) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public int getIndex() {
 		return this.raw.getRowNum();
 	}
@@ -42,11 +30,6 @@ public class ExcelRow extends AbstractRow implements HasRaw<Row> {
 	@Override
 	public Row getRaw() {
 		return this.raw;
-	}
-
-	@Override
-	public void setIndex(int idx) {
-		this.raw.setRowNum(idx);
 	}
 
 	@Override
@@ -78,12 +61,6 @@ public class ExcelRow extends AbstractRow implements HasRaw<Row> {
 			throw new IndexOutOfBoundsException();
 		final Cell cell = this.raw.getCell(colIdx);
 		return cell == null ? null : new ExcelCell(this.sheet, this.raw.getCell(colIdx));
-	}
-
-	@Override
-	public void setSheet(ISheet sheet) {
-		// FIXME
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

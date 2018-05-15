@@ -11,17 +11,10 @@ public interface IRow extends HasId {
 	
 	public Iterator<ICell> cellIterator();
 
-	public void createCell(ICell cell);
-
-	public void createCell(int colIdx, ICell cell);
-
 	public ICell getCell(int colIdx);
 
 	public int getIndex();
 
 	public ISheet getSheet();
 
-	public void setIndex(int idx);
-
-	public void setSheet(ISheet sheet);
 }

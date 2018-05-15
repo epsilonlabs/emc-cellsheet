@@ -1,7 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.IColumn;
 import org.eclipse.epsilon.emc.cellsheet.IDResolver;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
@@ -58,11 +57,6 @@ public class ExcelIDResolver implements IDResolver {
 	public String getID(ICell cell) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public String getID(IColumn column) {
-		return this.getID(column.getSheet()) + "!" + NULL + "$" + column.getIndex();
 	}
 
 	@Override

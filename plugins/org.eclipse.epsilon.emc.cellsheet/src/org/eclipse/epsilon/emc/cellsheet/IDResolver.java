@@ -6,8 +6,6 @@ public interface IDResolver {
 
 	public String getID(ICell cell);
 
-	public String getID(IColumn column);
-
 	public String getID(IRow row);
 
 	public String getID(ISheet sheet);

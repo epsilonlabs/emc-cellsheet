@@ -10,8 +10,6 @@ public abstract class AbstractBook extends Model implements IBook {
 			return this.getIDResolver().getID((ISheet) instance);
 		if (instance instanceof IRow)
 			return this.getIDResolver().getID((IRow) instance);
-		if (instance instanceof IColumn)
-			return this.getIDResolver().getID((IColumn) instance);
 		if (instance instanceof ICell)
 			return this.getIDResolver().getID((ICell) instance);
 
@@ -20,8 +18,7 @@ public abstract class AbstractBook extends Model implements IBook {
 
 	@Override
 	public boolean hasType(String type) {
-		return type.equals(ISheet.TYPENAME) || type.equals(IRow.TYPENAME) || type.equals(IColumn.TYPENAME)
-				|| type.equals(ICell.TYPENAME);
+		return type.equals(ISheet.TYPENAME) || type.equals(IRow.TYPENAME) || type.equals(ICell.TYPENAME);
 	}
 
 }

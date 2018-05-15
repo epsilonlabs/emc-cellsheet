@@ -5,12 +5,11 @@ public abstract class AbstractCell implements ICell {
 	protected IBook book;
 	protected ISheet sheet;
 	protected IRow row;
-	protected IColumn column;
 
-	protected AbstractCell(ISheet sheet, IRow row, IColumn column) {
+	protected AbstractCell(ISheet sheet, IRow row) {
+		this.book = sheet.getBook();
 		this.sheet = sheet;
 		this.row = row;
-		this.column = column;
 	}
 
 	@Override
@@ -18,10 +17,6 @@ public abstract class AbstractCell implements ICell {
 		return this.sheet;
 	}
 
-	@Override
-	public IColumn getColumn() {
-		return this.column;
-	}
 
 	@Override
 	public IRow getRow() {

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="top" nsURI="http://a.b.c/x/y/Z" nsPrefix="p">
+  <eClassifiers xsi:type="ecore:EClass" name="Book">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sheets" upperBound="-1"
+        eType="#//Sheet" containment="true" eOpposite="#//Sheet/book"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Sheet">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="book" eType="#//Book" eOpposite="#//Book/sheets"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rows" upperBound="-1" eType="#//Row"
+        containment="true" eOpposite="#//Row/sheet"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cols" upperBound="-1" eType="#//Col"
+        containment="true" eOpposite="#//Col/sheet"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cells" upperBound="-1"
+        eType="#//Cell" containment="true" eOpposite="#//Cell/sheet"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Row">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="index" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sheet" eType="#//Sheet"
+        eOpposite="#//Sheet/rows"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cells" upperBound="-1"
+        eType="#//Cell" eOpposite="#//Cell/row"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Col">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="index" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sheet" eType="#//Sheet"
+        eOpposite="#//Sheet/cols"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cells" upperBound="-1"
+        eType="#//Cell" eOpposite="#//Cell/col"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Cell">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sheet" eType="#//Sheet"
+        eOpposite="#//Sheet/cells"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="row" eType="#//Row" eOpposite="#//Row/cells"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="col" eType="#//Col" eOpposite="#//Col/cells"/>
+  </eClassifiers>
+</ecore:EPackage>

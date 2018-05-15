@@ -13,9 +13,4 @@ public abstract class AbstractSheet implements ISheet {
 		return this.book;
 	}
 
-	@Override
-	public void setBook(IBook book) {
-		this.book = book;
-	}
-
 }

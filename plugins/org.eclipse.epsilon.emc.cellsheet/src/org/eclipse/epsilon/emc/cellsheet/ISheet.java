@@ -7,10 +7,6 @@ public interface ISheet extends HasId {
 
 	public static final String TYPENAME = "Sheet";
 
-	public void createRow(int rowIdx, IRow row);
-
-	public void createRow(IRow row);
-
 	public IBook getBook();
 
 	public int getIndex();
@@ -23,8 +19,5 @@ public interface ISheet extends HasId {
 
 	public List<IRow> rows();
 
-	public void setBook(IBook book);
-
-	public void setName(String name);
 
 }

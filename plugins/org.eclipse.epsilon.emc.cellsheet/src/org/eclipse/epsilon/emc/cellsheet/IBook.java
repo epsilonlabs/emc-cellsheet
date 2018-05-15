@@ -21,10 +21,6 @@ public interface IBook extends IModel {
 
 	public static final String TYPENAME = "Book";
 
-	public void addSheet(int index, ISheet sheet);
-
-	public void addSheet(ISheet sheet);
-
 	// Driver related methods
 	public IDResolver getIDResolver();
 

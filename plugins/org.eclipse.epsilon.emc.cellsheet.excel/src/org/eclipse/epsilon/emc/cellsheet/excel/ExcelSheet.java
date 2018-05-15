@@ -24,18 +24,6 @@ public class ExcelSheet extends AbstractSheet implements ISheet, HasRaw<Sheet> {
 	}
 
 	@Override
-	public void createRow(int rowIdx, IRow row) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void createRow(IRow row) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public ExcelBook getBook() {
 		return (ExcelBook) this.book;
 	}
@@ -90,22 +78,11 @@ public class ExcelSheet extends AbstractSheet implements ISheet, HasRaw<Sheet> {
 
 		return rows;
 	}
-
-	@Override
-	public void setBook(IBook book) {
-		this.book = book;
-	}
-
+	
 	@Override
 	public void setId() {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public void setName(String name) {
-		final int index = this.raw.getWorkbook().getSheetIndex(this.raw);
-		this.getBook().getRaw().setSheetName(index, name);
 	}
 
 	@Override

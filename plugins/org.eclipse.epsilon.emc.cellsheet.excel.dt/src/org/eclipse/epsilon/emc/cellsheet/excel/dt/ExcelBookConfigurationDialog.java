@@ -8,12 +8,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExcelBookConfigurationDialog extends AbstractModelConfigurationDialog {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExcelBookConfigurationDialog.class);
 	
 	protected Label fileLabel;
 	protected Text fileText;

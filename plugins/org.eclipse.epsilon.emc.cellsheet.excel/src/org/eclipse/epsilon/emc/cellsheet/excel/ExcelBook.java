@@ -16,7 +16,6 @@ import org.eclipse.epsilon.emc.cellsheet.AbstractBook;
 import org.eclipse.epsilon.emc.cellsheet.HasRaw;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.IColumn;
 import org.eclipse.epsilon.emc.cellsheet.IDResolver;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
@@ -38,16 +37,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 	// Lower level access fields
 	protected Workbook raw = null;
 	protected File excelFile = null;
-
-	@Override
-	public void addSheet(int index, ISheet sheet) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void addSheet(ISheet sheet) {
-		throw new UnsupportedOperationException();
-	}
 
 	@Override
 	public Collection<?> allContents() {
@@ -137,8 +126,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 			return ISheet.TYPENAME;
 		if (instance instanceof IRow)
 			return IRow.TYPENAME;
-		if (instance instanceof IColumn)
-			return IColumn.TYPENAME;
 		if (instance instanceof ICell)
 			return ICell.TYPENAME;
 		if (instance instanceof IBook)
@@ -214,9 +201,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 
 		if (instance instanceof IRow)
 			return this.owns(((IRow) instance).getSheet());
-
-		if (instance instanceof IColumn)
-			return this.owns(((IColumn) instance).getSheet());
 
 		if (instance instanceof ICell)
 			return this.owns(((ICell) instance).getRow());

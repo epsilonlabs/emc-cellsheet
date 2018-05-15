@@ -8,21 +8,10 @@ public interface ICell extends HasId {
 
 	public int getColIdx();
 
-	public IColumn getColumn();
-
 	public IRow getRow();
 
 	public int getRowIdx();
 
 	public Object getValue();
 
-	public void setColumn(IColumn column);
-
-	public void setColumn(int colIdx);
-
-	public void setRow(int rowIdx);
-
-	public void setRow(IRow row);
-
-	public void setValue();
 }
