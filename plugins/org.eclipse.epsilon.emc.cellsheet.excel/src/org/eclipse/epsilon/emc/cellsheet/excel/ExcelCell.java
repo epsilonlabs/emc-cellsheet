@@ -51,14 +51,7 @@ public class ExcelCell implements ICell, HasRaw<Cell> {
 
 	@Override
 	public String getId() {
-		// FIXME
-		return null;
-	}
-
-	@Override
-	public void setId() {
-		// TODO Auto-generated method stub
-
+		return this.book.getIDResolver().getID(this);
 	}
 
 	@Override

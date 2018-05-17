@@ -26,17 +26,17 @@ public class ExcelSheet implements ISheet, HasRaw<Sheet>{
 
 	@Override
 	public String getId() {
-		return book.getIDResolver().getID(this);
+		return this.book.getIDResolver().getID(this);
 	}
 
 	@Override
 	public int getIndex() {
-		return book.getRaw().getSheetIndex(this.raw);
+		return this.book.getRaw().getSheetIndex(this.raw);
 	}
 
 	@Override
 	public String getName() {
-		return raw.getSheetName();
+		return this.raw.getSheetName();
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class ExcelSheet implements ISheet, HasRaw<Sheet>{
 
 	@Override
 	public IRow getRow(int rowIdx) {
-		return book.getRow(this, rowIdx);
+		return this.book.getRow(this.raw.getRow(rowIdx));
 	}
 
 	@Override
@@ -56,16 +56,11 @@ public class ExcelSheet implements ISheet, HasRaw<Sheet>{
 	
 	@Override
 	public List<IRow> rows() {
-		return book._rows.values().stream()
+		this.raw.rowIterator().forEachRemaining(r -> this.book.getRow(r));
+		return this.book._rows.values().stream()
 			.filter(r -> this.equals(r.getSheet()))
 			.sorted()
 			.collect(Collectors.toList());
-	}
-
-	@Override
-	public void setId() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -78,5 +73,10 @@ public class ExcelSheet implements ISheet, HasRaw<Sheet>{
 		if (o == null) return 1;
 		if (this == o) return 0;
 		return Integer.compare(this.getIndex(), o.getIndex());
+	}
+	
+	@Override
+	public String toString() {
+		return this.getId();
 	}
 }

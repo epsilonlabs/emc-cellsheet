@@ -25,7 +25,7 @@ public interface IBook extends IModel {
 
 	public ICell getCell(ISheet sheet, int row, int col);
 
-	public ICell getCell(ISheet sheet, IRow row, int col);
+	public ICell getCell(IRow row, int col);
 	
 	public ICell getCell(String sheetName, int row, int col);
 	

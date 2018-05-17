@@ -96,22 +96,24 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	}
 
 	@Override
-	public ICell getCell(int sheet, int row, int col) {
-		return getCell(getSheet(sheet), getRow(sheet, row), col);
+	public ICell getCell(int sheetIndex, int row, int col) {
+		return this.getCell(this.getRow(sheetIndex, row), col);
 	}
 
 	@Override
 	public ICell getCell(ISheet sheet, int row, int col) {
-		return getCell(sheet, getRow(sheet, row), col);
+		return this.getCell(this.getRow(sheet, row), col);
 	}
 
 	@Override
-	public ICell getCell(ISheet sheet, IRow row, int col) {
-		if (col < 0) throw new IndexOutOfBoundsException();
-		if (!owns(sheet)) throw new IllegalArgumentException();
-		if (!owns(row)) throw new IllegalArgumentException();
+	public ICell getCell(IRow row, int col) {
+		return this.getCell(((ExcelRow) row).getRaw().getCell(col));
+	}
+
+	public ICell getCell(Cell rawCell) {
+		if (!rawCell.getSheet().getWorkbook().equals(this.raw)) 
+			throw new IllegalArgumentException();
 		
-		final Cell rawCell = ((ExcelRow) row).getRaw().getCell(col);
 		ExcelCell excelCell = _cells.get(rawCell);
 		if (excelCell == null) {
 			excelCell = new ExcelCell(this, rawCell);
@@ -120,9 +122,10 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		return excelCell;
 	}
 
+
 	@Override
 	public ICell getCell(String sheet, int row, int col) {
-		return getCell(getSheet(sheet), getRow(sheet, row), col);
+		return this.getCell(this.getRow(sheet, row), col);
 	}
 
 	@Override
@@ -152,7 +155,16 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 
 	@Override
 	public IRow getRow(int sheet, int index) {
-		return getRow(getSheet(sheet), index);
+		return this.getRow(getSheet(sheet), index);
+	}
+	
+	public IRow getRow(Row rawRow) {
+		ExcelRow excelRow = _rows.get(rawRow);
+		if (excelRow == null) {
+			excelRow = new ExcelRow(this, rawRow);
+			_rows.put(rawRow, excelRow);
+		}
+		return excelRow;
 	}
 
 	@Override
@@ -160,13 +172,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		if (index < 0) throw new IndexOutOfBoundsException();
 		if (!this.owns(sheet)) throw new IllegalArgumentException();
 		
-		final Row rawRow = ((ExcelSheet) sheet).getRaw().getRow(index);
-		ExcelRow excelRow = _rows.get(rawRow);
-		if (excelRow == null) {
-			excelRow = new ExcelRow(this, rawRow);
-			_rows.put(rawRow, excelRow);
-		}
-		return excelRow;
+		return this.getRow(((ExcelSheet) sheet).getRaw().getRow(index));
 	}
 
 	@Override
@@ -178,22 +184,23 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	public ExcelSheet getSheet(int index) {
 		if (index < 0 || index >= raw.getNumberOfSheets())
 			throw new IndexOutOfBoundsException();
-		return getSheet(index);
+		return this.getSheet(this.raw.getSheetName(index));
 	}
-
-	@Override
-	public ExcelSheet getSheet(String name) {
-		final Sheet rawSheet = raw.getSheet(name);
-		if (rawSheet == null)
-			return null;
-
+	
+	public ExcelSheet getSheet(Sheet rawSheet) {
+		if (rawSheet == null) return null;
+		
 		ExcelSheet excelSheet = _sheets.get(rawSheet);
 		if (excelSheet == null) {
 			excelSheet = new ExcelSheet(this, rawSheet);
 			_sheets.put(rawSheet, excelSheet);
 		}
-		
 		return excelSheet;
+	}
+
+	@Override
+	public ExcelSheet getSheet(String name) {
+		return this.getSheet(this.raw.getSheet(name));
 	}
 
 	@Override
@@ -301,11 +308,12 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterator<ExcelSheet> sheetIterator() {
-		return this._sheets.values().iterator();
+		return this.sheets().iterator();
 	}
 
 	@Override
 	public List<ExcelSheet> sheets() {
+		this.raw.sheetIterator().forEachRemaining(s -> this.getSheet(s));
 		List<ExcelSheet> list = new ArrayList<ExcelSheet>(_sheets.values());
 		Collections.sort(list);
 		return list;
@@ -325,5 +333,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	public String toString() {
 		return "[" + this.excelFile.getName().toString() + "]";
 	}
+
+
 	
 }

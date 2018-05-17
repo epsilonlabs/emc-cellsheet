@@ -28,6 +28,7 @@ public class ExcelRow implements IRow, HasRaw<Row> {
 
 	@Override
 	public List<ICell> cells() {
+		this.raw.cellIterator().forEachRemaining(c -> this.book.getCell(c));
 		return book._cells.values().stream()
 				.filter(c -> this.equals(c.getRow()))
 				.sorted()
@@ -36,7 +37,7 @@ public class ExcelRow implements IRow, HasRaw<Row> {
 
 	@Override
 	public int compareTo(IRow o) {
-		if (o == null) return 1;
+		if (null == o) return 1;
 		if (this == o) return 0;
 		
 		int parent = this.getSheet().compareTo(o.getSheet());
@@ -50,13 +51,13 @@ public class ExcelRow implements IRow, HasRaw<Row> {
 
 	@Override
 	public ICell getCell(int colIdx) {
-		return book.getCell(getSheet(), this, colIdx);
+		return this.book.getCell(this.raw.getCell(colIdx));
 	}
 
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.book.getIDResolver().getID(this);
+
 	}
 
 	@Override
@@ -71,13 +72,7 @@ public class ExcelRow implements IRow, HasRaw<Row> {
 
 	@Override
 	public ISheet getSheet() {
-		return book._sheets.get(raw.getSheet());
-	}
-
-	@Override
-	public void setId() {
-		// TODO Auto-generated method stub
-
+		return this.book._sheets.get(raw.getSheet());
 	}
 
 	@Override
