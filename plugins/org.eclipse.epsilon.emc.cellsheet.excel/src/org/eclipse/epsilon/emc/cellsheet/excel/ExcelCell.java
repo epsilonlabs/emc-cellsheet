@@ -1,17 +1,19 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.eclipse.epsilon.emc.cellsheet.AbstractCell;
 import org.eclipse.epsilon.emc.cellsheet.HasRaw;
+import org.eclipse.epsilon.emc.cellsheet.IBook;
+import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 
-public class ExcelCell extends AbstractCell implements HasRaw<Cell> {
+public class ExcelCell implements ICell, HasRaw<Cell> {
 
+	protected ExcelBook book;
 	protected Cell raw;
 
-	public ExcelCell(ISheet sheet, Cell raw) {
-		super(sheet, new ExcelRow(sheet, raw.getRow()));
+	ExcelCell(ExcelBook book, Cell raw) {
+		this.book = book;
 		this.raw = raw;
 	}
 
@@ -22,12 +24,12 @@ public class ExcelCell extends AbstractCell implements HasRaw<Cell> {
 
 	@Override
 	public IRow getRow() {
-		return this.row;
+		return this.book._rows.get(this.raw.getRow());
 	}
 
 	@Override
 	public int getRowIdx() {
-		return this.row.getIndex();
+		return this.raw.getRowIndex();
 	}
 
 	@Override
@@ -38,18 +40,19 @@ public class ExcelCell extends AbstractCell implements HasRaw<Cell> {
 		case NUMERIC:
 			return this.raw.getNumericCellValue();
 		case STRING:
+		case BLANK:
 			return this.raw.getStringCellValue();
 		case FORMULA:
 			return this.raw.getCellFormula();
 		default:
-			return null;
+			throw new UnsupportedOperationException();
 		}
 	}
 
 	@Override
 	public String getId() {
 		// FIXME
-		return this.raw.getAddress().toString();
+		return null;
 	}
 
 	@Override
@@ -66,6 +69,25 @@ public class ExcelCell extends AbstractCell implements HasRaw<Cell> {
 	@Override
 	public void setRaw(Cell raw) {
 		this.raw = raw;
+	}
+
+	@Override
+	public ISheet getSheet() {
+		return this.book._sheets.get(this.raw.getSheet());
+	}
+
+	@Override
+	public IBook getBook() {
+		return this.book;
+	}
+
+	@Override
+	public int compareTo(ICell o) {
+		if (null == o) return 1;
+		if (this == o) return 0;
+		
+		int parent = this.getRow().compareTo(o.getRow());
+		return parent == 0 ? Integer.compare(this.getColIdx(), o.getColIdx()) : parent;
 	}
 
 //	private void moveSelf(int rowIdx, int colIdx) {

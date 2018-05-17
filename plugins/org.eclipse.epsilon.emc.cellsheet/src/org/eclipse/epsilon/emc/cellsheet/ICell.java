@@ -1,6 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-public interface ICell extends HasId {
+public interface ICell extends HasId, Comparable<ICell> {
 
 	public static final String TYPENAME = "Cell";
 	
@@ -13,5 +13,7 @@ public interface ICell extends HasId {
 	public int getRowIdx();
 
 	public Object getValue();
+	
+	public IBook getBook();
 
 }

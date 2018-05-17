@@ -3,7 +3,7 @@ package org.eclipse.epsilon.emc.cellsheet;
 import java.util.Iterator;
 import java.util.List;
 
-public interface IRow extends HasId {
+public interface IRow extends HasId, Comparable<IRow> {
 
 	public static final String TYPENAME = "Row";
 
@@ -17,4 +17,5 @@ public interface IRow extends HasId {
 
 	public ISheet getSheet();
 
+	public IBook getBook();
 }

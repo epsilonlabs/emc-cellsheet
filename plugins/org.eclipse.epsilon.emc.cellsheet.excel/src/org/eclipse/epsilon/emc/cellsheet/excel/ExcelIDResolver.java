@@ -16,6 +16,14 @@ public class ExcelIDResolver implements IDResolver {
 	}
 
 	@Override
+	public String getID(Object o) {
+		if (o instanceof ExcelCell) return getID((ExcelCell) o);
+		if (o instanceof ExcelRow) return getID((ExcelRow) o);
+		if (o instanceof ExcelSheet) return getID((ExcelSheet) o);
+		throw new IllegalArgumentException();
+	}
+	
+	@Override
 	public String getID(ICell cell) {
 		return buildId(cell.getSheet(), cell.getRowIdx(), cell.getColIdx(), false, false);
 	}

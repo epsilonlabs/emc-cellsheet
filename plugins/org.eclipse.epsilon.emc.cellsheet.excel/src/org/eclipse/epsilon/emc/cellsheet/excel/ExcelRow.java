@@ -1,25 +1,62 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.Transformer;
-import org.apache.commons.collections4.iterators.TransformIterator;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.eclipse.epsilon.emc.cellsheet.AbstractRow;
 import org.eclipse.epsilon.emc.cellsheet.HasRaw;
+import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
+import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 
-public class ExcelRow extends AbstractRow implements HasRaw<Row> {
+public class ExcelRow implements IRow, HasRaw<Row> {
 
+	protected ExcelBook book;
 	protected Row raw;
 
-	public ExcelRow(ISheet sheet, Row raw) {
-		super(sheet);
+	ExcelRow(ExcelBook book, Row raw) {
+		this.book = book;
 		this.raw = raw;
+	}
+
+	@Override
+	public Iterator<ICell> cellIterator() {
+		return cells().iterator();
+	}
+
+	@Override
+	public List<ICell> cells() {
+		return book._cells.values().stream()
+				.filter(c -> this.equals(c.getRow()))
+				.sorted()
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public int compareTo(IRow o) {
+		if (o == null) return 1;
+		if (this == o) return 0;
+		
+		int parent = this.getSheet().compareTo(o.getSheet());
+		return parent == 0 ? Integer.compare(this.getIndex(), o.getIndex()) : parent;
+	}
+
+	@Override
+	public IBook getBook() {
+		return this.book;
+	}
+
+	@Override
+	public ICell getCell(int colIdx) {
+		return book.getCell(getSheet(), this, colIdx);
+	}
+
+	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -33,40 +70,8 @@ public class ExcelRow extends AbstractRow implements HasRaw<Row> {
 	}
 
 	@Override
-	public void setRaw(Row raw) {
-		this.raw = raw;
-	}
-
-	@Override
-	public String toString() {
-		return this.getSheet().toString() + "!-1$" + this.getIndex();
-	}
-
-	@Override
-	public List<ICell> cells() {
-		final List<ICell> cells = new ArrayList<ICell>();
-		final Iterator<ICell> it = this.cellIterator();
-
-		while (it.hasNext()) {
-			final ICell next = it.next();
-			cells.add(next);
-		}
-
-		return cells;
-	}
-
-	@Override
-	public ICell getCell(int colIdx) {
-		if (colIdx < 0)
-			throw new IndexOutOfBoundsException();
-		final Cell cell = this.raw.getCell(colIdx);
-		return cell == null ? null : new ExcelCell(this.sheet, this.raw.getCell(colIdx));
-	}
-
-	@Override
-	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+	public ISheet getSheet() {
+		return book._sheets.get(raw.getSheet());
 	}
 
 	@Override
@@ -76,13 +81,8 @@ public class ExcelRow extends AbstractRow implements HasRaw<Row> {
 	}
 
 	@Override
-	public Iterator<ICell> cellIterator() {
-		return new TransformIterator<Cell, ICell>(this.raw.cellIterator(), new Transformer<Cell, ExcelCell>() {
-			@Override
-			public ExcelCell transform(Cell cell) {
-				return new ExcelCell(ExcelRow.this.sheet, cell);
-			}
-		});
+	public void setRaw(Row raw) {
+		this.raw = raw;
 	}
 
 }

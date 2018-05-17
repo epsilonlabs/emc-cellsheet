@@ -21,12 +21,24 @@ public interface IBook extends IModel {
 
 	public static final String TYPENAME = "Book";
 
-	// Driver related methods
+	public ICell getCell(int sheetIndex, int row, int col);
+
+	public ICell getCell(ISheet sheet, int row, int col);
+
+	public ICell getCell(ISheet sheet, IRow row, int col);
+	
+	public ICell getCell(String sheetName, int row, int col);
+	
 	public IDResolver getIDResolver();
-
-	// Model related methods
+	
+	public IRow getRow(int sheetIndex, int index);
+	
+	public IRow getRow(ISheet sheet, int index);
+	
+	public IRow getRow(String sheetName, int index);
+	
 	public ISheet getSheet(int index);
-
+	
 	public ISheet getSheet(String name);
 
 	public void setIDResolver(IDResolver idResolver);

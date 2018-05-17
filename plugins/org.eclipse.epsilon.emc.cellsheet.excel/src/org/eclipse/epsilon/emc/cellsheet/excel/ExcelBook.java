@@ -3,16 +3,18 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.collections4.Transformer;
-import org.apache.commons.collections4.iterators.TransformIterator;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.common.util.StringProperties;
-import org.eclipse.epsilon.emc.cellsheet.AbstractBook;
 import org.eclipse.epsilon.emc.cellsheet.HasRaw;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
@@ -25,18 +27,25 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundExce
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
+import org.eclipse.epsilon.eol.models.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
+public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 
 	public static final String EXCEL_FILE = "EXCEL_FILE";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExcelBook.class);
 
+	final Map<Sheet, ExcelSheet> _sheets = new HashMap<Sheet, ExcelSheet>();
+	final Map<Row, ExcelRow> _rows = new HashMap<Row, ExcelRow>();
+	final Map<Cell, ExcelCell> _cells = new HashMap<Cell, ExcelCell>();
+
 	// Lower level access fields
 	protected Workbook raw = null;
 	protected File excelFile = null;
+	
+	private final ExcelIDResolver idResolver = new ExcelIDResolver();
 
 	@Override
 	public Collection<?> allContents() {
@@ -52,7 +61,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 	@Override
 	public void deleteElement(Object instance) throws EolRuntimeException {
 		throw new UnsupportedOperationException();
-
 	}
 
 	@Override
@@ -88,8 +96,43 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 	}
 
 	@Override
+	public ICell getCell(int sheet, int row, int col) {
+		return getCell(getSheet(sheet), getRow(sheet, row), col);
+	}
+
+	@Override
+	public ICell getCell(ISheet sheet, int row, int col) {
+		return getCell(sheet, getRow(sheet, row), col);
+	}
+
+	@Override
+	public ICell getCell(ISheet sheet, IRow row, int col) {
+		if (col < 0) throw new IndexOutOfBoundsException();
+		if (!owns(sheet)) throw new IllegalArgumentException();
+		if (!owns(row)) throw new IllegalArgumentException();
+		
+		final Cell rawCell = ((ExcelRow) row).getRaw().getCell(col);
+		ExcelCell excelCell = _cells.get(rawCell);
+		if (excelCell == null) {
+			excelCell = new ExcelCell(this, rawCell);
+			_cells.put(rawCell, excelCell);
+		}
+		return excelCell;
+	}
+
+	@Override
+	public ICell getCell(String sheet, int row, int col) {
+		return getCell(getSheet(sheet), getRow(sheet, row), col);
+	}
+
+	@Override
 	public Object getElementById(String id) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String getElementId(Object instance) {
+		return idResolver.getID(instance);
 	}
 
 	@Override
@@ -99,7 +142,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 
 	@Override
 	public IDResolver getIDResolver() {
-		throw new UnsupportedOperationException();
+		return this.idResolver;
 	}
 
 	@Override
@@ -108,15 +151,49 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 	}
 
 	@Override
+	public IRow getRow(int sheet, int index) {
+		return getRow(getSheet(sheet), index);
+	}
+
+	@Override
+	public IRow getRow(ISheet sheet, int index) {
+		if (index < 0) throw new IndexOutOfBoundsException();
+		if (!this.owns(sheet)) throw new IllegalArgumentException();
+		
+		final Row rawRow = ((ExcelSheet) sheet).getRaw().getRow(index);
+		ExcelRow excelRow = _rows.get(rawRow);
+		if (excelRow == null) {
+			excelRow = new ExcelRow(this, rawRow);
+			_rows.put(rawRow, excelRow);
+		}
+		return excelRow;
+	}
+
+	@Override
+	public IRow getRow(String sheet, int index) {
+		return getRow(getSheet(sheet), index);
+	}
+
+	@Override
 	public ExcelSheet getSheet(int index) {
-		if (index < 0 || index >= this.raw.getNumberOfSheets())
+		if (index < 0 || index >= raw.getNumberOfSheets())
 			throw new IndexOutOfBoundsException();
-		return new ExcelSheet(this, this.raw.getSheetAt(index));
+		return getSheet(index);
 	}
 
 	@Override
 	public ExcelSheet getSheet(String name) {
-		return this.getSheet(this.raw.getSheetIndex(name));
+		final Sheet rawSheet = raw.getSheet(name);
+		if (rawSheet == null)
+			return null;
+
+		ExcelSheet excelSheet = _sheets.get(rawSheet);
+		if (excelSheet == null) {
+			excelSheet = new ExcelSheet(this, rawSheet);
+			_sheets.put(rawSheet, excelSheet);
+		}
+		
+		return excelSheet;
 	}
 
 	@Override
@@ -139,29 +216,15 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((excelFile == null) ? 0 : excelFile.hashCode());
-		result = prime * result + ((raw == null) ? 0 : raw.hashCode());
-		return result;
+	public boolean hasType(String type) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
 	public boolean isInstantiable(String type) {
 		throw new UnsupportedOperationException();
 	}
-
-	// @Override
-	// public Iterator<ExcelSheet> iterator() {
-	// return new TransformIterator<Sheet, ExcelSheet>(this.raw.sheetIterator(),
-	// new Transformer<Sheet, ExcelSheet>() {
-	// @Override
-	// public ExcelSheet transform(Sheet sheet) {
-	// return new ExcelSheet(ExcelBook.this, sheet);
-	// }
-	// });
-	// }
 
 	@Override
 	public void load() throws EolModelLoadingException {
@@ -190,24 +253,24 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 
 		this.load();
 	}
-
+	
 	@Override
 	public boolean owns(Object instance) {
 		if (this.equals(instance))
 			return true;
 
-		if (instance instanceof ISheet)
-			return ((ISheet) instance).getBook().equals(this);
+		if (instance instanceof ExcelSheet)
+			return this.equals(((ExcelSheet) instance).getBook().getRaw());
 
 		if (instance instanceof IRow)
-			return this.owns(((IRow) instance).getSheet());
+			return this.owns(((ExcelRow) instance).getSheet());
 
 		if (instance instanceof ICell)
-			return this.owns(((ICell) instance).getRow());
+			return this.owns(((ExcelCell) instance).getSheet());
 
 		return false;
 	}
-
+	
 	@Override
 	public void setElementId(Object instance, String newId) {
 		throw new UnsupportedOperationException();
@@ -235,27 +298,17 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 		this.raw = raw;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Iterator<ISheet> sheetIterator() {
-		return new TransformIterator<Sheet, ISheet>(this.raw.sheetIterator(), new Transformer<Sheet, ExcelSheet>() {
-			@Override
-			public ExcelSheet transform(Sheet sheet) {
-				return new ExcelSheet(ExcelBook.this, sheet);
-			}
-		});
+	public Iterator<ExcelSheet> sheetIterator() {
+		return this._sheets.values().iterator();
 	}
 
 	@Override
 	public List<ExcelSheet> sheets() {
-		final List<ExcelSheet> sheets = new ArrayList<ExcelSheet>();
-		final Iterator<ISheet> it = sheetIterator();
-
-		while (it.hasNext()) {
-			final ExcelSheet next = (ExcelSheet) it.next();
-			sheets.add(next);
-		}
-
-		return sheets;
+		List<ExcelSheet> list = new ArrayList<ExcelSheet>(_sheets.values());
+		Collections.sort(list);
+		return list;
 	}
 
 	@Override
@@ -272,5 +325,5 @@ public class ExcelBook extends AbstractBook implements IBook, HasRaw<Workbook> {
 	public String toString() {
 		return "[" + this.excelFile.getName().toString() + "]";
 	}
-
+	
 }

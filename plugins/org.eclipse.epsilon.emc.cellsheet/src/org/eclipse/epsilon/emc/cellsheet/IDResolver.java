@@ -13,6 +13,8 @@ public interface IDResolver {
 	
 	public String getColumnPartAlpha(String id);
 
+	public String getID(Object object);
+	
 	public String getID(ICell cell);
 
 	public String getID(IRow row);
