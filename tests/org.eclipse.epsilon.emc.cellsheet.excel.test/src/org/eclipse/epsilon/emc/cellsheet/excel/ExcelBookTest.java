@@ -1,48 +1,45 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import org.apache.poi.ss.formula.FormulaParser;
-import org.apache.poi.ss.formula.FormulaType;
-import org.apache.poi.ss.formula.ptg.Ptg;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.eclipse.epsilon.common.util.StringProperties;
-import org.junit.BeforeClass;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
+
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
 public class ExcelBookTest {
 	
-	static ExcelBook book;
+	ExcelBook book;
 
-	@BeforeClass
-	public static void setupClass() throws Exception {
-		StringProperties props = new StringProperties();
-		props.put(ExcelBook.EXCEL_FILE, "C:\\Users\\Jonathan Co\\Projects\\emc-cellsheet\\tests\\org.eclipse.epsilon.emc.cellsheet.excel.test\\ws\\test\\Spreadsheet Equiv.xlsx");
-		
+	@Before
+	public void setup() throws Exception {
 		book = new ExcelBook();
-		book.load(props);
+		book.setExcelFile("./resources/ExcelFile.xlsx");
+		book.load();
 	}
 	
 	@Test
-	public void testScratch() {
-		Workbook raw = book.getRaw();
-		Cell cell = raw.getSheet("Florida").getRow(4).getCell(2);
-		assertTrue(cell.getCellTypeEnum() == CellType.FORMULA);
-		
-		String formulaStr = cell.getCellFormula();
-		System.out.println(raw.getClass());
-		
-		XSSFEvaluationWorkbook xssfew = XSSFEvaluationWorkbook.create((XSSFWorkbook) raw);
-		
-		Ptg[] formula = FormulaParser.parse(formulaStr, xssfew, FormulaType.ARRAY, 2);
-		
-		for (Ptg ptg : formula) {
-			System.out.println(ptg);
-		}
+	public void testSetExcelFile() throws URISyntaxException {
+		final String filepath = "./resources/ExcelFile.xlsx";		
+		final ExcelBook mBook = new ExcelBook();
+		assertNull(mBook.excelFile);
+		mBook.setExcelFile(filepath);
+		assertNotNull(mBook.excelFile);
+		assertEquals(mBook.excelFile, new File(filepath));
 	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetExcelFileBad() {
+		final String filepath = "badFilePath";
+		final ExcelBook mBook = new ExcelBook();
+		assertNull(mBook.excelFile);
+		mBook.setExcelFile(filepath);
+	}
+	
+	
 }
