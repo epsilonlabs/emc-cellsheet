@@ -7,7 +7,7 @@ public interface IRow extends HasId, Comparable<IRow> {
 
 	public static final String TYPENAME = "Row";
 
-	public List<ICell> cells();
+	public List<? extends ICell> cells();
 	
 	public Iterator<ICell> cellIterator();
 

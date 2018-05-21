@@ -2,10 +2,13 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.eclipse.epsilon.emc.cellsheet.HasRaw;
-import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
-import org.eclipse.epsilon.emc.cellsheet.ISheet;
+import org.eclipse.epsilon.emc.cellsheet.cells.CellValue;
+import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelBooleanValue;
+import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelFormulaValue;
+import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelNumericValue;
+import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelStringValue;
 
 public class ExcelCell implements ICell, HasRaw<Cell> {
 
@@ -32,18 +35,19 @@ public class ExcelCell implements ICell, HasRaw<Cell> {
 		return this.raw.getRowIndex();
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Object getValue() {
+	public CellValue getValue() {
 		switch (this.raw.getCellTypeEnum()) {
 		case BOOLEAN:
-			return this.raw.getBooleanCellValue();
+			return new ExcelBooleanValue(this);
 		case NUMERIC:
-			return this.raw.getNumericCellValue();
+			return new ExcelNumericValue(this);
 		case STRING:
 		case BLANK:
-			return this.raw.getStringCellValue();
+			return new ExcelStringValue(this);
 		case FORMULA:
-			return this.raw.getCellFormula();
+			return new ExcelFormulaValue(this);
 		default:
 			throw new UnsupportedOperationException();
 		}
@@ -65,12 +69,12 @@ public class ExcelCell implements ICell, HasRaw<Cell> {
 	}
 
 	@Override
-	public ISheet getSheet() {
+	public ExcelSheet getSheet() {
 		return this.book._sheets.get(this.raw.getSheet());
 	}
 
 	@Override
-	public IBook getBook() {
+	public ExcelBook getBook() {
 		return this.book;
 	}
 
@@ -132,4 +136,8 @@ public class ExcelCell implements ICell, HasRaw<Cell> {
 //		this.column = this.getColumn();
 //	}
 	
+	@Override
+	public String toString() {
+		return String.format("[%s] [%s]", this.getId(), this.getValue().toString());
+	}
 }

@@ -1,5 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import org.eclipse.epsilon.emc.cellsheet.cells.CellValue;
+
 public interface ICell extends HasId, Comparable<ICell> {
 
 	public static final String TYPENAME = "Cell";
@@ -12,7 +14,7 @@ public interface ICell extends HasId, Comparable<ICell> {
 
 	public int getRowIdx();
 
-	public Object getValue();
+	public CellValue<?> getValue();
 	
 	public IBook getBook();
 

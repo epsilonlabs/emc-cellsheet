@@ -67,11 +67,13 @@ public class ExcelIDResolver implements IDResolver {
 		
 		// Handle rows
 		if (row == NO_INDEX) return sb.toString();
+		sb.append(DELIMITER);
 		if (rowLock) sb.append(INDEX_LOCK);
 		sb.append(row);
 		
 		// Handle columns
 		if (col == NO_INDEX) return sb.toString();
+		sb.append(DELIMITER);
 		if (colLock) sb.append(INDEX_LOCK);
 		sb.append(col);
 		

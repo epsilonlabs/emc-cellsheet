@@ -2,7 +2,6 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 public interface IDResolver {
 	
-	
 	public static final String DELIMITER = "/";
 	
 	public static final char NO_INDEX_LOCK = Character.MIN_VALUE;

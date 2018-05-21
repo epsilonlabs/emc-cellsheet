@@ -9,11 +9,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.formula.FormulaParser;
+import org.apache.poi.ss.formula.FormulaParsingWorkbook;
+import org.apache.poi.ss.formula.FormulaType;
+import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.emc.cellsheet.HasRaw;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
@@ -21,6 +31,7 @@ import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IDResolver;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
+import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelFormulaValue;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
@@ -44,6 +55,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	// Lower level access fields
 	protected Workbook raw = null;
 	protected File excelFile = null;
+	protected FormulaParsingWorkbook fpw = null;
 	
 	private final ExcelIDResolver idResolver = new ExcelIDResolver();
 
@@ -95,22 +107,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public ICell getCell(int sheetIndex, int row, int col) {
-		return this.getCell(this.getRow(sheetIndex, row), col);
-	}
-
-	@Override
-	public ICell getCell(ISheet sheet, int row, int col) {
-		return this.getCell(this.getRow(sheet, row), col);
-	}
-
-	@Override
-	public ICell getCell(IRow row, int col) {
-		return this.getCell(((ExcelRow) row).getRaw().getCell(col));
-	}
-
-	public ICell getCell(Cell rawCell) {
+	public ExcelCell getCell(Cell rawCell) {
 		if (!rawCell.getSheet().getWorkbook().equals(this.raw)) 
 			throw new IllegalArgumentException();
 		
@@ -122,11 +119,30 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		return excelCell;
 	}
 
-
+	@SuppressWarnings("unchecked")
 	@Override
-	public ICell getCell(String sheet, int row, int col) {
+	public ExcelCell getCell(int sheetIndex, int row, int col) {
+		return this.getCell(this.getRow(sheetIndex, row), col);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ExcelCell getCell(IRow row, int col) {
+		return this.getCell(((ExcelRow) row).getRaw().getCell(col));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ExcelCell getCell(ISheet sheet, int row, int col) {
 		return this.getCell(this.getRow(sheet, row), col);
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ExcelCell getCell(String sheet, int row, int col) {
+		return this.getCell(this.getRow(sheet, row), col);
+	}
+
 
 	@Override
 	public Object getElementById(String id) {
@@ -157,6 +173,14 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	public IRow getRow(int sheet, int index) {
 		return this.getRow(getSheet(sheet), index);
 	}
+
+	@Override
+	public IRow getRow(ISheet sheet, int index) {
+		if (index < 0) throw new IndexOutOfBoundsException();
+		if (!this.owns(sheet)) throw new IllegalArgumentException();
+		
+		return this.getRow(((ExcelSheet) sheet).getRaw().getRow(index));
+	}
 	
 	public IRow getRow(Row rawRow) {
 		ExcelRow excelRow = _rows.get(rawRow);
@@ -168,25 +192,18 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	}
 
 	@Override
-	public IRow getRow(ISheet sheet, int index) {
-		if (index < 0) throw new IndexOutOfBoundsException();
-		if (!this.owns(sheet)) throw new IllegalArgumentException();
-		
-		return this.getRow(((ExcelSheet) sheet).getRaw().getRow(index));
-	}
-
-	@Override
 	public IRow getRow(String sheet, int index) {
 		return getRow(getSheet(sheet), index);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public ExcelSheet getSheet(int index) {
 		if (index < 0 || index >= raw.getNumberOfSheets())
 			throw new IndexOutOfBoundsException();
-		return this.getSheet(this.raw.getSheetName(index));
+		return this.getSheet(this.raw.getSheetAt(index));
 	}
-	
+
 	public ExcelSheet getSheet(Sheet rawSheet) {
 		if (rawSheet == null) return null;
 		
@@ -197,7 +214,8 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		}
 		return excelSheet;
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public ExcelSheet getSheet(String name) {
 		return this.getSheet(this.raw.getSheet(name));
@@ -220,6 +238,15 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 				"Not a valid Cellsheet type: " + instance + " (" + instance.getClass().getCanonicalName() + ") ");
 		LOGGER.error(e.getMessage(), e);
 		throw e;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((excelFile == null) ? 0 : excelFile.hashCode());
+		result = prime * result + ((raw == null) ? 0 : raw.hashCode());
+		return result;
 	}
 
 	@Override
@@ -267,7 +294,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 			return true;
 
 		if (instance instanceof ExcelSheet)
-			return this.equals(((ExcelSheet) instance).getBook().getRaw());
+			return this.equals(((ExcelSheet) instance).getBook());
 
 		if (instance instanceof IRow)
 			return this.owns(((ExcelRow) instance).getSheet());
@@ -311,6 +338,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		return this.sheets().iterator();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<ExcelSheet> sheets() {
 		this.raw.sheetIterator().forEachRemaining(s -> this.getSheet(s));
@@ -333,7 +361,19 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	public String toString() {
 		return "[" + this.excelFile.getName().toString() + "]";
 	}
-
-
 	
+	public Ptg[] parseFormula(ExcelFormulaValue cellValue) {
+		if (fpw == null) {
+			System.out.println(raw.getClass());
+			if (raw instanceof HSSFWorkbook) fpw = HSSFEvaluationWorkbook.create((HSSFWorkbook) raw);
+			if (raw instanceof XSSFWorkbook) fpw = XSSFEvaluationWorkbook.create((XSSFWorkbook) raw);
+			if (raw instanceof SXSSFWorkbook) fpw = SXSSFEvaluationWorkbook.create((SXSSFWorkbook) raw);
+			if (fpw == null) throw new AssertionError();
+		}
+		
+		return FormulaParser.parse(cellValue.getValue(), 
+				fpw, 
+				FormulaType.CELL, 
+				cellValue.getCell().getSheet().getIndex());
+	}
 }
