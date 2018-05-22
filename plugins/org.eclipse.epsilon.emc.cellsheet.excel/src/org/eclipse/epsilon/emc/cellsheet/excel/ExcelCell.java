@@ -4,7 +4,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.emc.cellsheet.HasRaw;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.cells.CellValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelBooleanValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelFormulaValue;
