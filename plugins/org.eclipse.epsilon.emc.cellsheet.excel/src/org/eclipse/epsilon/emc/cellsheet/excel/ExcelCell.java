@@ -27,7 +27,7 @@ public class ExcelCell implements ICell, HasRaw<Cell> {
 	}
 
 	@Override
-	public IRow getRow() {
+	public ExcelRow getRow() {
 		return this.book._rows.get(this.raw.getRow());
 	}
 

@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.FormulaParser;
@@ -119,25 +121,21 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		return excelCell;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ExcelCell getCell(int sheetIndex, int row, int col) {
 		return this.getCell(this.getRow(sheetIndex, row), col);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ExcelCell getCell(IRow row, int col) {
 		return this.getCell(((ExcelRow) row).getRaw().getCell(col));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ExcelCell getCell(ISheet sheet, int row, int col) {
 		return this.getCell(this.getRow(sheet, row), col);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ExcelCell getCell(String sheet, int row, int col) {
 		return this.getCell(this.getRow(sheet, row), col);
@@ -170,19 +168,19 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	}
 
 	@Override
-	public IRow getRow(int sheet, int index) {
+	public ExcelRow getRow(int sheet, int index) {
 		return this.getRow(getSheet(sheet), index);
 	}
 
 	@Override
-	public IRow getRow(ISheet sheet, int index) {
+	public ExcelRow getRow(ISheet sheet, int index) {
 		if (index < 0) throw new IndexOutOfBoundsException();
 		if (!this.owns(sheet)) throw new IllegalArgumentException();
 		
 		return this.getRow(((ExcelSheet) sheet).getRaw().getRow(index));
 	}
 	
-	public IRow getRow(Row rawRow) {
+	public ExcelRow getRow(Row rawRow) {
 		ExcelRow excelRow = _rows.get(rawRow);
 		if (excelRow == null) {
 			excelRow = new ExcelRow(this, rawRow);
@@ -192,11 +190,10 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	}
 
 	@Override
-	public IRow getRow(String sheet, int index) {
+	public ExcelRow getRow(String sheet, int index) {
 		return getRow(getSheet(sheet), index);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ExcelSheet getSheet(int index) {
 		if (index < 0 || index >= raw.getNumberOfSheets())
@@ -215,7 +212,6 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		return excelSheet;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public ExcelSheet getSheet(String name) {
 		return this.getSheet(this.raw.getSheet(name));
@@ -332,13 +328,22 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		this.raw = raw;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<ISheet> iterator() {
+		return new TransformIterator<ExcelSheet, ISheet>(this.sheetIterator(),
+				new Transformer<ExcelSheet, ISheet>() {
+					@Override
+					public ISheet transform(ExcelSheet input) {
+						return input;
+					}
+				});
+	}
+	
 	@Override
 	public Iterator<ExcelSheet> sheetIterator() {
 		return this.sheets().iterator();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<ExcelSheet> sheets() {
 		this.raw.sheetIterator().forEachRemaining(s -> this.getSheet(s));

@@ -4,12 +4,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Row;
 import org.eclipse.epsilon.emc.cellsheet.HasRaw;
-import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
-import org.eclipse.epsilon.emc.cellsheet.ISheet;
 
 public class ExcelRow implements IRow, HasRaw<Row> {
 
@@ -22,12 +22,12 @@ public class ExcelRow implements IRow, HasRaw<Row> {
 	}
 
 	@Override
-	public Iterator<ICell> cellIterator() {
+	public Iterator<ExcelCell> cellIterator() {
 		return cells().iterator();
 	}
 
 	@Override
-	public List<ICell> cells() {
+	public List<ExcelCell> cells() {
 		this.raw.cellIterator().forEachRemaining(c -> this.book.getCell(c));
 		return book._cells.values().stream()
 				.filter(c -> this.equals(c.getRow()))
@@ -45,12 +45,12 @@ public class ExcelRow implements IRow, HasRaw<Row> {
 	}
 
 	@Override
-	public IBook getBook() {
+	public ExcelBook getBook() {
 		return this.book;
 	}
 
 	@Override
-	public ICell getCell(int colIdx) {
+	public ExcelCell getCell(int colIdx) {
 		return this.book.getCell(this.raw.getCell(colIdx));
 	}
 
@@ -71,13 +71,24 @@ public class ExcelRow implements IRow, HasRaw<Row> {
 	}
 
 	@Override
-	public ISheet getSheet() {
+	public ExcelSheet getSheet() {
 		return this.book._sheets.get(raw.getSheet());
 	}
 
 	@Override
 	public void setRaw(Row raw) {
 		this.raw = raw;
+	}
+	
+	@Override
+	public Iterator<ICell> iterator() {
+		return new TransformIterator<ExcelCell, ICell>(this.cellIterator(), 
+				new Transformer<ExcelCell, ICell>() {
+					@Override
+					public ICell transform(ExcelCell input) {
+						return input;
+					}
+				});
 	}
 
 }
