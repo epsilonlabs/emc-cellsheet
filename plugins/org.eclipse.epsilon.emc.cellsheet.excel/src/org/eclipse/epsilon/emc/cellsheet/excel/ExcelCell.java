@@ -1,7 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
+import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.emc.cellsheet.HasRaw;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.cells.CellValue;
@@ -21,8 +21,13 @@ public class ExcelCell implements ICell, HasRaw<Cell> {
 	}
 
 	@Override
-	public int getColIdx() {
+	public int getColIndex() {
 		return this.raw.getColumnIndex();
+	}
+	
+	@Override
+	public String getCol() {
+		return CellReference.convertNumToColString(this.getColIndex());
 	}
 
 	@Override
@@ -31,7 +36,7 @@ public class ExcelCell implements ICell, HasRaw<Cell> {
 	}
 
 	@Override
-	public int getRowIdx() {
+	public int getRowIndex() {
 		return this.raw.getRowIndex();
 	}
 
@@ -84,16 +89,12 @@ public class ExcelCell implements ICell, HasRaw<Cell> {
 		if (this == o) return 0;
 		
 		int parent = this.getRow().compareTo(o.getRow());
-		return parent == 0 ? Integer.compare(this.getColIdx(), o.getColIdx()) : parent;
+		return parent == 0 ? Integer.compare(this.getColIndex(), o.getColIndex()) : parent;
 	}
 	
 	@Override
 	public String toString() {
 		return String.format("[%s] [%s]", this.getId(), this.getValue().toString());
-	}
-	
-	public String getExcelId() {
-		return String.format("%s!%s%s", this.getSheet().getName(), CellReference.convertNumToColString(this.getColIdx()), this.getRowIdx()+1);
 	}
 	
 //	private void moveSelf(int rowIdx, int colIdx) {

@@ -25,7 +25,7 @@ public class ExcelIDResolver implements IDResolver {
 	
 	@Override
 	public String getID(ICell cell) {
-		return buildId(cell.getSheet(), cell.getRowIdx(), cell.getColIdx(), false, false);
+		return buildId(cell.getSheet(), cell.getRowIndex(), cell.getColIndex(), false, false);
 	}
 
 	@Override

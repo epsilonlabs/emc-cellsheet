@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface ISheet extends HasId, Comparable<ISheet>, Iterable<IRow> {
 
-	public static final String TYPENAME = "Sheet";
+	public static final CellsheetType TYPE = CellsheetType.SHEET;
 
 	public IBook getBook();
 

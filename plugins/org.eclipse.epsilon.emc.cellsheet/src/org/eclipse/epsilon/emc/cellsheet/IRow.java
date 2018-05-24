@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface IRow extends HasId, Comparable<IRow>, Iterable<ICell> {
 
-	public static final String TYPENAME = "Row";
+	public static final CellsheetType TYPE = CellsheetType.ROW;
 
 	public List<? extends ICell> cells();
 	

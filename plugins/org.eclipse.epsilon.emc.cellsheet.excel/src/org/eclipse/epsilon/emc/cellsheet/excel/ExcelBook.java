@@ -27,6 +27,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
+import org.eclipse.epsilon.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.emc.cellsheet.HasRaw;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
@@ -41,14 +42,10 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 import org.eclipse.epsilon.eol.models.Model;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 
 	public static final String EXCEL_FILE = "EXCEL_FILE";
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExcelBook.class);
 
 	final Map<Sheet, ExcelSheet> _sheets = new HashMap<Sheet, ExcelSheet>();
 	final Map<Row, ExcelRow> _rows = new HashMap<Row, ExcelRow>();
@@ -105,8 +102,40 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	}
 
 	@Override
-	public Collection<?> getAllOfType(String type) throws EolModelElementTypeNotFoundException {
-		throw new UnsupportedOperationException();
+	public Collection<?> getAllOfType(String typename) throws EolModelElementTypeNotFoundException {		
+		if (!this.hasType(typename)) throw new EolModelElementTypeNotFoundException(this.name, typename);
+		
+		final CellsheetType type = CellsheetType.fromTypename(typename);		
+		
+		if (type == IBook.TYPE) {
+			List<IBook> list = new ArrayList<IBook>(1);
+			list.add(this);
+			return list;
+		}
+		
+		if (type == ISheet.TYPE) {
+			return this.sheets();
+		}
+		
+		if (type == IRow.TYPE) {
+			final List<ExcelRow> rows = new ArrayList<ExcelRow>();
+			for (ExcelSheet sheet : this.sheets()) {
+				rows.addAll(sheet.rows());
+			}
+			return rows;
+		}
+		
+		if (type == ICell.TYPE) {
+			final List<ExcelCell> cells = new ArrayList<ExcelCell>();
+			for (ExcelSheet sheet : this.sheets()) {
+				for (ExcelRow row : sheet.rows()) {
+					cells.addAll(row.cells());
+				}
+			}
+			return cells;
+		}
+	
+		throw new AssertionError();
 	}
 
 	public ExcelCell getCell(Cell rawCell) {
@@ -219,21 +248,15 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 
 	@Override
 	public String getTypeNameOf(Object instance) {
-		LOGGER.trace("Called " + this.name + ".getTypeNameOf: " + instance);
 		if (instance instanceof ISheet)
-			return ISheet.TYPENAME;
+			return ISheet.TYPE.getTypename();
 		if (instance instanceof IRow)
-			return IRow.TYPENAME;
+			return IRow.TYPE.getTypename();
 		if (instance instanceof ICell)
-			return ICell.TYPENAME;
-		if (instance instanceof IBook)
-			return IBook.TYPENAME;
+			return ICell.TYPE.getTypename();
 
 		// TODO: Should this return null instead?
-		final IllegalArgumentException e = new IllegalArgumentException(
-				"Not a valid Cellsheet type: " + instance + " (" + instance.getClass().getCanonicalName() + ") ");
-		LOGGER.error(e.getMessage(), e);
-		throw e;
+		throw new IllegalArgumentException();
 	}
 
 	@Override
@@ -247,7 +270,10 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 
 	@Override
 	public boolean hasType(String type) {
-		// TODO Auto-generated method stub
+		if (type == null) return false;
+		for (CellsheetType ct : CellsheetType.values()) {
+			if (ct.getTypename().equals(type)) return true;
+		}
 		return false;
 	}
 
@@ -271,9 +297,6 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 
 		final String excelFilePath = properties.getProperty(ExcelBook.EXCEL_FILE);
 		final String resolvedPath = resolver.resolve(excelFilePath);
-
-		LOGGER.info("Excel Filepath: " + excelFilePath);
-		LOGGER.info("Resolved Excel Filepath " + resolvedPath);
 
 		try {
 			this.setExcelFile(resolvedPath);
@@ -311,7 +334,6 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		final File file = new File(filepath);
 		if (!file.exists()) {
 			final IllegalArgumentException e = new IllegalArgumentException("Bad filepath given: " + filepath);
-			LOGGER.error(e.getMessage(), e);
 			throw e;
 		}
 		this.excelFile = file;
@@ -369,7 +391,6 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	
 	public Ptg[] parseFormula(ExcelFormulaValue cellValue) {
 		if (fpw == null) {
-			System.out.println(raw.getClass());
 			if (raw instanceof HSSFWorkbook) fpw = HSSFEvaluationWorkbook.create((HSSFWorkbook) raw);
 			if (raw instanceof XSSFWorkbook) fpw = XSSFEvaluationWorkbook.create((XSSFWorkbook) raw);
 			if (raw instanceof SXSSFWorkbook) fpw = SXSSFEvaluationWorkbook.create((SXSSFWorkbook) raw);
