@@ -4,11 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -19,7 +16,8 @@ public class ExcelBookTest {
 	@Before
 	public void setup() throws Exception {
 		book = new ExcelBook();
-		book.setExcelFile("./resources/ExcelFile.xlsx");
+		book.setExcelFile(ExcelTestUtil.RES_PATH + ExcelTestUtil.FILENAME);
+		book.setName("Excel");
 		book.load();
 	}
 	
