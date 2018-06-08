@@ -2,7 +2,7 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
-import org.eclipse.epsilon.emc.cellsheet.HasRaw;
+import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.cells.CellValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelBooleanValue;
@@ -10,19 +10,19 @@ import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelFormulaValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelNumericValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelStringValue;
 
-public class ExcelCell implements ICell, HasRaw<Cell> {
+public class ExcelCell implements ICell, HasDelegate<Cell> {
 
 	protected ExcelBook book;
-	protected Cell raw;
+	protected Cell delegate;
 
-	ExcelCell(ExcelBook book, Cell raw) {
+	ExcelCell(ExcelBook book, Cell delegate) {
 		this.book = book;
-		this.raw = raw;
+		this.delegate = delegate;
 	}
 
 	@Override
 	public int getColIndex() {
-		return this.raw.getColumnIndex();
+		return this.delegate.getColumnIndex();
 	}
 	
 	@Override
@@ -32,18 +32,18 @@ public class ExcelCell implements ICell, HasRaw<Cell> {
 
 	@Override
 	public ExcelRow getRow() {
-		return this.book._rows.get(this.raw.getRow());
+		return this.book._rows.get(this.delegate.getRow());
 	}
 
 	@Override
 	public int getRowIndex() {
-		return this.raw.getRowIndex();
+		return this.delegate.getRowIndex();
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public CellValue getValue() {
-		switch (this.raw.getCellTypeEnum()) {
+		switch (this.delegate.getCellTypeEnum()) {
 		case BOOLEAN:
 			return new ExcelBooleanValue(this);
 		case NUMERIC:
@@ -64,18 +64,18 @@ public class ExcelCell implements ICell, HasRaw<Cell> {
 	}
 
 	@Override
-	public Cell getRaw() {
-		return this.raw;
+	public Cell getDelegate() {
+		return this.delegate;
 	}
 
 	@Override
-	public void setRaw(Cell raw) {
-		this.raw = raw;
+	public void setDelegate(Cell delegate) {
+		this.delegate = delegate;
 	}
 
 	@Override
 	public ExcelSheet getSheet() {
-		return this.book._sheets.get(this.raw.getSheet());
+		return this.book._sheets.get(this.delegate.getSheet());
 	}
 
 	@Override

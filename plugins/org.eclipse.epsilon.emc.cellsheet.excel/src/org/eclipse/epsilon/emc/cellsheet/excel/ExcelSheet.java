@@ -7,18 +7,18 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.eclipse.epsilon.emc.cellsheet.HasRaw;
+import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 
-public class ExcelSheet implements ISheet, HasRaw<Sheet> {
+public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
 	protected ExcelBook book;
-	protected Sheet raw;
+	protected Sheet delegate;
 
 	ExcelSheet(ExcelBook book, Sheet sheet) {
 		this.book = book;
-		this.raw = sheet;
+		this.delegate = sheet;
 	}
 
 	@Override
@@ -42,22 +42,22 @@ public class ExcelSheet implements ISheet, HasRaw<Sheet> {
 
 	@Override
 	public int getIndex() {
-		return this.book.getRaw().getSheetIndex(this.raw);
+		return this.book.getDelegate().getSheetIndex(this.delegate);
 	}
 
 	@Override
 	public String getName() {
-		return this.raw.getSheetName();
+		return this.delegate.getSheetName();
 	}
 
 	@Override
-	public Sheet getRaw() {
-		return this.raw;
+	public Sheet getDelegate() {
+		return this.delegate;
 	}
 
 	@Override
 	public ExcelRow getRow(int rowIdx) {
-		return this.book.getRow(this.raw.getRow(rowIdx));
+		return this.book.getRow(this.delegate.getRow(rowIdx));
 	}
 
 	@Override
@@ -78,14 +78,14 @@ public class ExcelSheet implements ISheet, HasRaw<Sheet> {
 
 	@Override
 	public List<ExcelRow> rows() {
-		this.raw.rowIterator().forEachRemaining(r -> this.book.getRow(r));
+		this.delegate.rowIterator().forEachRemaining(r -> this.book.getRow(r));
 		return this.book._rows.values().stream().filter(r -> this.equals(r.getSheet())).sorted()
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	public void setRaw(Sheet raw) {
-		this.raw = raw;
+	public void setDelegate(Sheet delegate) {
+		this.delegate = delegate;
 	}
 
 	@Override

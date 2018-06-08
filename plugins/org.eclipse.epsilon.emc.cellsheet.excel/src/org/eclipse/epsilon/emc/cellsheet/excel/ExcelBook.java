@@ -28,7 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.emc.cellsheet.HasRaw;
+import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IDResolver;
@@ -43,7 +43,7 @@ import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementT
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 import org.eclipse.epsilon.eol.models.Model;
 
-public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
+public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 
 	public static final String EXCEL_FILE = "EXCEL_FILE";
 
@@ -52,7 +52,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	final Map<Cell, ExcelCell> _cells = new HashMap<Cell, ExcelCell>();
 
 	// Lower level access fields
-	protected Workbook raw = null;
+	protected Workbook delegate = null;
 	protected File excelFile = null;
 	protected FormulaParsingWorkbook fpw = null;
 	
@@ -106,14 +106,14 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		throw new UnsupportedOperationException();
 	}
 
-	public ExcelCell getCell(Cell rawCell) {
-		if (!rawCell.getSheet().getWorkbook().equals(this.raw)) 
+	public ExcelCell getCell(Cell delegate) {
+		if (!delegate.getSheet().getWorkbook().equals(this.delegate)) 
 			throw new IllegalArgumentException();
 		
-		ExcelCell excelCell = _cells.get(rawCell);
+		ExcelCell excelCell = _cells.get(delegate);
 		if (excelCell == null) {
-			excelCell = new ExcelCell(this, rawCell);
-			_cells.put(rawCell, excelCell);
+			excelCell = new ExcelCell(this, delegate);
+			_cells.put(delegate, excelCell);
 		}
 		return excelCell;
 	}
@@ -125,7 +125,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 
 	@Override
 	public ExcelCell getCell(IRow row, int col) {
-		return this.getCell(((ExcelRow) row).getRaw().getCell(col));
+		return this.getCell(((ExcelRow) row).getDelegate().getCell(col));
 	}
 
 	@Override
@@ -143,11 +143,11 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		return this.idResolver;
 	}
 	
-	public ExcelRow getRow(Row rawRow) {
-		ExcelRow excelRow = _rows.get(rawRow);
+	public ExcelRow getRow(Row delegate) {
+		ExcelRow excelRow = _rows.get(delegate);
 		if (excelRow == null) {
-			excelRow = new ExcelRow(this, rawRow);
-			_rows.put(rawRow, excelRow);
+			excelRow = new ExcelRow(this, delegate);
+			_rows.put(delegate, excelRow);
 		}
 		return excelRow;
 	}
@@ -157,7 +157,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		if (index < 0) throw new IndexOutOfBoundsException();
 		if (!this.owns(sheet)) throw new IllegalArgumentException();
 		
-		return this.getRow(((ExcelSheet) sheet).getRaw().getRow(index));
+		return this.getRow(((ExcelSheet) sheet).getDelegate().getRow(index));
 	}
 	
 	@Override
@@ -169,27 +169,27 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		return getRow(getSheet(sheet), index);
 	}
 	
-	public ExcelSheet getSheet(Sheet rawSheet) {
-		if (rawSheet == null) return null;
+	public ExcelSheet getSheet(Sheet delegate) {
+		if (delegate == null) return null;
 		
-		ExcelSheet excelSheet = _sheets.get(rawSheet);
+		ExcelSheet excelSheet = _sheets.get(delegate);
 		if (excelSheet == null) {
-			excelSheet = new ExcelSheet(this, rawSheet);
-			_sheets.put(rawSheet, excelSheet);
+			excelSheet = new ExcelSheet(this, delegate);
+			_sheets.put(delegate, excelSheet);
 		}
 		return excelSheet;
 	}
 
 	@Override
 	public ExcelSheet getSheet(int index) {
-		if (index < 0 || index >= raw.getNumberOfSheets())
+		if (index < 0 || index >= delegate.getNumberOfSheets())
 			throw new IndexOutOfBoundsException();
-		return this.getSheet(this.raw.getSheetAt(index));
+		return this.getSheet(this.delegate.getSheetAt(index));
 	}
 
 	@Override
 	public ExcelSheet getSheet(String name) {
-		return this.getSheet(this.raw.getSheet(name));
+		return this.getSheet(this.delegate.getSheet(name));
 	}
 
 	@Override
@@ -216,7 +216,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 
 	@Override
 	public List<ExcelSheet> sheets() {
-		this.raw.sheetIterator().forEachRemaining(s -> this.getSheet(s));
+		this.delegate.sheetIterator().forEachRemaining(s -> this.getSheet(s));
 		List<ExcelSheet> list = new ArrayList<ExcelSheet>(_sheets.values());
 		Collections.sort(list);
 		return list;
@@ -240,9 +240,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	}
 	
 	@Override
-	public String getTypeNameOf(Object instance) {
-		System.out.println("here");
-		
+	public String getTypeNameOf(Object instance) {		
 		if (instance instanceof ISheet)
 			return ISheet.TYPE.getTypename();
 		if (instance instanceof IRow)
@@ -255,15 +253,15 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	}
 
 	@Override
-	public Object getTypeOf(Object instance) {
+	public Object getTypeOf(Object instance) {		
 		if (instance instanceof IBook)
-			return IBook.TYPE.getTypename();
+			return IBook.TYPE;
 		if (instance instanceof ISheet)
-			return ISheet.TYPE.getTypename();
+			return ISheet.TYPE;
 		if (instance instanceof IRow)
-			return IRow.TYPE.getTypename();
+			return IRow.TYPE;
 		if (instance instanceof ICell)
-			return ICell.TYPE.getTypename();
+			return ICell.TYPE;
 
 		// TODO: Should this return null instead?
 		throw new IllegalArgumentException();
@@ -322,9 +320,9 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	
 	public Ptg[] parseFormula(ExcelFormulaValue cellValue) {
 		if (fpw == null) {
-			if (raw instanceof HSSFWorkbook) fpw = HSSFEvaluationWorkbook.create((HSSFWorkbook) raw);
-			if (raw instanceof XSSFWorkbook) fpw = XSSFEvaluationWorkbook.create((XSSFWorkbook) raw);
-			if (raw instanceof SXSSFWorkbook) fpw = SXSSFEvaluationWorkbook.create((SXSSFWorkbook) raw);
+			if (delegate instanceof HSSFWorkbook) fpw = HSSFEvaluationWorkbook.create((HSSFWorkbook) delegate);
+			if (delegate instanceof XSSFWorkbook) fpw = XSSFEvaluationWorkbook.create((XSSFWorkbook) delegate);
+			if (delegate instanceof SXSSFWorkbook) fpw = SXSSFEvaluationWorkbook.create((SXSSFWorkbook) delegate);
 			if (fpw == null) throw new AssertionError();
 		}
 		
@@ -353,7 +351,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	@Override
 	public void load() throws EolModelLoadingException {
 		try {
-			this.raw = WorkbookFactory.create(excelFile);
+			this.delegate = WorkbookFactory.create(excelFile);
 		} catch (Exception e) {
 			throw new EolModelLoadingException(e, this);
 		}
@@ -379,13 +377,13 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 	}
 	
 	@Override
-	public Workbook getRaw() {
-		return this.raw;
+	public Workbook getDelegate() {
+		return this.delegate;
 	}
 	
 	@Override
-	public void setRaw(Workbook raw) {
-		this.raw = raw;
+	public void setDelegate(Workbook delegate) {
+		this.delegate = delegate;
 	}
 	
 	@Override
@@ -407,10 +405,10 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 				return false;
 		} else if (!excelFile.equals(other.excelFile))
 			return false;
-		if (raw == null) {
-			if (other.raw != null)
+		if (delegate == null) {
+			if (other.delegate != null)
 				return false;
-		} else if (!raw.equals(other.raw))
+		} else if (!delegate.equals(other.delegate))
 			return false;
 		return true;
 	}
@@ -420,7 +418,7 @@ public class ExcelBook extends Model implements IBook, HasRaw<Workbook> {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((excelFile == null) ? 0 : excelFile.hashCode());
-		result = prime * result + ((raw == null) ? 0 : raw.hashCode());
+		result = prime * result + ((delegate == null) ? 0 : delegate.hashCode());
 		return result;
 	}
 	

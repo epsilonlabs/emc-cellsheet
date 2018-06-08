@@ -21,12 +21,12 @@ public class ExcelFormulaValue extends AbstractExcelValue<String> implements For
 
 	@Override
 	public String getValue() {
-		return this.cell.getRaw().getCellFormula();
+		return this.cell.getDelegate().getCellFormula();
 	}
 
 	@Override
 	public String getResolvedValue() {
-		return this.cell.getRaw().getStringCellValue();
+		return this.cell.getDelegate().getStringCellValue();
 	}
 
 	@Override

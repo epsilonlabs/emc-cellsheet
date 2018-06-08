@@ -13,7 +13,7 @@ public abstract class AbstractExcelValue<T> implements CellValue<T> {
 	
 	@Override
 	public String getValue() {
-		return cell.getRaw().getStringCellValue();
+		return cell.getDelegate().getStringCellValue();
 	}
 
 	@Override

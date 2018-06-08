@@ -16,7 +16,7 @@ public class ExcelNumericValue extends AbstractExcelValue<Double> implements Num
 
 	@Override
 	public Double getResolvedValue() {
-		return this.cell.getRaw().getNumericCellValue();
+		return this.cell.getDelegate().getNumericCellValue();
 	}
 
 	@Override

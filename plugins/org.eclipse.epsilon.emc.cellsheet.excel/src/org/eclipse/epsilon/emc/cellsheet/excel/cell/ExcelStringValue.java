@@ -11,7 +11,7 @@ public class ExcelStringValue extends AbstractExcelValue<String> implements Stri
 
 	@Override
 	public String getResolvedValue() {
-		return this.cell.getRaw().getStringCellValue();
+		return this.cell.getDelegate().getStringCellValue();
 	}
 
 	@Override

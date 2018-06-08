@@ -7,18 +7,18 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Row;
-import org.eclipse.epsilon.emc.cellsheet.HasRaw;
+import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 
-public class ExcelRow implements IRow, HasRaw<Row> {
+public class ExcelRow implements IRow, HasDelegate<Row> {
 
 	protected ExcelBook book;
-	protected Row raw;
+	protected Row delegate;
 
-	ExcelRow(ExcelBook book, Row raw) {
+	ExcelRow(ExcelBook book, Row delegate) {
 		this.book = book;
-		this.raw = raw;
+		this.delegate = delegate;
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class ExcelRow implements IRow, HasRaw<Row> {
 
 	@Override
 	public List<ExcelCell> cells() {
-		this.raw.cellIterator().forEachRemaining(c -> this.book.getCell(c));
+		this.delegate.cellIterator().forEachRemaining(c -> this.book.getCell(c));
 		return book._cells.values().stream()
 				.filter(c -> this.equals(c.getRow()))
 				.sorted()
@@ -51,7 +51,7 @@ public class ExcelRow implements IRow, HasRaw<Row> {
 
 	@Override
 	public ExcelCell getCell(int colIdx) {
-		return this.book.getCell(this.raw.getCell(colIdx));
+		return this.book.getCell(this.delegate.getCell(colIdx));
 	}
 
 	@Override
@@ -62,22 +62,22 @@ public class ExcelRow implements IRow, HasRaw<Row> {
 
 	@Override
 	public int getIndex() {
-		return this.raw.getRowNum();
+		return this.delegate.getRowNum();
 	}
 
 	@Override
-	public Row getRaw() {
-		return this.raw;
+	public Row getDelegate() {
+		return this.delegate;
 	}
 
 	@Override
 	public ExcelSheet getSheet() {
-		return this.book._sheets.get(raw.getSheet());
+		return this.book._sheets.get(delegate.getSheet());
 	}
 
 	@Override
-	public void setRaw(Row raw) {
-		this.raw = raw;
+	public void setDelegate(Row delegate) {
+		this.delegate = delegate;
 	}
 	
 	@Override

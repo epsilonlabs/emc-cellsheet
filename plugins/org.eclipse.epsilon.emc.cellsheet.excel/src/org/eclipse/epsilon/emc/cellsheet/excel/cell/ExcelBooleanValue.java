@@ -11,7 +11,7 @@ public class ExcelBooleanValue extends AbstractExcelValue<Boolean> implements Bo
 
 	@Override
 	public Boolean getResolvedValue() {
-		return this.cell.getRaw().getBooleanCellValue();
+		return this.cell.getDelegate().getBooleanCellValue();
 	}
 	
 	@Override
