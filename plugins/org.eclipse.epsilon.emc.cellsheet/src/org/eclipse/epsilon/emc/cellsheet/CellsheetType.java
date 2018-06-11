@@ -15,14 +15,14 @@ public enum CellsheetType {
 	
 	@Override
 	public String toString() {
-		return typename;
-	}
-	
-	public String getTypename() {
 		return this.typename;
 	}
 	
-	public static CellsheetType fromTypename(String typename) {
+	public String getTypeName() {
+		return this.typename;
+	}
+	
+	public static CellsheetType fromTypeName(String typename) {
 		for (CellsheetType ct : CellsheetType.values()) {
 			if (ct.typename.equals(typename)) return ct;
 		}

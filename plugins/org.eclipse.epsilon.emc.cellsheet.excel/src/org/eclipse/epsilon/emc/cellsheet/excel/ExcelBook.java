@@ -29,6 +29,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
+import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IDResolver;
@@ -229,46 +230,38 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 
 	@Override
 	public boolean isOfKind(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
-		// TODO Auto-generated method stub
-		return super.isOfKind(instance, metaClass);
+		// FIXME: Add in subtypes for Excel only implementations
+		return isOfType(instance, metaClass);
 	}
 
 	@Override
-	public boolean isOfType(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
-		// TODO Auto-generated method stub
-		return super.isOfType(instance, metaClass);
+	public boolean isOfType(Object instance, String typename) throws EolModelElementTypeNotFoundException {
+		final CellsheetType type = CellsheetType.fromTypeName(typename);
+		if (type == null) throw new EolModelElementTypeNotFoundException(this.name, typename);
+		
+		final CellsheetType instanceType = typeOf(instance);
+		return type == instanceType;
 	}
 	
 	@Override
-	public String getTypeNameOf(Object instance) {		
-		if (instance instanceof ISheet)
-			return ISheet.TYPE.getTypename();
-		if (instance instanceof IRow)
-			return IRow.TYPE.getTypename();
-		if (instance instanceof ICell)
-			return ICell.TYPE.getTypename();
-
-		// TODO: Should this return null instead?
-		throw new IllegalArgumentException();
+	public String getTypeNameOf(Object instance) {
+		return this.getTypeOf(instance).toString();
 	}
 
 	@Override
-	public Object getTypeOf(Object instance) {		
-		if (instance instanceof IBook)
-			return IBook.TYPE;
-		if (instance instanceof ISheet)
-			return ISheet.TYPE;
-		if (instance instanceof IRow)
-			return IRow.TYPE;
-		if (instance instanceof ICell)
-			return ICell.TYPE;
-
-		// TODO: Should this return null instead?
-		throw new IllegalArgumentException();
+	public Object getTypeOf(Object object) {		
+		CellsheetType type = typeOf(object);
+		if (type == null) throw new IllegalArgumentException();
+		return type;
+	}
+	
+	private CellsheetType typeOf(Object object) {
+		return object instanceof HasType ? ((HasType) object).getType() : null;
 	}
 	
 	@Override
 	public Collection<?> getAllOfKind(String type) throws EolModelElementTypeNotFoundException {
+		// FIXME: Add in subtypes for Excel only implementations
 		return this.getAllOfType(type);
 	}
 
@@ -276,19 +269,19 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	public Collection<?> getAllOfType(String typename) throws EolModelElementTypeNotFoundException {		
 		if (!this.hasType(typename)) throw new EolModelElementTypeNotFoundException(this.name, typename);
 		
-		final CellsheetType type = CellsheetType.fromTypename(typename);		
+		final CellsheetType type = CellsheetType.fromTypeName(typename);		
 		
-		if (type == IBook.TYPE) {
+		if (type == CellsheetType.BOOK) {
 			List<IBook> list = new ArrayList<IBook>(1);
 			list.add(this);
 			return list;
 		}
 		
-		if (type == ISheet.TYPE) {
+		if (type == CellsheetType.SHEET) {
 			return this.sheets();
 		}
 		
-		if (type == IRow.TYPE) {
+		if (type == CellsheetType.ROW) {
 			final List<ExcelRow> rows = new ArrayList<ExcelRow>();
 			for (ExcelSheet sheet : this.sheets()) {
 				rows.addAll(sheet.rows());
@@ -296,7 +289,7 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 			return rows;
 		}
 		
-		if (type == ICell.TYPE) {
+		if (type == CellsheetType.CELL) {
 			final List<ExcelCell> cells = new ArrayList<ExcelCell>();
 			for (ExcelSheet sheet : this.sheets()) {
 				for (ExcelRow row : sheet.rows()) {
@@ -311,9 +304,8 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	
 	@Override
 	public boolean hasType(String type) {
-		if (type == null) return false;
 		for (CellsheetType ct : CellsheetType.values()) {
-			if (ct.getTypename().equals(type)) return true;
+			if (ct.getTypeName().equals(type)) return true;
 		}
 		return false;
 	}

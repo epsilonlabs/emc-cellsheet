@@ -2,9 +2,7 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 import org.eclipse.epsilon.emc.cellsheet.cells.CellValue;
 
-public interface ICell extends HasId, Comparable<ICell> {
-
-	public static final CellsheetType TYPE = CellsheetType.CELL;
+public interface ICell extends HasId, HasType, Comparable<ICell> {
 
 	public ISheet getSheet();
 
@@ -20,5 +18,8 @@ public interface ICell extends HasId, Comparable<ICell> {
 	
 	public IBook getBook();
 	
-
+	@Override
+	default CellsheetType getType() {
+		return CellsheetType.CELL;
+	}
 }

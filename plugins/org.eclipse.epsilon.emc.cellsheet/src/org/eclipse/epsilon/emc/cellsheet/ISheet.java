@@ -3,9 +3,7 @@ package org.eclipse.epsilon.emc.cellsheet;
 import java.util.Iterator;
 import java.util.List;
 
-public interface ISheet extends HasId, Comparable<ISheet>, Iterable<IRow> {
-
-	public static final CellsheetType TYPE = CellsheetType.SHEET;
+public interface ISheet extends HasId, HasType, Comparable<ISheet>, Iterable<IRow> {
 
 	public IBook getBook();
 
@@ -18,5 +16,9 @@ public interface ISheet extends HasId, Comparable<ISheet>, Iterable<IRow> {
 	public Iterator<? extends IRow> rowIterator();
 
 	public List<? extends IRow> rows();
-
+	
+	@Override
+	default CellsheetType getType() {
+		return CellsheetType.SHEET;
+	}
 }

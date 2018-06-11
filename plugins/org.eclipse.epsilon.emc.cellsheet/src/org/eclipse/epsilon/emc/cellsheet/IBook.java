@@ -17,9 +17,7 @@ import org.eclipse.epsilon.eol.models.IModel;
  * @author Jonathan Co
  *
  */
-public interface IBook extends IModel, Iterable<ISheet> {
-
-	public static final CellsheetType TYPE = CellsheetType.BOOK;
+public interface IBook extends HasType, IModel, Iterable<ISheet> {
 	
 	public ICell getCell(int sheetIndex, int row, int col);
 
@@ -46,5 +44,10 @@ public interface IBook extends IModel, Iterable<ISheet> {
 	public List<? extends ISheet> sheets();
 	
 	public Iterator<? extends ISheet> sheetIterator();
+	
+	@Override
+	default CellsheetType getType() {
+		return CellsheetType.BOOK;
+	}
 
 }
