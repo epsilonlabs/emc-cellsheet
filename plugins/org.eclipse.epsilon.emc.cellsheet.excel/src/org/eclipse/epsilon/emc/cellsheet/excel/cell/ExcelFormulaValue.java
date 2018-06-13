@@ -7,6 +7,7 @@ import org.apache.poi.ss.formula.ptg.Area3DPtg;
 import org.apache.poi.ss.formula.ptg.Area3DPxg;
 import org.apache.poi.ss.formula.ptg.OperandPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
+import org.apache.poi.ss.formula.ptg.Ref3DPxg;
 import org.apache.poi.ss.formula.ptg.RefPtg;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.cells.CellRegion;
@@ -49,7 +50,18 @@ public class ExcelFormulaValue extends AbstractExcelValue<String> implements For
 						rp.getColumn(), 
 						rp.getColumn() + 1);
 			}
-						
+			
+			if (ptg instanceof Ref3DPxg) {
+				Ref3DPxg rp = (Ref3DPxg) ptg;
+				region = new ExcelCellRegion(
+						cell.getBook(),
+						cell.getBook().getSheet(rp.getSheetName()), 
+						rp.getRow(), 
+						rp.getRow() + 1,
+						rp.getColumn(), 
+						rp.getColumn() + 1);		
+			}
+			
 			if (ptg instanceof Area3DPxg) {
 				Area3DPxg ap = (Area3DPxg) ptg;
 				
@@ -61,9 +73,9 @@ public class ExcelFormulaValue extends AbstractExcelValue<String> implements For
 						cell.getBook(),
 						cell.getBook().getSheet(ap.getSheetName()),
 						ap.getFirstRow(),
-						ap.getLastRow(),
+						ap.getLastRow() + 1,
 						ap.getFirstColumn(),
-						ap.getLastColumn());
+						ap.getLastColumn() + 1);
 			}
 			
 			if (ptg instanceof Area3DPtg) {

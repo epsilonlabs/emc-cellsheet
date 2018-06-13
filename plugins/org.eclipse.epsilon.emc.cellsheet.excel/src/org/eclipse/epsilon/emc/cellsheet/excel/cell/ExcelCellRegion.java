@@ -28,7 +28,7 @@ public class ExcelCellRegion implements CellRegion {
 		this.startColIdx = startColIdx;
 		this.endColIdx = endColIdx;
 	}
-
+	
 	@Override
 	public IBook getBook() {
 		return this.getBook();
