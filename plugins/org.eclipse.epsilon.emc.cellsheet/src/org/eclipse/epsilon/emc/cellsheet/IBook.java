@@ -27,6 +27,10 @@ public interface IBook extends HasType, IModel, Iterable<ISheet> {
 	
 	public ICell getCell(String sheetName, int row, int col);
 	
+	public ICell getCell(String sheetName, int row, String col);
+	
+	public ICell getCell(int sheetIndex, int row, String col);
+	
 	public IDResolver getIDResolver();
 	
 	public IRow getRow(int sheetIndex, int index);
@@ -49,5 +53,6 @@ public interface IBook extends HasType, IModel, Iterable<ISheet> {
 	default CellsheetType getType() {
 		return CellsheetType.BOOK;
 	}
+
 
 }

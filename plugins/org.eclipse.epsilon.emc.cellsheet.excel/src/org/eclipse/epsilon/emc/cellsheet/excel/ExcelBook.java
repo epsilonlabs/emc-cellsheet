@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
@@ -87,11 +88,11 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	
 	@Override
 	public boolean owns(Object instance) {
-		if (this.equals(instance))
-			return true;
+		if (instance instanceof IBook)
+			return this.equals(instance);
 
-		if (instance instanceof ExcelSheet)
-			return this.equals(((ExcelSheet) instance).getBook());
+		if (instance instanceof ISheet)
+			return this.owns(((ExcelSheet) instance).getBook());
 
 		if (instance instanceof IRow)
 			return this.owns(((ExcelRow) instance).getSheet());
@@ -135,8 +136,18 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	}
 
 	@Override
-	public ExcelCell getCell(String sheet, int row, int col) {
-		return this.getCell(this.getRow(sheet, row), col);
+	public ExcelCell getCell(String sheetName, int row, int col) {
+		return this.getCell(this.getRow(sheetName, row), col);
+	}
+	
+	@Override
+	public ExcelCell getCell(String sheetName, int row, String col) {
+		return this.getCell(sheetName, row, CellReference.convertColStringToIndex(col));
+	}
+	
+	@Override
+	public ExcelCell getCell(int sheetIndex, int row, String col) {
+		return this.getCell(sheetIndex, row, CellReference.convertColStringToIndex(col));
 	}
 
 	@Override
@@ -418,4 +429,5 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	public String toString() {
 		return "[" + this.excelFile.getName().toString() + "]";
 	}
+
 }
