@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.poi.ss.formula.ptg.Area3DPtg;
 import org.apache.poi.ss.formula.ptg.Area3DPxg;
+import org.apache.poi.ss.formula.ptg.AreaPtg;
 import org.apache.poi.ss.formula.ptg.OperandPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.Ref3DPxg;
@@ -60,6 +61,17 @@ public class ExcelFormulaValue extends AbstractExcelValue<String> implements For
 						rp.getRow() + 1,
 						rp.getColumn(), 
 						rp.getColumn() + 1);		
+			}
+			
+			if (ptg instanceof AreaPtg) {
+				AreaPtg ap = (AreaPtg) ptg;
+				region = new ExcelCellRegion(
+						cell.getBook(),
+						cell.getSheet(),
+						ap.getFirstRow(),
+						ap.getLastRow() + 1,
+						ap.getFirstColumn(),
+						ap.getLastColumn() + 1);
 			}
 			
 			if (ptg instanceof Area3DPxg) {

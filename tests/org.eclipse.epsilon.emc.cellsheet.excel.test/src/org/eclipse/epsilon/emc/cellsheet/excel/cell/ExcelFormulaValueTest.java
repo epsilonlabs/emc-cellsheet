@@ -94,5 +94,20 @@ public class ExcelFormulaValueTest {
 			}
 		}
 	}
+	
+	@Test
+	public void testGetReferencedCellsSumRegionSameSheet() {
+		final ExcelCell formulaCell = book.getCell("Formula", 5, "B");
+		assertTrue(formulaCell.getValue() instanceof ExcelFormulaValue);
+		final ExcelFormulaValue formulaValue = (ExcelFormulaValue) formulaCell.getValue();
+		
+		final List<ICell> refCells = formulaValue.getReferencedCells();	
+		assertEquals(20, refCells.size());
+		for (int r = 0; r < 10; r++) {
+			for (int c = 9; c < 11; c++) {
+				assertTrue(refCells.contains(book.getCell("Formula", r, c)));
+			}
+		}
+	}
 
 }
