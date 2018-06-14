@@ -1,9 +1,9 @@
 package org.eclipse.epsilon.emc.cellsheet.excel.cell;
 
-import org.eclipse.epsilon.emc.cellsheet.cells.CellValue;
+import org.eclipse.epsilon.emc.cellsheet.cells.ICellValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.ExcelCell;
 
-public abstract class AbstractExcelValue<T> implements CellValue<T> {
+public abstract class AbstractExcelValue<T> implements ICellValue<T> {
 	
 	protected ExcelCell cell;
 

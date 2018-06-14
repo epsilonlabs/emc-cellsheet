@@ -1,9 +1,9 @@
 package org.eclipse.epsilon.emc.cellsheet.excel.cell;
 
-import org.eclipse.epsilon.emc.cellsheet.cells.BooleanValue;
+import org.eclipse.epsilon.emc.cellsheet.cells.IBooleanCellValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.ExcelCell;
 
-public class ExcelBooleanValue extends AbstractExcelValue<Boolean> implements BooleanValue {
+public class ExcelBooleanValue extends AbstractExcelValue<Boolean> implements IBooleanCellValue {
 
 	public ExcelBooleanValue(ExcelCell cell) {
 		super(cell);

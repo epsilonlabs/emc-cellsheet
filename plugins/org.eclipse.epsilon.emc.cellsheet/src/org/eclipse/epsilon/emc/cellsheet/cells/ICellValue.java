@@ -2,7 +2,7 @@ package org.eclipse.epsilon.emc.cellsheet.cells;
 
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 
-public interface CellValue<T> {
+public interface ICellValue<T> {
 	
 	public ICell getCell();
 	

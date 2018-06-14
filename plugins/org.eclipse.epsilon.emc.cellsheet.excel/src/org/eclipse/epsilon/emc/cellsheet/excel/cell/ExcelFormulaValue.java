@@ -12,10 +12,10 @@ import org.apache.poi.ss.formula.ptg.Ref3DPxg;
 import org.apache.poi.ss.formula.ptg.RefPtg;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.cells.CellRegion;
-import org.eclipse.epsilon.emc.cellsheet.cells.FormulaValue;
+import org.eclipse.epsilon.emc.cellsheet.cells.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.ExcelCell;
 
-public class ExcelFormulaValue extends AbstractExcelValue<String> implements FormulaValue {
+public class ExcelFormulaValue extends AbstractExcelValue<String> implements IFormulaCellValue {
 
 	public ExcelFormulaValue(ExcelCell cell) {
 		super(cell);

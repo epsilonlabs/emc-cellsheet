@@ -4,7 +4,7 @@ import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.cells.CellValue;
+import org.eclipse.epsilon.emc.cellsheet.cells.ICellValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelBooleanValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelFormulaValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelNumericValue;
@@ -42,7 +42,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public CellValue getValue() {
+	public ICellValue getValue() {
 		switch (this.delegate.getCellTypeEnum()) {
 		case BOOLEAN:
 			return new ExcelBooleanValue(this);

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 
-public interface FormulaValue extends CellValue<String> {
+public interface IFormulaCellValue extends ICellValue<String> {
 
 	public abstract List<CellRegion> getReferencedRegions();
 	public abstract List<ICell> getReferencedCells();

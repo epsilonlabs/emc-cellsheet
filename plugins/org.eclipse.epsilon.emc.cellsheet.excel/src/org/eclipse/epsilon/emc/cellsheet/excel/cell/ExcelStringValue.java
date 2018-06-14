@@ -1,9 +1,9 @@
 package org.eclipse.epsilon.emc.cellsheet.excel.cell;
 
-import org.eclipse.epsilon.emc.cellsheet.cells.StringValue;
+import org.eclipse.epsilon.emc.cellsheet.cells.IStringCellValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.ExcelCell;
 
-public class ExcelStringValue extends AbstractExcelValue<String> implements StringValue {
+public class ExcelStringValue extends AbstractExcelValue<String> implements IStringCellValue {
 	
 	public ExcelStringValue(ExcelCell cell) {
 		super(cell);
