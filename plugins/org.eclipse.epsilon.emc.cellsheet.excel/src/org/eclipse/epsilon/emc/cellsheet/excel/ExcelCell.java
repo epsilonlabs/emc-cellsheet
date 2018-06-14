@@ -2,16 +2,11 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
-import org.eclipse.epsilon.emc.cellsheet.AbstractCell;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.cells.ICellValue;
-import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelBooleanValue;
-import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelFormulaValue;
-import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelNumericValue;
-import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelStringValue;
 
-public class ExcelCell extends AbstractCell implements ICell, HasDelegate<Cell> {
+public class ExcelCell implements ICell, HasDelegate<Cell> {
 
 	protected ExcelBook book;
 	protected Cell delegate;
@@ -41,7 +36,6 @@ public class ExcelCell extends AbstractCell implements ICell, HasDelegate<Cell> 
 		return this.delegate.getRowIndex();
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public ICellValue getValue() {
 		switch (this.delegate.getCellTypeEnum()) {

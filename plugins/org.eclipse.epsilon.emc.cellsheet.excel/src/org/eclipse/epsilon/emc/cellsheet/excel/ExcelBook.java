@@ -28,23 +28,22 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
-import org.eclipse.epsilon.emc.cellsheet.AbstractBook;
-import org.eclipse.epsilon.emc.cellsheet.Type;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IDResolver;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
-import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelFormulaValue;
+import org.eclipse.epsilon.emc.cellsheet.Type;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
+import org.eclipse.epsilon.eol.models.Model;
 
-public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbook> {
+public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 
 	public static final String EXCEL_FILE = "EXCEL_FILE";
 

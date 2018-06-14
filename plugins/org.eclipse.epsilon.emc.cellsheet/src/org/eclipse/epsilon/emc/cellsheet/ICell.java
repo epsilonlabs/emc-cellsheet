@@ -17,8 +17,26 @@ public interface ICell extends HasId, HasType, Comparable<ICell> {
 
 	public int getRowIndex();
 
-	public ICellValue<?> getValue();
+	public ICellValue getValue();
 	
 	public IBook getBook();
 
+	@Override
+	default int compareTo(ICell o) {
+		if (null == o) return 1;
+		if (this == o) return 0;
+		
+		int parent = this.getRow().compareTo(o.getRow());
+		return parent == 0 ? Integer.compare(this.getColIndex(), o.getColIndex()) : parent;
+	}
+	
+	@Override
+	default Type getType() {
+		return ICell.TYPE;
+	}
+	
+	@Override
+	default Type[] getKinds() {
+		return ICell.KINDS;
+	}
 }

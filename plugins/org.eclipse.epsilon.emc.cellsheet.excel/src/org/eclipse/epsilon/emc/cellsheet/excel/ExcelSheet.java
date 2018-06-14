@@ -7,12 +7,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.eclipse.epsilon.emc.cellsheet.AbstractSheet;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 
-public class ExcelSheet extends AbstractSheet implements ISheet, HasDelegate<Sheet> {
+public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
 	protected ExcelBook book;
 	protected Sheet delegate;

@@ -7,12 +7,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Row;
-import org.eclipse.epsilon.emc.cellsheet.AbstractRow;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 
-public class ExcelRow extends AbstractRow implements IRow, HasDelegate<Row> {
+public class ExcelRow implements IRow, HasDelegate<Row> {
 
 	protected ExcelBook book;
 	protected Row delegate;
