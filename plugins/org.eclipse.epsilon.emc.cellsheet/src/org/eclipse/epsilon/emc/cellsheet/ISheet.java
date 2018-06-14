@@ -18,7 +18,7 @@ public interface ISheet extends HasId, HasType, Comparable<ISheet>, Iterable<IRo
 	public List<? extends IRow> rows();
 	
 	@Override
-	default CellsheetType getType() {
-		return CellsheetType.SHEET;
+	default Type getType() {
+		return Type.SHEET;
 	}
 }

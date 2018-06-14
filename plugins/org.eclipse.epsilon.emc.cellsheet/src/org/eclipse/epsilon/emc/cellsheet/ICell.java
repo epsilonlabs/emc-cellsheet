@@ -19,7 +19,7 @@ public interface ICell extends HasId, HasType, Comparable<ICell> {
 	public IBook getBook();
 	
 	@Override
-	default CellsheetType getType() {
-		return CellsheetType.CELL;
+	default Type getType() {
+		return Type.CELL;
 	}
 }

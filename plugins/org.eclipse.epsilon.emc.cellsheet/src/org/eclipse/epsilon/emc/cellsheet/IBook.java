@@ -48,11 +48,5 @@ public interface IBook extends HasType, IModel, Iterable<ISheet> {
 	public List<? extends ISheet> sheets();
 	
 	public Iterator<? extends ISheet> sheetIterator();
-	
-	@Override
-	default CellsheetType getType() {
-		return CellsheetType.BOOK;
-	}
-
 
 }

@@ -18,7 +18,7 @@ public interface IRow extends HasId, HasType, Comparable<IRow>, Iterable<ICell> 
 	public IBook getBook();
 	
 	@Override
-	default CellsheetType getType() {
-		return CellsheetType.ROW;
+	default Type getType() {
+		return Type.ROW;
 	}
 }

@@ -6,7 +6,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-import org.eclipse.epsilon.emc.cellsheet.CellsheetType;
+import org.eclipse.epsilon.emc.cellsheet.Type;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,22 +67,22 @@ public class ExcelBookTest {
 	
 	@Test
 	public void testGetTypeOfBook() throws Exception {
-		assertEquals(CellsheetType.BOOK, book.getTypeOf(book));
+		assertEquals(Type.BOOK, book.getTypeOf(book));
 	}
 	
 	@Test
 	public void testGetTypeOfSheet() throws Exception {
-		assertEquals(CellsheetType.SHEET, book.getTypeOf(book.getSheet(0)));
+		assertEquals(Type.SHEET, book.getTypeOf(book.getSheet(0)));
 	}
 	
 	@Test
 	public void testGetTypeOfRow() throws Exception {
-		assertEquals(CellsheetType.ROW, book.getTypeOf(book.getRow(0, 0)));
+		assertEquals(Type.ROW, book.getTypeOf(book.getRow(0, 0)));
 	}
 	
 	@Test
 	public void testGetTypeOfCell() throws Exception {
-		assertEquals(CellsheetType.CELL, book.getTypeOf(book.getCell(0, 0, 0)));
+		assertEquals(Type.CELL, book.getTypeOf(book.getCell(0, 0, 0)));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -97,12 +97,12 @@ public class ExcelBookTest {
 	
 	@Test
 	public void testIsOfType() throws Exception {
-		assertTrue(book.isOfType(book, CellsheetType.BOOK.getTypeName()));
+		assertTrue(book.isOfType(book, Type.BOOK.getTypeName()));
 	}
 	
 	@Test
 	public void testIsOfTypeObjectDifferent() throws Exception {
-		assertFalse(book.isOfType(this, CellsheetType.BOOK.getTypeName()));
+		assertFalse(book.isOfType(this, Type.BOOK.getTypeName()));
 	}
 	
 	@Test(expected = EolModelElementTypeNotFoundException.class)
@@ -112,31 +112,31 @@ public class ExcelBookTest {
 	
 	@Test
 	public void isOfKind() throws Exception {
-		assertTrue(book.isOfType(book, CellsheetType.BOOK.getTypeName()));
+		assertTrue(book.isOfType(book, Type.BOOK.getTypeName()));
 	}
 	
 	@Test
 	public void testGetAllOfTypeBook() throws Exception {
-		Collection<?> all = book.getAllOfType(CellsheetType.BOOK.getTypeName());
+		Collection<?> all = book.getAllOfType(Type.BOOK.getTypeName());
 		assertEquals(1, all.size());
 		assertEquals(book, all.iterator().next());
 	}
 	
 	@Test
 	public void testGetAllOfTypeSheet() throws Exception {
-		Collection<?> all = book.getAllOfType(CellsheetType.SHEET.getTypeName());
+		Collection<?> all = book.getAllOfType(Type.SHEET.getTypeName());
 		assertEquals(2, all.size());
 	}
 	
 	@Test
 	public void testGetAllOfTypeRow() throws Exception {
-		Collection<?> all = book.getAllOfType(CellsheetType.ROW.getTypeName());
+		Collection<?> all = book.getAllOfType(Type.ROW.getTypeName());
 		assertEquals(9, all.size());
 	}
 	
 	@Test
 	public void testGetAllOfTypeCell() throws Exception {
-		Collection<?> all = book.getAllOfType(CellsheetType.CELL.getTypeName());
+		Collection<?> all = book.getAllOfType(Type.CELL.getTypeName());
 		assertEquals(25, all.size());
 	}
 	
@@ -147,6 +147,6 @@ public class ExcelBookTest {
 	
 	@Test
 	public void testGetAllOfKind() throws Exception {
-		assertEquals(2, book.getAllOfKind(CellsheetType.SHEET.getTypeName()).size());
+		assertEquals(2, book.getAllOfKind(Type.SHEET.getTypeName()).size());
 	}
 }

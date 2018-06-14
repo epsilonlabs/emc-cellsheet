@@ -7,11 +7,12 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.eclipse.epsilon.emc.cellsheet.AbstractSheet;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 
-public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
+public class ExcelSheet extends AbstractSheet implements ISheet, HasDelegate<Sheet> {
 
 	protected ExcelBook book;
 	protected Sheet delegate;
@@ -19,15 +20,6 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 	ExcelSheet(ExcelBook book, Sheet sheet) {
 		this.book = book;
 		this.delegate = sheet;
-	}
-
-	@Override
-	public int compareTo(ISheet o) {
-		if (o == null)
-			return 1;
-		if (this == o)
-			return 0;
-		return Integer.compare(this.getIndex(), o.getIndex());
 	}
 
 	@Override

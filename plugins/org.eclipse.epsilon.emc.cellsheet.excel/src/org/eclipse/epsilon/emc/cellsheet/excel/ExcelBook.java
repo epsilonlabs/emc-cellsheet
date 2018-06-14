@@ -28,9 +28,9 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
-import org.eclipse.epsilon.emc.cellsheet.CellsheetType;
+import org.eclipse.epsilon.emc.cellsheet.AbstractBook;
+import org.eclipse.epsilon.emc.cellsheet.Type;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
-import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IDResolver;
@@ -43,9 +43,8 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundExce
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
-import org.eclipse.epsilon.eol.models.Model;
 
-public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
+public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbook> {
 
 	public static final String EXCEL_FILE = "EXCEL_FILE";
 
@@ -245,31 +244,8 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 		return isOfType(instance, metaClass);
 	}
 
-	@Override
-	public boolean isOfType(Object instance, String typename) throws EolModelElementTypeNotFoundException {
-		final CellsheetType type = CellsheetType.fromTypeName(typename);
-		if (type == null) throw new EolModelElementTypeNotFoundException(this.name, typename);
-		
-		final CellsheetType instanceType = typeOf(instance);
-		return type == instanceType;
-	}
-	
-	@Override
-	public String getTypeNameOf(Object instance) {
-		return this.getTypeOf(instance).toString();
-	}
 
-	@Override
-	public Object getTypeOf(Object object) {		
-		CellsheetType type = typeOf(object);
-		if (type == null) throw new IllegalArgumentException();
-		return type;
-	}
-	
-	private CellsheetType typeOf(Object object) {
-		return object instanceof HasType ? ((HasType) object).getType() : null;
-	}
-	
+
 	@Override
 	public Collection<?> getAllOfKind(String type) throws EolModelElementTypeNotFoundException {
 		// FIXME: Add in subtypes for Excel only implementations
@@ -280,19 +256,19 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	public Collection<?> getAllOfType(String typename) throws EolModelElementTypeNotFoundException {		
 		if (!this.hasType(typename)) throw new EolModelElementTypeNotFoundException(this.name, typename);
 		
-		final CellsheetType type = CellsheetType.fromTypeName(typename);		
+		final Type type = Type.fromTypeName(typename);		
 		
-		if (type == CellsheetType.BOOK) {
+		if (type == Type.BOOK) {
 			List<IBook> list = new ArrayList<IBook>(1);
 			list.add(this);
 			return list;
 		}
 		
-		if (type == CellsheetType.SHEET) {
+		if (type == Type.SHEET) {
 			return this.sheets();
 		}
 		
-		if (type == CellsheetType.ROW) {
+		if (type == Type.ROW) {
 			final List<ExcelRow> rows = new ArrayList<ExcelRow>();
 			for (ExcelSheet sheet : this.sheets()) {
 				rows.addAll(sheet.rows());
@@ -300,7 +276,7 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 			return rows;
 		}
 		
-		if (type == CellsheetType.CELL) {
+		if (type == Type.CELL) {
 			final List<ExcelCell> cells = new ArrayList<ExcelCell>();
 			for (ExcelSheet sheet : this.sheets()) {
 				for (ExcelRow row : sheet.rows()) {
@@ -313,13 +289,7 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 		throw new AssertionError();
 	}
 	
-	@Override
-	public boolean hasType(String type) {
-		for (CellsheetType ct : CellsheetType.values()) {
-			if (ct.getTypeName().equals(type)) return true;
-		}
-		return false;
-	}
+
 	
 	public Ptg[] parseFormula(ExcelFormulaValue cellValue) {
 		if (fpw == null) {

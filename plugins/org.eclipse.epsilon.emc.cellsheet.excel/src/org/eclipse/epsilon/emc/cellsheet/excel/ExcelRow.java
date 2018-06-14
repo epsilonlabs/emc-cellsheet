@@ -7,11 +7,12 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Row;
+import org.eclipse.epsilon.emc.cellsheet.AbstractRow;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 
-public class ExcelRow implements IRow, HasDelegate<Row> {
+public class ExcelRow extends AbstractRow implements IRow, HasDelegate<Row> {
 
 	protected ExcelBook book;
 	protected Row delegate;
@@ -33,15 +34,6 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 				.filter(c -> this.equals(c.getRow()))
 				.sorted()
 				.collect(Collectors.toList());
-	}
-
-	@Override
-	public int compareTo(IRow o) {
-		if (null == o) return 1;
-		if (this == o) return 0;
-		
-		int parent = this.getSheet().compareTo(o.getSheet());
-		return parent == 0 ? Integer.compare(this.getIndex(), o.getIndex()) : parent;
 	}
 
 	@Override

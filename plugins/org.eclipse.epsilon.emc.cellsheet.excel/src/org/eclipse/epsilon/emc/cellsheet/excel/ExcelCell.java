@@ -2,6 +2,7 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
+import org.eclipse.epsilon.emc.cellsheet.AbstractCell;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.cells.ICellValue;
@@ -10,7 +11,7 @@ import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelFormulaValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelNumericValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelStringValue;
 
-public class ExcelCell implements ICell, HasDelegate<Cell> {
+public class ExcelCell extends AbstractCell implements ICell, HasDelegate<Cell> {
 
 	protected ExcelBook book;
 	protected Cell delegate;
@@ -81,15 +82,6 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	@Override
 	public ExcelBook getBook() {
 		return this.book;
-	}
-
-	@Override
-	public int compareTo(ICell o) {
-		if (null == o) return 1;
-		if (this == o) return 0;
-		
-		int parent = this.getRow().compareTo(o.getRow());
-		return parent == 0 ? Integer.compare(this.getColIndex(), o.getColIndex()) : parent;
 	}
 	
 	@Override
