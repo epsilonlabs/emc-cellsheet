@@ -5,8 +5,6 @@ import org.eclipse.epsilon.eol.models.Model;
 
 public abstract class AbstractBook extends Model implements HasType, IBook {
 	
-	public static final Type[] KINDS = {IBook.TYPE};
-	
 	@Override
 	public Object getTypeOf(Object obj) {		
 		Type type = typeOf(obj);
@@ -43,7 +41,7 @@ public abstract class AbstractBook extends Model implements HasType, IBook {
 
 	@Override
 	public Type[] getKinds() {
-		return AbstractBook.KINDS;
+		return IBook.KINDS;
 	}
 	
 	public Type typeOf(Object obj) {

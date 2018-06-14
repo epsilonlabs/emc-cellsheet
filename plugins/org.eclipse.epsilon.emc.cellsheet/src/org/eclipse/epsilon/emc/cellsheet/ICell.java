@@ -5,6 +5,7 @@ import org.eclipse.epsilon.emc.cellsheet.cells.ICellValue;
 public interface ICell extends HasId, HasType, Comparable<ICell> {
 
 	public static final Type TYPE = Type.CELL;
+	public static final Type[] KINDS = {TYPE};
 
 	public ISheet getSheet();
 

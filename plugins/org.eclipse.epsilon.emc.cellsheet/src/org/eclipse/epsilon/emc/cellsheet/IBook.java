@@ -20,6 +20,7 @@ import org.eclipse.epsilon.eol.models.IModel;
 public interface IBook extends HasType, IModel, Iterable<ISheet> {
 	
 	public static final Type TYPE = Type.BOOK;
+	public static final Type[] KINDS = {TYPE};
 	
 	public ICell getCell(int sheetIndex, int row, int col);
 

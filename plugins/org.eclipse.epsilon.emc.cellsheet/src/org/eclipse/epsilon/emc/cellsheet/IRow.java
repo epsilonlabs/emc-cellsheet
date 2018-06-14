@@ -6,6 +6,7 @@ import java.util.List;
 public interface IRow extends HasId, HasType, Comparable<IRow>, Iterable<ICell> {
 
 	public static final Type TYPE = Type.ROW;
+	public static final Type[] KINDS = {TYPE};
 
 	public List<? extends ICell> cells();
 	

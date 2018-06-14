@@ -2,8 +2,6 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 public abstract class AbstractRow implements HasType, IRow {
 
-	public static final Type[] KINDS = {IRow.TYPE};
-	
 	@Override
 	public int compareTo(IRow o) {
 		if (null == o) return 1;
@@ -20,7 +18,7 @@ public abstract class AbstractRow implements HasType, IRow {
 	
 	@Override
 	public Type[] getKinds() {
-		return AbstractRow.KINDS;
+		return IRow.KINDS;
 	}
 	
 }
