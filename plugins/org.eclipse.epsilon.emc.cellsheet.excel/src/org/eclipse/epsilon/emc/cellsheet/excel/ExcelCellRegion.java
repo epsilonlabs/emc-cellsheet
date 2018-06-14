@@ -1,4 +1,4 @@
-package org.eclipse.epsilon.emc.cellsheet.excel.cell;
+package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,10 +6,8 @@ import java.util.List;
 
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
+import org.eclipse.epsilon.emc.cellsheet.ICellRegion;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
-import org.eclipse.epsilon.emc.cellsheet.cells.ICellRegion;
-import org.eclipse.epsilon.emc.cellsheet.excel.ExcelBook;
-import org.eclipse.epsilon.emc.cellsheet.excel.ExcelSheet;
 
 public class ExcelCellRegion implements ICellRegion {
 	

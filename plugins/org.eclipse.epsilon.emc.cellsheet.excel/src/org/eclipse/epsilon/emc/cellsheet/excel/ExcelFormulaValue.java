@@ -1,4 +1,4 @@
-package org.eclipse.epsilon.emc.cellsheet.excel.cell;
+package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,25 +10,22 @@ import org.apache.poi.ss.formula.ptg.OperandPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.Ref3DPxg;
 import org.apache.poi.ss.formula.ptg.RefPtg;
+import org.apache.poi.ss.usermodel.CellType;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.cells.ICellRegion;
-import org.eclipse.epsilon.emc.cellsheet.cells.IFormulaCellValue;
-import org.eclipse.epsilon.emc.cellsheet.excel.ExcelCell;
+import org.eclipse.epsilon.emc.cellsheet.ICellRegion;
+import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 
-public class ExcelFormulaValue extends AbstractExcelValue<String> implements IFormulaCellValue {
+public class ExcelFormulaValue extends AbstractExcelCellValue<String> implements IFormulaCellValue {
 
-	public ExcelFormulaValue(ExcelCell cell) {
+	ExcelFormulaValue(ExcelCell cell) {
 		super(cell);
+		if (cell.delegate.getCellTypeEnum() != CellType.FORMULA) 
+			throw new IllegalArgumentException("Delegate cell must have a Formula/String value");
 	}
-
+	
 	@Override
 	public String getValue() {
-		return this.cell.getDelegate().getCellFormula();
-	}
-
-	@Override
-	public String getResolvedValue() {
-		return this.cell.getDelegate().getStringCellValue();
+		return cell.getDelegate().getCellFormula();
 	}
 
 	@Override
@@ -109,11 +106,6 @@ public class ExcelFormulaValue extends AbstractExcelValue<String> implements IFo
 			cells.addAll(cellRegion.cells());
 		}
 		return cells;
-	}
-
-	@Override
-	public Type getType() {
-		return Type.FORMULA;
 	}
 
 }

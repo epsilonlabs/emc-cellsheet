@@ -1,11 +1,7 @@
-package org.eclipse.epsilon.emc.cellsheet.cells;
+package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.Iterator;
 import java.util.List;
-
-import org.eclipse.epsilon.emc.cellsheet.IBook;
-import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.ISheet;
 
 /**
  * Tag interface to refer to a region of cells
