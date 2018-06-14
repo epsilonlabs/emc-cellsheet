@@ -25,7 +25,7 @@ public class ExcelIDResolver implements IDResolver {
 	
 	@Override
 	public String getID(ICell cell) {
-		return buildId(cell.getSheet(), cell.getRowIdx(), cell.getColIdx(), false, false);
+		return buildId(cell.getSheet(), cell.getRowIndex(), cell.getColIndex(), false, false);
 	}
 
 	@Override
@@ -67,11 +67,13 @@ public class ExcelIDResolver implements IDResolver {
 		
 		// Handle rows
 		if (row == NO_INDEX) return sb.toString();
+		sb.append(DELIMITER);
 		if (rowLock) sb.append(INDEX_LOCK);
 		sb.append(row);
 		
 		// Handle columns
 		if (col == NO_INDEX) return sb.toString();
+		sb.append(DELIMITER);
 		if (colLock) sb.append(INDEX_LOCK);
 		sb.append(col);
 		

@@ -4,31 +4,31 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Row;
-import org.eclipse.epsilon.emc.cellsheet.HasRaw;
-import org.eclipse.epsilon.emc.cellsheet.IBook;
+import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
-import org.eclipse.epsilon.emc.cellsheet.ISheet;
 
-public class ExcelRow implements IRow, HasRaw<Row> {
+public class ExcelRow implements IRow, HasDelegate<Row> {
 
 	protected ExcelBook book;
-	protected Row raw;
+	protected Row delegate;
 
-	ExcelRow(ExcelBook book, Row raw) {
+	ExcelRow(ExcelBook book, Row delegate) {
 		this.book = book;
-		this.raw = raw;
+		this.delegate = delegate;
 	}
 
 	@Override
-	public Iterator<ICell> cellIterator() {
+	public Iterator<ExcelCell> cellIterator() {
 		return cells().iterator();
 	}
 
 	@Override
-	public List<ICell> cells() {
-		this.raw.cellIterator().forEachRemaining(c -> this.book.getCell(c));
+	public List<ExcelCell> cells() {
+		this.delegate.cellIterator().forEachRemaining(c -> this.book.getCell(c));
 		return book._cells.values().stream()
 				.filter(c -> this.equals(c.getRow()))
 				.sorted()
@@ -45,13 +45,13 @@ public class ExcelRow implements IRow, HasRaw<Row> {
 	}
 
 	@Override
-	public IBook getBook() {
+	public ExcelBook getBook() {
 		return this.book;
 	}
 
 	@Override
-	public ICell getCell(int colIdx) {
-		return this.book.getCell(this.raw.getCell(colIdx));
+	public ExcelCell getCell(int colIdx) {
+		return this.book.getCell(this.delegate.getCell(colIdx));
 	}
 
 	@Override
@@ -62,22 +62,33 @@ public class ExcelRow implements IRow, HasRaw<Row> {
 
 	@Override
 	public int getIndex() {
-		return this.raw.getRowNum();
+		return this.delegate.getRowNum();
 	}
 
 	@Override
-	public Row getRaw() {
-		return this.raw;
+	public Row getDelegate() {
+		return this.delegate;
 	}
 
 	@Override
-	public ISheet getSheet() {
-		return this.book._sheets.get(raw.getSheet());
+	public ExcelSheet getSheet() {
+		return this.book._sheets.get(delegate.getSheet());
 	}
 
 	@Override
-	public void setRaw(Row raw) {
-		this.raw = raw;
+	public void setDelegate(Row delegate) {
+		this.delegate = delegate;
+	}
+	
+	@Override
+	public Iterator<ICell> iterator() {
+		return new TransformIterator<ExcelCell, ICell>(this.cellIterator(), 
+				new Transformer<ExcelCell, ICell>() {
+					@Override
+					public ICell transform(ExcelCell input) {
+						return input;
+					}
+				});
 	}
 
 }

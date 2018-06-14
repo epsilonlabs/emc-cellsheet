@@ -1,19 +1,25 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-public interface ICell extends HasId, Comparable<ICell> {
+import org.eclipse.epsilon.emc.cellsheet.cells.ICellValue;
 
-	public static final String TYPENAME = "Cell";
-	
+public interface ICell extends HasId, HasType, Comparable<ICell> {
+
 	public ISheet getSheet();
 
-	public int getColIdx();
+	public int getColIndex();
+	
+	public String getCol();
 
 	public IRow getRow();
 
-	public int getRowIdx();
+	public int getRowIndex();
 
-	public Object getValue();
+	public ICellValue<?> getValue();
 	
 	public IBook getBook();
-
+	
+	@Override
+	default CellsheetType getType() {
+		return CellsheetType.CELL;
+	}
 }

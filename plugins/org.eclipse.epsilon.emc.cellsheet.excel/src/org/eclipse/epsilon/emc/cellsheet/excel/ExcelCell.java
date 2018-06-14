@@ -1,49 +1,58 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
+import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
-import org.eclipse.epsilon.emc.cellsheet.HasRaw;
-import org.eclipse.epsilon.emc.cellsheet.IBook;
+import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.IRow;
-import org.eclipse.epsilon.emc.cellsheet.ISheet;
+import org.eclipse.epsilon.emc.cellsheet.cells.ICellValue;
+import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelBooleanValue;
+import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelFormulaValue;
+import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelNumericValue;
+import org.eclipse.epsilon.emc.cellsheet.excel.cell.ExcelStringValue;
 
-public class ExcelCell implements ICell, HasRaw<Cell> {
+public class ExcelCell implements ICell, HasDelegate<Cell> {
 
 	protected ExcelBook book;
-	protected Cell raw;
+	protected Cell delegate;
 
-	ExcelCell(ExcelBook book, Cell raw) {
+	ExcelCell(ExcelBook book, Cell delegate) {
 		this.book = book;
-		this.raw = raw;
+		this.delegate = delegate;
 	}
 
 	@Override
-	public int getColIdx() {
-		return this.raw.getColumnIndex();
+	public int getColIndex() {
+		return this.delegate.getColumnIndex();
+	}
+	
+	@Override
+	public String getCol() {
+		return CellReference.convertNumToColString(this.getColIndex());
 	}
 
 	@Override
-	public IRow getRow() {
-		return this.book._rows.get(this.raw.getRow());
+	public ExcelRow getRow() {
+		return this.book._rows.get(this.delegate.getRow());
 	}
 
 	@Override
-	public int getRowIdx() {
-		return this.raw.getRowIndex();
+	public int getRowIndex() {
+		return this.delegate.getRowIndex();
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Object getValue() {
-		switch (this.raw.getCellTypeEnum()) {
+	public ICellValue getValue() {
+		switch (this.delegate.getCellTypeEnum()) {
 		case BOOLEAN:
-			return this.raw.getBooleanCellValue();
+			return new ExcelBooleanValue(this);
 		case NUMERIC:
-			return this.raw.getNumericCellValue();
+			return new ExcelNumericValue(this);
 		case STRING:
 		case BLANK:
-			return this.raw.getStringCellValue();
+			return new ExcelStringValue(this);
 		case FORMULA:
-			return this.raw.getCellFormula();
+			return new ExcelFormulaValue(this);
 		default:
 			throw new UnsupportedOperationException();
 		}
@@ -55,22 +64,22 @@ public class ExcelCell implements ICell, HasRaw<Cell> {
 	}
 
 	@Override
-	public Cell getRaw() {
-		return this.raw;
+	public Cell getDelegate() {
+		return this.delegate;
 	}
 
 	@Override
-	public void setRaw(Cell raw) {
-		this.raw = raw;
+	public void setDelegate(Cell delegate) {
+		this.delegate = delegate;
 	}
 
 	@Override
-	public ISheet getSheet() {
-		return this.book._sheets.get(this.raw.getSheet());
+	public ExcelSheet getSheet() {
+		return this.book._sheets.get(this.delegate.getSheet());
 	}
 
 	@Override
-	public IBook getBook() {
+	public ExcelBook getBook() {
 		return this.book;
 	}
 
@@ -80,56 +89,60 @@ public class ExcelCell implements ICell, HasRaw<Cell> {
 		if (this == o) return 0;
 		
 		int parent = this.getRow().compareTo(o.getRow());
-		return parent == 0 ? Integer.compare(this.getColIdx(), o.getColIdx()) : parent;
+		return parent == 0 ? Integer.compare(this.getColIndex(), o.getColIndex()) : parent;
 	}
-
-//	private void moveSelf(int rowIdx, int colIdx) {
-//		final Row row = getRowIdx() == rowIdx ? raw.getRow() 
-//				: raw.getSheet().getRow(rowIdx);
-//		
-//		final Cell newCell = row.getCell(colIdx) == null ? row.createCell(colIdx) 
-//				: row.getCell(colIdx);
-//		
-//		// Copy cell style
-//		final CellStyle newCellStyle = raw.getSheet().getWorkbook().createCellStyle();
-//		newCellStyle.cloneStyleFrom(raw.getCellStyle());
-//		newCell.setCellStyle(newCellStyle);
-//		
-//		// Copy comment if it exists
-//		if (raw.getCellComment() != null)
-//			newCell.setCellComment(raw.getCellComment());
-//		
-//		if (raw.getHyperlink() != null)
-//			newCell.setHyperlink(raw.getHyperlink());
-//		
-//		// Set cell values
-//		newCell.setCellType(raw.getCellTypeEnum());
-//		switch (raw.getCellTypeEnum()) {
-//		case BOOLEAN:
-//			newCell.setCellValue(raw.getBooleanCellValue());
-//			break;
-//		case NUMERIC:
-//			newCell.setCellValue(raw.getNumericCellValue());
-//			break;
-//		case STRING:
-//			newCell.setCellValue(raw.getStringCellValue());
-//			break;
-//		case FORMULA:
-//			newCell.setCellValue(raw.getCellFormula());
-//			break
-//			;
-//		case ERROR:
-//			newCell.setCellErrorValue(raw.getErrorCellValue());
-//			break;
-//		default:
-//			newCell.setCellValue(raw.getStringCellValue());
-//			break;
-//		}
-//		
-//		row.removeCell(raw);
-//		this.setRaw(newCell);
-//		this.row = this.getRow();
-//		this.column = this.getColumn();
-//	}
 	
+	@Override
+	public String toString() {
+		return String.format("[%s] [%s]", this.getId(), this.getValue().toString());
+	}
+	
+//	private void moveSelf(int rowIdx, int colIdx) {
+//	final Row row = getRowIdx() == rowIdx ? raw.getRow() 
+//			: raw.getSheet().getRow(rowIdx);
+//	
+//	final Cell newCell = row.getCell(colIdx) == null ? row.createCell(colIdx) 
+//			: row.getCell(colIdx);
+//	
+//	// Copy cell style
+//	final CellStyle newCellStyle = raw.getSheet().getWorkbook().createCellStyle();
+//	newCellStyle.cloneStyleFrom(raw.getCellStyle());
+//	newCell.setCellStyle(newCellStyle);
+//	
+//	// Copy comment if it exists
+//	if (raw.getCellComment() != null)
+//		newCell.setCellComment(raw.getCellComment());
+//	
+//	if (raw.getHyperlink() != null)
+//		newCell.setHyperlink(raw.getHyperlink());
+//	
+//	// Set cell values
+//	newCell.setCellType(raw.getCellTypeEnum());
+//	switch (raw.getCellTypeEnum()) {
+//	case BOOLEAN:
+//		newCell.setCellValue(raw.getBooleanCellValue());
+//		break;
+//	case NUMERIC:
+//		newCell.setCellValue(raw.getNumericCellValue());
+//		break;
+//	case STRING:
+//		newCell.setCellValue(raw.getStringCellValue());
+//		break;
+//	case FORMULA:
+//		newCell.setCellValue(raw.getCellFormula());
+//		break
+//		;
+//	case ERROR:
+//		newCell.setCellErrorValue(raw.getErrorCellValue());
+//		break;
+//	default:
+//		newCell.setCellValue(raw.getStringCellValue());
+//		break;
+//	}
+//	
+//	row.removeCell(raw);
+//	this.setRaw(newCell);
+//	this.row = this.getRow();
+//	this.column = this.getColumn();
+//}
 }
