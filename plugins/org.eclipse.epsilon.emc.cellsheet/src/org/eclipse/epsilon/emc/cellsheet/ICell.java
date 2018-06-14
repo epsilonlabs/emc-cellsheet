@@ -4,6 +4,8 @@ import org.eclipse.epsilon.emc.cellsheet.cells.ICellValue;
 
 public interface ICell extends HasId, HasType, Comparable<ICell> {
 
+	public static final Type TYPE = Type.CELL;
+
 	public ISheet getSheet();
 
 	public int getColIndex();
@@ -17,9 +19,5 @@ public interface ICell extends HasId, HasType, Comparable<ICell> {
 	public ICellValue<?> getValue();
 	
 	public IBook getBook();
-	
-	@Override
-	default Type getType() {
-		return Type.CELL;
-	}
+
 }

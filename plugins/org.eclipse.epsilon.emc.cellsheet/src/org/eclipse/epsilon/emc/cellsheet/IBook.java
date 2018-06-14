@@ -19,6 +19,8 @@ import org.eclipse.epsilon.eol.models.IModel;
  */
 public interface IBook extends HasType, IModel, Iterable<ISheet> {
 	
+	public static final Type TYPE = Type.BOOK;
+	
 	public ICell getCell(int sheetIndex, int row, int col);
 
 	public ICell getCell(ISheet sheet, int row, int col);

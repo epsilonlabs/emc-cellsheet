@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface IRow extends HasId, HasType, Comparable<IRow>, Iterable<ICell> {
 
+	public static final Type TYPE = Type.ROW;
+
 	public List<? extends ICell> cells();
 	
 	public Iterator<? extends ICell> cellIterator();
@@ -17,8 +19,4 @@ public interface IRow extends HasId, HasType, Comparable<IRow>, Iterable<ICell> 
 
 	public IBook getBook();
 	
-	@Override
-	default Type getType() {
-		return Type.ROW;
-	}
 }

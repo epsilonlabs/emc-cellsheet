@@ -2,8 +2,7 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 public abstract class AbstractSheet implements HasType, ISheet {
 	
-	public static final Type TYPE = Type.SHEET;
-	public static final Type[] KIND = {AbstractSheet.TYPE};
+	public static final Type[] KIND = {ISheet.TYPE};
 
 	@Override
 	public int compareTo(ISheet o) {
@@ -16,7 +15,7 @@ public abstract class AbstractSheet implements HasType, ISheet {
 
 	@Override
 	public Type getType() {
-		return AbstractSheet.TYPE;
+		return ISheet.TYPE;
 	}
 
 	@Override

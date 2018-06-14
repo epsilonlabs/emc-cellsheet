@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface ISheet extends HasId, HasType, Comparable<ISheet>, Iterable<IRow> {
 
+	public static final Type TYPE = Type.SHEET;
+
 	public IBook getBook();
 
 	public int getIndex();
@@ -17,8 +19,4 @@ public interface ISheet extends HasId, HasType, Comparable<ISheet>, Iterable<IRo
 
 	public List<? extends IRow> rows();
 	
-	@Override
-	default Type getType() {
-		return Type.SHEET;
-	}
 }
