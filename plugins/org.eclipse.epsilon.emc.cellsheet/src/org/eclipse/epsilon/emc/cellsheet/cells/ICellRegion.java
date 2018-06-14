@@ -12,7 +12,7 @@ import org.eclipse.epsilon.emc.cellsheet.ISheet;
  * @author Jonathan Co
  *
  */
-public interface CellRegion {
+public interface ICellRegion {
 	
 	public IBook getBook();
 	public ISheet getSheet();

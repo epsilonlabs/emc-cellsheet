@@ -11,7 +11,7 @@ import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.Ref3DPxg;
 import org.apache.poi.ss.formula.ptg.RefPtg;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.cells.CellRegion;
+import org.eclipse.epsilon.emc.cellsheet.cells.ICellRegion;
 import org.eclipse.epsilon.emc.cellsheet.cells.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.excel.ExcelCell;
 
@@ -32,14 +32,14 @@ public class ExcelFormulaValue extends AbstractExcelValue<String> implements IFo
 	}
 
 	@Override
-	public List<CellRegion> getReferencedRegions() {
+	public List<ICellRegion> getReferencedRegions() {
 		final Ptg[] tokens = cell.getBook().parseFormula(this);
-		final List<CellRegion> regions = new ArrayList<CellRegion>();
+		final List<ICellRegion> regions = new ArrayList<ICellRegion>();
 		
 		for (Ptg ptg : tokens) {
 			if (!(ptg instanceof OperandPtg)) continue;
 			
-			CellRegion region = null;
+			ICellRegion region = null;
 			
 			if (ptg instanceof RefPtg) {
 				RefPtg rp = (RefPtg) ptg;
@@ -102,10 +102,10 @@ public class ExcelFormulaValue extends AbstractExcelValue<String> implements IFo
 
 	@Override
 	public List<ICell> getReferencedCells() {
-		List<CellRegion> regions = getReferencedRegions();
+		List<ICellRegion> regions = getReferencedRegions();
 		List<ICell> cells = new ArrayList<ICell>();
 		for (int i = 0; i < regions.size(); i++) {
-			CellRegion cellRegion = regions.get(i);
+			ICellRegion cellRegion = regions.get(i);
 			cells.addAll(cellRegion.cells());
 		}
 		return cells;
