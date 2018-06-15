@@ -11,22 +11,13 @@ import java.util.Map;
 
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
-import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
-import org.apache.poi.ss.formula.FormulaType;
-import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.emc.cellsheet.AbstractBook;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
@@ -286,22 +277,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		}
 	
 		throw new AssertionError();
-	}
-	
-
-	
-	public Ptg[] parseFormula(ExcelFormulaValue cellValue) {
-		if (fpw == null) {
-			if (delegate instanceof HSSFWorkbook) fpw = HSSFEvaluationWorkbook.create((HSSFWorkbook) delegate);
-			if (delegate instanceof XSSFWorkbook) fpw = XSSFEvaluationWorkbook.create((XSSFWorkbook) delegate);
-			if (delegate instanceof SXSSFWorkbook) fpw = SXSSFEvaluationWorkbook.create((SXSSFWorkbook) delegate);
-			if (fpw == null) throw new AssertionError();
-		}
-		
-		return FormulaParser.parse(cellValue.getValue(), 
-				fpw, 
-				FormulaType.CELL, 
-				cellValue.getCell().getSheet().getIndex());
 	}
 
 	@Override

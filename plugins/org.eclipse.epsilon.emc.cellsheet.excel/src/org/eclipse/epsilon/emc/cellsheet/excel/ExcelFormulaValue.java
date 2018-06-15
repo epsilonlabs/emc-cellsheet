@@ -30,7 +30,7 @@ public class ExcelFormulaValue extends AbstractExcelCellValue<String> implements
 
 	@Override
 	public List<ICellRegion> getReferencedRegions() {
-		final Ptg[] tokens = cell.getBook().parseFormula(this);
+		final Ptg[] tokens = PoiFormulaHelper.parseFormula(getCell().getBook(), this);
 		final List<ICellRegion> regions = new ArrayList<ICellRegion>();
 		
 		for (Ptg ptg : tokens) {
