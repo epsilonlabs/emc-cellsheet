@@ -16,4 +16,8 @@ public class ExcelBooleanValue extends AbstractExcelCellValue<Boolean> implement
 		return cell.getDelegate().getBooleanCellValue();
 	}
 
+	@Override
+	public String toString() {
+		return getValue().toString();
+	}
 }

@@ -107,5 +107,10 @@ public class ExcelFormulaValue extends AbstractExcelCellValue<String> implements
 		}
 		return cells;
 	}
+	
+	@Override
+	public String toString() {
+		return this.getValue();
+	}
 
 }

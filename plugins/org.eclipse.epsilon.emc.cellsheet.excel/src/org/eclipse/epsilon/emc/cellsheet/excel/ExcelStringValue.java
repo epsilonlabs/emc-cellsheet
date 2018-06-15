@@ -15,5 +15,10 @@ public class ExcelStringValue extends AbstractExcelCellValue<String> implements 
 	public String getValue() {
 		return cell.getDelegate().getStringCellValue();
 	}
+	
+	@Override
+	public String toString() {
+		return getValue();
+	}
 
 }

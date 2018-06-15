@@ -16,4 +16,8 @@ public class ExcelNumericValue extends AbstractExcelCellValue<Double> implements
 		return cell.getDelegate().getNumericCellValue();
 	}
 	
+	@Override
+	public String toString() {
+		return getValue().toString();
+	}
 }
