@@ -17,7 +17,7 @@ public class ExcelBlankCellValue extends AbstractExcelCellValue<Void> implements
 	
 	@Override
 	public String toString() {
-		return getValue();
+		return null;
 	}
 
 }
