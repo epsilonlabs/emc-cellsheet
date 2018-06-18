@@ -287,14 +287,8 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		super.load(properties, resolver);
 
 		final String excelFilePath = properties.getProperty(ExcelBook.EXCEL_PROPERTY_FILE);
-		final String resolvedPath = resolver.resolve(excelFilePath);
-		
-		try {
-			this.setExcelFile(resolvedPath);
-		} catch (Exception e) {
-			throw new EolModelLoadingException(e, this);
-		}
-		
+		this.setExcelFile(excelFilePath);
+
 		final String modelName = properties.getProperty(ExcelBook.EXCEL_PROPERTY_NAME, "Excel");
 		this.setName(modelName);
 
