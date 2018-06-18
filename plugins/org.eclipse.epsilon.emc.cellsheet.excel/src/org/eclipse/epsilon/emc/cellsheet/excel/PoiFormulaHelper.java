@@ -24,6 +24,10 @@ public class PoiFormulaHelper {
 	}
 
 	public static Ptg[] parseFormula(ExcelBook book, ExcelFormulaValue cellValue) {
+		return parseFormula(book, cellValue.getFormulaStr(), cellValue.getCell().getSheet().getIndex());
+	}
+	
+	public static Ptg[] parseFormula(ExcelBook book, String formula, int sheetIndex) {
 		FormulaParsingWorkbook fpw = fpwMap.get(book);
 		
 		if (fpw == null) {
@@ -39,10 +43,10 @@ public class PoiFormulaHelper {
 			fpwMap.put(book, fpw);
 		}
 		
-		return FormulaParser.parse(cellValue.getValue(), 
+		return FormulaParser.parse(formula, 
 				fpw, 
 				FormulaType.CELL, 
-				cellValue.getCell().getSheet().getIndex());
+				sheetIndex);
 	}
 	
 }

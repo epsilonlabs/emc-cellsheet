@@ -1,4 +1,4 @@
-package org.eclipse.epsilon.emc.cellsheet.excel.cell;
+package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import static org.junit.Assert.*;
 
@@ -8,7 +8,6 @@ import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.excel.ExcelBook;
 import org.eclipse.epsilon.emc.cellsheet.excel.ExcelCell;
 import org.eclipse.epsilon.emc.cellsheet.excel.ExcelFormulaValue;
-import org.eclipse.epsilon.emc.cellsheet.excel.ExcelTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 

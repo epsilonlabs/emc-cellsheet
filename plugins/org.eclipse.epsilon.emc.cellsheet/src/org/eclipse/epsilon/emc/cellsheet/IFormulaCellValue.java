@@ -9,6 +9,9 @@ public interface IFormulaCellValue extends ICellValue<String> {
 
 	public abstract List<ICellRegion> getReferencedRegions();
 	public abstract List<ICell> getReferencedCells();
+	
+	public String getFormulaStr();
+	public abstract IFormulaTree getFormulaTree();
 
 	@Override
 	default Type getType() {

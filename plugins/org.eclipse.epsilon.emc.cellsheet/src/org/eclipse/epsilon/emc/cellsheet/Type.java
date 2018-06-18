@@ -16,7 +16,16 @@ public enum Type {
 	BLANK_CELL_VALUE("BlankCellValue"),
 	
 	// Related to Formula
-	FORMULA_TREE("FormulaTree");
+	FORMULA_TREE("FormulaTree"),
+	
+	FORMULA_TOKEN("FormulaToken"),
+	AREA_REF_TOKEN("AreaRefToken"),
+	CELL_REF_TOKEN("CellRefToken"),
+	FUNCTION_TOKEN("FunctionToken"),
+	OPERATION_TOKEN("OperationToken"),
+	OPERAND_TOKEN("OperandToken"),
+	NUMERIC_TOKEN("NumericToken"),
+	STRING_TOKEN("StringToken");
 	
 	private final String typename;
 	
