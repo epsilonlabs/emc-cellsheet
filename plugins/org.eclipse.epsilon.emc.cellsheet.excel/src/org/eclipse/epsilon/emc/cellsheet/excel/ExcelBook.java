@@ -36,7 +36,10 @@ import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 
 public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbook> {
 
-	public static final String EXCEL_FILE = "EXCEL_FILE";
+	public static final String EXCEL_PROPERTY_NAME = "EXCEL_NAME";
+	public static final String EXCEL_PROPERTY_NAME_DEFAULT = "Excel";
+	
+	public static final String EXCEL_PROPERTY_FILE = "EXCEL_FILE";
 
 	final Map<Sheet, ExcelSheet> _sheets = new HashMap<Sheet, ExcelSheet>();
 	final Map<Row, ExcelRow> _rows = new HashMap<Row, ExcelRow>();
@@ -283,14 +286,17 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
 		super.load(properties, resolver);
 
-		final String excelFilePath = properties.getProperty(ExcelBook.EXCEL_FILE);
+		final String excelFilePath = properties.getProperty(ExcelBook.EXCEL_PROPERTY_FILE);
 		final String resolvedPath = resolver.resolve(excelFilePath);
-
+		
 		try {
 			this.setExcelFile(resolvedPath);
 		} catch (Exception e) {
 			throw new EolModelLoadingException(e, this);
 		}
+		
+		final String modelName = properties.getProperty(ExcelBook.EXCEL_PROPERTY_NAME, "Excel");
+		this.setName(modelName);
 
 		this.load();
 	}
