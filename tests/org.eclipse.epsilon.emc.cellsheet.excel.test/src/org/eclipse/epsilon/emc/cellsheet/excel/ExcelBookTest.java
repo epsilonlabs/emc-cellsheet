@@ -1,11 +1,15 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.Collection;
 
+import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.emc.cellsheet.Type;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.junit.Before;
@@ -24,13 +28,28 @@ public class ExcelBookTest {
 	}
 	
 	@Test
-	public void testSetExcelFile() throws URISyntaxException {
+	public void testLoadProperties() throws Exception {
+		final String name = "Some model name";
+		final String filepath = "./resources/TestFile.xlsx";
+		
+		final StringProperties props = new StringProperties();
+		props.setProperty(ExcelBook.EXCEL_PROPERTY_NAME, name);
+		props.setProperty(ExcelBook.EXCEL_PROPERTY_FILE, filepath);
+		
+		final ExcelBook bookload = new ExcelBook();
+		bookload.load(props);
+		assertEquals(name, bookload.getName());
+		assertTrue(!bookload.getAllOfKind("Cell").isEmpty());
+	}
+	
+	@Test
+	public void testSetExcelFile() {
 		final String filepath = "./resources/TestFile.xlsx";		
 		final ExcelBook mBook = new ExcelBook();
 		assertNull(mBook.excelFile);
 		mBook.setExcelFile(filepath);
 		assertNotNull(mBook.excelFile);
-		assertEquals(mBook.excelFile, new File(filepath));
+		assertEquals(mBook.excelFile.getAbsolutePath(), new File(filepath).getAbsolutePath());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)

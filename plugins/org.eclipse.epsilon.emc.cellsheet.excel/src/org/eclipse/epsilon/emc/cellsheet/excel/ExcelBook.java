@@ -315,7 +315,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	}
 	
 	public void setExcelFile(final String filepath) {
-		final File file = new File(filepath);
+		final File file = (new File(filepath)).getAbsoluteFile();
 		if (!file.exists()) {
 			final IllegalArgumentException e = new IllegalArgumentException("Bad filepath given: " + filepath);
 			throw e;
