@@ -3,6 +3,7 @@ package org.eclipse.epsilon.emc.cellsheet;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.models.IModel;
 
 /**
@@ -18,6 +19,9 @@ import org.eclipse.epsilon.eol.models.IModel;
  *
  */
 public interface IBook extends HasType, IModel, Iterable<ISheet> {
+	
+	public static final Type TYPE = Type.BOOK;
+	public static final Type[] KINDS = {TYPE};
 	
 	public ICell getCell(int sheetIndex, int row, int col);
 
@@ -48,11 +52,47 @@ public interface IBook extends HasType, IModel, Iterable<ISheet> {
 	public List<? extends ISheet> sheets();
 	
 	public Iterator<? extends ISheet> sheetIterator();
+
+	@Override
+	default Object getTypeOf(Object obj) {		
+		Type type = typeOf(obj);
+		if (type == null) throw new IllegalArgumentException("Object not a model element");
+		return type;
+	}
 	
 	@Override
-	default CellsheetType getType() {
-		return CellsheetType.BOOK;
+	default String getTypeNameOf(Object obj) {
+		return typeOf(obj).getTypeName();
+	}
+	
+	@Override
+	default boolean isOfType(Object obj, String typename) throws EolModelElementTypeNotFoundException {
+		final Type type = Type.fromTypeName(typename);
+		if (type == null) throw new EolModelElementTypeNotFoundException(this.getName(), typename);
+		
+		final Type instanceType = typeOf(obj);
+		return type == instanceType;
 	}
 
+	@Override
+	default boolean hasType(String type) {
+		for (Type ct : Type.values()) {
+			if (ct.getTypeName().equals(type)) return true;
+		}
+		return false;
+	}
 
+	@Override
+	default Type getType() {
+		return IBook.TYPE;
+	}
+
+	@Override
+	default Type[] getKinds() {
+		return IBook.KINDS;
+	}
+	
+	default Type typeOf(Object obj) {
+		return obj instanceof HasType ? ((HasType) obj).getType() : null;
+	}
 }

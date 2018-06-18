@@ -1,7 +1,6 @@
 Manifest-Version: 1.0
 Bundle-SymbolicName: org.eclipse.epsilon.emc.cellsheet.excel
-Export-Package: org.eclipse.epsilon.emc.cellsheet.excel,
- org.eclipse.epsilon.emc.cellsheet.excel.cell
+Export-Package: org.eclipse.epsilon.emc.cellsheet.excel
 Bundle-Name: Microsoft Excel Cellsheet EMC Driver
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .

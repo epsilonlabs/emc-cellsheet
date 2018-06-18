@@ -36,15 +36,6 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 	}
 
 	@Override
-	public int compareTo(IRow o) {
-		if (null == o) return 1;
-		if (this == o) return 0;
-		
-		int parent = this.getSheet().compareTo(o.getSheet());
-		return parent == 0 ? Integer.compare(this.getIndex(), o.getIndex()) : parent;
-	}
-
-	@Override
 	public ExcelBook getBook() {
 		return this.book;
 	}
