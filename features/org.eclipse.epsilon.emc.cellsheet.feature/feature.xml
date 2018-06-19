@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.epsilon.emc.cellsheet.feature"
       label="Feature"
-      version="0.0.2.ALPHA"
+      version="1.0.0.qualifier"
       provider-name="Epsilon">
 
    <description>

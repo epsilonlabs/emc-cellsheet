@@ -41,21 +41,41 @@ jobs:
       # PROJECT SPECIFIC JARS
       # =====================
       
-      - store_artifacts:
-          path: ~/repo/org.eclipse.epsilon.{type}.{project}/target/org.eclipse.epsilon.{type}.{project}-1.1.3-SNAPSHOT.jar
-          destination: plugins/org.eclipse.epsilon.{type}.{project}-1.1.3-SNAPSHOT.jar
+    - store_artifacts:
+        path: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet.excel.dt/target/org.eclipse.epsilon.emc.cellsheet.excel.dt-1.0.0-SNAPSHOT.jar
+        destination: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet.excel.dt-1.0.0-SNAPSHOT.jar
 
-      - store_artifacts:
-          path: ~/repo/org.eclipse.epsilon.{type}.{project}.feature/target/org.eclipse.epsilon.{type}.{project}.feature-1.1.3-SNAPSHOT.jar
-          destination: features/org.eclipse.epsilon.{type}.{project}.feature-1.1.3-SNAPSHOT.jar
-      
-      # =========================
-      # END PROJECT SPECIFIC JARS
-      # =========================
+    - store_artifacts:
+        path: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet.excel/target/org.eclipse.epsilon.emc.cellsheet.excel-1.0.0-SNAPSHOT.jar
+        destination: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet.excel-1.0.0-SNAPSHOT.jar
 
-      - store_artifacts:
-          path: ~/repo/site.xml
-          destination: site.xml
+    - store_artifacts:
+        path: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet/target/org.eclipse.epsilon.emc.cellsheet-1.0.0-SNAPSHOT.jar
+        destination: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet-1.0.0-SNAPSHOT.jar
+
+    - store_artifacts:
+        path: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet.excel.dependencies/target/org.eclipse.epsilon.emc.cellsheet.excel.dependencies-1.0.0-SNAPSHOT.jar
+        destination: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet.excel.dependencies-1.0.0-SNAPSHOT.jar
+
+    - store_artifacts:
+        path: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet.dt/target/org.eclipse.epsilon.emc.cellsheet.dt-1.0.0-SNAPSHOT.jar
+        destination: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet.dt-1.0.0-SNAPSHOT.jar
+
+    - store_artifacts:
+        path: ~/repo/features/org.eclipse.epsilon.emc.cellsheet.feature/target/org.eclipse.epsilon.emc.cellsheet.feature-1.0.0-SNAPSHOT.jar
+        destination: ~/repo/features/org.eclipse.epsilon.emc.cellsheet.feature-1.0.0-S
+
+    - store_artifacts:
+        path: ~/repo/features/org.eclipse.epsilon.emc.cellsheet.excel.feature/target/org.eclipse.epsilon.emc.cellsheet.excel.feature-1.0.0-SNAPSHOT.jar
+        destination: ~/repo/features/target/org.eclipse.epsilon.emc.cellsheet.excel.feature-1.0.0-SNAPSHOT.jar
+
+    # =========================
+    # END PROJECT SPECIFIC JARS
+    # =========================
+
+    - store_artifacts:
+        path: ~/repo/site.xml
+        destination: site.xml
 
       # Trigger updatesite build    
       # - run: curl -X POST "https://circleci.com/api/v1.1/project/github/epsilonlabs/epsilonlabs-updatesite?circle-token=$TRIGGER_BUILD"
