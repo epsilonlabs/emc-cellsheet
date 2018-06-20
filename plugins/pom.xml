@@ -9,7 +9,7 @@
 
 	<parent>
 		<groupId>org.eclipse.epsilon.labs</groupId>
-		<artifactId>parent</artifactId>
+		<artifactId>org.eclipse.epsilon.labs.emc.cellsheet</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
