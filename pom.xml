@@ -7,9 +7,7 @@
   <name>Parent</name>
 
   <groupId>org.eclipse.epsilon.labs</groupId>
-  <!-- START OF PROJECT SPECIFIC CONFIG -->
-  <artifactId>parent</artifactId>
-  <!-- START OF PROJECT SPECIFIC CONFIG -->
+  <artifactId>org.eclipse.epsilon.labs.emc.cellsheet</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -24,8 +22,8 @@
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>eclipseLuna</id>
-      <url>http://download.eclipse.org/releases/luna/</url>
+      <id>eclipseNeon</id>
+      <url>http://download.eclipse.org/releases/neon/</url>
       <layout>p2</layout>
     </repository>
   </repositories>
@@ -69,6 +67,8 @@
         </executions>
       </plugin>
 
+
+
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
@@ -102,6 +102,12 @@
             </environment>
           </environments>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-surefire-plugin</artifactId>
+        <version>${tycho.version}</version>
       </plugin>
 
     </plugins>
