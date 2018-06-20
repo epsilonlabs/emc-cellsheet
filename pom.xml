@@ -13,6 +13,9 @@
 
   <properties>
     <tycho.version>1.0.0</tycho.version>
+    <tycho.testArgLine></tycho.testArgLine>
+    <jacoco.version>0.8.1</jacoco.version>
+
   </properties>
 
   <repositories>
@@ -45,6 +48,15 @@
         <extensions>true</extensions>
       </plugin>
 
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <useProjectSettings>true</useProjectSettings>
+        </configuration>
+      </plugin>
+
       <!-- Generate source bundles (exclude target so we don't enter
            an infinite loop for binary-only plugins, which have itself
            as the source). -->
@@ -66,8 +78,6 @@
           </execution>
         </executions>
       </plugin>
-
-
 
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
@@ -109,6 +119,25 @@
         <artifactId>tycho-surefire-plugin</artifactId>
         <version>${tycho.version}</version>
       </plugin>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.1</version>
+      </plugin> -->
 
     </plugins>
   </build>
