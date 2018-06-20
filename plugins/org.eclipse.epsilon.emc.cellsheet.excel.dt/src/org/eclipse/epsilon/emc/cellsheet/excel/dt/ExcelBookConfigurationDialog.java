@@ -47,14 +47,14 @@ public class ExcelBookConfigurationDialog extends AbstractModelConfigurationDial
 	protected void loadProperties() {
 		super.loadProperties();
 		if (properties != null) {
-			this.fileText.setText(this.properties.getProperty(ExcelBook.EXCEL_FILE));
+			this.fileText.setText(this.properties.getProperty(ExcelBook.EXCEL_PROPERTY_FILE));
 		}
 	}
 
 	@Override
 	protected void storeProperties() {
 		super.storeProperties();
-		super.properties.put(ExcelBook.EXCEL_FILE, this.fileText.getText());
+		super.properties.put(ExcelBook.EXCEL_PROPERTY_FILE, this.fileText.getText());
 	}
 
 	@Override
