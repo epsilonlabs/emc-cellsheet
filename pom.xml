@@ -70,6 +70,9 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-surefire-plugin</artifactId>
         <version>${tycho.version}</version>
+        <configuration>
+          <failIfNoTests>true</failIfNoTests>
+        </configuration>
       </plugin>
 
       <plugin>
