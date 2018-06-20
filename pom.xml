@@ -110,6 +110,26 @@
         </configuration>
       </plugin>
 
+      <plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco-version}</version>
+						<configuration>
+							<excludes>
+								<exclude>**/plugin1/Main.class</exclude>
+							</excludes>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+
     </plugins>
   </build>
 
