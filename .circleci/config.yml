@@ -6,15 +6,16 @@ version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
       - image: circleci/openjdk:8-jdk
 
     working_directory: ~/repo
 
     environment:
-      # Customize the JVM maximum heap limit
       MAVEN_OPTS: -Xmx3200m
-    
+
+      # ========================================================
+      # Checkout/Build
+      # ========================================================
     steps:
       - checkout
 
@@ -31,23 +32,69 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
-        
+
+      # ========================================================
+      # Test
+      # ========================================================
       # run tests!
       # - run: mvn integration-test
 
       # ========================================================
-      # START OF PROJECT SPECIFIC PART
+      # Store Artifacts
       # ========================================================
-
-      # Store the jars as artifacts to use in update site
+      # Plugins
+      - store_artifacts:
+          path: ~/repo/plugins/org.apache.commons.codec_1.10/target/org.apache.commons.codec_1.10-1.0.0-SNAPSHOT.jar
+          destination: plugins/org.apache.commons.codec_1.10-1.0.0-SNAPSHOT.jar
+      - store_artifacts:
+          path: ~/repo/plugins/org.apache.commons.collections_4.1.0/target/org.apache.commons.collections_4.1.0-1.0.0-SNAPSHOT.jar
+          destination: plugins/org.apache.commons.collections_4.1.0-1.0.0-SNAPSHOT.jar
+      - store_artifacts:
+          path: ~/repo/plugins/org.apache.commons.logging_1.2.0/target/org.apache.commons.logging_1.2.0-1.0.0-SNAPSHOT.jar
+          destination: plugins/org.apache.commons.logging_1.2.0-1.0.0-SNAPSHOT.jar
+      - store_artifacts:
+          path: ~/repo/plugins/org.apache.log4j_1.2.17/target/org.apache.log4j_1.2.17-1.0.0-SNAPSHOT.jar
+          destination: plugins/org.apache.log4j_1.2.17-1.0.0-SNAPSHOT.jar
+      - store_artifacts:
+          path: ~/repo/plugins/org.apache.poi/target/org.apache.poi-1.0.0-SNAPSHOT.jar
+          destination: plugins/org.apache.poi-1.0.0-SNAPSHOT.jar
+      - store_artifacts:
+          path: ~/repo/plugins/org.apache.xmlbeans_2.6.0/target/org.apache.xmlbeans_2.6.0-1.0.0-SNAPSHOT.jar
+          destination: plugins/org.apache.xmlbeans_2.6.0-1.0.0-SNAPSHOT.jar
       - store_artifacts:
           path: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet/target/org.eclipse.epsilon.emc.cellsheet-1.0.0-SNAPSHOT.jar
           destination: plugins/org.eclipse.epsilon.emc.cellsheet-1.0.0-SNAPSHOT.jar
+      - store_artifacts:
+          path: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet.dt/target/org.eclipse.epsilon.emc.cellsheet.dt-1.0.0-SNAPSHOT.jar
+          destination: plugins/org.eclipse.epsilon.emc.cellsheet.dt-1.0.0-SNAPSHOT.jar
+      - store_artifacts:
+          path: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet.excel/target/org.eclipse.epsilon.emc.cellsheet.excel-1.0.0-SNAPSHOT.jar
+          destination: plugins/org.eclipse.epsilon.emc.cellsheet.excel-1.0.0-SNAPSHOT.jar
+      - store_artifacts:
+          path: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet.excel.dependencies/target/org.eclipse.epsilon.emc.cellsheet.excel.dependencies-1.0.0-SNAPSHOT.jar
+          destination: plugins/org.eclipse.epsilon.emc.cellsheet.excel.dependencies-1.0.0-SNAPSHOT.jar
+      - store_artifacts:
+          path: ~/repo/plugins/org.eclipse.epsilon.emc.cellsheet.excel.dt/target/org.eclipse.epsilon.emc.cellsheet.excel.dt-1.0.0-SNAPSHOT.jar
+          destination: plugins/org.eclipse.epsilon.emc.cellsheet.excel.dt-1.0.0-SNAPSHOT.jar
 
+      # Features
+      - store_artifacts:
+          path: ~/repo/features/org.eclipse.epsilon.emc.cellsheet.excel.feature/target/org.eclipse.epsilon.emc.cellsheet.excel.feature-1.0.0-SNAPSHOT.jar
+          destination: features/org.eclipse.epsilon.emc.cellsheet.excel.feature-1.0.0-SNAPSHOT.jar
+      - store_artifacts:
+          path: ~/repo/features/org.eclipse.epsilon.emc.cellsheet.feature/target/org.eclipse.epsilon.emc.cellsheet.feature-1.0.0-SNAPSHOT.jar
+          destination: features/org.eclipse.epsilon.emc.cellsheet.feature-1.0.0-SNAPSHOT.jar
       
-      # ========================================================
-      # END OF PROJECT SPECIFIC PART
-      # ========================================================
+      # Update Site
+      - store_artifacts:
+          path: ~/repo/org.eclipse.epsilon.emc.cellsheet.updatesite/site.xml.
+          destination: site.xml
+      - store_artifacts:
+          path: ~/repo/org.eclipse.epsilon.emc.cellsheet.updatesite/index.html
+          destination: index.html
+      - store_artifacts:
+          path: ~/repo/org.eclipse.epsilon.emc.cellsheet.updatesite/web
+          destination: web
 
       # Trigger updatesite build
       #- run: curl -X POST "https://circleci.com/api/v1.1/project/github/epsilonlabs/epsilonlabs-updatesite?circle-token=$TRIGGER_BUILD"
