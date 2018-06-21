@@ -83,7 +83,7 @@ jobs:
       
       # Update Site
       - store_artifacts:
-          path: ~/repo/org.eclipse.epsilon.emc.cellsheet.updatesite/site.xml.
+          path: ~/repo/org.eclipse.epsilon.emc.cellsheet.updatesite/site.xml
           destination: site.xml
       - store_artifacts:
           path: ~/repo/org.eclipse.epsilon.emc.cellsheet.updatesite/index.html
