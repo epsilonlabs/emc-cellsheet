@@ -8,14 +8,13 @@
 
   <groupId>org.eclipse.epsilon.labs</groupId>
   <artifactId>org.eclipse.epsilon.labs.emc.cellsheet</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
     <tycho.version>1.0.0</tycho.version>
     <tycho.testArgLine></tycho.testArgLine>
     <jacoco.version>0.8.1</jacoco.version>
-    <coveralls.token></coveralls.token>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -32,13 +31,52 @@
     </repository>
   </repositories>
 
-  <!-- START OF PROJECT SPECIFIC CONFIG -->
   <modules>
     <module>plugins</module>
     <module>features</module>
     <module>tests</module>
+    <module>reports</module>
   </modules>
-  <!-- END OF PROJECT SPECIFIC CONFIG -->
+
+  <profiles>
+    <!-- Jacoco coverage report, aggregates report then pushes to coveralls.io -->
+    <profile>
+      <id>jacoco</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.eluder.coveralls</groupId>
+              <artifactId>coveralls-maven-plugin</artifactId>
+              <version>4.3.0</version>
+              <configuration>
+                <jacocoReports>
+                  <jacocoReport>${project.basedir}/reports/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
+                </jacocoReports>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
 
   <build>
     <plugins>
@@ -47,15 +85,6 @@
         <artifactId>tycho-maven-plugin</artifactId>
         <version>${tycho.version}</version>
         <extensions>true</extensions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-compiler-plugin</artifactId>
-        <version>${tycho.version}</version>
-        <configuration>
-          <useProjectSettings>true</useProjectSettings>
-        </configuration>
       </plugin>
 
       <!-- Generate source bundles (exclude target so we don't enter
@@ -114,32 +143,6 @@
           </environments>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-surefire-plugin</artifactId>
-        <version>${tycho.version}</version>
-      </plugin>
-
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.1</version>
-      </plugin> -->
-
     </plugins>
   </build>
 
