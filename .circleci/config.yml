@@ -26,14 +26,12 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: mvn clean install
+      - run: mvn clean install -Pjacoco coveralls:report -DrepoToken=$COVERALLS_TOKEN
 
       - save_cache:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
-
-      - run: mvn coveralls:report -Pjacoco -DrepoToken=$COVERALLS_TOKEN
 
       # ========================================================
       # Store Artifacts
