@@ -1,5 +1,5 @@
 # EMC Driver - Cellsheet
-[![CircleCI](https://circleci.com/gh/epsilonlabs/emc-cellsheet/tree/master.svg?style=svg)](https://circleci.com/gh/epsilonlabs/emc-cellsheet/tree/master)
+[![CircleCI](https://circleci.com/gh/epsilonlabs/emc-cellsheet/tree/master.svg?style=shield)](https://circleci.com/gh/epsilonlabs/emc-cellsheet/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/epsilonlabs/emc-cellsheet/badge.svg?branch=hotfix%2Fcircleci)](https://coveralls.io/github/epsilonlabs/emc-cellsheet?branch=hotfix%2Fcircleci)
 
 Epsilon Model Connectivity (EMC) driver that supports low-level interaction with Spreadsheets files as models. This is an alternative to the [Spreadsheet Driver (_org.eclipse.epsilon.emc.spreadsheets_)](http://download.eclipse.org/epsilon/javadoc/org/eclipse/epsilon/emc/spreadsheets/package-summary.html) currently available in the main Epsilon distribution.
