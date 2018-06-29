@@ -1,5 +1,6 @@
 # Eclipse Workspace
 .metadata
+.settings
 
 # Binaries
 bin/
