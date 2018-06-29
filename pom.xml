@@ -29,6 +29,11 @@
       <url>http://download.eclipse.org/releases/neon/</url>
       <layout>p2</layout>
     </repository>
+    <repository>
+      <id>photonOrbit</id>
+      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20180606145124/repository/</url>
+      <layout>p2</layout>
+    </repository>
   </repositories>
 
   <modules>

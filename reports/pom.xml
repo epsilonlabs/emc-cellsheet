@@ -74,10 +74,17 @@
         <!-- Test Code -->
         <dependency>
             <groupId>org.eclipse.epsilon.labs</groupId>
+            <artifactId>org.eclipse.epsilon.emc.cellsheet.tests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.epsilon.labs</groupId>
             <artifactId>org.eclipse.epsilon.emc.cellsheet.excel.tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+
 
         <!-- Third Party -->
         <dependency>

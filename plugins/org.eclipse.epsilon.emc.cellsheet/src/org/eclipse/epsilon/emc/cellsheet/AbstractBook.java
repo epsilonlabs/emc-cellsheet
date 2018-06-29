@@ -26,8 +26,5 @@ public abstract class AbstractBook extends Model implements IBook {
 		return IBook.super.hasType(type);
 
 	}
-
-	public Type typeOf(Object obj) {
-		return IBook.super.typeOf(obj);
-	}
+	
 }
