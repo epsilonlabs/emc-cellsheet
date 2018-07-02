@@ -12,7 +12,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
+/**
+ * Unit tests for {@link ExcelBook}
+ * 
+ * @author Jonathan Co
+ *
+ */
 public class ExcelBookTest {
 	
 	ExcelBook book;
@@ -20,14 +25,14 @@ public class ExcelBookTest {
 
 	@Before
 	public void setup() throws Exception {
-		book = ExcelTestUtil.getBook("TestFile.xlsx");
+		book = ExcelTestUtil.getBook("ExcelBookTest.xlsx");
 		other = ExcelTestUtil.getBook("Formula.xlsx");
 	}
 	
 	@Test
 	public void testLoadProperties() throws Exception {
 		final String name = "Some model name";
-		final String filepath = "./resources/TestFile.xlsx";
+		final String filepath = "./resources/ExcelBookTest.xlsx";
 		
 		final StringProperties props = new StringProperties();
 		props.setProperty(ExcelBook.EXCEL_PROPERTY_NAME, name);
