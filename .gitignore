@@ -6,3 +6,7 @@
 bin/
 target
 *.zip
+
+.project
+!plugins/*/**/.project
+!tests/*/**/.project
