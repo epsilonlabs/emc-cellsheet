@@ -69,6 +69,12 @@ public class IRowTest {
 	}
 	
 	@Test
+	public void compareTo_should_return_positive_when_sheet_is_greater() throws Exception {
+		when(sheet.compareTo(sheet)).thenReturn(1);
+		assertEquals(1, rowA.compareTo(rowB));
+	}
+	
+	@Test
 	public void getType_should_return_TypeRow() throws Exception {
 		mockito.silent();
 		assertEquals(Type.ROW, rowA.getType());
