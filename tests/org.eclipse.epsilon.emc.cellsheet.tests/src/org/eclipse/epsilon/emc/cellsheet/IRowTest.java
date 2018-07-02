@@ -15,6 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+/**
+ * Tests for default method implementations in {@link IRow}
+ * 
+ * @author Jonahtan Co
+ *
+ */
 public class IRowTest {
 
 	@Rule
