@@ -22,10 +22,8 @@ public interface ISheet extends HasId, HasType, Comparable<ISheet>, Iterable<IRo
 	
 	@Override
 	default int compareTo(ISheet o) {
-		if (o == null)
-			return 1;
-		if (this == o)
-			return 0;
+		if (null == o) return 1;
+		if (this == o) return 0;
 		return Integer.compare(this.getIndex(), o.getIndex());
 	}
 

@@ -1,13 +1,11 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Answers;
@@ -61,6 +59,10 @@ public class ISheetTest {
 	@Test
 	public void getType_should_return_TypeSheet() throws Exception {
 		assertEquals(Type.SHEET, sheetA.getType());
+	}
+	
+	@Test
+	public void getKinds_should_contain_TypeSheet() throws Exception {
 		assertThat(Arrays.asList(sheetA.getKinds()), hasItem(Type.SHEET));
 	}
 
