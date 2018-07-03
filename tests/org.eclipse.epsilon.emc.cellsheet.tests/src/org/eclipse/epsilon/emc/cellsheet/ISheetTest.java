@@ -16,7 +16,7 @@ import org.mockito.junit.MockitoRule;
 /**
  * Tests for default method implementations in {@link ISheet}
  * 
- * @author Jonahtan Co
+ * @author Jonathan Co
  *
  */
 public class ISheetTest {

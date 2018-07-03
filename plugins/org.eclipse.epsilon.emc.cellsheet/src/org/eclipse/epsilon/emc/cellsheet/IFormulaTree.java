@@ -36,7 +36,7 @@ public interface IFormulaTree extends HasType {
 	/**
 	 * Model Element representing a token in a formula parse tree
 	 * 
-	 * @author jonathanco
+	 * @author Jonathan Co
 	 *
 	 */
 	public interface Token extends HasType {
