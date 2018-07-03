@@ -3,8 +3,10 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class Scratch {
 
 	public ExcelBook book;
