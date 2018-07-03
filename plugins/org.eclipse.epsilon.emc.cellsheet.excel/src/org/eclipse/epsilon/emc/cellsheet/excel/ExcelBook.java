@@ -122,7 +122,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 
 	@Override
 	public ExcelCell getCell(IRow row, int col) {
-		return this.getCell(((ExcelRow) row).getDelegate().getCell(col));
+		return this.getCell(((ExcelRow) row).getDelegate().getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK));
 	}
 
 	@Override

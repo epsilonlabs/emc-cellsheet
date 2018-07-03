@@ -73,6 +73,12 @@ public class ExcelCellTest {
 	}
 	
 	@Test
+	public void getValue_should_return_ExcelBlankCellValue() throws Exception {
+		cell = book.getCell("ExcelCellTest", 5769, 543);
+		assertTrue(cell.getValue() instanceof ExcelBlankCellValue);
+	}
+	
+	@Test
 	public void getSheet_should_return_ExcelSheet() throws Exception {
 		ExcelSheet sheet = cell.getSheet();
 		assertEquals("ExcelCellTest", sheet.getName());
