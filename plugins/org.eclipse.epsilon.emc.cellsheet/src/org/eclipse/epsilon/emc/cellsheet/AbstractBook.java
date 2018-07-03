@@ -32,7 +32,6 @@ public abstract class AbstractBook extends Model implements IBook {
 	@Override
 	public boolean hasType(String type) {
 		return IBook.super.hasType(type);
-
 	}
 	
 }
