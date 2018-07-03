@@ -1,10 +1,13 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
-import org.assertj.core.api.iterable.Extractor;
-import org.assertj.core.groups.Tuple;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,53 +31,53 @@ public class ExcelRowTest {
 
 	@Test
 	public void getBook_should_return_correct_instance() throws Exception {
-		assertThat(row.getBook()).isEqualTo(book);
+		assertEquals(book, row.getBook());
 	}
 
 	@Test
 	public void getIndex_should_return_correct_index() throws Exception {
-		assertThat(row.getIndex()).isEqualTo(3);
+		assertEquals(3, row.getIndex());
 	}
 
 	@Test
 	public void iterator_should_return_iterator_with_all_cells_in_row() throws Exception {
-		assertThat(row.iterator()).extracting(
-				new Extractor<ICell, Tuple>() {
-					@Override
-					public Tuple extract(ICell input) {
-						return tuple(input.getRowIndex(), input.getColIndex());
-						}
-				})
-		.contains(tuple(3, 0), tuple(3, 1), tuple(3, 2));
+		final List<Integer> expected = Arrays.asList(0,1,2);
+		final Iterator<ICell> it = row.iterator();
+		ICell cell;
+		while (it.hasNext()) {
+			cell = it.next();
+			assertEquals(row, cell.getRow());
+			assertEquals(3, cell.getRowIndex());
+			assertTrue(expected.contains(cell.getColIndex()));
+		}
 	}
 	
 	@Test
 	public void cellIterator_should_return_iterator_with_all_cells_in_row() throws Exception {
-		assertThat(row.cellIterator()).extracting(
-				new Extractor<ICell, Tuple>() {
-					@Override
-					public Tuple extract(ICell input) {
-						return tuple(input.getRowIndex(), input.getColIndex());
-						}
-				})
-		.contains(tuple(3, 0), tuple(3, 1), tuple(3, 2));
+		final List<Integer> expected = Arrays.asList(0,1,2);
+		final Iterator<ExcelCell> it = row.cellIterator();
+		ICell cell;
+		while (it.hasNext()) {
+			cell = it.next();
+			assertEquals(row, cell.getRow());
+			assertEquals(3, cell.getRowIndex());
+			assertTrue(expected.contains(cell.getColIndex()));
+		}
 	}
 	
 	@Test
 	public void cells_should_return_List_with_all_cells_in_row() throws Exception {
-		assertThat(row.cells()).extracting(
-				new Extractor<ICell, Tuple>() {
-					@Override
-					public Tuple extract(ICell input) {
-						return tuple(input.getRowIndex(), input.getColIndex());
-						}
-				})
-		.contains(tuple(3, 0), tuple(3, 1), tuple(3, 2));
+		final List<Integer> expected = Arrays.asList(0,1,2);
+		for (ExcelCell cell : row.cells()) {
+			assertEquals(row, cell.getRow());
+			assertEquals(3, cell.getRowIndex());
+			assertTrue(expected.contains(cell.getColIndex()));
+		}
 	}
 	
 	@Test
 	public void getCell_should_return_cell_when_given_index() throws Exception {
-		assertThat(row.getCell(2).getColIndex()).isEqualTo(2);
-		assertThat(row.getCell(2).getRowIndex()).isEqualTo(3);
+		assertEquals(3, row.getCell(2).getRowIndex());
+		assertEquals(2, row.getCell(2).getColIndex());
 	}
 }

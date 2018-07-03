@@ -14,6 +14,7 @@ import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -80,6 +81,8 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	
 	@Override
 	public boolean owns(Object instance) {
+		if (instance == null) return false;
+		
 		if (instance instanceof IBook)
 			return this.equals(instance);
 
@@ -100,7 +103,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		throw new UnsupportedOperationException();
 	}
 
-	public ExcelCell getCell(Cell delegate) {
+	public ExcelCell getCell(Cell delegate) {		
 		if (!delegate.getSheet().getWorkbook().equals(this.delegate)) 
 			throw new IllegalArgumentException();
 		
@@ -161,7 +164,12 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		if (index < 0) throw new IndexOutOfBoundsException();
 		if (!this.owns(sheet)) throw new IllegalArgumentException();
 		
-		return this.getRow(((ExcelSheet) sheet).getDelegate().getRow(index));
+		// Get a POI row to work with
+		Row poiRow = ((ExcelSheet) sheet).getDelegate().getRow(index);
+		if (poiRow == null) {
+			poiRow =  ((ExcelSheet) sheet).getDelegate().createRow(index);
+		}
+		return this.getRow(poiRow);
 	}
 	
 	@Override

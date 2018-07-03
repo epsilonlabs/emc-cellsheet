@@ -140,6 +140,14 @@ public class ExcelBookTest {
 	}
 	
 	@Test
+	public void getRow_should_return_empty_ExcelRow_when_given_row_index_is_empty() throws Exception {
+		final ExcelSheet sheet = book.getSheet("Data");
+		final ExcelRow row = book.getRow(sheet, 12345);
+		assertEquals(12345, row.getIndex());
+		assertTrue(row.cells().isEmpty());
+	}
+	
+	@Test
 	public void testGetAllOfKind() throws Exception {
 		assertEquals(2, book.getAllOfKind(Type.SHEET.getTypeName()).size());
 	}
