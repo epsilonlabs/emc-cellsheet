@@ -279,7 +279,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		}
 		
 		if (type == Type.ROW) {
-			final List<ExcelRow> rows = new ArrayList<ExcelRow>();
+			final List<IRow> rows = new ArrayList<>();
 			for (ExcelSheet sheet : this.sheets()) {
 				rows.addAll(sheet.rows());
 			}
@@ -287,9 +287,9 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		}
 		
 		if (type == Type.CELL) {
-			final List<ExcelCell> cells = new ArrayList<ExcelCell>();
+			final List<ICell> cells = new ArrayList<>();
 			for (ExcelSheet sheet : this.sheets()) {
-				for (ExcelRow row : sheet.rows()) {
+				for (IRow row : sheet.rows()) {
 					cells.addAll(row.cells());
 				}
 			}

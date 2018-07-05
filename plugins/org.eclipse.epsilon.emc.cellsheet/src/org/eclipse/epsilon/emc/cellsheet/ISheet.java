@@ -16,9 +16,9 @@ public interface ISheet extends HasId, HasType, Comparable<ISheet>, Iterable<IRo
 
 	public IRow getRow(int rowIdx);
 
-	public Iterator<? extends IRow> rowIterator();
+	public Iterator<IRow> rowIterator();
 
-	public List<? extends IRow> rows();
+	public List<IRow> rows();
 	
 	@Override
 	default int compareTo(ISheet o) {
