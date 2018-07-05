@@ -150,26 +150,35 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		return this.idResolver;
 	}
 	
-	public ExcelRow getRow(Row delegate) {
+	@Deprecated
+	ExcelRow getRow(Row delegate) {
 		ExcelRow excelRow = _rows.get(delegate);
 		if (excelRow == null) {
 			excelRow = new ExcelRow(this, delegate);
 			_rows.put(delegate, excelRow);
 		}
-		return excelRow;
+		return excelRow; 
 	}
 	
 	@Override
 	public ExcelRow getRow(ISheet sheet, int index) {
 		if (index < 0) throw new IndexOutOfBoundsException();
-		if (!this.owns(sheet)) throw new IllegalArgumentException();
+		if (!(sheet instanceof ExcelSheet)) throw new IllegalArgumentException("Non ExcelSheet instance given");
+		if (!this.owns(sheet)) throw new IllegalArgumentException("Sheet given not owned by this Book");
+		
+		final ExcelSheet excelSheet = (ExcelSheet) sheet;
 		
 		// Get a POI row to work with
-		Row poiRow = ((ExcelSheet) sheet).getDelegate().getRow(index);
-		if (poiRow == null) {
-			poiRow =  ((ExcelSheet) sheet).getDelegate().createRow(index);
+		Row poiRow = excelSheet.getDelegate().getRow(index);
+		if (poiRow == null) poiRow = excelSheet.getDelegate().createRow(index);
+
+		// Check if cached row already exists.
+		ExcelRow excelRow = _rows.get(poiRow);
+		if (excelRow == null) {
+			excelRow = new ExcelRow(this, poiRow);
+			_rows.put(poiRow, excelRow);
 		}
-		return this.getRow(poiRow);
+		return excelRow; 
 	}
 	
 	@Override
