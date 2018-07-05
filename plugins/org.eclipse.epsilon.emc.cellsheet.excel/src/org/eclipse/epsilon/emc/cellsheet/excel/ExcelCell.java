@@ -81,7 +81,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	
 	@Override
 	public String toString() {
-		return String.format("[%s] [%s]", this.getId(), this.getValue().toString());
+		return this.getId();
 	}
 	
 //	private void moveSelf(int rowIdx, int colIdx) {
