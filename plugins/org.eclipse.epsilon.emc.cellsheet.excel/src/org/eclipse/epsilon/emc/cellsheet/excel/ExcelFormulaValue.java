@@ -116,7 +116,7 @@ public class ExcelFormulaValue extends AbstractExcelCellValue<String> implements
 	
 	@Override
 	public IFormulaTree getFormulaTree() {
-		return PoiFormulaHelper.buildTree(this);
+		return PoiFormulaHelper.buildFormulaTree(this);
 	}
 	
 	@Override

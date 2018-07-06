@@ -23,11 +23,11 @@ public class PoiFormulaHelperTest {
 	}
 
 	@Test
-	public void getFormulaTree_should_return_tree_with_single_operand_and_sum_attr() throws Exception {
+	public void buildFormulaTree_should_return_tree_with_single_operand_and_sum_attr() throws Exception {
 		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 0, 0);
 		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
 		
-		IFormulaTree sumTree = PoiFormulaHelper.buildTree(cellValue);
+		IFormulaTree sumTree = PoiFormulaHelper.buildFormulaTree(cellValue);
 		assertEquals("SUM",sumTree.getToken().toString());
 		assertEquals(1, sumTree.getChildren().size());
 		
@@ -36,11 +36,11 @@ public class PoiFormulaHelperTest {
 	}
 	
 	@Test
-	public void getFormulaTree_should_return_tree_with_multiple_operands_and_sum_function() throws Exception {
+	public void buildFormulaTree_should_return_tree_with_multiple_operands_and_sum_function() throws Exception {
 		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 1, 0);
 		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
 		
-		IFormulaTree sumTree = PoiFormulaHelper.buildTree(cellValue);
+		IFormulaTree sumTree = PoiFormulaHelper.buildFormulaTree(cellValue);
 		assertEquals("SUM",sumTree.getToken().toString());
 		assertEquals(5, sumTree.getChildren().size());
 		

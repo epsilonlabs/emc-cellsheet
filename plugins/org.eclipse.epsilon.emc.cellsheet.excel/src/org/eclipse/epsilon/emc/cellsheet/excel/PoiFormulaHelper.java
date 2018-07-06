@@ -53,12 +53,12 @@ public class PoiFormulaHelper {
 				sheetIndex);
 	}
 	
-	public static ExcelFormulaTree buildTree(IFormulaCellValue value) {
-		if (value instanceof ExcelFormulaValue) return buildTree((ExcelFormulaValue) value);
+	public static ExcelFormulaTree buildFormulaTree(IFormulaCellValue value) {
+		if (value instanceof ExcelFormulaValue) return buildFormulaTree((ExcelFormulaValue) value);
 		throw new IllegalArgumentException("Cannot build tree for a non ExcelFormulaValue");
 	}
 	
-	public static ExcelFormulaTree buildTree(ExcelFormulaValue value) {		
+	public static ExcelFormulaTree buildFormulaTree(ExcelFormulaValue value) {		
 		final Ptg[] ptgs = PoiFormulaHelper.parseFormula(value.getCell().getBook(), value);
 		final Stack<ExcelFormulaTree> trees = new Stack<>();
 		final Stack<ExcelFormulaTree> operands = new Stack<>();
