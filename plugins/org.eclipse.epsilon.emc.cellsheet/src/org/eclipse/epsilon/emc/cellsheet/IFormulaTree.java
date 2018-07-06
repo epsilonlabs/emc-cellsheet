@@ -21,6 +21,11 @@ public interface IFormulaTree extends HasType {
 	 * @return any child trees this Formula Tree may have.
 	 */
 	public List<IFormulaTree> getChildren();
+	
+	/**
+	 * Evaluate the current node and return the result as a String
+	 * @return
+	 */
 	public String evaluate();
 	
 	@Override

@@ -1,9 +1,11 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.poi.ss.formula.ptg.Ptg;
+import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
@@ -90,7 +92,50 @@ public class ExcelFormulaTree implements IFormulaTree {
 		
 		@Override
 		public String toString() {
-			return this.delegate.toString();
+			try {
+				// Simple Operators
+				if (this.delegate instanceof ValueOperatorPtg) {
+					Method method = ValueOperatorPtg.class.getDeclaredMethod("getSid");
+					method.setAccessible(true);
+					switch ((Byte) method.invoke(this.delegate)) {
+					case 0x03: // Add
+						return "+";
+					case 0x08: // Concat
+						return "&";
+					case 0x06: // Divide
+						return "/";
+					case 0x0b: // Equal
+						return "=";
+					case 0x0c: // GreaterEqual
+						return ">=";
+					case 0x0D: // GreaterThan
+						return ">";
+					case 0x0a: // LessEqual
+						return "<=";
+					case 0x09: // LessThan
+						return "<";
+					case 0x05: // Multiply
+						return "*";
+					case 0x0e: // NotEqual
+						return "<>";
+					case 0x14: // Percent
+						return "%";
+					case 0x07: // Power
+						return "^";
+					case 0x04: // Subtract
+						return "-";
+					case 0x13: // UnaryMinus
+						return "-";
+					case 0x12: // UnaryPlus
+						return "+";
+					default:
+						break;
+					}
+				}
+			} catch (Exception e) {
+				throw new UnsupportedOperationException("Some ValueOperatorPtg is not supported", e);
+			}
+			return this.delegate.toFormulaString();
 		}
 	}
 

@@ -35,7 +35,7 @@ public class ExcelFormulaValue extends AbstractExcelCellValue<String> implements
 	
 	@Override
 	public String getValue() {
-		return cell.getDelegate().getCellFormula();
+		return this.getFormulaStr();
 	}
 
 	@Override
