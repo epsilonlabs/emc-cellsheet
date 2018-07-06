@@ -2,13 +2,11 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import org.apache.poi.ss.formula.ptg.Area3DPtg;
 import org.apache.poi.ss.formula.ptg.Area3DPxg;
 import org.apache.poi.ss.formula.ptg.AreaPtg;
 import org.apache.poi.ss.formula.ptg.OperandPtg;
-import org.apache.poi.ss.formula.ptg.OperationPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.Ref3DPxg;
 import org.apache.poi.ss.formula.ptg.RefPtg;
@@ -24,8 +22,6 @@ import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
  * @author Jonathan Co
  */
 public class ExcelFormulaValue extends AbstractExcelCellValue<String> implements IFormulaCellValue {
-
-	protected ExcelFormulaTree formulaTree = null;
 	
 	ExcelFormulaValue(ExcelCell cell) {
 		super(cell);
@@ -120,36 +116,7 @@ public class ExcelFormulaValue extends AbstractExcelCellValue<String> implements
 	
 	@Override
 	public IFormulaTree getFormulaTree() {
-		if (this.formulaTree != null) return this.formulaTree;
-		
-		final Ptg[] ptgs = PoiFormulaHelper.parseFormula(getCell().getBook(), this);
-		final Stack<ExcelFormulaTree> trees = new Stack<>();
-		final Stack<ExcelFormulaTree> operands = new Stack<>();
-		
-		for (Ptg ptg : ptgs) {
-			final ExcelFormulaTree current = new ExcelFormulaTree(this, ptg);;
-			
-			if (ptg instanceof OperationPtg) {				
-				OperationPtg operationPtg = (OperationPtg) ptg;
-				for (int i = 0; i < operationPtg.getNumberOfOperands(); i++) {
-					operands.push(trees.pop());
-				}
-				
-				for (int i = 0; i < operationPtg.getNumberOfOperands(); i++) {
-					current.getChildren().add(operands.pop());
-				}
-				
-				if (!operands.isEmpty()) {					
-					throw new IllegalStateException();
-				}
-			}
-			trees.push(current);
-		}
-		
-		if (trees.size() != 1) throw new AssertionError();
-		this.formulaTree = trees.pop();
-		
-		return this.formulaTree;
+		return PoiFormulaHelper.buildTree(this);
 	}
 	
 	@Override
