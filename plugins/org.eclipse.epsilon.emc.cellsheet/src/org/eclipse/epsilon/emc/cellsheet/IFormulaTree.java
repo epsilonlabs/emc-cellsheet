@@ -13,14 +13,31 @@ public interface IFormulaTree extends HasType {
 	public static final Type TYPE = Type.FORMULA_TREE;
 	public static final Type[] KINDS = {IFormulaTree.TYPE};
 
+	/**
+	 * @return the original {@link IFormulaCellValue} that is this tree was derived from.
+	 */
 	public IFormulaCellValue getCellValue();
 	
 	public Token getToken();
 	
 	/**
+	 * @return the parent of this {@link IFormulaTree} or {@code null} if no parent exists
+	 */
+	public IFormulaTree getParent();
+	
+	public void setParent(IFormulaTree parent);
+	
+	/**
 	 * @return any child trees this Formula Tree may have.
 	 */
 	public List<IFormulaTree> getChildren();
+	
+	/**
+	 * Add a sub-tree to this {@link IFormulaTree} and assign {@code this} as the parent. If the sub-tree already has
+	 * a parent this will be re-assigned.
+	 * @param child
+	 */
+	public void addChild(IFormulaTree child);
 	
 	/**
 	 * Evaluate the current node and return the result as a String

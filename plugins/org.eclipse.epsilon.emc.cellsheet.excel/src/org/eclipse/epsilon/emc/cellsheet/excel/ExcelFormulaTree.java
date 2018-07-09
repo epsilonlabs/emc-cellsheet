@@ -1,6 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,14 +20,20 @@ import org.eclipse.epsilon.emc.cellsheet.Type;
 public class ExcelFormulaTree implements IFormulaTree {
 	
 	protected ExcelFormulaValue cellValue;
+	protected ExcelFormulaTree parent;
 	protected Token token;
 	protected List<IFormulaTree> children;
 	
-	public ExcelFormulaTree(ExcelFormulaValue cellValue, Ptg ptg) {
+	public ExcelFormulaTree(ExcelFormulaValue cellValue, ExcelFormulaTree parent, Ptg ptg) {
 		super();
 		this.cellValue = cellValue;
 		this.token = new ExcelToken(ptg);
+		this.parent = parent;
 		this.children = new LinkedList<>();
+	}
+	
+	public ExcelFormulaTree(ExcelFormulaValue cellValue, Ptg ptg) {
+		this(cellValue, null, ptg);
 	}
 
 	@Override
@@ -38,10 +45,28 @@ public class ExcelFormulaTree implements IFormulaTree {
 	public Token getToken() {
 		return this.token;
 	}
+	
+	@Override
+	public IFormulaTree getParent() {
+		return this.parent;
+	}
+	
+	@Override
+	public void setParent(IFormulaTree parent) {
+		if (!(parent instanceof ExcelFormulaTree)) throw new IllegalArgumentException("Parent must be of type ExcelFormulaTree");
+		this.parent = (ExcelFormulaTree) parent;
+	}
 
 	@Override
 	public List<IFormulaTree> getChildren() {
-		return children;
+		return Collections.unmodifiableList(this.children);
+	}
+	
+	@Override
+	public void addChild(IFormulaTree child) {
+		if (!(child instanceof ExcelFormulaTree)) throw new IllegalArgumentException("Parent must be of type ExcelFormulaTree");
+		child.setParent(this);
+		this.children.add(child);
 	}
 
 	@Override
