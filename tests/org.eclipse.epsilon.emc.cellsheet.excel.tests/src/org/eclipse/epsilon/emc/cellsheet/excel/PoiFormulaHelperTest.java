@@ -1,7 +1,8 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class PoiFormulaHelperTest {
@@ -33,6 +35,7 @@ public class PoiFormulaHelperTest {
 		
 		IFormulaTree areaTree = sumTree.getChildren().get(0);
 		assertEquals("Data!A1:D5", areaTree.getToken().toString());
+		assertEquals(sumTree, areaTree.getParent());
 	}
 	
 	@Test
@@ -47,6 +50,7 @@ public class PoiFormulaHelperTest {
 		final Set<String> expected = new HashSet<>(Arrays.asList("Data!B1","Data!D5","Data!B5","Data!D2","Data!C2"));
 		for (IFormulaTree child : sumTree.getChildren()) {
 			assertThat(expected, hasItem(child.getToken().toString()));
+			assertEquals(sumTree, child.getParent());
 			expected.remove(child.getToken().toString());
 		}
 		assertEquals(0, expected.size());

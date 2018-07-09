@@ -10,6 +10,7 @@ import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
 import org.apache.poi.ss.formula.FormulaType;
 import org.apache.poi.ss.formula.ptg.AttrPtg;
+import org.apache.poi.ss.formula.ptg.ControlPtg;
 import org.apache.poi.ss.formula.ptg.OperationPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -64,16 +65,24 @@ public class PoiFormulaHelper {
 		final Stack<ExcelFormulaTree> operands = new Stack<>();
 		
 		for (Ptg ptg : ptgs) {
+			if (ptg instanceof ControlPtg && !(ptg instanceof AttrPtg)) continue;
+			
 			final ExcelFormulaTree current = new ExcelFormulaTree(value, ptg);
 			
-			if (ptg instanceof OperationPtg) {				
+			// Special Case for SUM only
+			if (ptg instanceof AttrPtg && ((AttrPtg) ptg).isSum()) {
+				current.addChild(trees.pop());
+				if (!operands.isEmpty()) throw new IllegalStateException("Not all operands have been consumed for " + ptg);
+			}
+			
+			if (ptg instanceof OperationPtg) {
 				OperationPtg operationPtg = (OperationPtg) ptg;
 				for (int i = 0; i < operationPtg.getNumberOfOperands(); i++) {
 					operands.push(trees.pop());
 				}
 				
 				for (int i = 0; i < operationPtg.getNumberOfOperands(); i++) {
-					current.getChildren().add(operands.pop());
+					current.addChild(operands.pop());
 				}
 				
 				if (!operands.isEmpty()) {					
@@ -81,11 +90,7 @@ public class PoiFormulaHelper {
 				}
 			}
 			
-			// Special Case for SUM only
-			if (ptg instanceof AttrPtg && ((AttrPtg) ptg).isSum()) {
-				current.getChildren().add(trees.pop());
-				if (!operands.isEmpty()) throw new IllegalStateException("Not all operands have been consumed for " + ptg);
-			}
+
 			
 			trees.push(current);
 		}
