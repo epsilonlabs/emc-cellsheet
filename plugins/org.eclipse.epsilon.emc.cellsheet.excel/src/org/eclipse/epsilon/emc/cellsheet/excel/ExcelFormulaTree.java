@@ -31,7 +31,7 @@ public class ExcelFormulaTree implements IFormulaTree {
 
 	@Override
 	public IFormulaCellValue getCellValue() {
-		return this.getCellValue();
+		return this.cellValue;
 	}
 
 	@Override
