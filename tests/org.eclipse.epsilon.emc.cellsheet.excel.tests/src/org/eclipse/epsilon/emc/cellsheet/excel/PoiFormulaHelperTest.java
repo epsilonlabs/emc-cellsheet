@@ -118,6 +118,25 @@ public class PoiFormulaHelperTest {
 		assertEquals(0.09, Double.parseDouble(value.getFormulaTree().evaluate()), 0);
 	}
 	
+	@Test
+	public void evaluate_should_return_partial_result_when_subtree_is_given() throws Exception {
+		final ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 8, 0);
+		final IFormulaCellValue value = (IFormulaCellValue) cell.getValue();
+		
+		assertEquals(35, Double.parseDouble(value.getValue()), 0);
+		assertEquals(35, Double.parseDouble(value.getFormulaTree().evaluate()), 0);
+		
+		final IFormulaTree root = value.getFormulaTree();
+		assertEquals(2, root.getChildren().size());
+		
+		final IFormulaTree left = root.getChildAt(0);
+		assertEquals("(SUM(Data!A1:D5))", left.toFormula());
+		assertEquals(20, Double.parseDouble(left.evaluate()), 0);
+		
+		final IFormulaTree right = root.getChildAt(1);
+		assertEquals("(SUM(Data!B1:D5))", right.toFormula());
+		assertEquals(15, Double.parseDouble(right.evaluate()), 0);
+	}
 	
 	public void print(IFormulaTree tree) {
 		System.out.println(PoiFormulaHelper.buildFormulaString(tree));
