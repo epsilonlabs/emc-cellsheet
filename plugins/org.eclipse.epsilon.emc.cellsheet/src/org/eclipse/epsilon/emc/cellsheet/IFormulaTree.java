@@ -33,6 +33,12 @@ public interface IFormulaTree extends HasType {
 	public List<IFormulaTree> getChildren();
 	
 	/**
+	 * @param index the position of the child sub-tree
+	 * @return The position of the child at the sub-tree or {@code null} if they do not exist
+	 */
+	public IFormulaTree getChildAt(int index);
+	
+	/**
 	 * Add a sub-tree to this {@link IFormulaTree} and assign {@code this} as the parent. If the sub-tree already has
 	 * a parent this will be re-assigned.
 	 * @param child

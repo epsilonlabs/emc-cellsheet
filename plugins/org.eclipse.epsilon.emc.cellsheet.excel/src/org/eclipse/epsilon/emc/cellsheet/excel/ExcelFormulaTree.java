@@ -63,6 +63,11 @@ public class ExcelFormulaTree implements IFormulaTree {
 	}
 	
 	@Override
+	public IFormulaTree getChildAt(int index) {
+		return this.children.get(index);
+	}
+	
+	@Override
 	public void addChild(IFormulaTree child) {
 		if (!(child instanceof ExcelFormulaTree)) throw new IllegalArgumentException("Parent must be of type ExcelFormulaTree");
 		child.setParent(this);
@@ -71,7 +76,15 @@ public class ExcelFormulaTree implements IFormulaTree {
 
 	@Override
 	public String evaluate() {
+		// Rebuild the formula string first
+		
+		
 		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public String toString() {
+		return this.token.toString();
 	}
 
 	/**
@@ -96,8 +109,7 @@ public class ExcelFormulaTree implements IFormulaTree {
 
 		@Override
 		public Type[] getKinds() {
-			// TODO Auto-generated method stub
-			return new Type[] {Type.FORMULA_TOKEN};
+			return new Type[] {this.getType(), Type.FORMULA_TOKEN};
 		}
 
 		@Override
