@@ -1,8 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,7 +11,6 @@ import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class PoiFormulaHelperTest {
@@ -56,4 +54,75 @@ public class PoiFormulaHelperTest {
 		assertEquals(0, expected.size());
 	}
 	
+	@Test
+	public void buildFromulaString_should_return_string_when_given_arithmetic_formula_with_no_brackets() {
+		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 2, 0);
+		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
+		assertEquals("(65+20)", PoiFormulaHelper.buildFormulaString(cellValue));
+		// TODO: Add evaluate test here
+	}
+	
+	@Test
+	public void buildFromulaString_should_return_string_when_given_arithmetic_formula_with_1_set_of_brackets() {
+		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 3, 0);
+		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
+		assertEquals("((6*5)+500)", PoiFormulaHelper.buildFormulaString(cellValue));
+		// TODO: Add evaluate test here
+	}
+	
+	@Test
+	public void buildFromulaString_should_return_string_when_given_arithmetic_formula_with_1_set_of_brackets_in_different_place() {
+		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 4, 0);
+		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
+		assertEquals("(6*(5+500))", PoiFormulaHelper.buildFormulaString(cellValue));
+		// TODO: Add evaluate test here
+	}
+
+	@Test
+	public void buildFromulaString_should_return_string_when_given_arithmetic_formula_with_2_set_of_brackets() {
+		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 5, 0);
+		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
+		assertEquals("((34*45)+(235/65))", PoiFormulaHelper.buildFormulaString(cellValue));
+		// TODO: Add evaluate test here
+	}
+	
+	@Test
+	public void buildFormulaString_should_return_string_when_given_sum_function_with_multiple_args() throws Exception {
+		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 1, 0);
+		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
+		assertEquals("(SUM(Data!B1,Data!D5,Data!B5,Data!D2,Data!C2))", PoiFormulaHelper.buildFormulaString(cellValue));
+		// TODO: Add evaluate test here
+	}
+	
+	@Test
+	public void buildFormulaString_should_return_string_when_given_sum_function_with_range() throws Exception {
+		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 0, 0);
+		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
+		assertEquals("(SUM(Data!A1:D5))", PoiFormulaHelper.buildFormulaString(cellValue));
+		// TODO: Add evaluate test here
+	}
+	
+	@Test
+	public void buildFormulaString_should_return_string_when_given_unary() throws Exception {
+		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 6, 0);
+		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
+		assertEquals("(-(8-4))", PoiFormulaHelper.buildFormulaString(cellValue));
+		// TODO: Add evaluate test here
+	}
+	
+	@Test
+	public void buildFormulaString_should_return_string_when_given_percent() throws Exception {
+		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 7, 0);
+		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
+		assertEquals("(9%)", PoiFormulaHelper.buildFormulaString(cellValue));
+		// TODO: Add evaluate test here
+	}
+	
+	
+	public void print(IFormulaTree tree) {
+		System.out.println(PoiFormulaHelper.buildFormulaString(tree));
+		for (IFormulaTree tree2 : tree.getChildren()) {
+			print(tree2);
+		}
+	}
 }

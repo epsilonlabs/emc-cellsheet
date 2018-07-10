@@ -9,16 +9,21 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
 import org.apache.poi.ss.formula.FormulaType;
+import org.apache.poi.ss.formula.ptg.AbstractFunctionPtg;
 import org.apache.poi.ss.formula.ptg.AttrPtg;
 import org.apache.poi.ss.formula.ptg.ControlPtg;
 import org.apache.poi.ss.formula.ptg.OperationPtg;
+import org.apache.poi.ss.formula.ptg.PercentPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
+import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
+import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
+import org.eclipse.epsilon.emc.cellsheet.excel.ExcelFormulaTree.ExcelToken;
 
 public class PoiFormulaHelper {
 
@@ -98,4 +103,84 @@ public class PoiFormulaHelper {
 		return trees.pop();
 	}
 	
+	public static String buildFormulaString(IFormulaTree tree) {
+		if (tree instanceof ExcelFormulaTree) return buildFormulaString((ExcelFormulaTree) tree);
+		throw new IllegalArgumentException("Cannot build Formula String for a non ExcelFormulaTree");
+	}
+	
+	public static String buildFormulaString(IFormulaCellValue value) {
+		if (value instanceof ExcelFormulaValue) return buildFormulaString(value.getFormulaTree());
+		throw new IllegalArgumentException("Cannot build Formula String for a non ExcelFormulaValue");
+	}
+	
+	/**
+	 * Helper function to rebuild a formula string from a
+	 * {@link ExcelFormulaTree}.
+	 * 
+	 * @param tree
+	 *            The tree to build the formula string from. This does not have
+	 *            to be the root node, it can build a partial formula from a
+	 *            subtree.
+	 * @return The formula string represented by the tree.
+	 */
+	public static String buildFormulaString(ExcelFormulaTree tree) {
+		final StringBuilder sb = new StringBuilder();
+		// Open a bracket to preserve precedence
+		sb.append("(");
+
+		final ExcelToken token = (ExcelToken) tree.getToken();
+
+		if (token.getDelegate() instanceof ValueOperatorPtg) {
+			final ValueOperatorPtg cast = (ValueOperatorPtg) token.getDelegate();
+
+			// Special case where operator occurs after operand
+			if (cast instanceof PercentPtg) {
+				sb.append(buildFormulaString(tree.getChildAt(0)));
+				sb.append(token.toString());
+			}
+
+			// Special case for only one operand and operator occurs before
+			else if (cast.getNumberOfOperands() < 2) {
+				sb.append(token.toString());
+				sb.append(buildFormulaString(tree.getChildAt(0)));
+			}
+
+			// For most arithmetic operations
+			else {
+				sb.append(buildFormulaString(tree.getChildAt(0)));
+				sb.append(token.toString());
+				sb.append(buildFormulaString(tree.getChildAt(1)));
+			}
+		}
+
+		// Special case for SUM with 1 operand
+		if (isSumPtg(token.getDelegate())) {
+			sb.append(token.toString());
+			sb.append("(");
+			sb.append(buildFormulaString(tree.getChildAt(0)));
+			sb.append(")");
+		}
+
+		// General Functions
+		if (token.getDelegate() instanceof AbstractFunctionPtg) {
+			final AbstractFunctionPtg cast = (AbstractFunctionPtg) token.getDelegate();
+
+			sb.append(token.toString());
+			sb.append("(");
+
+			for (int i = 0; i < cast.getNumberOfOperands(); i++) {
+				sb.append(buildFormulaString(tree.getChildAt(i)));
+				if (!(cast.getNumberOfOperands() == i + 1)) sb.append(",");
+			}
+			sb.append(")");
+		}
+
+		// Close bracket to complete the part
+		sb.append(")");
+		return sb.toString().equals("()") ? token.toString() : sb.toString();
+	}
+	
+	private static boolean isSumPtg(Ptg ptg) {
+		return ptg instanceof AttrPtg && ((AttrPtg) ptg).isSum();
+	}
 }
