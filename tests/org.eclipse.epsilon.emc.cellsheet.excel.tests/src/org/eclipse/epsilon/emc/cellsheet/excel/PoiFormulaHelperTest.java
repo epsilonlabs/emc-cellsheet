@@ -115,7 +115,6 @@ public class PoiFormulaHelperTest {
 		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 7, 0);
 		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
 		assertEquals("(9%)", PoiFormulaHelper.buildFormulaString(cellValue));
-		System.out.println(PoiFormulaHelper.evaluate((ExcelFormulaTree) cellValue.getFormulaTree()));
 		assertEquals("0.09", cellValue.getFormulaTree().evaluate());
 	}
 	
