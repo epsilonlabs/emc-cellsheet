@@ -31,7 +31,14 @@ public class ExcelFormulaValue extends AbstractExcelCellValue<String> implements
 	
 	@Override
 	public String getValue() {
-		return this.getFormulaStr();
+		switch (cell.getDelegate().getCachedFormulaResultTypeEnum()) {
+		case NUMERIC:
+			return Double.toString(cell.getDelegate().getNumericCellValue());
+		case STRING:
+			return cell.getDelegate().getStringCellValue();
+		default:
+			return "";
+		}
 	}
 
 	@Override

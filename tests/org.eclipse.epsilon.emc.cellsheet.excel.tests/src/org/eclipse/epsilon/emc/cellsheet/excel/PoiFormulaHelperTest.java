@@ -59,7 +59,7 @@ public class PoiFormulaHelperTest {
 		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 2, 0);
 		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
 		assertEquals("(65+20)", PoiFormulaHelper.buildFormulaString(cellValue));
-		// TODO: Add evaluate test here
+		assertEquals("85", ((IFormulaCellValue) cellValue).getFormulaTree().evaluate());
 	}
 	
 	@Test
@@ -67,7 +67,7 @@ public class PoiFormulaHelperTest {
 		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 3, 0);
 		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
 		assertEquals("((6*5)+500)", PoiFormulaHelper.buildFormulaString(cellValue));
-		// TODO: Add evaluate test here
+		assertEquals("530", ((IFormulaCellValue) cellValue).getFormulaTree().evaluate());
 	}
 	
 	@Test
@@ -75,15 +75,15 @@ public class PoiFormulaHelperTest {
 		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 4, 0);
 		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
 		assertEquals("(6*(5+500))", PoiFormulaHelper.buildFormulaString(cellValue));
-		// TODO: Add evaluate test here
+		assertEquals("3030", ((IFormulaCellValue) cellValue).getFormulaTree().evaluate());
 	}
 
 	@Test
 	public void buildFromulaString_should_return_string_when_given_arithmetic_formula_with_2_set_of_brackets() {
 		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 5, 0);
 		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
-		assertEquals("((34*45)+(235/65))", PoiFormulaHelper.buildFormulaString(cellValue));
-		// TODO: Add evaluate test here
+		assertEquals("((34*45)+(800/40))", PoiFormulaHelper.buildFormulaString(cellValue));
+		assertEquals("1550", ((IFormulaCellValue) cellValue).getFormulaTree().evaluate());
 	}
 	
 	@Test
@@ -91,7 +91,7 @@ public class PoiFormulaHelperTest {
 		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 1, 0);
 		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
 		assertEquals("(SUM(Data!B1,Data!D5,Data!B5,Data!D2,Data!C2))", PoiFormulaHelper.buildFormulaString(cellValue));
-		// TODO: Add evaluate test here
+		assertEquals("5", ((IFormulaCellValue) cellValue).getFormulaTree().evaluate());
 	}
 	
 	@Test
@@ -99,7 +99,7 @@ public class PoiFormulaHelperTest {
 		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 0, 0);
 		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
 		assertEquals("(SUM(Data!A1:D5))", PoiFormulaHelper.buildFormulaString(cellValue));
-		// TODO: Add evaluate test here
+		assertEquals("20", ((IFormulaCellValue) cellValue).getFormulaTree().evaluate());
 	}
 	
 	@Test
@@ -107,7 +107,7 @@ public class PoiFormulaHelperTest {
 		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 6, 0);
 		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
 		assertEquals("(-(8-4))", PoiFormulaHelper.buildFormulaString(cellValue));
-		// TODO: Add evaluate test here
+		assertEquals("-4", ((IFormulaCellValue) cellValue).getFormulaTree().evaluate());
 	}
 	
 	@Test
@@ -115,7 +115,8 @@ public class PoiFormulaHelperTest {
 		ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 7, 0);
 		IFormulaCellValue cellValue = (IFormulaCellValue) cell.getValue();
 		assertEquals("(9%)", PoiFormulaHelper.buildFormulaString(cellValue));
-		// TODO: Add evaluate test here
+		System.out.println(PoiFormulaHelper.evaluate((ExcelFormulaTree) cellValue.getFormulaTree()));
+		assertEquals("0.09", ((IFormulaCellValue) cellValue).getFormulaTree().evaluate());
 	}
 	
 	

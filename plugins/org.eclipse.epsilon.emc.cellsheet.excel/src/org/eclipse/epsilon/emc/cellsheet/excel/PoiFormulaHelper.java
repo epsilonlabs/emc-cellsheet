@@ -9,6 +9,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
 import org.apache.poi.ss.formula.FormulaType;
+import org.apache.poi.ss.formula.WorkbookEvaluator;
+import org.apache.poi.ss.formula.WorkbookEvaluatorProvider;
+import org.apache.poi.ss.formula.eval.OperandResolver;
+import org.apache.poi.ss.formula.eval.ValueEval;
 import org.apache.poi.ss.formula.ptg.AbstractFunctionPtg;
 import org.apache.poi.ss.formula.ptg.AttrPtg;
 import org.apache.poi.ss.formula.ptg.ControlPtg;
@@ -16,7 +20,9 @@ import org.apache.poi.ss.formula.ptg.OperationPtg;
 import org.apache.poi.ss.formula.ptg.PercentPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
@@ -178,6 +184,28 @@ public class PoiFormulaHelper {
 		// Close bracket to complete the part
 		sb.append(")");
 		return sb.toString().equals("()") ? token.toString() : sb.toString();
+	}
+	
+	public static String evaluate(IFormulaTree tree) {
+		if (tree instanceof ExcelFormulaTree) return evaluate((ExcelFormulaTree) tree);
+		throw new IllegalArgumentException("Cannot build Formula String for a non ExcelFormulaTree");
+	}
+	
+	public static String evaluate(IFormulaCellValue value) {
+		if (value instanceof ExcelFormulaValue) return evaluate(value.getFormulaTree());
+		throw new IllegalArgumentException("Cannot build Formula String for a non ExcelFormulaValue");
+	}
+	
+	public static String evaluate(ExcelFormulaTree tree) {
+		String formula = buildFormulaString(tree);
+		CellReference ref = new CellReference(((ExcelCell)tree.getCellValue().getCell()).getDelegate());
+
+		Workbook wb = ((ExcelBook)tree.getCellValue().getCell().getBook()).getDelegate();
+		FormulaEvaluator fe = wb.getCreationHelper().createFormulaEvaluator();
+		WorkbookEvaluator we = ((WorkbookEvaluatorProvider) fe)._getWorkbookEvaluator();
+		
+		ValueEval result = we.evaluate(formula, ref);
+		return OperandResolver.coerceValueToString(result);
 	}
 	
 	private static boolean isSumPtg(Ptg ptg) {

@@ -76,10 +76,7 @@ public class ExcelFormulaTree implements IFormulaTree {
 
 	@Override
 	public String evaluate() {
-		// Rebuild the formula string first
-		
-		
-		throw new UnsupportedOperationException();
+		return PoiFormulaHelper.evaluate(this);
 	}
 	
 	@Override
