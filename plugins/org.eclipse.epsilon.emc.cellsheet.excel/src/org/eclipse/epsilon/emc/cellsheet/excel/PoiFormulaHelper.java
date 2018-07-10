@@ -70,7 +70,7 @@ public class PoiFormulaHelper {
 			final ExcelFormulaTree current = new ExcelFormulaTree(value, ptg);
 			
 			// Special Case for SUM only
-			if (ptg instanceof AttrPtg && ((AttrPtg) ptg).isSum()) {
+			if (isSumPtg(ptg)) {
 				current.addChild(trees.pop());
 				if (!operands.isEmpty()) throw new IllegalStateException("Not all operands have been consumed for " + ptg);
 			}
@@ -89,8 +89,6 @@ public class PoiFormulaHelper {
 					throw new IllegalStateException();
 				}
 			}
-			
-
 			
 			trees.push(current);
 		}
