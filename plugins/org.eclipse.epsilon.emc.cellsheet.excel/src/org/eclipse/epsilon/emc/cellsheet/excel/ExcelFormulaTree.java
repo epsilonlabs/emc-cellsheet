@@ -80,8 +80,13 @@ public class ExcelFormulaTree implements IFormulaTree {
 	}
 	
 	@Override
+	public String toFormula() {
+		return PoiFormulaHelper.buildFormulaString(this);
+	}
+	
+	@Override
 	public String toString() {
-		return this.token.toString();
+		return this.token + " -> " + this.toFormula();
 	}
 
 	/**

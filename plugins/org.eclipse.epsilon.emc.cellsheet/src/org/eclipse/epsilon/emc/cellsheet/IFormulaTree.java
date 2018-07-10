@@ -51,6 +51,8 @@ public interface IFormulaTree extends HasType {
 	 */
 	public String evaluate();
 	
+	public String toFormula();
+	
 	@Override
 	default Type getType() {
 		return IFormulaTree.TYPE;

@@ -40,7 +40,7 @@ public class PoiFormulaHelper {
 	}
 
 	public static Ptg[] parseFormula(ExcelBook book, ExcelFormulaValue cellValue) {
-		return parseFormula(book, cellValue.getFormulaStr(), cellValue.getCell().getSheet().getIndex());
+		return parseFormula(book, cellValue.getFormula(), cellValue.getCell().getSheet().getIndex());
 	}
 	
 	public static Ptg[] parseFormula(ExcelBook book, String formula, int sheetIndex) {

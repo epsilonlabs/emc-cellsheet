@@ -10,7 +10,7 @@ public interface IFormulaCellValue extends ICellValue<String> {
 	public abstract List<ICellRegion> getReferencedRegions();
 	public abstract List<ICell> getReferencedCells();
 	
-	public String getFormulaStr();
+	public String getFormula();
 	public abstract IFormulaTree getFormulaTree();
 
 	@Override
