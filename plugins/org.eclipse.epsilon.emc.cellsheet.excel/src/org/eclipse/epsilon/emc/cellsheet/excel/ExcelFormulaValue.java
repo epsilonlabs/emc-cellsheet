@@ -128,7 +128,7 @@ public class ExcelFormulaValue extends AbstractExcelCellValue<String> implements
 	
 	@Override
 	public String toString() {
-		return this.getValue();
+		return this.getFormulaStr();
 	}
 
 	@Override
