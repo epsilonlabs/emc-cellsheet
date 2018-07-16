@@ -21,9 +21,9 @@ import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
  * 
  * @author Jonathan Co
  */
-public class ExcelFormulaValue extends AbstractExcelCellValue<String> implements IFormulaCellValue {
+public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implements IFormulaCellValue {
 	
-	ExcelFormulaValue(ExcelCell cell) {
+	ExcelFormulaCellValue(ExcelCell cell) {
 		super(cell);
 		if (cell.delegate.getCellTypeEnum() != CellType.FORMULA) 
 			throw new IllegalArgumentException("Delegate cell must have a Formula/String value");

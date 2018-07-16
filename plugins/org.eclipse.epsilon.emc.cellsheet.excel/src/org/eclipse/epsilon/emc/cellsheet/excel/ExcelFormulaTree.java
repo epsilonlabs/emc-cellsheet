@@ -19,12 +19,12 @@ import org.eclipse.epsilon.emc.cellsheet.Type;
  */
 public class ExcelFormulaTree implements IFormulaTree {
 	
-	protected ExcelFormulaValue cellValue;
+	protected ExcelFormulaCellValue cellValue;
 	protected ExcelFormulaTree parent;
 	protected Token token;
 	protected List<IFormulaTree> children;
 	
-	public ExcelFormulaTree(ExcelFormulaValue cellValue, ExcelFormulaTree parent, Ptg ptg) {
+	public ExcelFormulaTree(ExcelFormulaCellValue cellValue, ExcelFormulaTree parent, Ptg ptg) {
 		super();
 		this.cellValue = cellValue;
 		this.token = new ExcelToken(ptg);
@@ -32,7 +32,7 @@ public class ExcelFormulaTree implements IFormulaTree {
 		this.children = new LinkedList<>();
 	}
 	
-	public ExcelFormulaTree(ExcelFormulaValue cellValue, Ptg ptg) {
+	public ExcelFormulaTree(ExcelFormulaCellValue cellValue, Ptg ptg) {
 		this(cellValue, null, ptg);
 	}
 

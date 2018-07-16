@@ -19,7 +19,7 @@ public class Scratch {
 	public void run() throws Exception {
 		book = ExcelTestUtil.getBook("labels.xlsx");
 		ICell cell = book.getCell("Florida", 4, 2);
-		IFormulaCellValue value = (ExcelFormulaValue) cell.getValue();
+		IFormulaCellValue value = (ExcelFormulaCellValue) cell.getValue();
 		LOG.log(Level.INFO, value.getValue());
 		
 		IFormulaTree formulaTree = value.getFormulaTree();

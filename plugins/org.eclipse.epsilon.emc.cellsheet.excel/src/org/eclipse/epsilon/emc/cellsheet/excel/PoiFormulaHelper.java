@@ -52,7 +52,7 @@ public class PoiFormulaHelper {
 		throw new AssertionError();
 	}
 
-	public static Ptg[] parseFormula(ExcelBook book, ExcelFormulaValue cellValue) {
+	public static Ptg[] parseFormula(ExcelBook book, ExcelFormulaCellValue cellValue) {
 		return parseFormula(book, cellValue.getFormula(), cellValue.getCell().getSheet().getIndex());
 	}
 	
@@ -79,11 +79,11 @@ public class PoiFormulaHelper {
 	}
 	
 	public static ExcelFormulaTree buildFormulaTree(IFormulaCellValue value) {
-		if (value instanceof ExcelFormulaValue) return buildFormulaTree((ExcelFormulaValue) value);
+		if (value instanceof ExcelFormulaCellValue) return buildFormulaTree((ExcelFormulaCellValue) value);
 		throw new IllegalArgumentException("Cannot build tree for a non ExcelFormulaValue");
 	}
 	
-	public static ExcelFormulaTree buildFormulaTree(ExcelFormulaValue value) {		
+	public static ExcelFormulaTree buildFormulaTree(ExcelFormulaCellValue value) {		
 		final Ptg[] ptgs = PoiFormulaHelper.parseFormula(value.getCell().getBook(), value);
 		final Stack<ExcelFormulaTree> trees = new Stack<>();
 		final Stack<ExcelFormulaTree> operands = new Stack<>();
@@ -128,7 +128,7 @@ public class PoiFormulaHelper {
 	}
 	
 	public static String buildFormulaString(IFormulaCellValue value) {
-		if (value instanceof ExcelFormulaValue) return buildFormulaString(value.getFormulaTree());
+		if (value instanceof ExcelFormulaCellValue) return buildFormulaString(value.getFormulaTree());
 		throw new IllegalArgumentException("Cannot build Formula String for a non ExcelFormulaValue");
 	}
 	
@@ -205,7 +205,7 @@ public class PoiFormulaHelper {
 	}
 	
 	public static String evaluate(IFormulaCellValue value) {
-		if (value instanceof ExcelFormulaValue) return evaluate(value.getFormulaTree());
+		if (value instanceof ExcelFormulaCellValue) return evaluate(value.getFormulaTree());
 		throw new IllegalArgumentException("Cannot build Formula String for a non ExcelFormulaValue");
 	}
 	

@@ -69,7 +69,7 @@ public class ExcelCellTest {
 	public void getValue_should_return_ExcelFormulaValue() throws Exception {
 		cell = book.getCell("ExcelCellTest", 3, 0);
 		ICellValue<?> value = cell.getValue();
-		assertTrue(value instanceof ExcelFormulaValue);
+		assertTrue(value instanceof ExcelFormulaCellValue);
 	}
 	
 	@Test
