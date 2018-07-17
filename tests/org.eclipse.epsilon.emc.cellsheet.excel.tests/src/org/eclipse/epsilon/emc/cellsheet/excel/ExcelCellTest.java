@@ -48,21 +48,21 @@ public class ExcelCellTest {
 	public void getValue_should_return_ExcelBooleanValue() throws Exception {
 		cell = book.getCell("ExcelCellTest", 1, 0);
 		ICellValue<?> value = cell.getValue();
-		assertTrue(value instanceof ExcelBooleanValue);
+		assertTrue(value instanceof ExcelBooleanCellValue);
 	}
 
 	@Test
 	public void getValue_should_return_ExcelNumericValue() throws Exception {
 		cell = book.getCell("ExcelCellTest", 2, 0);
 		ICellValue<?> value = cell.getValue();
-		assertTrue(value instanceof ExcelNumericValue);
+		assertTrue(value instanceof ExcelNumericCellValue);
 	}
 
 	@Test
 	public void getValue_should_return_ExcelStringValue() throws Exception {
 		cell = book.getCell("ExcelCellTest", 0, 0);
 		ICellValue<?> value = cell.getValue();
-		assertTrue(value instanceof ExcelStringValue);
+		assertTrue(value instanceof ExcelStringCellValue);
 	}
 
 	@Test

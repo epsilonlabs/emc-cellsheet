@@ -42,7 +42,7 @@ public class ExcelFormulaTree implements IFormulaTree {
 	}
 
 	@Override
-	public Token getToken() {
+	public IFormulaToken getToken() {
 		return this.token;
 	}
 	

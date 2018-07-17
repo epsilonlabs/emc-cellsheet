@@ -34,7 +34,6 @@ import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
-import org.eclipse.epsilon.emc.cellsheet.excel.ExcelFormulaTree.ExcelToken;
 import org.eclipse.epsilon.emc.cellsheet.excel.functions.AIFunction;
 import org.eclipse.epsilon.emc.cellsheet.excel.functions.AIVlookup;
 
@@ -147,7 +146,7 @@ public class PoiFormulaHelper {
 		// Open a bracket to preserve precedence
 		sb.append("(");
 
-		final ExcelToken token = (ExcelToken) tree.getToken();
+		final ExcelFormulaToken token = (ExcelFormulaToken) tree.getToken();
 
 		if (token.getDelegate() instanceof ValueOperatorPtg) {
 			final ValueOperatorPtg cast = (ValueOperatorPtg) token.getDelegate();
