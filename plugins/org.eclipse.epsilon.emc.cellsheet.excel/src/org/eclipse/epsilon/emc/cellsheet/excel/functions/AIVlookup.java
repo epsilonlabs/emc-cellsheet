@@ -55,9 +55,7 @@ public class AIVlookup implements Function3Arg, Function4Arg, AIFunction {
 	@Override
 	public ValueEval evaluate(int srcRowIndex, int srcColumnIndex, ValueEval lookup_value, ValueEval table_array,
 			ValueEval col_index, ValueEval range_lookup) {
-		
-		System.out.println("AIVOOKUP called");
-		
+				
 		try {
 			// Evaluation order:
 			// lookup_value , table_array, range_lookup, find lookup value, col_index, fetch result
