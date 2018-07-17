@@ -152,7 +152,6 @@ public class ExcelFormulaTree implements IFormulaTree {
 		try {
 			getFunctionField().set(null, functions);
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new IllegalStateException(e);
 		}
 	}
