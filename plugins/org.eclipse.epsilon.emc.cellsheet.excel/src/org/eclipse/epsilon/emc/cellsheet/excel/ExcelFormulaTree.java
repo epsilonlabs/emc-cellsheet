@@ -13,10 +13,11 @@ import org.apache.poi.ss.formula.eval.FunctionEval;
 import org.apache.poi.ss.formula.eval.OperandResolver;
 import org.apache.poi.ss.formula.eval.ValueEval;
 import org.apache.poi.ss.formula.functions.Function;
+import org.apache.poi.ss.formula.ptg.AbstractFunctionPtg;
+import org.apache.poi.ss.formula.ptg.PercentPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
+import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
 import org.apache.poi.ss.util.CellReference;
-import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
-import org.eclipse.epsilon.emc.cellsheet.IFormulaToken;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
 import org.eclipse.epsilon.emc.cellsheet.excel.functions.AIFunction;
 import org.eclipse.epsilon.emc.cellsheet.excel.functions.AIVlookup;
@@ -32,8 +33,8 @@ public class ExcelFormulaTree implements IFormulaTree {
 	protected ExcelCell cell;
 	protected ExcelFormulaCellValue cellValue;
 	protected ExcelFormulaTree parent;
-	protected IFormulaToken token;
-	protected List<IFormulaTree> children;
+	protected ExcelFormulaToken token;
+	protected List<ExcelFormulaTree> children;
 	
 	private static final Function[] EXCEL_FUNCTIONS = getExcelFunctions();
 	private static final Function[] AI_FUNCTIONS = getAIFunctions();
@@ -54,17 +55,17 @@ public class ExcelFormulaTree implements IFormulaTree {
 	}
 
 	@Override
-	public IFormulaCellValue getCellValue() {
+	public ExcelFormulaCellValue getCellValue() {
 		return this.cellValue;
 	}
 
 	@Override
-	public IFormulaToken getToken() {
+	public ExcelFormulaToken getToken() {
 		return this.token;
 	}
 	
 	@Override
-	public IFormulaTree getParent() {
+	public ExcelFormulaTree getParent() {
 		return this.parent;
 	}
 	
@@ -80,7 +81,7 @@ public class ExcelFormulaTree implements IFormulaTree {
 	}
 	
 	@Override
-	public IFormulaTree getChildAt(int index) {
+	public ExcelFormulaTree getChildAt(int index) {
 		return this.children.get(index);
 	}
 	
@@ -88,7 +89,7 @@ public class ExcelFormulaTree implements IFormulaTree {
 	public void addChild(IFormulaTree child) {
 		if (!(child instanceof ExcelFormulaTree)) throw new IllegalArgumentException("Parent must be of type ExcelFormulaTree");
 		child.setParent(this);
-		this.children.add(child);
+		this.children.add((ExcelFormulaTree) child);
 	}
 
 	@Override
@@ -116,7 +117,59 @@ public class ExcelFormulaTree implements IFormulaTree {
 	
 	@Override
 	public String toFormula() {
-		return PoiFormulaHelper.buildFormulaString(this);
+		final StringBuilder sb = new StringBuilder();
+		// Open a bracket to preserve precedence
+		sb.append("(");
+
+		if (token.getDelegate() instanceof ValueOperatorPtg) {
+			final ValueOperatorPtg cast = (ValueOperatorPtg) token.getDelegate();
+
+			// Special case where operator occurs after operand
+			if (cast instanceof PercentPtg) {
+				sb.append(getChildAt(0).toFormula());
+				sb.append(token.toString());
+			}
+
+			// Special case for only one operand and operator occurs before
+			else if (cast.getNumberOfOperands() < 2) {
+				sb.append(token.toString());
+				sb.append(getChildAt(0).toFormula());
+			}
+
+			// For most arithmetic operations
+			else {
+				sb.append(getChildAt(0).toFormula());
+				sb.append(token.toString());
+				sb.append(getChildAt(1).toFormula());
+			}
+		}
+
+		// Special case for SUM with 1 operand
+		if (FormulaUtil.isSumPtg(token.getDelegate())) {
+			sb.append(token.toString());
+			sb.append("(");
+			sb.append(getChildAt(0).toFormula());
+			sb.append(")");
+		}
+
+		// General Functions
+		if (token.getDelegate() instanceof AbstractFunctionPtg) {
+			final AbstractFunctionPtg cast = (AbstractFunctionPtg) token.getDelegate();
+
+			sb.append(token.toString());
+			sb.append("(");
+
+			for (int i = 0; i < cast.getNumberOfOperands(); i++) {
+				sb.append(getChildAt(i).toFormula());
+				if (!(cast.getNumberOfOperands() == i + 1))
+					sb.append(",");
+			}
+			sb.append(")");
+		}
+
+		// Close bracket to complete the part
+		sb.append(")");
+		return sb.toString().equals("()") ? token.toString() : sb.toString();
 	}
 	
 	@Override
