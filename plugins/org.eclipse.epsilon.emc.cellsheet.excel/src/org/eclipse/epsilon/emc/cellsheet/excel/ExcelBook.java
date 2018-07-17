@@ -28,11 +28,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.emc.cellsheet.AbstractBook;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
+import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.IDResolver;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
+import org.eclipse.epsilon.emc.cellsheet.IdResolver;
 import org.eclipse.epsilon.emc.cellsheet.Type;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
@@ -45,7 +46,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 
 	public static final String EXCEL_PROPERTY_NAME = "EXCEL_NAME";
 	public static final String EXCEL_PROPERTY_NAME_DEFAULT = "Excel";
-	
 	public static final String EXCEL_PROPERTY_FILE = "EXCEL_FILE";
 
 	// Lower level access fields
@@ -55,9 +55,9 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	final Map<Sheet, ExcelSheet> _sheets = new HashMap<Sheet, ExcelSheet>();
 	final Map<Row, ExcelRow> _rows = new HashMap<Row, ExcelRow>();
 	final Map<Cell, ExcelCell> _cells = new HashMap<Cell, ExcelCell>();
+	final ExcelIdResolver _idResolver = new ExcelIdResolver();
+
 	FormulaParsingWorkbook fpw = null;
-	
-	private final ExcelIDResolver idResolver = new ExcelIDResolver();
 	
 	@Override
 	public Object createInstance(String type)
@@ -77,7 +77,31 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 
 	@Override
 	public String getElementId(Object instance) {
-		return idResolver.getID(instance);
+		if (!(instance instanceof HasType)) throw new IllegalArgumentException("Not a recognised model element type");
+		
+		// TODO: Support other model element types
+		switch (((HasType) instance).getType()) {
+		case BOOK:
+			return _idResolver.getId((IBook) instance);
+		case SHEET:
+			return _idResolver.getId((ISheet) instance);
+		case ROW:
+			return _idResolver.getId((IRow) instance);
+		case CELL:
+			return _idResolver.getId((ICell) instance);
+		default:
+			throw new UnsupportedOperationException();
+		}
+	}
+	
+	@Override
+	public IdResolver getIdResolver() {
+		return _idResolver;
+	}
+	
+	@Override
+	public String getId() {
+		return _idResolver.getId(this);
 	}
 	
 	@Override
@@ -149,11 +173,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	@Override
 	public ExcelCell getCell(int sheetIndex, int row, String col) {
 		return this.getCell(sheetIndex, row, CellReference.convertColStringToIndex(col));
-	}
-
-	@Override
-	public IDResolver getIDResolver() {
-		return this.idResolver;
 	}
 	
 	@Deprecated
@@ -256,7 +275,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 
 	@Override
 	public boolean isOfKind(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
-		// FIXME: Add in subtypes for Excel only implementations
+		// FIXME: Add in sub-types for Excel only implementations
 		return isOfType(instance, metaClass);
 	}
 
@@ -264,7 +283,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 
 	@Override
 	public Collection<?> getAllOfKind(String type) throws EolModelElementTypeNotFoundException {
-		// FIXME: Add in subtypes for Excel only implementations
+		// FIXME: Add in sub-types for Excel only implementations
 		return this.getAllOfType(type);
 	}
 
@@ -365,11 +384,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	@Override
 	public void setDelegate(Workbook delegate) {
 		this.delegate = delegate;
-	}
-	
-	@Override
-	public void setIDResolver(IDResolver idResolver) {
-		throw new UnsupportedOperationException();
 	}
 	
 	@Override

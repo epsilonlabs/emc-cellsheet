@@ -26,7 +26,7 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
 	@Override
 	public String getId() {
-		return this.book.getIDResolver().getID(this);
+		return this.getBook()._idResolver.getId(this);
 	}
 
 	@Override

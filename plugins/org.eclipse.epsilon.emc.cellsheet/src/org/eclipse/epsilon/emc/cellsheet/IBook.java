@@ -18,7 +18,7 @@ import org.eclipse.epsilon.eol.models.IModel;
  * @author Jonathan Co
  *
  */
-public interface IBook extends HasType, IModel, Iterable<ISheet> {
+public interface IBook extends HasId, HasType, IModel, Iterable<ISheet> {
 	
 	public static final Type TYPE = Type.BOOK;
 	public static final Type[] KINDS = {TYPE};
@@ -34,9 +34,7 @@ public interface IBook extends HasType, IModel, Iterable<ISheet> {
 	public ICell getCell(String sheetName, int row, String col);
 	
 	public ICell getCell(int sheetIndex, int row, String col);
-	
-	public IDResolver getIDResolver();
-	
+		
 	public IRow getRow(int sheetIndex, int index);
 	
 	public IRow getRow(ISheet sheet, int index);
@@ -47,11 +45,11 @@ public interface IBook extends HasType, IModel, Iterable<ISheet> {
 	
 	public ISheet getSheet(String name);
 
-	public void setIDResolver(IDResolver idResolver);
-
 	public List<? extends ISheet> sheets();
 	
 	public Iterator<? extends ISheet> sheetIterator();
+	
+	public IdResolver getIdResolver();
 
 	@Override
 	default Object getTypeOf(Object obj) {		

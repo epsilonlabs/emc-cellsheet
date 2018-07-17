@@ -56,7 +56,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 
 	@Override
 	public String getId() {
-		return this.book.getIDResolver().getID(this);
+		return this.getBook()._idResolver.getId(this);
 	}
 
 	@Override

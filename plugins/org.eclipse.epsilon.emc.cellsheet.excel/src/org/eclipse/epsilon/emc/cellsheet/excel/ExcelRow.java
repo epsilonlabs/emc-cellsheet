@@ -47,8 +47,7 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 
 	@Override
 	public String getId() {
-		return this.book.getIDResolver().getID(this);
-
+		return this.getBook()._idResolver.getId(this);
 	}
 
 	@Override
@@ -80,6 +79,11 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 						return input;
 					}
 				});
+	}
+	
+	@Override
+	public String toString() {
+		return this.getId();
 	}
 
 }
