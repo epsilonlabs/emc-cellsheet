@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,9 +14,10 @@ import org.apache.poi.ss.formula.FormulaParsingWorkbook;
 import org.apache.poi.ss.formula.FormulaType;
 import org.apache.poi.ss.formula.WorkbookEvaluator;
 import org.apache.poi.ss.formula.WorkbookEvaluatorProvider;
+import org.apache.poi.ss.formula.eval.FunctionEval;
 import org.apache.poi.ss.formula.eval.OperandResolver;
 import org.apache.poi.ss.formula.eval.ValueEval;
-import org.apache.poi.ss.formula.functions.FreeRefFunction;
+import org.apache.poi.ss.formula.functions.Function;
 import org.apache.poi.ss.formula.ptg.AbstractFunctionPtg;
 import org.apache.poi.ss.formula.ptg.AttrPtg;
 import org.apache.poi.ss.formula.ptg.ControlPtg;
@@ -23,7 +25,6 @@ import org.apache.poi.ss.formula.ptg.OperationPtg;
 import org.apache.poi.ss.formula.ptg.PercentPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
-import org.apache.poi.ss.formula.udf.DefaultUDFFinder;
 import org.apache.poi.ss.formula.udf.UDFFinder;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -45,7 +46,6 @@ public class PoiFormulaHelper {
 	 * Abstract Interpretation variables
 	 */
 	private static final Set<AIFunction> AI_FUNCTIONS = new HashSet<>();
-	private static  UDFFinder UDFF = null;
 
 	private PoiFormulaHelper() {
 		throw new AssertionError();
@@ -197,70 +197,24 @@ public class PoiFormulaHelper {
 		sb.append(")");
 		return sb.toString().equals("()") ? token.toString() : sb.toString();
 	}
-	
-	public static String evaluate(IFormulaTree tree) {
-		if (tree instanceof ExcelFormulaTree) return evaluate((ExcelFormulaTree) tree);
-		throw new IllegalArgumentException("Cannot build Formula String for a non ExcelFormulaTree");
-	}
-	
-	public static String evaluate(IFormulaCellValue value) {
-		if (value instanceof ExcelFormulaCellValue) return evaluate(value.getFormulaTree());
-		throw new IllegalArgumentException("Cannot build Formula String for a non ExcelFormulaValue");
-	}
-	
-	public static String evaluate(ExcelFormulaTree tree) {
-		return doEvaluate(tree, false);
-	}
-	
-	public static String aiEvaluate(IFormulaTree tree) {
-		if (tree instanceof ExcelFormulaTree) return doEvaluate((ExcelFormulaTree) tree, true);
-		throw new IllegalArgumentException("Cannot build Formula String for a non ExcelFormulaTree");
-	}
-	
-	private static String doEvaluate(ExcelFormulaTree tree, boolean ai) {
-		final WorkbookEvaluator we = getWorkbookEvaluator((ExcelBook)tree.getCellValue().getCell().getBook());
-		
-		String formula = buildFormulaString(tree);
-		
-		if (ai) {
-			setupAI((ExcelBook)tree.getCellValue().getCell().getBook());
-			for (AIFunction function : AI_FUNCTIONS) {
-				formula = formula.replaceAll(function.getOldName() + "\\(", function.getNewName() + "\\(");
-			}
-		}
-		
-		CellReference ref = new CellReference(((ExcelCell)tree.getCellValue().getCell()).getDelegate());	
-		ValueEval result = we.evaluate(formula, ref);
-		
-		
-		return OperandResolver.coerceValueToString(result);
-	}
-	
+
 	private static void setupAI(ExcelBook book) {
-		if (UDFF == null) {
-			AIVlookup vlookup = new AIVlookup();
-			AI_FUNCTIONS.add(vlookup);
-		
-			final String[] names = new String[AI_FUNCTIONS.size()];
-			final FreeRefFunction[] functions = new FreeRefFunction[AI_FUNCTIONS.size()];
+		try {
+			Field field = FunctionEval.class.getDeclaredField("functions");
+			field.setAccessible(true);
+			Function[] functions = (Function[]) field.get(null);
 			
-			int count = 0;
-			for (AIFunction f : AI_FUNCTIONS) {
-				names[count] = f.getNewName();
-				functions[count] = f;
-				count++;
-			}
-			
-			UDFF = new DefaultUDFFinder(names, functions);
+			Function original = functions[102];
+			Function newFunction = new AIVlookup();
+
+			functions[102] = newFunction;
+
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
 		}
-		
-		book.getDelegate().addToolPack(UDFF);
+
 	}
 	
-	private static WorkbookEvaluator getWorkbookEvaluator(ExcelBook book) {
-		FormulaEvaluator fe = book.getDelegate().getCreationHelper().createFormulaEvaluator();
-		return ((WorkbookEvaluatorProvider) fe)._getWorkbookEvaluator();
-	}
 	
 	private static boolean isSumPtg(Ptg ptg) {
 		return ptg instanceof AttrPtg && ((AttrPtg) ptg).isSum();

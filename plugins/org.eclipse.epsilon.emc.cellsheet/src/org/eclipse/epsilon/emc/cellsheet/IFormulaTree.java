@@ -52,11 +52,28 @@ public interface IFormulaTree extends HasType {
 	public void addChild(IFormulaTree child);
 
 	/**
-	 * Evaluate the current node and return the result as a String
-	 * @return
+	 * Delegates to {@link IFormulaTree#evaluate(boolean)} with {@link doAi} set
+	 * to {@code true}.
+	 * 
+	 * @return the result of evaluating the current node
 	 */
 	public String evaluate();
-	
+
+	/**
+	 * Evaluate the current node and return the result as a String.
+	 * 
+	 * If the {@code doAi} flag is set to {@code true} then the formula is
+	 * evaluated using Abstract Interpretation producing intermediary results
+	 * where required. i.e. =VLOOKUP(A1, B1:D55, 1) may return B1 rather than
+	 * the actual value of B1.
+	 * 
+	 * @param doAI
+	 *            if set to {@code true} then Abstract Interpretation is
+	 *            performed
+	 * @return the result of evaluating the current node
+	 */
+	public String evaluate(boolean doAi);
+
 	public String toFormula();
 
 	@Override

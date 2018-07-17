@@ -138,17 +138,4 @@ public class PoiFormulaHelperTest {
 		assertEquals(15, Double.parseDouble(right.evaluate()), 0);
 	}
 	
-	@Test
-	public void aiEvaluate_should_return_cell_reference_not_result() throws Exception {
-		final ICell cell = book.getCell(PoiFormulaHelperTest.class.getSimpleName(), 9, 0);
-		final IFormulaCellValue value = (IFormulaCellValue) cell.getValue();
-		final IFormulaTree formulaTree = value.getFormulaTree();
-		
-		String result = PoiFormulaHelper.evaluate(formulaTree);
-		String aiResult = PoiFormulaHelper.aiEvaluate(formulaTree);
-		
-		assertEquals("C1 Result", result);
-		assertEquals("'1'!C1", aiResult);
-	}
-	
 }

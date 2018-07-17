@@ -23,6 +23,8 @@ public class AIVlookup implements Function3Arg, Function4Arg, AIFunction {
 	
 	public static final String OLD_NAME = "VLOOKUP";
 	public static final String NEW_NAME = "AIVLOOKUP";
+	public static final int FUNCTION_ID = 102; 
+	
 	private static final ValueEval DEFAULT_ARG3 = BoolEval.TRUE;
 		
 	@Override
@@ -110,5 +112,10 @@ public class AIVlookup implements Function3Arg, Function4Arg, AIFunction {
 	@Override
 	public String getNewName() {
 		return NEW_NAME;
+	}
+	
+	@Override
+	public int getFunctionId() {
+		return FUNCTION_ID;
 	}
 }
