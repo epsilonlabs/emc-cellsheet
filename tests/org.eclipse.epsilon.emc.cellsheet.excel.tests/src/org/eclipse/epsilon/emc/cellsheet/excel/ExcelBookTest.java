@@ -1,10 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.Collection;
@@ -16,7 +12,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
+/**
+ * Unit tests for {@link ExcelBook}
+ * 
+ * @author Jonathan Co
+ *
+ */
 public class ExcelBookTest {
 	
 	ExcelBook book;
@@ -24,14 +25,14 @@ public class ExcelBookTest {
 
 	@Before
 	public void setup() throws Exception {
-		book = ExcelTestUtil.getBook("TestFile.xlsx");
+		book = ExcelTestUtil.getBook("ExcelBookTest.xlsx");
 		other = ExcelTestUtil.getBook("Formula.xlsx");
 	}
 	
 	@Test
 	public void testLoadProperties() throws Exception {
 		final String name = "Some model name";
-		final String filepath = "./resources/TestFile.xlsx";
+		final String filepath = "./resources/ExcelBookTest.xlsx";
 		
 		final StringProperties props = new StringProperties();
 		props.setProperty(ExcelBook.EXCEL_PROPERTY_NAME, name);
@@ -64,107 +65,86 @@ public class ExcelBookTest {
 	}
 	
 	@Test
-	public void testOwnsBook() throws Exception {
+	public void owns_should_return_true_when_given_Book_from_same_model() throws Exception {
 		assertTrue(book.owns(book));
+	}
+	
+	@Test
+	public void owns_should_return_true_when_given_Sheet_from_same_model() throws Exception {
+		assertTrue(book.owns(book.getSheet(0)));
+	}
+	
+	@Test
+	public void owns_should_return_true_when_given_Row_same_model() throws Exception {
+		assertTrue(book.owns(book.getRow(0, 0)));
+	}
+	
+	@Test
+	public void owns_should_return_true_when_given_Cell_same_model() throws Exception {
+		assertTrue(book.owns(book.getCell(0, 0, 0)));
+	}
+	
+	@Test
+	public void owns_should_return_false_when_given_unsupported_class() throws Exception {
+		assertFalse(book.owns(this));
+	}
+	
+	@Test
+	public void owns_should_return_false_when_given_Book_from_other_model() throws Exception {
 		assertFalse(book.owns(other));
 	}
 	
 	@Test
-	public void testOwnsSheet() throws Exception {
-		assertTrue(book.owns(book.getSheet(0)));
+	public void owns_should_return_false_when_given_Sheet_from_other_model() throws Exception {
 		assertFalse(book.owns(other.getSheet(0)));
 	}
 	
 	@Test
-	public void testOwnsRow() throws Exception {
-		assertTrue(book.owns(book.getRow(0, 0)));
+	public void owns_should_return_false_when_given_Row_from_other_model() throws Exception {
 		assertFalse(book.owns(other.getRow(0, 0)));
 	}
 	
 	@Test
-	public void testOwnsCell() throws Exception {
-		assertTrue(book.owns(book.getCell(0, 0, 0)));
+	public void owns_should_return_false_when_given_Cell_from_other_model() throws Exception {
 		assertFalse(book.owns(other.getCell(0, 0, 0)));
 	}
-	
+
 	@Test
-	public void testGetTypeOfBook() throws Exception {
-		assertEquals(Type.BOOK, book.getTypeOf(book));
-	}
-	
-	@Test
-	public void testGetTypeOfSheet() throws Exception {
-		assertEquals(Type.SHEET, book.getTypeOf(book.getSheet(0)));
-	}
-	
-	@Test
-	public void testGetTypeOfRow() throws Exception {
-		assertEquals(Type.ROW, book.getTypeOf(book.getRow(0, 0)));
-	}
-	
-	@Test
-	public void testGetTypeOfCell() throws Exception {
-		assertEquals(Type.CELL, book.getTypeOf(book.getCell(0, 0, 0)));
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void testGetTypeOfBadType() throws Exception {
-		book.getTypeOf(this);
-	}
-	
-	@Test
-	public void testTypeNameOfBook() throws Exception {
-		assertEquals("Book", book.getTypeNameOf(book));
-	}
-	
-	@Test
-	public void testIsOfType() throws Exception {
-		assertTrue(book.isOfType(book, Type.BOOK.getTypeName()));
-	}
-	
-	@Test
-	public void testIsOfTypeObjectDifferent() throws Exception {
-		assertFalse(book.isOfType(this, Type.BOOK.getTypeName()));
-	}
-	
-	@Test(expected = EolModelElementTypeNotFoundException.class)
-	public void testIsOfTypeBadType() throws Exception {
-		book.isOfType(book, "badtype");
-	}
-	
-	@Test
-	public void isOfKind() throws Exception {
-		assertTrue(book.isOfType(book, Type.BOOK.getTypeName()));
-	}
-	
-	@Test
-	public void testGetAllOfTypeBook() throws Exception {
+	public void getAllOfType_should_return_Book_when_given_TypeBook() throws Exception {
 		Collection<?> all = book.getAllOfType(Type.BOOK.getTypeName());
 		assertEquals(1, all.size());
 		assertEquals(book, all.iterator().next());
 	}
 	
 	@Test
-	public void testGetAllOfTypeSheet() throws Exception {
+	public void getAllOfType_should_return_Sheet_when_given_TypeSheet() throws Exception {
 		Collection<?> all = book.getAllOfType(Type.SHEET.getTypeName());
 		assertEquals(2, all.size());
 	}
 	
 	@Test
-	public void testGetAllOfTypeRow() throws Exception {
+	public void getAllOfType_should_return_Row_when_given_TypeRow() throws Exception {
 		Collection<?> all = book.getAllOfType(Type.ROW.getTypeName());
 		assertEquals(9, all.size());
 	}
 	
 	@Test
-	public void testGetAllOfTypeCell() throws Exception {
+	public void getAllOfType_should_return_Cell_when_given_TypeCell() throws Exception {
 		Collection<?> all = book.getAllOfType(Type.CELL.getTypeName());
 		assertEquals(25, all.size());
 	}
 	
 	@Test(expected = EolModelElementTypeNotFoundException.class)
-	public void testGetAllOfTypeBadType() throws Exception {
+	public void getAllOfType_should_throw_EolModelElementTypeNotFoundException_when_unknown_type_is_given() throws Exception {
 		book.getAllOfType("badtype");
+	}
+	
+	@Test
+	public void getRow_should_return_empty_ExcelRow_when_given_row_index_is_empty() throws Exception {
+		final ExcelSheet sheet = book.getSheet("Data");
+		final ExcelRow row = book.getRow(sheet, 12345);
+		assertEquals(12345, row.getIndex());
+		assertTrue(row.cells().isEmpty());
 	}
 	
 	@Test

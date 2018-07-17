@@ -40,13 +40,13 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	public ICellValue<?> getValue() {		
 		switch (this.delegate.getCellTypeEnum()) {
 		case BOOLEAN:
-			return new ExcelBooleanValue(this);
+			return new ExcelBooleanCellValue(this);
 		case NUMERIC:
-			return new ExcelNumericValue(this);
+			return new ExcelNumericCellValue(this);
 		case STRING:
-			return new ExcelStringValue(this);
+			return new ExcelStringCellValue(this);
 		case FORMULA:
-			return new ExcelFormulaValue(this);
+			return new ExcelFormulaCellValue(this);
 		case BLANK:
 			return new ExcelBlankCellValue(this);
 		default:
@@ -81,7 +81,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	
 	@Override
 	public String toString() {
-		return String.format("[%s] [%s]", this.getId(), this.getValue().toString());
+		return this.getId();
 	}
 	
 //	private void moveSelf(int rowIdx, int colIdx) {

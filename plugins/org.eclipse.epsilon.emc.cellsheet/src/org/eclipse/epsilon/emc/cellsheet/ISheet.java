@@ -16,16 +16,14 @@ public interface ISheet extends HasId, HasType, Comparable<ISheet>, Iterable<IRo
 
 	public IRow getRow(int rowIdx);
 
-	public Iterator<? extends IRow> rowIterator();
+	public Iterator<IRow> rowIterator();
 
-	public List<? extends IRow> rows();
+	public List<IRow> rows();
 	
 	@Override
 	default int compareTo(ISheet o) {
-		if (o == null)
-			return 1;
-		if (this == o)
-			return 0;
+		if (null == o) return 1;
+		if (this == o) return 0;
 		return Integer.compare(this.getIndex(), o.getIndex());
 	}
 

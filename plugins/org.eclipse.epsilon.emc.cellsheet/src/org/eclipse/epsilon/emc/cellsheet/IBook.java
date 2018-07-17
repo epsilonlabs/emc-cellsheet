@@ -55,14 +55,14 @@ public interface IBook extends HasType, IModel, Iterable<ISheet> {
 
 	@Override
 	default Object getTypeOf(Object obj) {		
-		Type type = typeOf(obj);
+		Type type = obj instanceof HasType ? ((HasType) obj).getType() : null;
 		if (type == null) throw new IllegalArgumentException("Object not a model element");
 		return type;
 	}
 	
 	@Override
 	default String getTypeNameOf(Object obj) {
-		return typeOf(obj).getTypeName();
+		return ((Type) getTypeOf(obj)).getTypeName();
 	}
 	
 	@Override
@@ -70,7 +70,7 @@ public interface IBook extends HasType, IModel, Iterable<ISheet> {
 		final Type type = Type.fromTypeName(typename);
 		if (type == null) throw new EolModelElementTypeNotFoundException(this.getName(), typename);
 		
-		final Type instanceType = typeOf(obj);
+		final Type instanceType = (Type) getTypeOf(obj);
 		return type == instanceType;
 	}
 
@@ -92,7 +92,4 @@ public interface IBook extends HasType, IModel, Iterable<ISheet> {
 		return IBook.KINDS;
 	}
 	
-	default Type typeOf(Object obj) {
-		return obj instanceof HasType ? ((HasType) obj).getType() : null;
-	}
 }

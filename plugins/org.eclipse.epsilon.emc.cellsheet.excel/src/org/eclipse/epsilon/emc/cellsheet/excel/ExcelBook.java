@@ -11,13 +11,20 @@ import java.util.Map;
 
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
+import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.emc.cellsheet.AbstractBook;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
@@ -41,14 +48,14 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	
 	public static final String EXCEL_PROPERTY_FILE = "EXCEL_FILE";
 
-	final Map<Sheet, ExcelSheet> _sheets = new HashMap<Sheet, ExcelSheet>();
-	final Map<Row, ExcelRow> _rows = new HashMap<Row, ExcelRow>();
-	final Map<Cell, ExcelCell> _cells = new HashMap<Cell, ExcelCell>();
-
 	// Lower level access fields
 	protected Workbook delegate = null;
 	protected File excelFile = null;
-	protected FormulaParsingWorkbook fpw = null;
+	
+	final Map<Sheet, ExcelSheet> _sheets = new HashMap<Sheet, ExcelSheet>();
+	final Map<Row, ExcelRow> _rows = new HashMap<Row, ExcelRow>();
+	final Map<Cell, ExcelCell> _cells = new HashMap<Cell, ExcelCell>();
+	FormulaParsingWorkbook fpw = null;
 	
 	private final ExcelIDResolver idResolver = new ExcelIDResolver();
 	
@@ -80,6 +87,8 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	
 	@Override
 	public boolean owns(Object instance) {
+		if (instance == null) return false;
+		
 		if (instance instanceof IBook)
 			return this.equals(instance);
 
@@ -100,7 +109,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		throw new UnsupportedOperationException();
 	}
 
-	public ExcelCell getCell(Cell delegate) {
+	public ExcelCell getCell(Cell delegate) {		
 		if (!delegate.getSheet().getWorkbook().equals(this.delegate)) 
 			throw new IllegalArgumentException();
 		
@@ -119,7 +128,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 
 	@Override
 	public ExcelCell getCell(IRow row, int col) {
-		return this.getCell(((ExcelRow) row).getDelegate().getCell(col));
+		return this.getCell(((ExcelRow) row).getDelegate().getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK));
 	}
 
 	@Override
@@ -147,21 +156,35 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		return this.idResolver;
 	}
 	
-	public ExcelRow getRow(Row delegate) {
+	@Deprecated
+	ExcelRow getRow(Row delegate) {
 		ExcelRow excelRow = _rows.get(delegate);
 		if (excelRow == null) {
 			excelRow = new ExcelRow(this, delegate);
 			_rows.put(delegate, excelRow);
 		}
-		return excelRow;
+		return excelRow; 
 	}
 	
 	@Override
 	public ExcelRow getRow(ISheet sheet, int index) {
 		if (index < 0) throw new IndexOutOfBoundsException();
-		if (!this.owns(sheet)) throw new IllegalArgumentException();
+		if (!(sheet instanceof ExcelSheet)) throw new IllegalArgumentException("Non ExcelSheet instance given");
+		if (!this.owns(sheet)) throw new IllegalArgumentException("Sheet given not owned by this Book");
 		
-		return this.getRow(((ExcelSheet) sheet).getDelegate().getRow(index));
+		final ExcelSheet excelSheet = (ExcelSheet) sheet;
+		
+		// Get a POI row to work with
+		Row poiRow = excelSheet.getDelegate().getRow(index);
+		if (poiRow == null) poiRow = excelSheet.getDelegate().createRow(index);
+
+		// Check if cached row already exists.
+		ExcelRow excelRow = _rows.get(poiRow);
+		if (excelRow == null) {
+			excelRow = new ExcelRow(this, poiRow);
+			_rows.put(poiRow, excelRow);
+		}
+		return excelRow; 
 	}
 	
 	@Override
@@ -262,7 +285,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		}
 		
 		if (type == Type.ROW) {
-			final List<ExcelRow> rows = new ArrayList<ExcelRow>();
+			final List<IRow> rows = new ArrayList<>();
 			for (ExcelSheet sheet : this.sheets()) {
 				rows.addAll(sheet.rows());
 			}
@@ -270,9 +293,9 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		}
 		
 		if (type == Type.CELL) {
-			final List<ExcelCell> cells = new ArrayList<ExcelCell>();
+			final List<ICell> cells = new ArrayList<>();
 			for (ExcelSheet sheet : this.sheets()) {
-				for (ExcelRow row : sheet.rows()) {
+				for (IRow row : sheet.rows()) {
 					cells.addAll(row.cells());
 				}
 			}
@@ -298,7 +321,18 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	@Override
 	public void load() throws EolModelLoadingException {
 		try {
-			this.delegate = WorkbookFactory.create(excelFile);
+			fpw = null;
+			delegate = WorkbookFactory.create(excelFile);
+			
+			if (delegate instanceof HSSFWorkbook)
+				fpw = HSSFEvaluationWorkbook.create((HSSFWorkbook) delegate);
+			if (delegate instanceof XSSFWorkbook)
+				fpw = XSSFEvaluationWorkbook.create((XSSFWorkbook) delegate);
+			if (delegate instanceof SXSSFWorkbook)
+				fpw = SXSSFEvaluationWorkbook.create((SXSSFWorkbook) delegate);
+			if (fpw == null)
+				throw new AssertionError("Workbook technology not supported");
+			
 		} catch (Exception e) {
 			throw new EolModelLoadingException(e, this);
 		}
