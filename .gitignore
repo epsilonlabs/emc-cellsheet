@@ -1,7 +1,12 @@
 # Eclipse Workspace
 .metadata
+.settings
 
 # Binaries
 bin/
 target
 *.zip
+
+.project
+!plugins/*/**/.project
+!tests/*/**/.project

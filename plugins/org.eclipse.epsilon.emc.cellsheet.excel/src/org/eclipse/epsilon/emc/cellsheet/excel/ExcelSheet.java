@@ -1,11 +1,9 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.Transformer;
-import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
@@ -48,30 +46,26 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
 	@Override
 	public ExcelRow getRow(int rowIdx) {
-		return this.book.getRow(this.delegate.getRow(rowIdx));
+		return this.book.getRow(this, rowIdx);
 	}
 
 	@Override
 	public Iterator<IRow> iterator() {
-		return new TransformIterator<ExcelRow, IRow>(this.rowIterator(), 
-				new Transformer<ExcelRow, IRow>() {
-					@Override
-					public IRow transform(ExcelRow input) {
-						return input;
-					}
-				});
-	}
-
-	@Override
-	public Iterator<ExcelRow> rowIterator() {
 		return this.rows().iterator();
 	}
 
 	@Override
-	public List<ExcelRow> rows() {
-		this.delegate.rowIterator().forEachRemaining(r -> this.book.getRow(r));
-		return this.book._rows.values().stream().filter(r -> this.equals(r.getSheet())).sorted()
-				.collect(Collectors.toList());
+	public Iterator<IRow> rowIterator() {
+		return this.rows().iterator();
+	}
+
+	@Override
+	public List<IRow> rows() {
+		final List<IRow> rows = new ArrayList<>();
+		this.delegate.rowIterator().forEachRemaining(r -> rows.add(
+				this.book.getRow(this, r.getRowNum())
+				));
+		return rows;
 	}
 
 	@Override
