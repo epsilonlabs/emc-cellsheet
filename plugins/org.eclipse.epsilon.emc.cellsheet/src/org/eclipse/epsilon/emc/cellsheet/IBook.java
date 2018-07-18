@@ -49,7 +49,7 @@ public interface IBook extends HasId, HasType, IModel, Iterable<ISheet> {
 	
 	public Iterator<? extends ISheet> sheetIterator();
 	
-	public IdResolver getIdResolver();
+	public IIdResolver getIdResolver();
 
 	@Override
 	default Object getTypeOf(Object obj) {		

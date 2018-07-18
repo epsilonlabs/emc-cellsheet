@@ -33,7 +33,7 @@ import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
-import org.eclipse.epsilon.emc.cellsheet.IdResolver;
+import org.eclipse.epsilon.emc.cellsheet.IIdResolver;
 import org.eclipse.epsilon.emc.cellsheet.Type;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
@@ -95,7 +95,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	}
 	
 	@Override
-	public IdResolver getIdResolver() {
+	public IIdResolver getIdResolver() {
 		return _idResolver;
 	}
 	

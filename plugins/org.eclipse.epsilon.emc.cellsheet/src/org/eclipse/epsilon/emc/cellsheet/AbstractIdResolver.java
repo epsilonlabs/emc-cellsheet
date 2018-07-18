@@ -1,6 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-public abstract class AbstractIdResolver implements IdResolver {
+public abstract class AbstractIdResolver implements IIdResolver {
 
 	public static final String BOOK_START = "[";
 	public static final String BOOK_END = "]";
@@ -40,11 +40,12 @@ public abstract class AbstractIdResolver implements IdResolver {
 	}
 
 	protected String getId(IBook book, ISheet sheet, IRow row, ICell cell) {
+		if (book == null)
+			throw new IllegalArgumentException("All IDs must have at least the book");
+		
 		final StringBuilder sb = new StringBuilder();
 
-		startBook(sb);
 		addBook(book, sb);
-		endBook(sb);
 
 		if (sheet != null) {
 			addSheet(sheet, sb);
@@ -62,28 +63,23 @@ public abstract class AbstractIdResolver implements IdResolver {
 	}
 
 	protected StringBuilder addBook(IBook book, StringBuilder sb) {
-		if (book == null)
-			throw new IllegalArgumentException("All IDs must have at least the book");
-		return sb.append("[").append(book.getName()).append("]");
+		startBook(sb);
+		sb.append(book.getName());
+		endBook(sb);
+		return sb;
 	}
 
 	protected StringBuilder addSheet(ISheet sheet, StringBuilder sb) {
-		if (sheet == null)
-			return sb;
 		return sb.append(sheet.getName());
 	}
 
 	protected StringBuilder addRow(IRow row, StringBuilder sb) {
-		if (row == null)
-			return sb;
 		sb.append("A");
 		addLock(sb);
 		return sb.append(row.getIndex() + 1);
 	}
 
 	protected StringBuilder addCell(ICell cell, StringBuilder sb) {
-		if (cell == null)
-			return sb;
 		return sb.append(cell.getCol()).append(cell.getRowIndex() + 1);
 	}
 

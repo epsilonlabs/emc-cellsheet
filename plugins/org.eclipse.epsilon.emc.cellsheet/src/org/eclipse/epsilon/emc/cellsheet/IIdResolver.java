@@ -1,6 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-public interface IdResolver {
+public interface IIdResolver {
 
 	String getId(IBook book);
 
