@@ -179,6 +179,17 @@ public class ExcelBookTest {
 	public void getElementId_should_throw_excpetion_when_given_unknown_type() throws Exception {
 		book.getElementId(new Object());
 	}
+	
+	@Test(expected = UnsupportedOperationException.class)
+	public void setElementId_should_throw_exception_when_called() throws Exception {
+		book.setElementId(null, null);
+	}
+	
+	@Test(expected = UnsupportedOperationException.class)
+	public void getEnumerationValue_should_throw_exception_when_called() throws Exception {
+		book.getEnumerationValue(null, null);
+	}
+	
 	@Test
 	public void testGetAllOfKind() throws Exception {
 		assertEquals(2, book.getAllOfKind(Type.SHEET.getTypeName()).size());
