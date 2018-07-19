@@ -175,16 +175,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		return this.getCell(sheetIndex, row, CellReference.convertColStringToIndex(col));
 	}
 	
-	@Deprecated
-	ExcelRow getRow(Row delegate) {
-		ExcelRow excelRow = _rows.get(delegate);
-		if (excelRow == null) {
-			excelRow = new ExcelRow(this, delegate);
-			_rows.put(delegate, excelRow);
-		}
-		return excelRow; 
-	}
-	
 	@Override
 	public ExcelRow getRow(ISheet sheet, int index) {
 		if (index < 0) throw new IndexOutOfBoundsException();
@@ -241,7 +231,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	@Override
 	public void setElementId(Object instance, String newId) {
 		throw new UnsupportedOperationException();
-
 	}
 
 	@Override
