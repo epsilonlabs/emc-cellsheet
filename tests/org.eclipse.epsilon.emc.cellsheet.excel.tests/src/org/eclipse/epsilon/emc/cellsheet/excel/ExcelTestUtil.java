@@ -17,10 +17,10 @@ public class ExcelTestUtil {
 	}
 	
 	public static ExcelBook getBook(String filename) throws EolModelLoadingException {
-		return getBook(filename, DEFAULT_BOOK, true);
+		return getBook(filename, filename, true);
 	}
 	
 	public static ExcelBook getBook(Class<?> clazz) throws EolModelLoadingException {
-		return getBook(clazz.getSimpleName() + ".xlsx", DEFAULT_BOOK, true);
+		return getBook(clazz.getSimpleName() + ".xlsx");
 	}
 }

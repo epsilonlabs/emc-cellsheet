@@ -25,7 +25,7 @@ public class ExcelBookTest {
 
 	@Before
 	public void setup() throws Exception {
-		book = ExcelTestUtil.getBook("ExcelBookTest.xlsx");
+		book = ExcelTestUtil.getBook(ExcelBookTest.class);
 		other = ExcelTestUtil.getBook("Formula.xlsx");
 	}
 	
@@ -147,6 +147,38 @@ public class ExcelBookTest {
 		assertTrue(row.cells().isEmpty());
 	}
 	
+	@Test
+	public void getElementId_should_return_book_id_when_given_book() throws Exception {
+		assertEquals("["+ book.getName() +"]", book.getElementId(book));
+	}
+	
+	@Test
+	public void getElementId_should_return_sheet_id_when_given_sheet() throws Exception {
+		final ExcelSheet sheet = book.getSheet("Data");
+		assertEquals("[ExcelBookTest.xlsx]Data", book.getElementId(sheet));
+	}
+	
+	@Test
+	public void getElementId_should_return_row_id_when_given_row() throws Exception {
+		final ExcelRow row = book.getRow("Data", 3);
+		assertEquals("[ExcelBookTest.xlsx]Data!A$4", book.getElementId(row));
+	}
+	
+	@Test
+	public void getElementId_should_return_cell_id_when_given_cell() throws Exception {
+		final ExcelCell cell = book.getCell("Data", 3, 0);
+		assertEquals("[ExcelBookTest.xlsx]Data!A4", book.getElementId(cell));
+	}
+	
+	@Test(expected = UnsupportedOperationException.class)
+	public void getElementId_should_throw_excpetion_when_given_unsupported_type() throws Exception {
+		book.getElementId(book.getCell("Data", 3, 0).getValue());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void getElementId_should_throw_excpetion_when_given_unknown_type() throws Exception {
+		book.getElementId(new Object());
+	}
 	@Test
 	public void testGetAllOfKind() throws Exception {
 		assertEquals(2, book.getAllOfKind(Type.SHEET.getTypeName()).size());

@@ -28,6 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.emc.cellsheet.AbstractBook;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
+import org.eclipse.epsilon.emc.cellsheet.HasId;
 import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
@@ -77,21 +78,13 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 
 	@Override
 	public String getElementId(Object instance) {
-		if (!(instance instanceof HasType)) throw new IllegalArgumentException("Not a recognised model element type");
+		if (instance instanceof HasId) 
+			return ((HasId) instance).getId();
 		
-		// TODO: Support other model element types
-		switch (((HasType) instance).getType()) {
-		case BOOK:
-			return _idResolver.getId((IBook) instance);
-		case SHEET:
-			return _idResolver.getId((ISheet) instance);
-		case ROW:
-			return _idResolver.getId((IRow) instance);
-		case CELL:
-			return _idResolver.getId((ICell) instance);
-		default:
-			throw new UnsupportedOperationException();
-		}
+		if (instance instanceof HasType) 
+			throw new UnsupportedOperationException("ID not implemented for model type: " + ((HasType) instance).getType());
+		
+		throw new IllegalArgumentException("No such model element type exists for " + instance.toString());
 	}
 	
 	@Override
