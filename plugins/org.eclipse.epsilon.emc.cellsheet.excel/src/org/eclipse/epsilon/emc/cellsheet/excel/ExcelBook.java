@@ -125,19 +125,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	public Collection<?> allContents() {
 		throw new UnsupportedOperationException();
 	}
-
-	@Deprecated
-	public ExcelCell getCell(Cell delegate) {		
-		if (!delegate.getSheet().getWorkbook().equals(this.delegate)) 
-			throw new IllegalArgumentException();
-		
-		ExcelCell excelCell = _cells.get(delegate);
-		if (excelCell == null) {
-			excelCell = new ExcelCell(this, delegate);
-			_cells.put(delegate, excelCell);
-		}
-		return excelCell;
-	}
 	
 	@Override
 	public ExcelCell getCell(IRow row, int col) {
@@ -277,8 +264,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		// FIXME: Add in sub-types for Excel only implementations
 		return isOfType(instance, metaClass);
 	}
-
-
 
 	@Override
 	public Collection<?> getAllOfKind(String type) throws EolModelElementTypeNotFoundException {
