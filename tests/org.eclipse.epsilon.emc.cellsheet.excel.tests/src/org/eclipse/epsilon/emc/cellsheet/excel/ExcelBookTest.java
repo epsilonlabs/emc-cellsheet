@@ -1,10 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.io.File;
@@ -117,6 +113,21 @@ public class ExcelBookTest {
   @Test(expected = IllegalArgumentException.class)
   public void getRow_should_throw_exception_when_given_null_sheet() throws Exception {
     book.getRow((ExcelSheet) null, 48);
+  }
+  
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void getSheet_should_throw_exception_when_given_negative_index() throws Exception {
+    book.getSheet(-1);
+  }
+  
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void getSheet_should_throw_exception_when_given_index_out_of_range() throws Exception {
+    book.getSheet(Integer.MAX_VALUE);
+  }
+  
+  @Test
+  public void getSheet_should_return_null_when_given_name_that_does_not_exist() throws Exception {
+    assertNull(book.getSheet("Does not exist"));
   }
 
   @Test

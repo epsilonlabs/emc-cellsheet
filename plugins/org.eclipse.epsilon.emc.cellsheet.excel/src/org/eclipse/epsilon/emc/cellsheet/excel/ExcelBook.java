@@ -193,12 +193,13 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
       throw new IllegalArgumentException("sheet arg must not be null");
     }
     if (!(sheet instanceof ExcelSheet)) {
-      throw new IllegalArgumentException("sheet arg must be an ExcelSheet instance, was given: " + sheet);
+      throw new IllegalArgumentException(
+          "sheet arg must be an ExcelSheet instance, was given: " + sheet);
     }
     if (!this.owns(sheet)) {
       throw new IllegalArgumentException("sheet arg must belong to this book, was given: " + sheet);
     }
-    
+
     // Get a POI row to work with
     final ExcelSheet excelSheet = (ExcelSheet) sheet;
     Row poiRow = excelSheet.getDelegate().getRow(index);
@@ -225,8 +226,23 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
     return getRow(getSheet(sheet), index);
   }
 
-  @Deprecated
-  public ExcelSheet getSheet(Sheet delegate) {
+  @Override
+  public ExcelSheet getSheet(int index) {
+    if (index < 0 || index >= delegate.getNumberOfSheets()) {
+      throw new IndexOutOfBoundsException(
+          "index must be positive and within range of number of existing sheets, was given: "
+              + index);
+    }
+    return getSheet(delegate.getSheetAt(index));
+
+  }
+
+  @Override
+  public ExcelSheet getSheet(String name) {
+    return getSheet(delegate.getSheet(name));
+  }
+
+  ExcelSheet getSheet(Sheet delegate) {
     if (delegate == null) {
       return null;
     }
@@ -237,19 +253,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
       _sheets.put(delegate, excelSheet);
     }
     return excelSheet;
-  }
-
-  @Override
-  public ExcelSheet getSheet(int index) {
-    if (index < 0 || index >= delegate.getNumberOfSheets()) {
-      throw new IndexOutOfBoundsException();
-    }
-    return this.getSheet(this.delegate.getSheetAt(index));
-  }
-
-  @Override
-  public ExcelSheet getSheet(String name) {
-    return this.getSheet(this.delegate.getSheet(name));
   }
 
   @Override
