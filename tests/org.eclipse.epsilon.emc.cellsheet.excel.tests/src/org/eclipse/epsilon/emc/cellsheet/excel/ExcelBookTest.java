@@ -183,6 +183,29 @@ public class ExcelBookTest {
   public void setElementId_should_throw_exception_when_called() throws Exception {
     book.setElementId(null, null);
   }
+  
+  @Test
+  public void getElementById_should_return_book_when_given_book_id() throws Exception {
+    final String id = "[ExcelBookTest.xlsx]";
+    assertEquals(id, book.getId());
+    assertEquals(book, book.getElementById(id));
+  }
+  
+  @Test
+  public void getElementById_should_return_sheet_when_given_sheet_id() throws Exception {
+    final String id = "[ExcelBookTest.xlsx]Data";
+    final ExcelSheet sheet = book.getSheet("Data");
+    assertEquals(id, sheet.getId());
+    assertEquals(sheet, book.getElementById(id));
+  }
+  
+  @Test
+  public void getElementById_should_return_row_when_given_row_id() throws Exception {
+    final String id = "[ExcelBookTest.xlsx]Data!A$60";
+    final ExcelRow row = book.getRow("Data", 59);
+    assertEquals(id, row.getId());
+    assertEquals(row, book.getElementById(id));
+  }
 
   @Test
   public void getElementById_should_return_cell_when_given_cell_id() throws Exception {

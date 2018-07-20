@@ -157,6 +157,11 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
   }
 
   @Override
+  public ICell getCell(ISheet sheet, int row, String col) {
+    return getCell(sheet.getRow(row), CellReference.convertColStringToIndex(col));
+  }
+
+  @Override
   public ExcelCell getCell(String sheetName, int row, int col) {
     return getCell(getRow(sheetName, row), col);
   }

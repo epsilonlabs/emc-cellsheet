@@ -32,41 +32,51 @@ public abstract class AbstractIdResolver implements IIdResolver {
 		return getId(cell.getBook(), cell.getSheet(), cell.getRow(), cell);
 	}
 
-	@Override
-	public HasType getElementById(IBook book, String id) {
-		if (book == null) throw new IllegalArgumentException();
-		
-		// Get Book Part
-		final int bookEnd = id.indexOf(BOOK_END);
-		final String bookPart = id.substring(1, id.indexOf(BOOK_END));
-		
-		// Check if there is a sheet, return if there isn't
-		final int sheetEnd = id.indexOf(SHEET_SEPERATOR);
-		if (sheetEnd < 0) return book.getName().equals(bookPart) ? book : null;
-		
-		// Has a sheet part, check if it exists in current book
-		final String sheetPart = id.substring(bookEnd + 1, sheetEnd);
-		final ISheet sheet = book.getSheet(sheetPart);
-		if (sheet == null) return null;
-		
-		// Get Row Part
-		final int rowStart = id.indexOf(LOCK);
-		if (rowStart > -1) {
-			return sheet.getRow(Integer.parseInt(id.substring(rowStart)) - 1);
-		}
+  @Override
+  public HasType getElementById(IBook book, String id) {
+    if (book == null)
+      throw new IllegalArgumentException();
 
-		// Case the ID is not a row but is a cell 
-		if (rowStart < 0 && id.length() > sheetEnd) {
-			Matcher matcher = p.matcher(id.substring(sheetEnd + 1));
-			if (matcher.matches()) {
-				String column = matcher.group(1);
-				int index = Integer.parseInt(matcher.group(2)) - 1;
-				return sheet.getRow(index).getCell(column);
-			}
-		}
-		
-		return null;
-	}
+    // Get Book Part
+    final int bookEnd = id.indexOf(BOOK_END);
+    final String bookPart = id.substring(1, id.indexOf(BOOK_END));
+
+    // There is more after book or sheet
+    if (id.length() > bookPart.length() + 2) {
+      final int sheetEnd = id.indexOf(SHEET_SEPERATOR);
+      final String sheetPart;
+
+      // Just the sheet is needed
+      if (sheetEnd < 0) {
+        sheetPart = id.substring(bookEnd + 1);
+        return book.getSheet(sheetPart);
+      }
+
+      // ID is for Row or Cell
+      else {
+        final ISheet sheet = book.getSheet(id.substring(bookEnd + 1, sheetEnd));
+        final int rowLock = id.indexOf(LOCK);
+
+        // No lock character, get the cell
+        if (rowLock < 0) {
+          final Matcher matcher = p.matcher(id.substring(sheetEnd + 1));
+          if (!matcher.matches()) {
+            throw new IllegalArgumentException("Invalid ID format given: " + id);
+          }
+          return book.getCell(sheet, Integer.parseInt(matcher.group(2)) - 1, matcher.group(1));
+        }
+
+        // Lock Character, get row
+        else {
+          return sheet.getRow(Integer.parseInt(id.substring(rowLock + 1)) - 1);
+        }
+      }
+    }
+    // Only book ID given
+    else {
+      return book.getName().equals(bookPart) ? book : null;
+    }
+  }
 
 	protected String getId(IBook book, ISheet sheet, IRow row, ICell cell) {
 		if (book == null)
