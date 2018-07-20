@@ -25,7 +25,7 @@ public interface IBook extends HasId, HasType, IModel, Iterable<ISheet> {
   public ICell getCell(IRow row, int col);
 
   public ICell getCell(ISheet sheet, int row, int col);
-  
+
   public ICell getCell(ISheet sheet, int row, String col);
 
   public ICell getCell(String sheetName, int row, int col);

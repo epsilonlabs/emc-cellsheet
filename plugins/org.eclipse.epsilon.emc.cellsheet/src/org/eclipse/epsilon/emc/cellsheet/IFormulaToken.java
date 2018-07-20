@@ -7,5 +7,5 @@ package org.eclipse.epsilon.emc.cellsheet;
  *
  */
 public interface IFormulaToken extends HasType {
-	public IFormulaTree getFormulaTree();
+  public IFormulaTree getFormulaTree();
 }
