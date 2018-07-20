@@ -3,7 +3,6 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-
 import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaType;
 import org.apache.poi.ss.formula.ptg.Area3DPtg;
@@ -27,38 +26,39 @@ import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
  * 
  * @author Jonathan Co
  */
-public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implements IFormulaCellValue {
+public class ExcelFormulaCellValue extends AbstractExcelCellValue<String>
+    implements IFormulaCellValue {
 
-	ExcelFormulaCellValue(ExcelCell cell) {
-		super(cell);
-		if (cell.delegate.getCellTypeEnum() != CellType.FORMULA)
-			throw new IllegalArgumentException("Delegate cell must have a Formula/String value");
-	}
+  ExcelFormulaCellValue(ExcelCell cell) {
+    super(cell);
+    if (cell.delegate.getCellTypeEnum() != CellType.FORMULA)
+      throw new IllegalArgumentException("Delegate cell must have a Formula/String value");
+  }
 
-	@Override
-	public String getValue() {
-		switch (cell.getDelegate().getCachedFormulaResultTypeEnum()) {
-		case NUMERIC:
-			return Double.toString(cell.getDelegate().getNumericCellValue());
-		case STRING:
-			return cell.getDelegate().getStringCellValue();
-		default:
-			return "";
-		}
-	}
+  @Override
+  public String getValue() {
+    switch (cell.getDelegate().getCachedFormulaResultTypeEnum()) {
+      case NUMERIC:
+        return Double.toString(cell.getDelegate().getNumericCellValue());
+      case STRING:
+        return cell.getDelegate().getStringCellValue();
+      default:
+        return "";
+    }
+  }
 
-	@Override
-	public List<ICellRegion> getReferencedRegions() {
-		final Ptg[] tokens = this.parseFormula();
-		final List<ICellRegion> regions = new ArrayList<ICellRegion>();
+  @Override
+  public List<ICellRegion> getReferencedRegions() {
+    final Ptg[] tokens = this.parseFormula();
+    final List<ICellRegion> regions = new ArrayList<ICellRegion>();
 
-		for (Ptg ptg : tokens) {
-			if (!(ptg instanceof OperandPtg))
-				continue;
+    for (Ptg ptg : tokens) {
+      if (!(ptg instanceof OperandPtg))
+        continue;
 
-			ICellRegion region = null;
+      ICellRegion region = null;
 
-			// @formatter:off
+      // @formatter:off
 			if (ptg instanceof RefPtg) {
 				RefPtg rp = (RefPtg) ptg;
 				region = new ExcelCellRegion(
@@ -93,14 +93,14 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 			}
 			// @formatter:on
 
-			if (ptg instanceof Area3DPxg) {
-				Area3DPxg ap = (Area3DPxg) ptg;
+      if (ptg instanceof Area3DPxg) {
+        Area3DPxg ap = (Area3DPxg) ptg;
 
-				// FIXME: check if external workbook number
-				if (ap.getExternalWorkbookNumber() != -1)
-					throw new UnsupportedOperationException();
+        // FIXME: check if external workbook number
+        if (ap.getExternalWorkbookNumber() != -1)
+          throw new UnsupportedOperationException();
 
-				// @formatter:off
+        // @formatter:off
 				region = new ExcelCellRegion(
 						cell.getBook(),
 						cell.getBook().getSheet(ap.getSheetName()),
@@ -109,85 +109,85 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 						ap.getFirstColumn(),
 						ap.getLastColumn() + 1);
 				// @formatter:on
-			}
+      }
 
-			if (ptg instanceof Area3DPtg) {
-				throw new UnsupportedOperationException();
-			}
+      if (ptg instanceof Area3DPtg) {
+        throw new UnsupportedOperationException();
+      }
 
-			if (region != null)
-				regions.add(region);
-		}
+      if (region != null)
+        regions.add(region);
+    }
 
-		return regions;
-	}
+    return regions;
+  }
 
-	@Override
-	public List<ICell> getReferencedCells() {
-		List<ICellRegion> regions = getReferencedRegions();
-		List<ICell> cells = new ArrayList<ICell>();
-		for (int i = 0; i < regions.size(); i++) {
-			ICellRegion cellRegion = regions.get(i);
-			cells.addAll(cellRegion.cells());
-		}
-		return cells;
-	}
+  @Override
+  public List<ICell> getReferencedCells() {
+    List<ICellRegion> regions = getReferencedRegions();
+    List<ICell> cells = new ArrayList<ICell>();
+    for (int i = 0; i < regions.size(); i++) {
+      ICellRegion cellRegion = regions.get(i);
+      cells.addAll(cellRegion.cells());
+    }
+    return cells;
+  }
 
-	@Override
-	public IFormulaTree getFormulaTree() {
-		final Ptg[] ptgs = this.parseFormula();
-		final Stack<ExcelFormulaTree> trees = new Stack<>();
-		final Stack<ExcelFormulaTree> operands = new Stack<>();
+  @Override
+  public IFormulaTree getFormulaTree() {
+    final Ptg[] ptgs = this.parseFormula();
+    final Stack<ExcelFormulaTree> trees = new Stack<>();
+    final Stack<ExcelFormulaTree> operands = new Stack<>();
 
-		for (Ptg ptg : ptgs) {
-			if (ptg instanceof ControlPtg && !(ptg instanceof AttrPtg))
-				continue;
+    for (Ptg ptg : ptgs) {
+      if (ptg instanceof ControlPtg && !(ptg instanceof AttrPtg))
+        continue;
 
-			final ExcelFormulaTree current = new ExcelFormulaTree(this, ptg);
+      final ExcelFormulaTree current = new ExcelFormulaTree(this, ptg);
 
-			// Special Case for SUM only
-			if (FormulaUtil.isSumPtg(ptg)) {
-				current.addChild(trees.pop());
-				if (!operands.isEmpty())
-					throw new IllegalStateException("Not all operands have been consumed for " + ptg);
-			}
+      // Special Case for SUM only
+      if (FormulaUtil.isSumPtg(ptg)) {
+        current.addChild(trees.pop());
+        if (!operands.isEmpty())
+          throw new IllegalStateException("Not all operands have been consumed for " + ptg);
+      }
 
-			if (ptg instanceof OperationPtg) {
-				OperationPtg operationPtg = (OperationPtg) ptg;
-				for (int i = 0; i < operationPtg.getNumberOfOperands(); i++) {
-					operands.push(trees.pop());
-				}
+      if (ptg instanceof OperationPtg) {
+        OperationPtg operationPtg = (OperationPtg) ptg;
+        for (int i = 0; i < operationPtg.getNumberOfOperands(); i++) {
+          operands.push(trees.pop());
+        }
 
-				for (int i = 0; i < operationPtg.getNumberOfOperands(); i++) {
-					current.addChild(operands.pop());
-				}
+        for (int i = 0; i < operationPtg.getNumberOfOperands(); i++) {
+          current.addChild(operands.pop());
+        }
 
-				if (!operands.isEmpty()) {
-					throw new IllegalStateException();
-				}
-			}
+        if (!operands.isEmpty()) {
+          throw new IllegalStateException();
+        }
+      }
 
-			trees.push(current);
-		}
+      trees.push(current);
+    }
 
-		if (trees.size() != 1)
-			throw new AssertionError("Not all tokens consumed");
+    if (trees.size() != 1)
+      throw new AssertionError("Not all tokens consumed");
 
-		return trees.pop();
-	}
+    return trees.pop();
+  }
 
-	@Override
-	public String toString() {
-		return this.getFormula();
-	}
+  @Override
+  public String toString() {
+    return this.getFormula();
+  }
 
-	@Override
-	public String getFormula() {
-		return cell.getDelegate().getCellFormula();
-	}
+  @Override
+  public String getFormula() {
+    return cell.getDelegate().getCellFormula();
+  }
 
-	Ptg[] parseFormula() {
-		return FormulaParser.parse(getFormula(), book.fpw, FormulaType.CELL, sheet.getIndex());
-	}
+  Ptg[] parseFormula() {
+    return FormulaParser.parse(getFormula(), book.fpw, FormulaType.CELL, sheet.getIndex());
+  }
 
 }
