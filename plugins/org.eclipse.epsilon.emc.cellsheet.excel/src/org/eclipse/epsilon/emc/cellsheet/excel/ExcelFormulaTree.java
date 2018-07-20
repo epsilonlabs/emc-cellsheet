@@ -103,7 +103,7 @@ public class ExcelFormulaTree implements IFormulaTree {
     final WorkbookEvaluator evaluator = ((WorkbookEvaluatorProvider) book.getDelegate()
         .getCreationHelper().createFormulaEvaluator())._getWorkbookEvaluator();
 
-    String formula = this.toFormula();
+    String formula = this.getFormula();
     CellReference ref = new CellReference(this.cell.getDelegate());
 
 
@@ -117,7 +117,7 @@ public class ExcelFormulaTree implements IFormulaTree {
   }
 
   @Override
-  public String toFormula() {
+  public String getFormula() {
     final StringBuilder sb = new StringBuilder();
     // Open a bracket to preserve precedence
     sb.append("(");
@@ -127,21 +127,21 @@ public class ExcelFormulaTree implements IFormulaTree {
 
       // Special case where operator occurs after operand
       if (cast instanceof PercentPtg) {
-        sb.append(getChildAt(0).toFormula());
+        sb.append(getChildAt(0).getFormula());
         sb.append(token.toString());
       }
 
       // Special case for only one operand and operator occurs before
       else if (cast.getNumberOfOperands() < 2) {
         sb.append(token.toString());
-        sb.append(getChildAt(0).toFormula());
+        sb.append(getChildAt(0).getFormula());
       }
 
       // For most arithmetic operations
       else {
-        sb.append(getChildAt(0).toFormula());
+        sb.append(getChildAt(0).getFormula());
         sb.append(token.toString());
-        sb.append(getChildAt(1).toFormula());
+        sb.append(getChildAt(1).getFormula());
       }
     }
 
@@ -149,7 +149,7 @@ public class ExcelFormulaTree implements IFormulaTree {
     if (FormulaUtil.isSumPtg(token.getDelegate())) {
       sb.append(token.toString());
       sb.append("(");
-      sb.append(getChildAt(0).toFormula());
+      sb.append(getChildAt(0).getFormula());
       sb.append(")");
     }
 
@@ -161,7 +161,7 @@ public class ExcelFormulaTree implements IFormulaTree {
       sb.append("(");
 
       for (int i = 0; i < cast.getNumberOfOperands(); i++) {
-        sb.append(getChildAt(i).toFormula());
+        sb.append(getChildAt(i).getFormula());
         if (!(cast.getNumberOfOperands() == i + 1))
           sb.append(",");
       }
@@ -175,7 +175,7 @@ public class ExcelFormulaTree implements IFormulaTree {
 
   @Override
   public String toString() {
-    return this.token + " -> " + this.toFormula();
+    return this.token + " -> " + this.getFormula();
   }
 
   /**

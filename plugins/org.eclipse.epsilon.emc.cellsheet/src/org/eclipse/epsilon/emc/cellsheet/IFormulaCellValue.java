@@ -14,7 +14,7 @@ public interface IFormulaCellValue extends ICellValue<String> {
   /**
    * Will return this Cell's formula as defined in the spreadsheet itself. If a representation of
    * the formula is required that is derived from the parse tree of this formula, then this can be
-   * retrieved by calling {@link IFormulaTree#toFormula()}.on the tree retrieved from
+   * retrieved by calling {@link IFormulaTree#getFormula()}.on the tree retrieved from
    * {@link #getFormulaTree()}.
    * 
    * @return this Cell's formula as defined in the spreadsheet itself.

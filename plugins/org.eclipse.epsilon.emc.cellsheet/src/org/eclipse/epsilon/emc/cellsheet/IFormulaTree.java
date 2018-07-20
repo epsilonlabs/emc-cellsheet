@@ -18,6 +18,11 @@ public interface IFormulaTree extends HasType {
    */
   public IFormulaCellValue getCellValue();
 
+  /**
+   * Returns the token of this tree.
+   * 
+   * @return the token of this tree.
+   */
   public IFormulaToken getToken();
 
   /**
@@ -65,7 +70,11 @@ public interface IFormulaTree extends HasType {
    */
   public String evaluate(boolean doAi);
 
-  public String toFormula();
+  /**
+   * Returns a formula string built at this tree. Will only elements that are children of this tree.
+   * @return a formula string representation of this tree
+   */
+  public String getFormula();
 
   @Override
   default Type getType() {
