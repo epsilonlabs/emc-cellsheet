@@ -1,42 +1,71 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public abstract class AbstractIdResolver implements IIdResolver {
 
-	public static final String BOOK_START = "[";
-	public static final String BOOK_END = "]";
-	public static final String LOCK = "$";
-	public static final String SHEET_SEPERATOR = "!";
+	public static final char BOOK_START = '[';
+	public static final char BOOK_END = ']';
+	public static final char LOCK = '$';
+	public static final char SHEET_SEPERATOR = '!';
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.epsilon.emc.cellsheet.IdResolver#getId(org.eclipse.epsilon.emc.cellsheet.IBook)
-	 */
+	Pattern p = Pattern.compile("([a-zA-Z]*)([0-9]*)");
+
 	@Override
 	public String getId(IBook book) {
 		return getId(book, null, null, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.epsilon.emc.cellsheet.IdResolver#getId(org.eclipse.epsilon.emc.cellsheet.ISheet)
-	 */
 	@Override
 	public String getId(ISheet sheet) {
 		return getId(sheet.getBook(), sheet, null, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.epsilon.emc.cellsheet.IdResolver#getId(org.eclipse.epsilon.emc.cellsheet.IRow)
-	 */
 	@Override
 	public String getId(IRow row) {
 		return getId(row.getBook(), row.getSheet(), row, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.epsilon.emc.cellsheet.IdResolver#getId(org.eclipse.epsilon.emc.cellsheet.ICell)
-	 */
 	@Override
 	public String getId(ICell cell) {
 		return getId(cell.getBook(), cell.getSheet(), cell.getRow(), cell);
+	}
+
+	@Override
+	public HasType getElementById(IBook book, String id) {
+		if (book == null) throw new IllegalArgumentException();
+		
+		// Get Book Part
+		final int bookEnd = id.indexOf(BOOK_END);
+		final String bookPart = id.substring(1, id.indexOf(BOOK_END));
+		
+		// Check if there is a sheet, return if there isn't
+		final int sheetEnd = id.indexOf(SHEET_SEPERATOR);
+		if (sheetEnd < 0) return book.getName().equals(bookPart) ? book : null;
+		
+		// Has a sheet part, check if it exists in current book
+		final String sheetPart = id.substring(bookEnd + 1, sheetEnd);
+		final ISheet sheet = book.getSheet(sheetPart);
+		if (sheet == null) return null;
+		
+		// Get Row Part
+		final int rowStart = id.indexOf(LOCK);
+		if (rowStart > -1) {
+			return sheet.getRow(Integer.parseInt(id.substring(rowStart)) - 1);
+		}
+
+		// Case the ID is not a row but is a cell 
+		if (rowStart < 0 && id.length() > sheetEnd) {
+			Matcher matcher = p.matcher(id.substring(sheetEnd + 1));
+			if (matcher.matches()) {
+				String column = matcher.group(1);
+				int index = Integer.parseInt(matcher.group(2)) - 1;
+				return sheet.getRow(index).getCell(column);
+			}
+		}
+		
+		return null;
 	}
 
 	protected String getId(IBook book, ISheet sheet, IRow row, ICell cell) {

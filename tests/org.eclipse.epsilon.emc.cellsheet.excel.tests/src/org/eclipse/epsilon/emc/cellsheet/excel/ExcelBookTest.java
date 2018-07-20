@@ -185,6 +185,14 @@ public class ExcelBookTest {
 		book.setElementId(null, null);
 	}
 	
+	@Test
+	public void getElementById_should_return_cell_when_given_cell_id() throws Exception {
+		final String id = "[ExcelBookTest.xlsx]Data!A4";
+		final ExcelCell cell = book.getCell("Data", 3, 0);
+		assertEquals(id, cell.getId());
+		assertEquals(cell, book.getElementById(id));
+	}
+	
 	@Test(expected = UnsupportedOperationException.class)
 	public void getEnumerationValue_should_throw_exception_when_called() throws Exception {
 		book.getEnumerationValue(null, null);

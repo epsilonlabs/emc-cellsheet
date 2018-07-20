@@ -13,6 +13,8 @@ public interface IRow extends HasId, HasType, Comparable<IRow>, Iterable<ICell> 
 	public Iterator<? extends ICell> cellIterator();
 
 	public ICell getCell(int colIdx);
+	
+	public ICell getCell(String column);
 
 	public int getIndex();
 
@@ -38,5 +40,6 @@ public interface IRow extends HasId, HasType, Comparable<IRow>, Iterable<ICell> 
 	default Type[] getKinds() {
 		return IRow.KINDS;
 	}
+
 
 }

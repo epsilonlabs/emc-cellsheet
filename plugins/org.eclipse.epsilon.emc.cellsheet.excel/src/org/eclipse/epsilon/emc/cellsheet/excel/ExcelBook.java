@@ -16,10 +16,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -32,9 +32,9 @@ import org.eclipse.epsilon.emc.cellsheet.HasId;
 import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
+import org.eclipse.epsilon.emc.cellsheet.IIdResolver;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
-import org.eclipse.epsilon.emc.cellsheet.IIdResolver;
 import org.eclipse.epsilon.emc.cellsheet.Type;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
@@ -73,7 +73,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	
 	@Override
 	public Object getElementById(String id) {
-		throw new UnsupportedOperationException();
+		return _idResolver.getElementById(this, id);
 	}
 
 	@Override
@@ -126,6 +126,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		throw new UnsupportedOperationException();
 	}
 
+	@Deprecated
 	public ExcelCell getCell(Cell delegate) {		
 		if (!delegate.getSheet().getWorkbook().equals(this.delegate)) 
 			throw new IllegalArgumentException();
@@ -137,35 +138,51 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		}
 		return excelCell;
 	}
-
-	@Override
-	public ExcelCell getCell(int sheetIndex, int row, int col) {
-		return this.getCell(this.getRow(sheetIndex, row), col);
-	}
-
+	
 	@Override
 	public ExcelCell getCell(IRow row, int col) {
-		return this.getCell(((ExcelRow) row).getDelegate().getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK));
+		if (col < 0) {
+			throw new IndexOutOfBoundsException();
+		}
+		if (!(row instanceof ExcelRow)) {
+			throw new IllegalArgumentException("Must be an ExcelRow instance, given: " + row);
+		}
+		if (!owns(row)) {
+			throw new IllegalArgumentException("Row does not belong to current model");
+		}
+		
+		final Cell poiCell = ((ExcelRow) row).getDelegate().getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		ExcelCell excelCell = _cells.get(poiCell);
+		if (excelCell == null) {
+			excelCell = new ExcelCell(this, poiCell);
+			_cells.put(poiCell, excelCell);
+		}		
+		return excelCell;
 	}
 
 	@Override
 	public ExcelCell getCell(ISheet sheet, int row, int col) {
-		return this.getCell(this.getRow(sheet, row), col);
+		return getCell(sheet.getRow(row), col);
 	}
 
 	@Override
 	public ExcelCell getCell(String sheetName, int row, int col) {
-		return this.getCell(this.getRow(sheetName, row), col);
+		return getCell(getRow(sheetName, row), col);
+	}
+	
+	@Override
+	public ExcelCell getCell(int sheetIndex, int row, int col) {
+		return getCell(getRow(sheetIndex, row), col);
 	}
 	
 	@Override
 	public ExcelCell getCell(String sheetName, int row, String col) {
-		return this.getCell(sheetName, row, CellReference.convertColStringToIndex(col));
+		return getCell(getRow(sheetName, row), CellReference.convertColStringToIndex(col));
 	}
 	
 	@Override
 	public ExcelCell getCell(int sheetIndex, int row, String col) {
-		return this.getCell(sheetIndex, row, CellReference.convertColStringToIndex(col));
+		return getCell(getRow(sheetIndex, row), CellReference.convertColStringToIndex(col));
 	}
 	
 	@Override

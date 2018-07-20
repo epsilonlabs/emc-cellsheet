@@ -1,12 +1,12 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
@@ -28,11 +28,9 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 
 	@Override
 	public List<ExcelCell> cells() {
-		this.delegate.cellIterator().forEachRemaining(c -> this.book.getCell(c));
-		return book._cells.values().stream()
-				.filter(c -> this.equals(c.getRow()))
-				.sorted()
-				.collect(Collectors.toList());
+		final List<ExcelCell> cells = new ArrayList<>();
+		this.delegate.cellIterator().forEachRemaining(c -> cells.add(book.getCell(this, c.getColumnIndex())));
+		return cells;
 	}
 
 	@Override
@@ -42,7 +40,12 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 
 	@Override
 	public ExcelCell getCell(int colIdx) {
-		return this.book.getCell(this.delegate.getCell(colIdx));
+		return book.getCell(this, colIdx);
+	}
+	
+	@Override
+	public ExcelCell getCell(String column) {
+		return this.getCell(CellReference.convertColStringToIndex(column));
 	}
 
 	@Override

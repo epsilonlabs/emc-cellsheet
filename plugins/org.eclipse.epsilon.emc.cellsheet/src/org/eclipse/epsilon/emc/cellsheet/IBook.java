@@ -23,8 +23,6 @@ public interface IBook extends HasId, HasType, IModel, Iterable<ISheet> {
 	public static final Type TYPE = Type.BOOK;
 	public static final Type[] KINDS = {TYPE};
 	
-	public ICell getCell(int sheetIndex, int row, int col);
-
 	public ICell getCell(ISheet sheet, int row, int col);
 
 	public ICell getCell(IRow row, int col);
@@ -32,6 +30,8 @@ public interface IBook extends HasId, HasType, IModel, Iterable<ISheet> {
 	public ICell getCell(String sheetName, int row, int col);
 	
 	public ICell getCell(String sheetName, int row, String col);
+	
+	public ICell getCell(int sheetIndex, int row, int col);
 	
 	public ICell getCell(int sheetIndex, int row, String col);
 		

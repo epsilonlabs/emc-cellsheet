@@ -9,5 +9,7 @@ public interface IIdResolver {
 	String getId(IRow row);
 
 	String getId(ICell cell);
+	
+	HasType getElementById(IBook book, String id);
 
 }
