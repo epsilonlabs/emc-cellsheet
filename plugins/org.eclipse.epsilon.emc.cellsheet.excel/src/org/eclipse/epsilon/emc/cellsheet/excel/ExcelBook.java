@@ -13,6 +13,8 @@ import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
+import org.apache.poi.ss.formula.WorkbookEvaluator;
+import org.apache.poi.ss.formula.WorkbookEvaluatorProvider;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -57,6 +59,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
   final Map<Cell, ExcelCell> _cells = new HashMap<Cell, ExcelCell>();
   final ExcelIdResolver _idResolver = new ExcelIdResolver();
 
+  WorkbookEvaluator _evaluator = null;
   FormulaParsingWorkbook fpw = null;
 
   @Override
@@ -374,7 +377,9 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
       if (fpw == null) {
         throw new AssertionError("Workbook technology not supported");
       }
-
+      _evaluator =
+          ((WorkbookEvaluatorProvider) delegate.getCreationHelper().createFormulaEvaluator())
+              ._getWorkbookEvaluator();
     } catch (Exception e) {
       throw new EolModelLoadingException(e, this);
     }
