@@ -1,14 +1,24 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import java.io.File;
 import java.util.Collection;
 import org.eclipse.epsilon.common.util.StringProperties;
+import org.eclipse.epsilon.emc.cellsheet.IRow;
+import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.eclipse.epsilon.emc.cellsheet.Type;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Answers;
+import org.mockito.Mockito;
 
 /**
  * Unit tests for {@link ExcelBook}
@@ -60,6 +70,53 @@ public class ExcelBookTest {
     final ExcelBook mBook = new ExcelBook();
     assertNull(mBook.excelFile);
     mBook.setExcelFile(filepath);
+  }
+  
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void getCell_should_throw_exception_when_given_negative_column_index() throws Exception {
+    ExcelRow row = Mockito.mock(ExcelRow.class);
+    when(row.getBook()).thenReturn(book);
+    book.getCell(row, -100);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void getCell_should_throw_exception_when_given_null_row() throws Exception {
+    book.getCell(null, 100);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void getCell_should_throw_exception_when_given_row_that_is_not_excel() throws Exception {
+    IRow row = Mockito.mock(IRow.class, Answers.RETURNS_MOCKS);
+    book.getCell(row, 100);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void getCell_should_throw_exception_when_given_row_from_other_book() throws Exception {
+    ExcelRow row = Mockito.mock(ExcelRow.class, Answers.RETURNS_MOCKS);
+    book.getCell(row, 100);
+  }
+  
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void getRow_should_throw_exception_when_given_negative_row_index() throws Exception {
+    ExcelSheet sheet = mock(ExcelSheet.class);
+    book.getRow(sheet, -4549);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void getRow_should_throw_exception_when_given_non_ExcelSheet() throws Exception {
+    ISheet sheet = mock(ISheet.class);
+    book.getRow(sheet, 48);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void getRow_should_throw_exception_when_given_sheet_from_other_book() throws Exception {
+    ExcelSheet sheet = mock(ExcelSheet.class, Answers.RETURNS_MOCKS);
+    book.getRow(sheet, 48);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void getRow_should_throw_exception_when_given_null_sheet() throws Exception {
+    book.getRow((ExcelSheet) null, 48);
   }
 
   @Test

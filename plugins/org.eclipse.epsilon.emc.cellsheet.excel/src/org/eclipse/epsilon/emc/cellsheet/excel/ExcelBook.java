@@ -132,13 +132,16 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
   @Override
   public ExcelCell getCell(IRow row, int col) {
     if (col < 0) {
-      throw new IndexOutOfBoundsException();
+      throw new IndexOutOfBoundsException("col index must be positive, was given: " + col);
+    }
+    if (row == null) {
+      throw new IllegalArgumentException("row arg must not be null");
     }
     if (!(row instanceof ExcelRow)) {
-      throw new IllegalArgumentException("Must be an ExcelRow instance, given: " + row);
+      throw new IllegalArgumentException("row arg must be an ExcelRow instance, was given: " + row);
     }
     if (!owns(row)) {
-      throw new IllegalArgumentException("Row does not belong to current model");
+      throw new IllegalArgumentException("row arg must belong to this book, was given: " + row);
     }
 
     final Cell poiCell =
@@ -184,15 +187,18 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
   @Override
   public ExcelRow getRow(ISheet sheet, int index) {
     if (index < 0) {
-      throw new IndexOutOfBoundsException();
+      throw new IndexOutOfBoundsException("index must be positive, was given: " + index);
+    }
+    if (sheet == null) {
+      throw new IllegalArgumentException("sheet arg must not be null");
     }
     if (!(sheet instanceof ExcelSheet)) {
-      throw new IllegalArgumentException("Non ExcelSheet instance given");
+      throw new IllegalArgumentException("sheet arg must be an ExcelSheet instance, was given: " + sheet);
     }
     if (!this.owns(sheet)) {
-      throw new IllegalArgumentException("Sheet given not owned by this Book");
+      throw new IllegalArgumentException("sheet arg must belong to this book, was given: " + sheet);
     }
-
+    
     // Get a POI row to work with
     final ExcelSheet excelSheet = (ExcelSheet) sheet;
     Row poiRow = excelSheet.getDelegate().getRow(index);
@@ -219,6 +225,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
     return getRow(getSheet(sheet), index);
   }
 
+  @Deprecated
   public ExcelSheet getSheet(Sheet delegate) {
     if (delegate == null) {
       return null;
