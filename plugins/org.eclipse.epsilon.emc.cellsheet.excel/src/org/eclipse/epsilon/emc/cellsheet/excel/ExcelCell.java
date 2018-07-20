@@ -9,10 +9,14 @@ import org.eclipse.epsilon.emc.cellsheet.ICellValue;
 public class ExcelCell implements ICell, HasDelegate<Cell> {
 
   protected ExcelBook book;
+  protected ExcelSheet sheet;
+  protected ExcelRow row;
   protected Cell delegate;
 
-  ExcelCell(ExcelBook book, Cell delegate) {
-    this.book = book;
+  ExcelCell(ExcelRow row, Cell delegate) {
+    this.book = row.getBook();
+    this.sheet = row.getSheet();
+    this.row = row;
     this.delegate = delegate;
   }
 
@@ -28,7 +32,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 
   @Override
   public ExcelRow getRow() {
-    return this.book._rows.get(this.delegate.getRow());
+    return row;
   }
 
   @Override
@@ -71,7 +75,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 
   @Override
   public ExcelSheet getSheet() {
-    return this.book._sheets.get(this.delegate.getSheet());
+    return sheet;
   }
 
   @Override

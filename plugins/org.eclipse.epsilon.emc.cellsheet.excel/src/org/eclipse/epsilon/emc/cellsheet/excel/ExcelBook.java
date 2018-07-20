@@ -148,7 +148,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
         ((ExcelRow) row).getDelegate().getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK);
     ExcelCell excelCell = _cells.get(poiCell);
     if (excelCell == null) {
-      excelCell = new ExcelCell(this, poiCell);
+      excelCell = new ExcelCell((ExcelRow) row, poiCell);
       _cells.put(poiCell, excelCell);
     }
     return excelCell;
@@ -210,7 +210,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
     // Check if cached row already exists.
     ExcelRow excelRow = _rows.get(poiRow);
     if (excelRow == null) {
-      excelRow = new ExcelRow(this, poiRow);
+      excelRow = new ExcelRow((ExcelSheet) sheet, poiRow);
       _rows.put(poiRow, excelRow);
     }
     return excelRow;

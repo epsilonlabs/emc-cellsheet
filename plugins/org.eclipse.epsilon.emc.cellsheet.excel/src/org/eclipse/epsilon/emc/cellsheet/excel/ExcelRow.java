@@ -14,10 +14,12 @@ import org.eclipse.epsilon.emc.cellsheet.IRow;
 public class ExcelRow implements IRow, HasDelegate<Row> {
 
   protected ExcelBook book;
+  protected ExcelSheet sheet;
   protected Row delegate;
 
-  ExcelRow(ExcelBook book, Row delegate) {
-    this.book = book;
+  ExcelRow(ExcelSheet sheet, Row delegate) {
+    this.book = sheet.getBook();
+    this.sheet = sheet;
     this.delegate = delegate;
   }
 
@@ -66,7 +68,7 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 
   @Override
   public ExcelSheet getSheet() {
-    return this.book._sheets.get(delegate.getSheet());
+    return sheet;
   }
 
   @Override
