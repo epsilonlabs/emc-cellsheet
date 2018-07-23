@@ -95,11 +95,15 @@ public class ExcelFormulaTree implements IFormulaTree {
 
   @Override
   public String evaluate() {
-    return this.evaluate(false);
+    return doEvaluation(false);
   }
 
   @Override
-  public String evaluate(boolean doAi) {
+  public String interpret() {
+    return doEvaluation(true);
+  }
+  
+  String doEvaluation(boolean interpret) {
     final WorkbookEvaluator evaluator = ((WorkbookEvaluatorProvider) book.getDelegate()
         .getCreationHelper().createFormulaEvaluator())._getWorkbookEvaluator();
 
@@ -107,13 +111,14 @@ public class ExcelFormulaTree implements IFormulaTree {
     CellReference ref = new CellReference(this.cell.getDelegate());
 
 
-    if (doAi)
+    if (interpret)
       setFunctions(AI_FUNCTIONS);
     ValueEval result = evaluator.evaluate(formula, ref);
-    if (doAi)
+    if (interpret)
       setFunctions(EXCEL_FUNCTIONS);
 
     return OperandResolver.coerceValueToString(result);
+    
   }
 
   @Override

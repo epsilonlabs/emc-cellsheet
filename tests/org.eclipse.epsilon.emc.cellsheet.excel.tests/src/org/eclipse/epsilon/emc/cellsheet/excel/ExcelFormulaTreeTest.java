@@ -22,7 +22,7 @@ public class ExcelFormulaTreeTest {
     final IFormulaTree tree = ((IFormulaCellValue) cell.getValue()).getFormulaTree();
 
     String result = tree.evaluate();
-    String aiResult = tree.evaluate(true);
+    String aiResult = tree.interpret();
 
     assertEquals("C1 Result", result);
     assertEquals("'1'!C1", aiResult);
