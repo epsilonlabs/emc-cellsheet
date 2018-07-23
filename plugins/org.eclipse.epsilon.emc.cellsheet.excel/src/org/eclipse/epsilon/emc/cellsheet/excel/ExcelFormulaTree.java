@@ -1,25 +1,20 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.poi.ss.formula.WorkbookEvaluator;
-import org.apache.poi.ss.formula.WorkbookEvaluatorProvider;
-import org.apache.poi.ss.formula.eval.FunctionEval;
 import org.apache.poi.ss.formula.eval.OperandResolver;
 import org.apache.poi.ss.formula.eval.ValueEval;
-import org.apache.poi.ss.formula.functions.Function;
 import org.apache.poi.ss.formula.ptg.AbstractFunctionPtg;
 import org.apache.poi.ss.formula.ptg.PercentPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
 import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
-import org.eclipse.epsilon.emc.cellsheet.excel.functions.AIFunction;
-import org.eclipse.epsilon.emc.cellsheet.excel.functions.AIVlookup;
+import org.eclipse.epsilon.emc.cellsheet.excel.functions.AiFunctions;
 
 /**
  * 
@@ -35,9 +30,9 @@ public class ExcelFormulaTree implements IFormulaTree {
   protected ExcelFormulaToken token;
   protected List<ExcelFormulaTree> children;
 
-  private static final Function[] EXCEL_FUNCTIONS = getExcelFunctions();
-  private static final Function[] AI_FUNCTIONS = getAIFunctions();
-  private static Field functionField = null;
+  // Pattern for matching the first occurrence of a function. Used when performing abstract
+  // interpretation
+  private static final Pattern p = Pattern.compile("\\w+\\Q(\\E");
 
   public ExcelFormulaTree(ExcelFormulaCellValue cellValue, ExcelFormulaTree parent, Ptg ptg) {
     super();
@@ -95,30 +90,35 @@ public class ExcelFormulaTree implements IFormulaTree {
 
   @Override
   public String evaluate() {
-    return doEvaluation(false);
+    return doEvaluation(getFormula());
   }
 
   @Override
   public String interpret() {
-    return doEvaluation(true);
+    String formula = getFormula();
+    Matcher m = p.matcher(formula);
+    if (m.find()) {
+      int start = m.start();
+      int end = m.end() - 1;
+      String replacement =
+          AiFunctions.instance().getInterpretedFunction(formula.substring(start, end));
+      if (replacement != null) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(formula, 0, start);
+        sb.append(replacement);
+        sb.append(formula, end, formula.length());
+        formula = sb.toString();
+      }
+    }
+    return doEvaluation(formula);
   }
-  
-  String doEvaluation(boolean interpret) {
-    final WorkbookEvaluator evaluator = ((WorkbookEvaluatorProvider) book.getDelegate()
-        .getCreationHelper().createFormulaEvaluator())._getWorkbookEvaluator();
 
-    String formula = this.getFormula();
+  String doEvaluation(String formula) {
+    final WorkbookEvaluator evaluator = book._evaluator;
     CellReference ref = new CellReference(this.cell.getDelegate());
-
-
-    if (interpret)
-      setFunctions(AI_FUNCTIONS);
     ValueEval result = evaluator.evaluate(formula, ref);
-    if (interpret)
-      setFunctions(EXCEL_FUNCTIONS);
-
     return OperandResolver.coerceValueToString(result);
-    
+
   }
 
   @Override
@@ -181,62 +181,6 @@ public class ExcelFormulaTree implements IFormulaTree {
   @Override
   public String toString() {
     return this.token + " -> " + this.getFormula();
-  }
-
-  /**
-   * Accessor method for retrieving the {@link FunctionEval#functions} in a safe and reliable
-   * manner.
-   * 
-   * This method should be called for every access to this field to ensure access permissions will
-   * be set up.
-   * 
-   * @return
-   */
-  static Field getFunctionField() {
-    if (functionField == null) {
-      try {
-        functionField = FunctionEval.class.getDeclaredField("functions");
-        functionField.setAccessible(true);
-        Field modifiers = Field.class.getDeclaredField("modifiers");
-        modifiers.setAccessible(true);
-        modifiers.setInt(functionField, functionField.getModifiers() & ~Modifier.FINAL);
-      } catch (Exception e) {
-        throw new IllegalStateException(e);
-      }
-    }
-    return functionField;
-  }
-
-  static void setFunctions(Function[] functions) {
-    try {
-      getFunctionField().set(null, functions);
-    } catch (Exception e) {
-      throw new IllegalStateException(e);
-    }
-  }
-
-  static Function[] getExcelFunctions() {
-    try {
-      return (Function[]) getFunctionField().get(null);
-    } catch (Exception e) {
-      throw new IllegalStateException(e);
-    }
-  }
-
-  static Function[] getAIFunctions() {
-    // Create functions
-    final List<AIFunction> aiFunctions = new LinkedList<>();
-    aiFunctions.add(new AIVlookup());
-
-    // Create a copy so as not to overwrite originals for normal evaluation
-    final Function[] oldFunctions = getExcelFunctions();
-    final Function[] newFunctions = Arrays.copyOf(oldFunctions, oldFunctions.length);
-
-    for (AIFunction f : aiFunctions) {
-      newFunctions[f.getFunctionId()] = f;
-    }
-
-    return newFunctions;
   }
 
 }

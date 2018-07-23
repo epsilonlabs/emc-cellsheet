@@ -20,7 +20,7 @@ import org.eclipse.epsilon.emc.cellsheet.excel.functions.LookupUtils.ValueVector
  * @author Jonathan Co
  *
  */
-public class AIVlookup implements Function3Arg, Function4Arg, AIFunction {
+public class AiVlookup implements Function3Arg, Function4Arg, AiFunction {
 
   public static final String OLD_NAME = "VLOOKUP";
   public static final String NEW_NAME = "AIVLOOKUP";
@@ -106,12 +106,12 @@ public class AIVlookup implements Function3Arg, Function4Arg, AIFunction {
   }
 
   @Override
-  public String getOldName() {
+  public String getExcelName() {
     return OLD_NAME;
   }
 
   @Override
-  public String getNewName() {
+  public String getAiName() {
     return NEW_NAME;
   }
 

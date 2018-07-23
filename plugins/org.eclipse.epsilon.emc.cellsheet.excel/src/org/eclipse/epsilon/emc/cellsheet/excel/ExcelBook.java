@@ -37,6 +37,7 @@ import org.eclipse.epsilon.emc.cellsheet.IIdResolver;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.eclipse.epsilon.emc.cellsheet.Type;
+import org.eclipse.epsilon.emc.cellsheet.excel.functions.AiFunctions;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
@@ -380,6 +381,8 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
       _evaluator =
           ((WorkbookEvaluatorProvider) delegate.getCreationHelper().createFormulaEvaluator())
               ._getWorkbookEvaluator();
+      delegate.addToolPack(AiFunctions.instance());
+      
     } catch (Exception e) {
       throw new EolModelLoadingException(e, this);
     }

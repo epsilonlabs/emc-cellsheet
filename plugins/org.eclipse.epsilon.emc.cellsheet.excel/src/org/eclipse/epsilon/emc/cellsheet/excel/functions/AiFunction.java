@@ -9,11 +9,11 @@ import org.apache.poi.ss.formula.functions.Function;
  * 
  * @author Jonathan Co
  */
-public interface AIFunction extends FreeRefFunction, Function {
+public interface AiFunction extends FreeRefFunction, Function {
 
-  public String getOldName();
+  public String getExcelName();
 
-  public String getNewName();
+  public String getAiName();
 
   public int getFunctionId();
 }
