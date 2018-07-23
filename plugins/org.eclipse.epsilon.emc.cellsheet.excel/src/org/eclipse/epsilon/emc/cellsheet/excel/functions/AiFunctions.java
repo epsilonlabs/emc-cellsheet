@@ -6,6 +6,8 @@ import java.util.Map;
 import org.apache.poi.ss.formula.functions.FreeRefFunction;
 import org.apache.poi.ss.formula.udf.UDFFinder;
 
+
+// TODO: Change singleton pattern
 public class AiFunctions implements UDFFinder {
 
   private static final AiFunctions INSTANCE = new AiFunctions();
