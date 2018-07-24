@@ -11,8 +11,7 @@ import org.apache.poi.ss.formula.eval.StringEval;
 import org.apache.poi.ss.formula.eval.ValueEval;
 import org.apache.poi.ss.formula.functions.Function3Arg;
 import org.apache.poi.ss.formula.functions.Function4Arg;
-import org.apache.poi.ss.util.CellReference;
-import org.eclipse.epsilon.emc.cellsheet.excel.functions.LookupUtils.ValueVector;
+import org.eclipse.epsilon.emc.cellsheet.excel.ExcelBook;
 
 /**
  * Adapted from {@link org.apache.poi.ss.formula.functions.Vlookup}.
@@ -22,11 +21,16 @@ import org.eclipse.epsilon.emc.cellsheet.excel.functions.LookupUtils.ValueVector
  */
 public class AiVlookup implements Function3Arg, Function4Arg, AiFunction {
 
-  public static final String OLD_NAME = "VLOOKUP";
-  public static final String NEW_NAME = "AIVLOOKUP";
+  public static final String EXCEL_NAME = "VLOOKUP";
+  public static final String AI_NAME = "AIVLOOKUP";
   public static final int FUNCTION_ID = 102;
 
   private static final ValueEval DEFAULT_ARG3 = BoolEval.TRUE;
+  private ExcelBook book;
+
+  public AiVlookup(ExcelBook book) {
+    this.book = book;
+  }
 
   @Override
   public ValueEval evaluate(ValueEval[] args, OperationEvaluationContext ec) {
@@ -60,59 +64,36 @@ public class AiVlookup implements Function3Arg, Function4Arg, AiFunction {
     try {
       // Evaluation order:
       // lookup_value , table_array, range_lookup, find lookup value, col_index, fetch result
-      ValueEval lookupValue =
-          OperandResolver.getSingleValue(lookup_value, srcRowIndex, srcColumnIndex);
+      ValueEval lookupValue = OperandResolver.getSingleValue(lookup_value, srcRowIndex, srcColumnIndex);
       TwoDEval tableArray = LookupUtils.resolveTableArrayArg(table_array);
-      boolean isRangeLookup =
-          LookupUtils.resolveRangeLookupArg(range_lookup, srcRowIndex, srcColumnIndex);
-      int rowIndex = LookupUtils.lookupIndexOfValue(lookupValue,
-          LookupUtils.createColumnVector(tableArray, 0), isRangeLookup);
+      boolean isRangeLookup = LookupUtils.resolveRangeLookupArg(range_lookup, srcRowIndex, srcColumnIndex);
+      int rowIndex = LookupUtils.lookupIndexOfValue(lookupValue, LookupUtils.createColumnVector(tableArray, 0), isRangeLookup);
       int colIndex = LookupUtils.resolveRowOrColIndexArg(col_index, srcRowIndex, srcColumnIndex);
 
       // Get actual cell reference rather than cell value
-      if (!(tableArray instanceof AreaEvalBase))
-        throw new AssertionError("Unknown Area type produced");
-
+      // FIXME: Make this more robust - lets check for additional sheets and resolve the actual
+      // value
       final AreaEvalBase _tableArray = (AreaEvalBase) tableArray;
-      if (_tableArray.getFirstSheetIndex() != _tableArray.getLastSheetIndex())
+      if (_tableArray.getFirstSheetIndex() != _tableArray.getLastSheetIndex()) {
         throw new IllegalStateException("More than one sheet specified");
-
-      return new StringEval("'" + _tableArray.getFirstSheetIndex() + "'!"
-          + CellReference.convertNumToColString(colIndex) + (rowIndex + 1));
+      }
+      
+      return new StringEval(book.getCell(_tableArray.getFirstSheetIndex(), rowIndex, colIndex).getId());
+    
     } catch (EvaluationException e) {
-      return e.getErrorEval();
+      throw new UnsupportedOperationException(
+          "Error occurred during evaluation of " + getAiName(), e);
     }
-  }
-
-  /**
-   * Returns one column from an <tt>AreaEval</tt>
-   *
-   * @param colIndex assumed to be non-negative
-   *
-   * @throws EvaluationException (#REF!) if colIndex is too high
-   */
-  private ValueVector createResultColumnVector(TwoDEval tableArray, int colIndex)
-      throws EvaluationException {
-    if (colIndex >= tableArray.getWidth()) {
-      throw EvaluationException.invalidRef();
-    }
-    return LookupUtils.createColumnVector(tableArray, colIndex);
-  }
-
-  public ValueEval processResult(ValueEval value) {
-    System.out.println("AIVLOOKUP Called");
-    System.out.println(value);
-    return value;
   }
 
   @Override
   public String getExcelName() {
-    return OLD_NAME;
+    return EXCEL_NAME;
   }
 
   @Override
   public String getAiName() {
-    return NEW_NAME;
+    return AI_NAME;
   }
 
   @Override

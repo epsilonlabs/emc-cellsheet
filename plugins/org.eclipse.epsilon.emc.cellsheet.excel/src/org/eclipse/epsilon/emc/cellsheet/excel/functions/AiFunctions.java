@@ -5,12 +5,11 @@ import java.util.Locale;
 import java.util.Map;
 import org.apache.poi.ss.formula.functions.FreeRefFunction;
 import org.apache.poi.ss.formula.udf.UDFFinder;
+import org.eclipse.epsilon.emc.cellsheet.excel.ExcelBook;
 
 
 // TODO: Change singleton pattern
 public class AiFunctions implements UDFFinder {
-
-  private static final AiFunctions INSTANCE = new AiFunctions();
 
   // AiFunction.getOldName -> AiFunction.getNewName
   protected final Map<String, String> excelToAi;
@@ -20,7 +19,6 @@ public class AiFunctions implements UDFFinder {
   private AiFunctions() {
     aiFunctions = new HashMap<String, AiFunction>();
     excelToAi = new HashMap<String, String>();
-    registerFunction(new AiVlookup(), excelToAi, aiFunctions);
   }
 
   @Override
@@ -32,20 +30,15 @@ public class AiFunctions implements UDFFinder {
     return excelToAi.get(functionName);
   }
 
-  public static AiFunctions instance() {
-    return INSTANCE;
+  public static AiFunctions create(ExcelBook book) {
+    AiFunctions functions = new AiFunctions();
+    functions.registerFunction(new AiVlookup(book));
+    return functions;
   }
 
   protected void registerFunction(AiFunction function) {
     excelToAi.put(function.getExcelName(), function.getAiName());
     aiFunctions.put(function.getAiName(), function);
-  }
-
-  static void registerFunction(AiFunction function, Map<String, String> excelToAi,
-      Map<String, AiFunction> aiFunctions) {
-    aiFunctions.put(function.getAiName(), function);
-    excelToAi.put(function.getExcelName().toUpperCase(Locale.ROOT),
-        function.getAiName().toUpperCase(Locale.ROOT));
   }
 
 }

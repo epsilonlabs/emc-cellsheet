@@ -21,11 +21,10 @@ public class ExcelFormulaTreeTest {
     final ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 9, 0);
     final IFormulaTree tree = ((IFormulaCellValue) cell.getValue()).getFormulaTree();
 
-    String result = tree.evaluate();
-    String aiResult = tree.interpret();
-
+    final String result = tree.evaluate();
+    final String aiResult = tree.interpret();
     assertEquals("C1 Result", result);
-    assertEquals("'1'!C1", aiResult);
+    assertEquals("[ExcelFormulaTreeTest.xlsx]Lookup!C1", aiResult);
   }
 
   @Test

@@ -13,14 +13,15 @@ import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
+import org.apache.poi.ss.formula.PrintingEvaluationListener;
 import org.apache.poi.ss.formula.WorkbookEvaluator;
-import org.apache.poi.ss.formula.WorkbookEvaluatorProvider;
+import org.apache.poi.ss.formula.WorkbookEvaluatorHelper;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -44,6 +45,7 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundExce
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
+import org.eclipse.epsilon.eol.parse.Eol_EolParserRules.returnStatement_return;
 
 public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbook> {
 
@@ -60,8 +62,9 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
   final Map<Cell, ExcelCell> _cells = new HashMap<Cell, ExcelCell>();
   final ExcelIdResolver _idResolver = new ExcelIdResolver();
 
-  WorkbookEvaluator _evaluator = null;
+  WorkbookEvaluator evaluator = null;
   FormulaParsingWorkbook fpw = null;
+  AiFunctions aiFunctions = null;
 
   @Override
   public Object createInstance(String type)
@@ -378,10 +381,12 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
       if (fpw == null) {
         throw new AssertionError("Workbook technology not supported");
       }
-      _evaluator =
-          ((WorkbookEvaluatorProvider) delegate.getCreationHelper().createFormulaEvaluator())
-              ._getWorkbookEvaluator();
-      delegate.addToolPack(AiFunctions.instance());
+
+      evaluator =
+          WorkbookEvaluatorHelper.create(XSSFEvaluationWorkbook.create((XSSFWorkbook) delegate),
+              new PrintingEvaluationListener(), null, null);
+      aiFunctions = AiFunctions.create(this);
+      delegate.addToolPack(aiFunctions);
       
     } catch (Exception e) {
       throw new EolModelLoadingException(e, this);
@@ -442,6 +447,14 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
       return false;
     }
     return true;
+  }
+
+  public WorkbookEvaluator getEvaluator() {
+    return evaluator;
+  }
+  
+  public AiFunctions getAiFunctions() {
+    return aiFunctions;
   }
 
   @Override

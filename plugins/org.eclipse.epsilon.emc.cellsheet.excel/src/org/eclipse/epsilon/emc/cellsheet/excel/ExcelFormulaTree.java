@@ -14,7 +14,6 @@ import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
 import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
-import org.eclipse.epsilon.emc.cellsheet.excel.functions.AiFunctions;
 
 /**
  * 
@@ -101,7 +100,7 @@ public class ExcelFormulaTree implements IFormulaTree {
       int start = m.start();
       int end = m.end() - 1;
       String replacement =
-          AiFunctions.instance().getInterpretedFunction(formula.substring(start, end));
+          book.getAiFunctions().getInterpretedFunction(formula.substring(start, end));
       if (replacement != null) {
         StringBuilder sb = new StringBuilder();
         sb.append(formula, 0, start);
@@ -114,7 +113,7 @@ public class ExcelFormulaTree implements IFormulaTree {
   }
 
   String doEvaluation(String formula) {
-    final WorkbookEvaluator evaluator = book._evaluator;
+    final WorkbookEvaluator evaluator = book.evaluator;
     CellReference ref = new CellReference(this.cell.getDelegate());
     ValueEval result = evaluator.evaluate(formula, ref);
     return OperandResolver.coerceValueToString(result);
