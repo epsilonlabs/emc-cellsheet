@@ -10,7 +10,16 @@ public abstract class AbstractIdResolver implements IIdResolver {
   public static final char LOCK = '$';
   public static final char SHEET_SEPERATOR = '!';
 
-  Pattern p = Pattern.compile("([a-zA-Z]*)([0-9]*)");
+  static final Pattern BOOK_PATTERN = Pattern.compile("\\[(.+)\\]");
+  static final Pattern SHEET_PATTERN = Pattern.compile("'(.+)'");
+
+  static final String COL_GRP = "col";
+  static final String ROW_GRP = "row";
+  static final String LOCK_GRP = "lock";
+  static final Pattern CELL_PATTERN = Pattern
+      .compile("(?<" + COL_GRP + ">[a-zA-Z]+)(?<" + LOCK_GRP + ">[$]?)(?<" + ROW_GRP + ">\\d+)");
+
+
 
   @Override
   public String getId(IBook book) {
@@ -34,48 +43,50 @@ public abstract class AbstractIdResolver implements IIdResolver {
 
   @Override
   public HasType getElementById(IBook book, String id) {
-    if (book == null)
+    if (book == null) {
       throw new IllegalArgumentException();
+    }
 
-    // Get Book Part
-    final int bookEnd = id.indexOf(BOOK_END);
-    final String bookPart = id.substring(1, id.indexOf(BOOK_END));
-
-    // There is more after book or sheet
-    if (id.length() > bookPart.length() + 2) {
-      final int sheetEnd = id.indexOf(SHEET_SEPERATOR);
-      final String sheetPart;
-
-      // Just the sheet is needed
-      if (sheetEnd < 0) {
-        sheetPart = id.substring(bookEnd + 1);
-        return book.getSheet(sheetPart);
+    // Book id
+    String bookName = null;
+    final Matcher bookMatcher = BOOK_PATTERN.matcher(id);
+    final boolean hasBook = bookMatcher.find();
+    if (hasBook) {
+      bookName = bookMatcher.group(1);
+      // Case where this is an id for a different book
+      if (!bookName.equals(book.getName())) {
+        return null; // TODO: we may want to change this once we support inter-workbook references
       }
+      if (id.length() == bookMatcher.end()) {
+        return book;
+      }
+    }
 
-      // ID is for Row or Cell
-      else {
-        final ISheet sheet = book.getSheet(id.substring(bookEnd + 1, sheetEnd));
-        final int rowLock = id.indexOf(LOCK);
+    // Sheet id
+    String sheetName = null;
+    final Matcher sheetMatcher = SHEET_PATTERN.matcher(id);
+    if (sheetMatcher.find(hasBook ? bookMatcher.end() : 0)) {
+      sheetName = sheetMatcher.group(1);
+      if (id.length() == sheetMatcher.end()) {
+        return book.getSheet(sheetName);
+      }
+    }
 
-        // No lock character, get the cell
-        if (rowLock < 0) {
-          final Matcher matcher = p.matcher(id.substring(sheetEnd + 1));
-          if (!matcher.matches()) {
-            throw new IllegalArgumentException("Invalid ID format given: " + id);
-          }
-          return book.getCell(sheet, Integer.parseInt(matcher.group(2)) - 1, matcher.group(1));
-        }
-
-        // Lock Character, get row
-        else {
-          return sheet.getRow(Integer.parseInt(id.substring(rowLock + 1)) - 1);
+    // Cell or Row id
+    if (sheetName != null) {
+      final Matcher cellMatcher = CELL_PATTERN.matcher(id);
+      if (cellMatcher.find()) {
+        final String col = cellMatcher.group(COL_GRP);
+        final int row = Integer.parseInt(cellMatcher.group(ROW_GRP)) - 1;
+        if (cellMatcher.group(LOCK_GRP).isEmpty()) {
+          return book.getCell(sheetName, row, col);
+        } else {
+          return book.getRow(sheetName, row);
         }
       }
     }
-    // Only book ID given
-    else {
-      return book.getName().equals(bookPart) ? book : null;
-    }
+
+    throw new IllegalArgumentException("Bad ID format given: " + id);
   }
 
   protected String getId(IBook book, ISheet sheet, IRow row, ICell cell) {
@@ -109,7 +120,7 @@ public abstract class AbstractIdResolver implements IIdResolver {
   }
 
   protected StringBuilder addSheet(ISheet sheet, StringBuilder sb) {
-    return sb.append(sheet.getName());
+    return sb.append('\'').append(sheet.getName()).append('\'');
   }
 
   protected StringBuilder addRow(IRow row, StringBuilder sb) {
