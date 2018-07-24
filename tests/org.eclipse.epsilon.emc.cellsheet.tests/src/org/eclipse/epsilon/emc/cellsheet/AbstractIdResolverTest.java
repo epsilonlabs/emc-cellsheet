@@ -60,17 +60,17 @@ public class AbstractIdResolverTest {
 
   @Test
   public void getId_should_return_id_when_given_sheet() throws Exception {
-    assertEquals("[" + BOOK_NAME + "]" + SHEET_NAME, resolver.getId(sheet));
+    assertEquals("[" + BOOK_NAME + "]'" + SHEET_NAME + "'", resolver.getId(sheet));
   }
 
   @Test
   public void getId_should_return_id_when_given_row() throws Exception {
-    assertEquals("[" + BOOK_NAME + "]" + SHEET_NAME + "!A$" + (ROW_INDEX + 1), resolver.getId(row));
+    assertEquals("[" + BOOK_NAME + "]'" + SHEET_NAME + "'!A$" + (ROW_INDEX + 1), resolver.getId(row));
   }
 
   @Test
   public void getId_should_return_id_when_given_cell() throws Exception {
-    assertEquals("[" + BOOK_NAME + "]" + SHEET_NAME + "!" + COLUMN_INDEX + (ROW_INDEX + 1),
+    assertEquals("[" + BOOK_NAME + "]'" + SHEET_NAME + "'!" + COLUMN_INDEX + (ROW_INDEX + 1),
         resolver.getId(cell));
   }
 
