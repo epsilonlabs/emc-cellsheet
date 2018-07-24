@@ -13,9 +13,8 @@ import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
-import org.apache.poi.ss.formula.PrintingEvaluationListener;
 import org.apache.poi.ss.formula.WorkbookEvaluator;
-import org.apache.poi.ss.formula.WorkbookEvaluatorHelper;
+import org.apache.poi.ss.formula.WorkbookEvaluatorProvider;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
@@ -45,7 +44,6 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundExce
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
-import org.eclipse.epsilon.eol.parse.Eol_EolParserRules.returnStatement_return;
 
 public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbook> {
 
@@ -382,9 +380,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
         throw new AssertionError("Workbook technology not supported");
       }
 
-      evaluator =
-          WorkbookEvaluatorHelper.create(XSSFEvaluationWorkbook.create((XSSFWorkbook) delegate),
-              new PrintingEvaluationListener(), null, null);
+      evaluator = ((WorkbookEvaluatorProvider) delegate.getCreationHelper().createFormulaEvaluator())._getWorkbookEvaluator();
       aiFunctions = AiFunctions.create(this);
       delegate.addToolPack(aiFunctions);
       
