@@ -11,52 +11,37 @@ import org.apache.poi.ss.formula.eval.ValueEval;
 import org.apache.poi.ss.formula.functions.LookupUtilsDelegate;
 import org.eclipse.epsilon.emc.cellsheet.excel.ExcelBook;
 
-/**
- * Abstract Interpretation of VLOOKUP that returns the cell address of the resolved value.
- * 
- * Adapted from {@link org.apache.poi.ss.formula.functions.Vlookup}.
- * 
- * @author Jonathan Co
- *
- */
-public class AiVlookup extends AbstractVar3or4ArgAiFunction {
-
-  public static final String EXCEL_NAME = "VLOOKUP";
-  public static final String AI_NAME = "AIVLOOKUP";
-  public static final int FUNCTION_ID = 102;
+public class AiHlookup extends AbstractVar3or4ArgAiFunction {
+  
+  public static final String EXCEL_NAME = "HLOOKUP";
+  public static final String AI_NAME = "AIHLOOKUP";
+  public static final int FUNCTION_ID = 101;
 
   private static final ValueEval DEFAULT_ARG3 = BoolEval.TRUE;
 
-  public AiVlookup(ExcelBook book) {
+
+  public AiHlookup(ExcelBook book) {
     super(book);
   }
 
-  @Override
-  public ValueEval evaluate(ValueEval[] args, OperationEvaluationContext ec) {
-    return evaluate(args, ec.getRowIndex(), ec.getColumnIndex());
-  }
-
-  @Override
   public ValueEval evaluate(int srcRowIndex, int srcColumnIndex, ValueEval arg0, ValueEval arg1,
       ValueEval arg2) {
     return evaluate(srcRowIndex, srcColumnIndex, arg0, arg1, arg2, DEFAULT_ARG3);
   }
 
-  @Override
-  public ValueEval evaluate(int srcRowIndex, int srcColumnIndex, ValueEval lookup_value,
-      ValueEval table_array, ValueEval col_index, ValueEval range_lookup) {
-
+  public ValueEval evaluate(int srcRowIndex, int srcColumnIndex, ValueEval arg0, ValueEval arg1,
+      ValueEval arg2, ValueEval arg3) {
     try {
       // Evaluation order:
-      // lookup_value , table_array, range_lookup, find lookup value, col_index, fetch result
-      ValueEval lookupValue =
-          OperandResolver.getSingleValue(lookup_value, srcRowIndex, srcColumnIndex);
-      TwoDEval tableArray = LookupUtilsDelegate.resolveTableArrayArg(table_array);
+      // arg0 lookup_value, arg1 table_array, arg3 range_lookup, find lookup value, arg2 row_index,
+      // fetch result
+      ValueEval lookupValue = OperandResolver.getSingleValue(arg0, srcRowIndex, srcColumnIndex);
+      TwoDEval tableArray = LookupUtilsDelegate.resolveTableArrayArg(arg1);
       boolean isRangeLookup =
-          LookupUtilsDelegate.resolveRangeLookupArg(range_lookup, srcRowIndex, srcColumnIndex);
-      int rowIndex = LookupUtilsDelegate.lookupIndexOfValue(lookupValue,
-          LookupUtilsDelegate.createColumnVector(tableArray, 0), isRangeLookup);
-      int colIndex = LookupUtilsDelegate.resolveRowOrColIndexArg(col_index, srcRowIndex, srcColumnIndex);
+          LookupUtilsDelegate.resolveRangeLookupArg(arg3, srcRowIndex, srcColumnIndex);
+      int colIndex = LookupUtilsDelegate.lookupIndexOfValue(lookupValue,
+          LookupUtilsDelegate.createRowVector(tableArray, 0), isRangeLookup);
+      int rowIndex = LookupUtilsDelegate.resolveRowOrColIndexArg(arg2, srcRowIndex, srcColumnIndex);
 
       // Get actual cell reference rather than cell value
       // FIXME: Make this more robust - lets check for additional sheets and resolve the actual
@@ -68,25 +53,32 @@ public class AiVlookup extends AbstractVar3or4ArgAiFunction {
 
       return new StringEval(
           book.getCell(_tableArray.getFirstSheetIndex(), rowIndex, colIndex).getId());
-
     } catch (EvaluationException e) {
-      throw new UnsupportedOperationException("Error occurred during evaluation of " + getAiName(),
-          e);
+      return e.getErrorEval();
     }
   }
 
   @Override
   public String getExcelName() {
-    return EXCEL_NAME;
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
   public String getAiName() {
-    return AI_NAME;
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
   public int getFunctionId() {
-    return FUNCTION_ID;
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public ValueEval evaluate(ValueEval[] args, OperationEvaluationContext ec) {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

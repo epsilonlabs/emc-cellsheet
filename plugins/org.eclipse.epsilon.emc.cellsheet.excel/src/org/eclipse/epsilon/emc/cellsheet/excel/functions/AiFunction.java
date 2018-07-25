@@ -2,6 +2,7 @@ package org.eclipse.epsilon.emc.cellsheet.excel.functions;
 
 import org.apache.poi.ss.formula.functions.FreeRefFunction;
 import org.apache.poi.ss.formula.functions.Function;
+import org.eclipse.epsilon.emc.cellsheet.excel.ExcelBook;
 
 /**
  * Interface for defining Excel functions that will return an Abstract Interpretation result rather
@@ -16,4 +17,6 @@ public interface AiFunction extends FreeRefFunction, Function {
   public String getAiName();
 
   public int getFunctionId();
+  
+  public ExcelBook getBook();
 }
