@@ -11,6 +11,7 @@ import org.apache.poi.ss.formula.eval.StringEval;
 import org.apache.poi.ss.formula.eval.ValueEval;
 import org.apache.poi.ss.formula.functions.Function3Arg;
 import org.apache.poi.ss.formula.functions.Function4Arg;
+import org.apache.poi.ss.formula.functions.LookupUtilsDelegate;
 import org.eclipse.epsilon.emc.cellsheet.excel.ExcelBook;
 
 /**
@@ -68,12 +69,12 @@ public class AiVlookup implements Function3Arg, Function4Arg, AiFunction {
       // lookup_value , table_array, range_lookup, find lookup value, col_index, fetch result
       ValueEval lookupValue =
           OperandResolver.getSingleValue(lookup_value, srcRowIndex, srcColumnIndex);
-      TwoDEval tableArray = LookupUtils.resolveTableArrayArg(table_array);
+      TwoDEval tableArray = LookupUtilsDelegate.resolveTableArrayArg(table_array);
       boolean isRangeLookup =
-          LookupUtils.resolveRangeLookupArg(range_lookup, srcRowIndex, srcColumnIndex);
-      int rowIndex = LookupUtils.lookupIndexOfValue(lookupValue,
-          LookupUtils.createColumnVector(tableArray, 0), isRangeLookup);
-      int colIndex = LookupUtils.resolveRowOrColIndexArg(col_index, srcRowIndex, srcColumnIndex);
+          LookupUtilsDelegate.resolveRangeLookupArg(range_lookup, srcRowIndex, srcColumnIndex);
+      int rowIndex = LookupUtilsDelegate.lookupIndexOfValue(lookupValue,
+          LookupUtilsDelegate.createColumnVector(tableArray, 0), isRangeLookup);
+      int colIndex = LookupUtilsDelegate.resolveRowOrColIndexArg(col_index, srcRowIndex, srcColumnIndex);
 
       // Get actual cell reference rather than cell value
       // FIXME: Make this more robust - lets check for additional sheets and resolve the actual
