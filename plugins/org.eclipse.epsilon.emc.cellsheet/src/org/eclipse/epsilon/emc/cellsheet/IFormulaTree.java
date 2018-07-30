@@ -18,6 +18,11 @@ public interface IFormulaTree extends HasType {
    */
   public IFormulaCellValue getCellValue();
 
+  /**
+   * Returns the token of this tree.
+   * 
+   * @return the token of this tree.
+   */
   public IFormulaToken getToken();
 
   /**
@@ -47,25 +52,27 @@ public interface IFormulaTree extends HasType {
   public void addChild(IFormulaTree child);
 
   /**
-   * Delegates to {@link IFormulaTree#evaluate(boolean)} with {@link doAi} set to {@code true}.
+   * Evaluates and returns the current node in the formula tree using the built-in formula evaluator
    * 
    * @return the result of evaluating the current node
    */
   public String evaluate();
 
   /**
-   * Evaluate the current node and return the result as a String.
+   * Evaluates the current node in the formula tree using Abstract Interpretation to produce an
+   * intermediary result
    * 
-   * If the {@code doAi} flag is set to {@code true} then the formula is evaluated using Abstract
-   * Interpretation producing intermediary results where required. i.e. =VLOOKUP(A1, B1:D55, 1) may
-   * return B1 rather than the actual value of B1.
-   * 
-   * @param doAI if set to {@code true} then Abstract Interpretation is performed
-   * @return the result of evaluating the current node
+   * i.e. VLOOKUP(A1, B1:D55, 1) will return B1 the cell address rather than the value of B1
+   * (assuming the result of the VLOOKUP is in B1).
    */
-  public String evaluate(boolean doAi);
+  public String interpret();
 
-  public String toFormula();
+  /**
+   * Returns a formula string built at this tree. Will only elements that are children of this tree.
+   * 
+   * @return a formula string representation of this tree
+   */
+  public String getFormula();
 
   @Override
   default Type getType() {

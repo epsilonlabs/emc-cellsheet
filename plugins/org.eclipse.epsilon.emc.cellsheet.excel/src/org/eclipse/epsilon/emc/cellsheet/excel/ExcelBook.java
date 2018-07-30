@@ -13,12 +13,14 @@ import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
+import org.apache.poi.ss.formula.WorkbookEvaluator;
+import org.apache.poi.ss.formula.WorkbookEvaluatorProvider;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -35,6 +37,7 @@ import org.eclipse.epsilon.emc.cellsheet.IIdResolver;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.eclipse.epsilon.emc.cellsheet.Type;
+import org.eclipse.epsilon.emc.cellsheet.excel.functions.AiFunctions;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
@@ -57,7 +60,9 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
   final Map<Cell, ExcelCell> _cells = new HashMap<Cell, ExcelCell>();
   final ExcelIdResolver _idResolver = new ExcelIdResolver();
 
+  WorkbookEvaluator evaluator = null;
   FormulaParsingWorkbook fpw = null;
+  AiFunctions aiFunctions = null;
 
   @Override
   public Object createInstance(String type)
@@ -375,6 +380,10 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
         throw new AssertionError("Workbook technology not supported");
       }
 
+      evaluator = ((WorkbookEvaluatorProvider) delegate.getCreationHelper().createFormulaEvaluator())._getWorkbookEvaluator();
+      aiFunctions = AiFunctions.create(this);
+      delegate.addToolPack(aiFunctions);
+      
     } catch (Exception e) {
       throw new EolModelLoadingException(e, this);
     }
@@ -434,6 +443,14 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
       return false;
     }
     return true;
+  }
+
+  public WorkbookEvaluator getEvaluator() {
+    return evaluator;
+  }
+  
+  public AiFunctions getAiFunctions() {
+    return aiFunctions;
   }
 
   @Override
