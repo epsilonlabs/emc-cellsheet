@@ -7,3 +7,4 @@ Bundle-Vendor: eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.epsilon.eol.engine;bundle-version="1.4.0";visibility:=reexport
 Export-Package: org.eclipse.epsilon.emc.cellsheet
+Automatic-Module-Name: org.eclipse.epsilon.emc.cellsheet

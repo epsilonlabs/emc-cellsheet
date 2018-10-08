@@ -27,3 +27,4 @@ Export-Package: org.apache.log4j,
  org.apache.log4j.spi,
  org.apache.log4j.varia,
  org.apache.log4j.xml
+Automatic-Module-Name: org.apache.log4j_1.2.17

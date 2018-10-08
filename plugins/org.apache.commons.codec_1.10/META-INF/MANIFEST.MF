@@ -10,3 +10,4 @@ Export-Package: org.apache.commons.codec,
  org.apache.commons.codec.language,
  org.apache.commons.codec.language.bm,
  org.apache.commons.codec.net
+Automatic-Module-Name: org.apache.commons.codec_1.10.0

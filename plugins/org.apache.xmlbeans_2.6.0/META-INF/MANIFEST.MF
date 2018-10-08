@@ -139,3 +139,4 @@ Require-Bundle: javax.xml,
  org.eclipse.core.runtime,
  org.apache.ant
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.apache.xmlbeans_2.6.0
