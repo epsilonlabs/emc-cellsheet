@@ -5,12 +5,12 @@ import org.apache.poi.ss.formula.ptg.Ptg;
 
 class FormulaUtil {
 
-  private FormulaUtil() {
-    throw new AssertionError();
-  }
+	private FormulaUtil() {
+		throw new AssertionError();
+	}
 
-  static boolean isSumPtg(Ptg ptg) {
-    return ptg instanceof AttrPtg && ((AttrPtg) ptg).isSum();
-  }
+	static boolean isSumPtg(Ptg ptg) {
+		return ptg instanceof AttrPtg && ((AttrPtg) ptg).isSum();
+	}
 
 }
