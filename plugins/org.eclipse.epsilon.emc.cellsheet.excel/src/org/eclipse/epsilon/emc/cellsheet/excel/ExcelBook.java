@@ -28,7 +28,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
-import org.eclipse.epsilon.emc.cellsheet.AbstractBook;
 import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.HasId;
 import org.eclipse.epsilon.emc.cellsheet.HasType;
@@ -45,8 +44,9 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundExce
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
+import org.eclipse.epsilon.eol.models.Model;
 
-public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbook> {
+public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 
 	public static final String EXCEL_PROPERTY_NAME = "EXCEL_NAME";
 	public static final String EXCEL_PROPERTY_NAME_DEFAULT = "Excel";
@@ -430,6 +430,21 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public Object getTypeOf(Object instance) {
+		return IBook.super.getTypeOf(instance);
+	}
+
+	@Override
+	public String getTypeNameOf(Object instance) {
+		return IBook.super.getTypeNameOf(instance);
+	}
+
+	@Override
+	public boolean isOfType(Object instance, String metaClass) throws EolModelElementTypeNotFoundException { // stub
+		return IBook.super.isOfType(instance, metaClass);
 	}
 
 	public WorkbookEvaluator getEvaluator() {
