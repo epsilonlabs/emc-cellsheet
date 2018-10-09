@@ -21,7 +21,7 @@ public class AbstractIdResolverTest {
   public MockitoRule mockito = MockitoJUnit.rule().silent();
 
   @Mock(answer = Answers.CALLS_REAL_METHODS)
-  AbstractIdResolver resolver;
+  IdUtil resolver;
 
   @Mock
   IBook book;
