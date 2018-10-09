@@ -2,7 +2,6 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
-import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.ICellValue;
 import org.eclipse.epsilon.emc.cellsheet.IdUtil;
@@ -68,12 +67,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	public Cell getDelegate() {
 		return this.delegate;
 	}
-
-	@Override
-	public void setDelegate(Cell delegate) {
-		this.delegate = delegate;
-	}
-
+	
 	@Override
 	public ExcelSheet getSheet() {
 		return sheet;

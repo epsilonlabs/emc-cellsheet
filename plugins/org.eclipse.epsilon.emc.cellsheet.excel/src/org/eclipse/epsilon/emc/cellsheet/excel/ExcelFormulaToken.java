@@ -3,7 +3,6 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import java.lang.reflect.Method;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
-import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaToken;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
 import org.eclipse.epsilon.emc.cellsheet.Type;
@@ -37,11 +36,6 @@ public class ExcelFormulaToken implements IFormulaToken, HasDelegate<Ptg> {
 	@Override
 	public Ptg getDelegate() {
 		return this.delegate;
-	}
-
-	@Override
-	public void setDelegate(Ptg delegate) {
-		this.delegate = delegate;
 	}
 
 	@Override

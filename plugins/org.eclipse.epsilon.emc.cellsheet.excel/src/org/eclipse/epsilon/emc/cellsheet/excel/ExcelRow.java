@@ -8,7 +8,6 @@ import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
-import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.IdUtil;
@@ -70,11 +69,6 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 	@Override
 	public ExcelSheet getSheet() {
 		return sheet;
-	}
-
-	@Override
-	public void setDelegate(Row delegate) {
-		this.delegate = delegate;
 	}
 
 	@Override

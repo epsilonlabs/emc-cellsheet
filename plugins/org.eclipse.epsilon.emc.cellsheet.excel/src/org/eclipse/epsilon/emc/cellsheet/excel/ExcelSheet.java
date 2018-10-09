@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Sheet;
-import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.eclipse.epsilon.emc.cellsheet.IdUtil;
@@ -65,11 +64,6 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 		final List<IRow> rows = new ArrayList<>();
 		this.delegate.rowIterator().forEachRemaining(r -> rows.add(this.book.getRow(this, r.getRowNum())));
 		return rows;
-	}
-
-	@Override
-	public void setDelegate(Sheet delegate) {
-		this.delegate = delegate;
 	}
 
 	@Override

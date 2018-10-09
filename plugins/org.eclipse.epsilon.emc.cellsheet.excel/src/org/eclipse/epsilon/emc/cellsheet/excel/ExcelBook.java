@@ -28,7 +28,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
-import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.HasId;
 import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
@@ -399,11 +398,6 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	@Override
 	public Workbook getDelegate() {
 		return this.delegate;
-	}
-
-	@Override
-	public void setDelegate(Workbook delegate) {
-		this.delegate = delegate;
 	}
 
 	@Override
