@@ -212,7 +212,7 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 
 	@Override
 	public ExcelRow getRow(int sheet, int index) {
-		return this.getRow(getSheet(sheet), index);
+		return getRow(getSheet(sheet), index);
 	}
 
 	@Override
@@ -296,13 +296,13 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	@Override
 	public Collection<?> getAllOfKind(String type) throws EolModelElementTypeNotFoundException {
 		// FIXME: Add in sub-types for Excel only implementations
-		return this.getAllOfType(type);
+		return getAllOfType(type);
 	}
 
 	@Override
 	public Collection<?> getAllOfType(String typename) throws EolModelElementTypeNotFoundException {
-		if (!this.hasType(typename)) {
-			throw new EolModelElementTypeNotFoundException(this.name, typename);
+		if (!hasType(typename)) {
+			throw new EolModelElementTypeNotFoundException(name, typename);
 		}
 
 		final List<Object> list = new ArrayList<Object>();
@@ -331,14 +331,9 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	@Override
 	public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
 		super.load(properties, resolver);
-
-		final String excelFilePath = properties.getProperty(ExcelBook.EXCEL_PROPERTY_FILE);
-		this.setExcelFile(excelFilePath);
-
-		final String modelName = properties.getProperty(ExcelBook.EXCEL_PROPERTY_NAME, "Excel");
-		this.setName(modelName);
-
-		this.load();
+		setExcelFile(properties.getProperty(ExcelBook.EXCEL_PROPERTY_FILE));
+		setName(properties.getProperty(ExcelBook.EXCEL_PROPERTY_NAME, "Excel"));
+		load();
 	}
 
 	@Override
@@ -382,17 +377,16 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	}
 
 	public void setExcelFile(final String filepath) {
-		final File file = (new File(filepath)).getAbsoluteFile();
-		if (!file.exists()) {
+		excelFile = (new File(filepath)).getAbsoluteFile();
+		if (!excelFile.exists()) {
 			final IllegalArgumentException e = new IllegalArgumentException("Bad filepath given: " + filepath);
 			throw e;
 		}
-		this.excelFile = file;
 	}
 
 	@Override
 	public Workbook getDelegate() {
-		return this.delegate;
+		return delegate;
 	}
 
 	@Override
@@ -455,7 +449,7 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 
 	@Override
 	public String toString() {
-		return "[" + this.excelFile.getName().toString() + "]";
+		return "[" + excelFile.getName().toString() + "]";
 	}
 
 }
