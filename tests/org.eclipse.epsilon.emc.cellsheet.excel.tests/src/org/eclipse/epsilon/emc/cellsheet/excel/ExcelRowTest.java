@@ -50,22 +50,9 @@ public class ExcelRowTest {
 	}
 
 	@Test
-	public void cellIterator_should_return_iterator_with_all_cells_in_row() throws Exception {
-		final List<Integer> expected = Arrays.asList(0, 1, 2);
-		final Iterator<ExcelCell> it = row.cellIterator();
-		ICell cell;
-		while (it.hasNext()) {
-			cell = it.next();
-			assertEquals(row, cell.getRow());
-			assertEquals(3, cell.getRowIndex());
-			assertTrue(expected.contains(cell.getColIndex()));
-		}
-	}
-
-	@Test
 	public void cells_should_return_List_with_all_cells_in_row() throws Exception {
 		final List<Integer> expected = Arrays.asList(0, 1, 2);
-		for (ExcelCell cell : row.cells()) {
+		for (ICell cell : row.cells()) {
 			assertEquals(row, cell.getRow());
 			assertEquals(3, cell.getRowIndex());
 			assertTrue(expected.contains(cell.getColIndex()));

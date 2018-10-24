@@ -1,7 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import java.util.Iterator;
 import java.util.List;
+
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.models.IModel;
 
@@ -23,32 +23,20 @@ public interface IBook extends HasId, HasType, IModel, Iterable<ISheet> {
 	public static final Type[] KINDS = { TYPE };
 
 	public ICell getCell(IRow row, int col);
-
 	public ICell getCell(ISheet sheet, int row, int col);
-
 	public ICell getCell(ISheet sheet, int row, String col);
-
 	public ICell getCell(String sheetName, int row, int col);
-
 	public ICell getCell(String sheetName, int row, String col);
-
 	public ICell getCell(int sheetIndex, int row, int col);
-
 	public ICell getCell(int sheetIndex, int row, String col);
 
 	public IRow getRow(int sheetIndex, int index);
-
 	public IRow getRow(ISheet sheet, int index);
-
 	public IRow getRow(String sheetName, int index);
 
 	public ISheet getSheet(int index);
-
 	public ISheet getSheet(String name);
-
 	public List<? extends ISheet> sheets();
-
-	public Iterator<? extends ISheet> sheetIterator();
 
 	@Override
 	default Object getTypeOf(Object obj) {

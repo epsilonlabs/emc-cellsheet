@@ -1,9 +1,12 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.collections4.iterators.TransformIterator;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
@@ -51,19 +54,17 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
 	@Override
 	public Iterator<IRow> iterator() {
-		return this.rows().iterator();
-	}
-
-	@Override
-	public Iterator<IRow> rowIterator() {
-		return this.rows().iterator();
+		return new TransformIterator<Row, IRow>(delegate.iterator(), new Transformer<Row, ExcelRow>() {
+			@Override
+			public ExcelRow transform(Row row) {
+				return book.getRow(row);
+			}
+		});
 	}
 
 	@Override
 	public List<IRow> rows() {
-		final List<IRow> rows = new ArrayList<>();
-		this.delegate.rowIterator().forEachRemaining(r -> rows.add(this.book.getRow(this, r.getRowNum())));
-		return rows;
+		return IteratorUtils.toList(iterator());
 	}
 
 	@Override

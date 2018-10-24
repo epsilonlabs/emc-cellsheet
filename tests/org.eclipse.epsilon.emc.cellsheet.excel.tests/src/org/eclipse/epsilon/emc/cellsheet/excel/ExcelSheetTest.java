@@ -81,18 +81,4 @@ public class ExcelSheetTest {
 		assertTrue(expectedRows.isEmpty());
 	}
 
-	@Test
-	public void rowIterator_should_return_6_rows() throws Exception {
-		Iterator<IRow> it = sheet.rowIterator();
-		IRow r;
-		while (it.hasNext()) {
-			r = it.next();
-			assertEquals(book, r.getBook());
-			assertEquals(sheet, r.getSheet());
-			assertThat(expectedRows, hasItem(r.getIndex()));
-			expectedRows.remove(r.getIndex());
-		}
-		assertTrue(expectedRows.isEmpty());
-	}
-
 }

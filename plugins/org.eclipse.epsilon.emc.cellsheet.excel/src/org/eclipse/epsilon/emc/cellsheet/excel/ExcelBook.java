@@ -3,12 +3,12 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
@@ -141,14 +141,8 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 		if (!owns(row)) {
 			throw new IllegalArgumentException("row arg must belong to this book, was given: " + row);
 		}
-
-		final Cell poiCell = ((ExcelRow) row).getDelegate().getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK);
-		ExcelCell excelCell = _cells.get(poiCell);
-		if (excelCell == null) {
-			excelCell = new ExcelCell((ExcelRow) row, poiCell);
-			_cells.put(poiCell, excelCell);
-		}
-		return excelCell;
+		
+		return getCell(((ExcelRow) row).getDelegate().getCell(col));
 	}
 
 	@Override
@@ -180,6 +174,19 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	public ExcelCell getCell(int sheetIndex, int row, String col) {
 		return getCell(getRow(sheetIndex, row), CellReference.convertColStringToIndex(col));
 	}
+	
+	ExcelCell getCell(Cell cell) {
+		if (cell == null) {
+			return null;
+		}
+		
+		ExcelCell excelCell = _cells.get(cell);
+		if (excelCell == null) {
+			excelCell = new ExcelCell(getRow(cell.getRow()), cell);
+			_cells.put(cell, excelCell);
+		}
+		return excelCell;
+	}
 
 	@Override
 	public ExcelRow getRow(ISheet sheet, int index) {
@@ -196,20 +203,11 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 			throw new IllegalArgumentException("sheet arg must belong to this book, was given: " + sheet);
 		}
 
-		// Get a POI row to work with
-		final ExcelSheet excelSheet = (ExcelSheet) sheet;
-		Row poiRow = excelSheet.getDelegate().getRow(index);
-		if (poiRow == null) {
-			poiRow = excelSheet.getDelegate().createRow(index);
+		Row row = ((ExcelSheet) sheet).getDelegate().getRow(index);
+		if (row == null) {
+			row = ((ExcelSheet) sheet).getDelegate().createRow(index);
 		}
-
-		// Check if cached row already exists.
-		ExcelRow excelRow = _rows.get(poiRow);
-		if (excelRow == null) {
-			excelRow = new ExcelRow((ExcelSheet) sheet, poiRow);
-			_rows.put(poiRow, excelRow);
-		}
-		return excelRow;
+		return getRow(row);
 	}
 
 	@Override
@@ -220,6 +218,20 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	@Override
 	public ExcelRow getRow(String sheet, int index) {
 		return getRow(getSheet(sheet), index);
+	}
+	
+	ExcelRow getRow(Row row) {
+		if (row == null) {
+			return null;
+		}
+		
+		// Check if cached row already exists.
+		ExcelRow excelRow = _rows.get(row);
+		if (excelRow == null) {
+			excelRow = new ExcelRow(getSheet(row.getSheet()), row);
+			_rows.put(row, excelRow);
+		}
+		return excelRow;
 	}
 
 	@Override
@@ -257,25 +269,17 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 
 	@Override
 	public Iterator<ISheet> iterator() {
-		return new TransformIterator<ExcelSheet, ISheet>(this.sheetIterator(), new Transformer<ExcelSheet, ISheet>() {
+		return new TransformIterator<Sheet, ISheet>(delegate.iterator(), new Transformer<Sheet, ISheet>() {
 			@Override
-			public ISheet transform(ExcelSheet input) {
-				return input;
+			public ISheet transform(Sheet input) {
+				return getSheet(input);
 			}
 		});
 	}
 
 	@Override
-	public Iterator<ExcelSheet> sheetIterator() {
-		return this.sheets().iterator();
-	}
-
-	@Override
-	public List<ExcelSheet> sheets() {
-		this.delegate.sheetIterator().forEachRemaining(s -> this.getSheet(s));
-		List<ExcelSheet> list = new ArrayList<ExcelSheet>(_sheets.values());
-		Collections.sort(list);
-		return list;
+	public List<ISheet> sheets() {
+		return IteratorUtils.toList(iterator());
 	}
 
 	@Override
@@ -301,37 +305,27 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 			throw new EolModelElementTypeNotFoundException(this.name, typename);
 		}
 
-		final Type type = Type.fromTypeName(typename);
-
-		if (type == Type.BOOK) {
-			List<IBook> list = new ArrayList<IBook>(1);
+		final List<Object> list = new ArrayList<Object>();
+		
+		switch(Type.fromTypeName(typename)) {
+		case BOOK:
 			list.add(this);
-			return list;
+			break;
+		case SHEET:
+			list.addAll(sheets());
+			break;
+		case ROW:
+			iterator().forEachRemaining(s -> list.addAll(s.rows()));
+			break;
+		case CELL:
+			iterator().forEachRemaining(s -> s.iterator().forEachRemaining(r -> list.addAll(r.cells())));
+			break;
+		
+		default:
+			throw new AssertionError();
 		}
-
-		if (type == Type.SHEET) {
-			return this.sheets();
-		}
-
-		if (type == Type.ROW) {
-			final List<IRow> rows = new ArrayList<>();
-			for (ExcelSheet sheet : this.sheets()) {
-				rows.addAll(sheet.rows());
-			}
-			return rows;
-		}
-
-		if (type == Type.CELL) {
-			final List<ICell> cells = new ArrayList<>();
-			for (ExcelSheet sheet : this.sheets()) {
-				for (IRow row : sheet.rows()) {
-					cells.addAll(row.cells());
-				}
-			}
-			return cells;
-		}
-
-		throw new AssertionError();
+		
+		return list;
 	}
 
 	@Override
@@ -352,7 +346,8 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 		try {
 			fpw = null;
 			delegate = WorkbookFactory.create(excelFile);
-
+			delegate.setMissingCellPolicy(MissingCellPolicy.CREATE_NULL_AS_BLANK);
+			
 			if (delegate instanceof HSSFWorkbook) {
 				fpw = HSSFEvaluationWorkbook.create((HSSFWorkbook) delegate);
 			}

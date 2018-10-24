@@ -1,6 +1,5 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import java.util.Iterator;
 import java.util.List;
 
 public interface IRow extends HasId, HasType, Comparable<IRow>, Iterable<ICell> {
@@ -8,18 +7,13 @@ public interface IRow extends HasId, HasType, Comparable<IRow>, Iterable<ICell> 
 	public static final Type TYPE = Type.ROW;
 	public static final Type[] KINDS = { TYPE };
 
+	public int getIndex();
+	
+	public ICell getCell(int colIdx);
+	public ICell getCell(String column);
 	public List<? extends ICell> cells();
 
-	public Iterator<? extends ICell> cellIterator();
-
-	public ICell getCell(int colIdx);
-
-	public ICell getCell(String column);
-
-	public int getIndex();
-
 	public ISheet getSheet();
-
 	public IBook getBook();
 
 	@Override

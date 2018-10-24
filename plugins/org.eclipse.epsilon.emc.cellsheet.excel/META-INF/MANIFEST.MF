@@ -9,7 +9,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.slf4j.api;bundle-version="1.7.2",
  org.eclipse.epsilon.emc.cellsheet;bundle-version="1.0.0";visibility:=reexport,
  org.eclipse.epsilon.emc.cellsheet.excel.dependencies;bundle-version="1.0.0";visibility:=reexport,
- org.eclipse.epsilon.eol.engine
+ org.eclipse.epsilon.eol.engine,
+ org.eclipse.epsilon.emc.emf;bundle-version="1.5.1",
+ org.eclipse.epsilon.emc.emf.virtual;bundle-version="1.5.1"
 Bundle-ManifestVersion: 2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: eclipse.org

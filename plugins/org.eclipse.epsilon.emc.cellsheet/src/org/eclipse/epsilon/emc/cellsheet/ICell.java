@@ -5,18 +5,14 @@ public interface ICell extends HasId, HasType, Comparable<ICell> {
 	public static final Type TYPE = Type.CELL;
 	public static final Type[] KINDS = { TYPE };
 
-	public ISheet getSheet();
-
 	public int getColIndex();
-
 	public String getCol();
-
-	public IRow getRow();
-
 	public int getRowIndex();
-
+	
 	public ICellValue<?> getValue();
 
+	public IRow getRow();
+	public ISheet getSheet();
 	public IBook getBook();
 
 	@Override

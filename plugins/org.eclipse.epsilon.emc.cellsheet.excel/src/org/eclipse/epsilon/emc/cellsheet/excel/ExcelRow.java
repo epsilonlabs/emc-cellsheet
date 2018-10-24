@@ -1,11 +1,12 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
@@ -25,15 +26,8 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 	}
 
 	@Override
-	public Iterator<ExcelCell> cellIterator() {
-		return cells().iterator();
-	}
-
-	@Override
-	public List<ExcelCell> cells() {
-		final List<ExcelCell> cells = new ArrayList<>();
-		this.delegate.cellIterator().forEachRemaining(c -> cells.add(book.getCell(this, c.getColumnIndex())));
-		return cells;
+	public List<ICell> cells() {
+		return IteratorUtils.toList(iterator());
 	}
 
 	@Override
@@ -73,10 +67,10 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 
 	@Override
 	public Iterator<ICell> iterator() {
-		return new TransformIterator<ExcelCell, ICell>(this.cellIterator(), new Transformer<ExcelCell, ICell>() {
+		return new TransformIterator<Cell, ICell>(delegate.iterator(), new Transformer<Cell, ExcelCell>() {
 			@Override
-			public ICell transform(ExcelCell input) {
-				return input;
+			public ExcelCell transform(Cell input) {
+				return book.getCell(input);
 			}
 		});
 	}
