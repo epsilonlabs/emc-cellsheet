@@ -2,11 +2,13 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.Transformer;
@@ -34,7 +36,6 @@ import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
-import org.eclipse.epsilon.emc.cellsheet.IdUtil;
 import org.eclipse.epsilon.emc.cellsheet.Type;
 import org.eclipse.epsilon.emc.cellsheet.excel.functions.AiFunctions;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
@@ -42,11 +43,19 @@ import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundExce
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
+import org.eclipse.epsilon.eol.models.CachedModel;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
-import org.eclipse.epsilon.eol.models.Model;
 
-public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
+public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegate<Workbook> {
 
+	public static final int BOOK_IDX = 0;
+	public static final int SHEET_IDX = 1;
+	public static final int ROW_IDX = 2;
+	public static final int COL_IDX = 3;
+	public static final int VALUE_IDX = 4;
+	public static final int TREE_IDX = 5;
+	public static final int TOKEN_IDX = 6;
+	
 	public static final String EXCEL_PROPERTY_NAME = "EXCEL_NAME";
 	public static final String EXCEL_PROPERTY_NAME_DEFAULT = "Excel";
 	public static final String EXCEL_PROPERTY_FILE = "EXCEL_FILE";
@@ -55,28 +64,67 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	protected Workbook delegate = null;
 	protected File excelFile = null;
 
-	final Map<Sheet, ExcelSheet> _sheets = new HashMap<Sheet, ExcelSheet>();
-	final Map<Row, ExcelRow> _rows = new HashMap<Row, ExcelRow>();
-	final Map<Cell, ExcelCell> _cells = new HashMap<Cell, ExcelCell>();
+	final Map<String, HasType> idMap = new HashMap<String, HasType>();
+
+//	final Map<Sheet, ExcelSheet> _sheets = new HashMap<Sheet, ExcelSheet>();
+//	final Map<Row, ExcelRow> _rows = new HashMap<Row, ExcelRow>();
+//	final Map<Cell, ExcelCell> _cells = new HashMap<Cell, ExcelCell>();
 
 	WorkbookEvaluator evaluator = null;
 	FormulaParsingWorkbook fpw = null;
 	AiFunctions aiFunctions = null;
 
 	@Override
-	public Object createInstance(String type)
+	protected Collection<HasType> allContentsFromModel() {
+		this.forEach(s -> s.forEach(r -> r.forEach(c -> c.getValue())));
+		return idMap.values();
+	}
+
+	@Override
+	protected HasType createInstanceInModel(String type)
 			throws EolModelElementTypeNotFoundException, EolNotInstantiableModelElementTypeException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void deleteElement(Object instance) throws EolRuntimeException {
+	protected boolean deleteElementInModel(Object instance) throws EolRuntimeException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Object getElementById(String id) {
-		return IdUtil.getElementById(this, id);
+		final String[] parts = id.split("/");
+		
+		if (parts.length == 0 || !parts[BOOK_IDX].equals(getId())) {
+			return null;
+		}
+		
+		ISheet sheet = null;
+		if (SHEET_IDX < parts.length) {
+			sheet = getSheet(parts[SHEET_IDX]);
+		} else {
+			return this;
+		}
+		
+		IRow row = null;
+		if (ROW_IDX < parts.length) {
+			row = getRow(sheet, Integer.parseInt(parts[ROW_IDX]));
+		} else {
+			return sheet;
+		}
+		
+		ICell cell = null;
+		if (COL_IDX < parts.length) {
+			cell = getCell(row, Integer.parseInt(parts[COL_IDX]));
+		} else {
+			return row;
+		}
+		
+		if (parts.length > COL_IDX) {
+			return cell;
+		}
+		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -94,7 +142,7 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 
 	@Override
 	public String getId() {
-		return IdUtil.getId(this);
+		return getName();
 	}
 
 	@Override
@@ -123,11 +171,6 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	}
 
 	@Override
-	public Collection<?> allContents() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public ExcelCell getCell(IRow row, int col) {
 		if (col < 0) {
 			throw new IndexOutOfBoundsException("col index must be positive, was given: " + col);
@@ -142,7 +185,17 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 			throw new IllegalArgumentException("row arg must belong to this book, was given: " + row);
 		}
 		
-		return getCell(((ExcelRow) row).getDelegate().getCell(col));
+		ExcelRow excelRow = (ExcelRow) row;
+		
+		Cell poi = excelRow.getDelegate().getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		String id = excelRow.getId() + "/" + col;
+		
+		ExcelCell excelCell = (ExcelCell) idMap.get(id);
+		if (excelCell == null) {
+			excelCell = new ExcelCell(excelRow, poi);
+			idMap.put(id, excelCell);
+		}
+		return excelCell;
 	}
 
 	@Override
@@ -174,19 +227,6 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	public ExcelCell getCell(int sheetIndex, int row, String col) {
 		return getCell(getRow(sheetIndex, row), CellReference.convertColStringToIndex(col));
 	}
-	
-	ExcelCell getCell(Cell cell) {
-		if (cell == null) {
-			return null;
-		}
-		
-		ExcelCell excelCell = _cells.get(cell);
-		if (excelCell == null) {
-			excelCell = new ExcelCell(getRow(cell.getRow()), cell);
-			_cells.put(cell, excelCell);
-		}
-		return excelCell;
-	}
 
 	@Override
 	public ExcelRow getRow(ISheet sheet, int index) {
@@ -202,12 +242,22 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 		if (!this.owns(sheet)) {
 			throw new IllegalArgumentException("sheet arg must belong to this book, was given: " + sheet);
 		}
+		
+		ExcelSheet excelSheet = (ExcelSheet) sheet;
 
-		Row row = ((ExcelSheet) sheet).getDelegate().getRow(index);
-		if (row == null) {
-			row = ((ExcelSheet) sheet).getDelegate().createRow(index);
+		Row poi = excelSheet.getDelegate().getRow(index);
+		if (poi == null) {
+			poi = excelSheet.getDelegate().createRow(index);
 		}
-		return getRow(row);
+		
+		String id = excelSheet.getId() + "/" + index;
+		ExcelRow excelRow = (ExcelRow) idMap.get(id);
+		if (excelRow == null) {
+			excelRow = new ExcelRow(excelSheet, poi);
+			idMap.put(id, excelRow);
+		}
+		
+		return excelRow;
 	}
 
 	@Override
@@ -218,20 +268,6 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	@Override
 	public ExcelRow getRow(String sheet, int index) {
 		return getRow(getSheet(sheet), index);
-	}
-	
-	ExcelRow getRow(Row row) {
-		if (row == null) {
-			return null;
-		}
-		
-		// Check if cached row already exists.
-		ExcelRow excelRow = _rows.get(row);
-		if (excelRow == null) {
-			excelRow = new ExcelRow(getSheet(row.getSheet()), row);
-			_rows.put(row, excelRow);
-		}
-		return excelRow;
 	}
 
 	@Override
@@ -249,17 +285,18 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 		return getSheet(delegate.getSheet(name));
 	}
 
-	ExcelSheet getSheet(Sheet delegate) {
-		if (delegate == null) {
+	ExcelSheet getSheet(Sheet poi) {
+		if (poi == null) {
 			return null;
 		}
-
-		ExcelSheet excelSheet = _sheets.get(delegate);
-		if (excelSheet == null) {
-			excelSheet = new ExcelSheet(this, delegate);
-			_sheets.put(delegate, excelSheet);
+		
+		String id = getId() + "/" + poi.getSheetName();
+		ExcelSheet sheet = (ExcelSheet) idMap.get(id);
+		if (sheet == null) {
+			sheet = new ExcelSheet(this, poi);
+			idMap.put(id, sheet);
 		}
-		return excelSheet;
+		return sheet;
 	}
 
 	@Override
@@ -294,20 +331,20 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	}
 
 	@Override
-	public Collection<?> getAllOfKind(String type) throws EolModelElementTypeNotFoundException {
+	public Collection<HasType> getAllOfKindFromModel(String type) throws EolModelElementTypeNotFoundException {
 		// FIXME: Add in sub-types for Excel only implementations
-		return getAllOfType(type);
+		return getAllOfTypeFromModel(type);
 	}
 
 	@Override
-	public Collection<?> getAllOfType(String typename) throws EolModelElementTypeNotFoundException {
+	public Collection<HasType> getAllOfTypeFromModel(String typename) throws EolModelElementTypeNotFoundException {
 		if (!hasType(typename)) {
 			throw new EolModelElementTypeNotFoundException(name, typename);
 		}
 
-		final List<Object> list = new ArrayList<Object>();
-		
-		switch(Type.fromTypeName(typename)) {
+		final List<HasType> list = new ArrayList<HasType>();
+
+		switch (Type.fromTypeName(typename)) {
 		case BOOK:
 			list.add(this);
 			break;
@@ -320,11 +357,11 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 		case CELL:
 			iterator().forEachRemaining(s -> s.iterator().forEachRemaining(r -> list.addAll(r.cells())));
 			break;
-		
+
 		default:
 			throw new AssertionError();
 		}
-		
+
 		return list;
 	}
 
@@ -337,12 +374,12 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	}
 
 	@Override
-	public void load() throws EolModelLoadingException {
+	public void loadModel() throws EolModelLoadingException {
 		try {
 			fpw = null;
 			delegate = WorkbookFactory.create(excelFile);
 			delegate.setMissingCellPolicy(MissingCellPolicy.CREATE_NULL_AS_BLANK);
-			
+
 			if (delegate instanceof HSSFWorkbook) {
 				fpw = HSSFEvaluationWorkbook.create((HSSFWorkbook) delegate);
 			}
@@ -373,6 +410,11 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 
 	@Override
 	public boolean store(String location) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected void disposeModel() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -428,6 +470,23 @@ public class ExcelBook extends Model implements IBook, HasDelegate<Workbook> {
 	@Override
 	public boolean isOfType(Object instance, String metaClass) throws EolModelElementTypeNotFoundException { // stub
 		return IBook.super.isOfType(instance, metaClass);
+	}
+
+	@Override
+	protected Collection<String> getAllTypeNamesOf(Object instance) {
+		if (instance instanceof HasType) {
+			return Arrays.stream(((HasType) instance).getKinds()).map(k -> k.getTypeName()).collect(Collectors.toSet());
+		}
+		throw new IllegalArgumentException();
+	}
+
+	@Override
+	protected Object getCacheKeyForType(String typename) throws EolModelElementTypeNotFoundException {
+		Type type = Type.fromTypeName(typename);
+		if (type == null) {
+			throw new EolModelElementTypeNotFoundException(name, typename);
+		}
+		return type;
 	}
 
 	public WorkbookEvaluator getEvaluator() {

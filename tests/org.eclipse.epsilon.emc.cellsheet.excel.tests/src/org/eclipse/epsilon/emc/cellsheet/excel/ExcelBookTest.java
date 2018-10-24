@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.util.Collection;
 import org.eclipse.epsilon.common.util.StringProperties;
+import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.eclipse.epsilon.emc.cellsheet.Type;
@@ -216,25 +217,25 @@ public class ExcelBookTest {
 
 	@Test
 	public void getElementId_should_return_book_id_when_given_book() throws Exception {
-		assertEquals("[" + book.getName() + "]", book.getElementId(book));
+		assertEquals("ExcelBookTest.xlsx", book.getElementId(book));
 	}
 
 	@Test
 	public void getElementId_should_return_sheet_id_when_given_sheet() throws Exception {
 		final ExcelSheet sheet = book.getSheet("Data");
-		assertEquals("[ExcelBookTest.xlsx]'Data'", book.getElementId(sheet));
+		assertEquals("ExcelBookTest.xlsx/Data", book.getElementId(sheet));
 	}
 
 	@Test
 	public void getElementId_should_return_row_id_when_given_row() throws Exception {
 		final ExcelRow row = book.getRow("Data", 3);
-		assertEquals("[ExcelBookTest.xlsx]'Data'!A$4", book.getElementId(row));
+		assertEquals("ExcelBookTest.xlsx/Data/3", book.getElementId(row));
 	}
 
 	@Test
 	public void getElementId_should_return_cell_id_when_given_cell() throws Exception {
 		final ExcelCell cell = book.getCell("Data", 3, 0);
-		assertEquals("[ExcelBookTest.xlsx]'Data'!A4", book.getElementId(cell));
+		assertEquals("ExcelBookTest.xlsx/Data/3/0", book.getElementId(cell));
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -254,14 +255,14 @@ public class ExcelBookTest {
 
 	@Test
 	public void getElementById_should_return_book_when_given_book_id() throws Exception {
-		final String id = "[ExcelBookTest.xlsx]";
+		final String id = "ExcelBookTest.xlsx";
 		assertEquals(id, book.getId());
 		assertEquals(book, book.getElementById(id));
 	}
 
 	@Test
 	public void getElementById_should_return_sheet_when_given_sheet_id() throws Exception {
-		final String id = "[ExcelBookTest.xlsx]'Data'";
+		final String id = "ExcelBookTest.xlsx/Data";
 		final ExcelSheet sheet = book.getSheet("Data");
 		assertEquals(id, sheet.getId());
 		assertEquals(sheet, book.getElementById(id));
@@ -269,7 +270,7 @@ public class ExcelBookTest {
 
 	@Test
 	public void getElementById_should_return_row_when_given_row_id() throws Exception {
-		final String id = "[ExcelBookTest.xlsx]'Data'!A$60";
+		final String id = "ExcelBookTest.xlsx/Data/59";
 		final ExcelRow row = book.getRow("Data", 59);
 		assertEquals(id, row.getId());
 		assertEquals(row, book.getElementById(id));
@@ -277,7 +278,7 @@ public class ExcelBookTest {
 
 	@Test
 	public void getElementById_should_return_cell_when_given_cell_id() throws Exception {
-		final String id = "[ExcelBookTest.xlsx]'Data'!A4";
+		final String id = "ExcelBookTest.xlsx/Data/3/0";
 		final ExcelCell cell = book.getCell("Data", 3, 0);
 		assertEquals(id, cell.getId());
 		assertEquals(cell, book.getElementById(id));

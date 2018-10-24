@@ -11,7 +11,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
-import org.eclipse.epsilon.emc.cellsheet.IdUtil;
 
 public class ExcelRow implements IRow, HasDelegate<Row> {
 
@@ -32,7 +31,7 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 
 	@Override
 	public ExcelBook getBook() {
-		return this.book;
+		return book;
 	}
 
 	@Override
@@ -47,17 +46,17 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 
 	@Override
 	public String getId() {
-		return IdUtil.getId(this);
+		return sheet.getId() + "/" + getIndex();
 	}
 
 	@Override
 	public int getIndex() {
-		return this.delegate.getRowNum();
+		return delegate.getRowNum();
 	}
 
 	@Override
 	public Row getDelegate() {
-		return this.delegate;
+		return delegate;
 	}
 
 	@Override
@@ -69,15 +68,15 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 	public Iterator<ICell> iterator() {
 		return new TransformIterator<Cell, ICell>(delegate.iterator(), new Transformer<Cell, ExcelCell>() {
 			@Override
-			public ExcelCell transform(Cell input) {
-				return book.getCell(input);
+			public ExcelCell transform(Cell cell) {
+				return ExcelRow.this.getCell(cell.getColumnIndex());
 			}
 		});
 	}
 
 	@Override
 	public String toString() {
-		return this.getId();
+		return getId();
 	}
 
 }

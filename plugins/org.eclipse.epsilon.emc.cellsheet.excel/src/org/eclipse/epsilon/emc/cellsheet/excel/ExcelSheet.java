@@ -10,7 +10,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
-import org.eclipse.epsilon.emc.cellsheet.IdUtil;
 
 public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
@@ -24,40 +23,40 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
 	@Override
 	public ExcelBook getBook() {
-		return this.book;
+		return book;
 	}
 
 	@Override
 	public String getId() {
-		return IdUtil.getId(this);
+		return book.getId() + "/" + getName();
 	}
 
 	@Override
 	public int getIndex() {
-		return this.book.getDelegate().getSheetIndex(this.delegate);
+		return book.getDelegate().getSheetIndex(this.delegate);
 	}
 
 	@Override
 	public String getName() {
-		return this.delegate.getSheetName();
+		return delegate.getSheetName();
 	}
 
 	@Override
 	public Sheet getDelegate() {
-		return this.delegate;
+		return delegate;
 	}
 
 	@Override
 	public ExcelRow getRow(int rowIdx) {
-		return this.book.getRow(this, rowIdx);
+		return book.getRow(this, rowIdx);
 	}
 
 	@Override
 	public Iterator<IRow> iterator() {
-		return new TransformIterator<Row, IRow>(delegate.iterator(), new Transformer<Row, ExcelRow>() {
+		return new TransformIterator<Row, IRow>(delegate.iterator(), new Transformer<Row, IRow>() {
 			@Override
-			public ExcelRow transform(Row row) {
-				return book.getRow(row);
+			public IRow transform(Row row) {
+				return ExcelSheet.this.getRow(row.getRowNum());
 			}
 		});
 	}
@@ -69,6 +68,6 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
 	@Override
 	public String toString() {
-		return this.getId();
+		return getId();
 	}
 }

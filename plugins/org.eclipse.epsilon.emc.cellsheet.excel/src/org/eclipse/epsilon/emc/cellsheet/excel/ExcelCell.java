@@ -4,7 +4,6 @@ import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.ICellValue;
-import org.eclipse.epsilon.emc.cellsheet.IdUtil;
 
 public class ExcelCell implements ICell, HasDelegate<Cell> {
 
@@ -60,7 +59,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 
 	@Override
 	public String getId() {
-		return IdUtil.getId(this);
+		return row.getId() + "/" + getColIndex();
 	}
 
 	@Override
