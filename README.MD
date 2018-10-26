@@ -7,6 +7,13 @@
 
 Epsilon Model Connectivity (EMC) driver that supports low-level interaction with Spreadsheets files as models. This is an alternative to the [Spreadsheet Driver (_org.eclipse.epsilon.emc.spreadsheets_)](http://download.eclipse.org/epsilon/javadoc/org/eclipse/epsilon/emc/spreadsheets/package-summary.html) currently available in the main Epsilon distribution. Unlike the Spreadsheets Driver, Cellsheet uses a like-for-like metaphor to model a spreadsheet. Sheets are represented as Sheet types, Cells as Cell types, etc.
 
+# Update Sites
+Following Orbit repository is required:
+http://download.eclipse.org/tools/orbit/downloads/drops/R20180606145124/repository/
+
+Epsilon Interim is currently required as well:
+http://download.eclipse.org/epsilon/interim/
+
 ## Model Element Types
 Cellsheet features model elements that map to the typical spreadsheet metaphor. Primary model elements available include:
 - Book
