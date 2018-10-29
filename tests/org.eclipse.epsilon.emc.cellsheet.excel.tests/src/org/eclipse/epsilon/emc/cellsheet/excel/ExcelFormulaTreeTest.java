@@ -1,6 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import static org.junit.Assert.assertEquals;
+
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
@@ -22,7 +23,7 @@ public class ExcelFormulaTreeTest {
 		final IFormulaTree tree = ((IFormulaCellValue) cell.getValue()).getFormulaTree();
 
 		final String result = tree.evaluate();
-		final String aiResult = tree.interpret();
+		final ICell aiResult = tree.evaluateCell();
 		assertEquals("C1 Result", result);
 		assertEquals("ExcelFormulaTreeTest.xlsx/Lookup/0/2", aiResult);
 	}

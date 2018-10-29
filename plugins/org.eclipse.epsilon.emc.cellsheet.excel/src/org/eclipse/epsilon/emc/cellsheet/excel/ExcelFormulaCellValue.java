@@ -46,6 +46,7 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 		}
 	}
 
+	@Deprecated
 	@Override
 	public List<ICellRegion> getReferencedRegions() {
 		final Ptg[] tokens = this.parseFormula();
@@ -101,6 +102,7 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 		return regions;
 	}
 
+	@Deprecated
 	@Override
 	public List<ICell> getReferencedCells() {
 		List<ICellRegion> regions = getReferencedRegions();

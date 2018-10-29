@@ -2,7 +2,7 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.List;
 
-public interface IRow extends HasId, HasType, Comparable<IRow>, Iterable<ICell> {
+public interface IRow extends HasId, Comparable<IRow>, Iterable<ICell> {
 
 	public static final Type TYPE = Type.ROW;
 	public static final Type[] KINDS = { TYPE };

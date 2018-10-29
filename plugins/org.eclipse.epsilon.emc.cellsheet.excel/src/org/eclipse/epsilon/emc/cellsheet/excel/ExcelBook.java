@@ -37,7 +37,6 @@ import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.eclipse.epsilon.emc.cellsheet.Type;
-import org.eclipse.epsilon.emc.cellsheet.excel.functions.AiFunctions;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
@@ -55,7 +54,7 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 	public static final int VALUE_IDX = 4;
 	public static final int TREE_IDX = 5;
 	public static final int TOKEN_IDX = 6;
-	
+
 	public static final String EXCEL_PROPERTY_NAME = "EXCEL_NAME";
 	public static final String EXCEL_PROPERTY_NAME_DEFAULT = "Excel";
 	public static final String EXCEL_PROPERTY_FILE = "EXCEL_FILE";
@@ -72,7 +71,6 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 
 	WorkbookEvaluator evaluator = null;
 	FormulaParsingWorkbook fpw = null;
-	AiFunctions aiFunctions = null;
 
 	@Override
 	protected Collection<HasType> allContentsFromModel() {
@@ -94,36 +92,36 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 	@Override
 	public Object getElementById(String id) {
 		final String[] parts = id.split("/");
-		
+
 		if (parts.length == 0 || !parts[BOOK_IDX].equals(getId())) {
 			return null;
 		}
-		
+
 		ISheet sheet = null;
 		if (SHEET_IDX < parts.length) {
 			sheet = getSheet(parts[SHEET_IDX]);
 		} else {
 			return this;
 		}
-		
+
 		IRow row = null;
 		if (ROW_IDX < parts.length) {
 			row = getRow(sheet, Integer.parseInt(parts[ROW_IDX]));
 		} else {
 			return sheet;
 		}
-		
+
 		ICell cell = null;
 		if (COL_IDX < parts.length) {
 			cell = getCell(row, Integer.parseInt(parts[COL_IDX]));
 		} else {
 			return row;
 		}
-		
+
 		if (parts.length > COL_IDX) {
 			return cell;
 		}
-		
+
 		throw new UnsupportedOperationException();
 	}
 
@@ -184,12 +182,12 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 		if (!owns(row)) {
 			throw new IllegalArgumentException("row arg must belong to this book, was given: " + row);
 		}
-		
+
 		ExcelRow excelRow = (ExcelRow) row;
-		
+
 		Cell poi = excelRow.getDelegate().getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK);
 		String id = excelRow.getId() + "/" + col;
-		
+
 		ExcelCell excelCell = (ExcelCell) idMap.get(id);
 		if (excelCell == null) {
 			excelCell = new ExcelCell(excelRow, poi);
@@ -242,21 +240,21 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 		if (!this.owns(sheet)) {
 			throw new IllegalArgumentException("sheet arg must belong to this book, was given: " + sheet);
 		}
-		
+
 		ExcelSheet excelSheet = (ExcelSheet) sheet;
 
 		Row poi = excelSheet.getDelegate().getRow(index);
 		if (poi == null) {
 			poi = excelSheet.getDelegate().createRow(index);
 		}
-		
+
 		String id = excelSheet.getId() + "/" + index;
 		ExcelRow excelRow = (ExcelRow) idMap.get(id);
 		if (excelRow == null) {
 			excelRow = new ExcelRow(excelSheet, poi);
 			idMap.put(id, excelRow);
 		}
-		
+
 		return excelRow;
 	}
 
@@ -289,7 +287,7 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 		if (poi == null) {
 			return null;
 		}
-		
+
 		String id = getId() + "/" + poi.getSheetName();
 		ExcelSheet sheet = (ExcelSheet) idMap.get(id);
 		if (sheet == null) {
@@ -395,9 +393,6 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 
 			evaluator = ((WorkbookEvaluatorProvider) delegate.getCreationHelper().createFormulaEvaluator())
 					._getWorkbookEvaluator();
-			aiFunctions = AiFunctions.create(this);
-			delegate.addToolPack(aiFunctions);
-
 		} catch (Exception e) {
 			throw new EolModelLoadingException(e, this);
 		}
@@ -491,10 +486,6 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 
 	public WorkbookEvaluator getEvaluator() {
 		return evaluator;
-	}
-
-	public AiFunctions getAiFunctions() {
-		return aiFunctions;
 	}
 
 	@Override

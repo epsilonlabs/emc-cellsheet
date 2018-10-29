@@ -3,16 +3,17 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.apache.poi.ss.formula.WorkbookEvaluator;
+
 import org.apache.poi.ss.formula.eval.OperandResolver;
 import org.apache.poi.ss.formula.eval.ValueEval;
 import org.apache.poi.ss.formula.ptg.AbstractFunctionPtg;
+import org.apache.poi.ss.formula.ptg.Area3DPxg;
+import org.apache.poi.ss.formula.ptg.AreaPtgBase;
 import org.apache.poi.ss.formula.ptg.PercentPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
 import org.apache.poi.ss.util.CellReference;
+import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
 
 /**
@@ -28,11 +29,6 @@ public class ExcelFormulaTree implements IFormulaTree {
 	protected ExcelFormulaTree parent;
 	protected ExcelFormulaToken token;
 	protected List<ExcelFormulaTree> children;
-
-	// Pattern for matching the first occurrence of a function. Used when performing
-	// abstract
-	// interpretation
-	private static final Pattern p = Pattern.compile("\\w+\\Q(\\E");
 
 	public ExcelFormulaTree(ExcelFormulaCellValue cellValue, ExcelFormulaTree parent, Ptg ptg) {
 		super();
@@ -94,30 +90,61 @@ public class ExcelFormulaTree implements IFormulaTree {
 	}
 
 	@Override
-	public String interpret() {
-		String formula = getFormula();
-		Matcher m = p.matcher(formula);
-		if (m.find()) {
-			int start = m.start();
-			int end = m.end() - 1;
-			String replacement = book.getAiFunctions().getInterpretedFunction(formula.substring(start, end));
-			if (replacement != null) {
-				StringBuilder sb = new StringBuilder();
-				sb.append(formula, 0, start);
-				sb.append(replacement);
-				sb.append(formula, end, formula.length());
-				formula = sb.toString();
-			}
+	public ICell evaluateCell() {
+		if (!(token.delegate instanceof AbstractFunctionPtg)) {
+			return cell;			
 		}
-		return doEvaluation(formula);
+		
+		AbstractFunctionPtg function = (AbstractFunctionPtg) token.delegate;
+		String newFormula = null;
+		
+		// TODO: Translate this to a transformation
+		switch (function.getName()) {
+		case "VLOOKUP":			
+			// Determine new lookup table
+			AreaPtgBase table_array = (AreaPtgBase) getChildAt(1).token.delegate;
+			String lookupCol = CellReference.convertNumToColString(table_array.getFirstColumn());
+			int firstRow = table_array.getFirstRow();
+			int lastRow = table_array.getLastRow();
+			
+			String sheetName = cell.getSheet().getName();	// Determine the sheet to use for refs
+			if (table_array instanceof Area3DPxg) {
+				sheetName = ((Area3DPxg) table_array).getSheetName();
+			}
+		
+			String newTableArray = String.format("%s!%s%d:%s%d", sheetName, lookupCol, firstRow+1, lookupCol, lastRow);
+			
+			// Determine whether to do range lookup
+			String isRangeLookup = "1";
+			if (function.getNumberOfOperands() > 3) {
+				isRangeLookup = getChildAt(3).getFormula();
+			}
+
+			// ADDRESS( MATCH ($lookup_value, $lookup_array, $is_exact_match), $not_needed, $not_needed, $sheet_to_look_in)
+			newFormula = String.format(
+					"ADDRESS(MATCH(%s,%s,%s),%s,,,\"%s\")",
+					getChildAt(0).getFormula(),
+					newTableArray,
+					isRangeLookup,
+					getChildAt(2).getFormula(),
+					sheetName);
+			break;
+		default:
+			throw new UnsupportedOperationException();
+		}
+		
+		System.out.println(newFormula);
+		String doEvaluation = doEvaluation(newFormula);
+		System.out.println(doEvaluation);
+		
+		return null;
 	}
 
 	String doEvaluation(String formula) {
-		final WorkbookEvaluator evaluator = book.evaluator;
-		CellReference ref = new CellReference(this.cell.getDelegate());
-		ValueEval result = evaluator.evaluate(formula, ref);
+		CellReference ref = new CellReference(cell.getSheet().getName(), cell.getRowIndex(), cell.getColIndex(), false, false);
+		
+		ValueEval result = book.evaluator.evaluate(formula, ref);
 		return OperandResolver.coerceValueToString(result);
-
 	}
 
 	@Override
@@ -182,4 +209,6 @@ public class ExcelFormulaTree implements IFormulaTree {
 		return this.token + " -> " + this.getFormula();
 	}
 
+	
+	
 }

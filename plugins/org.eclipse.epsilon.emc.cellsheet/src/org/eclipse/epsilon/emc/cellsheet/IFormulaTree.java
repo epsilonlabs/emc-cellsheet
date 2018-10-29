@@ -63,13 +63,15 @@ public interface IFormulaTree extends HasType {
 	public String evaluate();
 
 	/**
-	 * Evaluates the current node in the formula tree using Abstract Interpretation
-	 * to produce an intermediary result
+	 * Return the Cell element that the evaulation result is held in.
 	 * 
-	 * i.e. VLOOKUP(A1, B1:D55, 1) will return B1 the cell address rather than the
-	 * value of B1 (assuming the result of the VLOOKUP is in B1).
+	 * For reference functions such as LOOKUPS this will be where the cell value is
+	 * located. For all other functions (such as stat operations) the value is
+	 * contained within the cell where the formula is located.
+	 * 
+	 * @return
 	 */
-	public String interpret();
+	public ICell evaluateCell();
 
 	/**
 	 * Returns a formula string built at this tree. Will only elements that are

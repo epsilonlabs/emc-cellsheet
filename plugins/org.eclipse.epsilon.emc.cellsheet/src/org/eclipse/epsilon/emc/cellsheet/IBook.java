@@ -17,7 +17,7 @@ import org.eclipse.epsilon.eol.models.IModel;
  * @author Jonathan Co
  *
  */
-public interface IBook extends HasId, HasType, IModel, Iterable<ISheet> {
+public interface IBook extends HasId, IModel, Iterable<ISheet> {
 
 	public static final Type TYPE = Type.BOOK;
 	public static final Type[] KINDS = { TYPE };

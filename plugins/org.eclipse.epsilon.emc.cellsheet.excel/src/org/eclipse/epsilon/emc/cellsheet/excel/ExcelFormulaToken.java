@@ -1,6 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.lang.reflect.Method;
+
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaToken;
@@ -22,22 +23,7 @@ public class ExcelFormulaToken implements IFormulaToken, HasDelegate<Ptg> {
 		this.parent = excelFormulaTree;
 		this.delegate = delegate;
 	}
-
-	@Override
-	public Type getType() {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
-	@Override
-	public Type[] getKinds() {
-		return new Type[] { this.getType(), Type.FORMULA_TOKEN };
-	}
-
-	@Override
-	public Ptg getDelegate() {
-		return this.delegate;
-	}
-
+	
 	@Override
 	public IFormulaTree getFormulaTree() {
 		return this.parent;
@@ -90,4 +76,21 @@ public class ExcelFormulaToken implements IFormulaToken, HasDelegate<Ptg> {
 		}
 		return this.delegate.toFormulaString();
 	}
+	
+	@Override
+	public Ptg getDelegate() {
+		return this.delegate;
+	}
+	
+	@Override
+	public Type getType() {
+		// TODO
+		throw new UnsupportedOperationException("Not implemented");
+	}
+
+	@Override
+	public Type[] getKinds() {
+		return new Type[] { this.getType(), Type.FORMULA_TOKEN };
+	}
+
 }

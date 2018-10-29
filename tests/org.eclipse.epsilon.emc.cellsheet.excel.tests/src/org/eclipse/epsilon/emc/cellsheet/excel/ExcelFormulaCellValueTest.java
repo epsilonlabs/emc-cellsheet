@@ -1,17 +1,18 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
-import org.eclipse.epsilon.emc.cellsheet.excel.ExcelBook;
-import org.eclipse.epsilon.emc.cellsheet.excel.ExcelCell;
-import org.eclipse.epsilon.emc.cellsheet.excel.ExcelFormulaCellValue;
 import org.junit.Before;
 import org.junit.Test;
 

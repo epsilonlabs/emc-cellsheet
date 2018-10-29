@@ -2,7 +2,7 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.List;
 
-public interface ISheet extends HasId, HasType, Comparable<ISheet>, Iterable<IRow> {
+public interface ISheet extends HasId, Comparable<ISheet>, Iterable<IRow> {
 
 	public static final Type TYPE = Type.SHEET;
 	public static final Type[] KIND = { TYPE };
