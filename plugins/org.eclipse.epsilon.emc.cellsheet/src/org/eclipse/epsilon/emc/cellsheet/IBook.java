@@ -23,19 +23,29 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 	public static final Type[] KINDS = { TYPE };
 
 	public ICell getCell(IRow row, int col);
+
 	public ICell getCell(ISheet sheet, int row, int col);
+
 	public ICell getCell(ISheet sheet, int row, String col);
+
 	public ICell getCell(String sheetName, int row, int col);
+
 	public ICell getCell(String sheetName, int row, String col);
+
 	public ICell getCell(int sheetIndex, int row, int col);
+
 	public ICell getCell(int sheetIndex, int row, String col);
 
 	public IRow getRow(int sheetIndex, int index);
+
 	public IRow getRow(ISheet sheet, int index);
+
 	public IRow getRow(String sheetName, int index);
 
 	public ISheet getSheet(int index);
+
 	public ISheet getSheet(String name);
+
 	public List<? extends ISheet> sheets();
 
 	@Override
@@ -44,6 +54,48 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 		if (type == null)
 			throw new IllegalArgumentException("Object not a model element");
 		return type;
+	}
+	
+	default HasId getElementById(ElementId id) {
+		// ID same as this book
+		if (getId().equals(id.toString())) {
+			return this;
+		}
+
+		// Check which book the element belongs to
+		IBook book;
+		if (id.getBook() != null) {
+			if (getName().equals(id.getBook())) {
+				book = this;
+			} else {
+				return null;
+			}
+		} else {
+			book = this;
+		}
+
+		ISheet sheet = book.getSheet(id.getSheet());
+
+		IRow row;
+		if (id.getRow() > -1) {
+			row = sheet.getRow(id.getRow());
+		} else {
+			return sheet;
+		}
+
+		ICell cell;
+		if (id.getCol() > -1) {
+			cell = row.getCell(id.getCol());
+		} else {
+			return row;
+		}
+
+		return cell;
+	}
+
+	@Override
+	default Object getElementById(String id) {
+		return getElementById(ElementId.fromString(id));
 	}
 
 	@Override
@@ -72,6 +124,11 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 	@Override
 	default Type[] getKinds() {
 		return IBook.KINDS;
+	}
+
+	@Override
+	default String getId() {
+		return ElementId.toString(getName(), null, -1, -1);
 	}
 
 }

@@ -47,14 +47,6 @@ import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 
 public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegate<Workbook> {
 
-	public static final int BOOK_IDX = 0;
-	public static final int SHEET_IDX = 1;
-	public static final int ROW_IDX = 2;
-	public static final int COL_IDX = 3;
-	public static final int VALUE_IDX = 4;
-	public static final int TREE_IDX = 5;
-	public static final int TOKEN_IDX = 6;
-
 	public static final String EXCEL_PROPERTY_NAME = "EXCEL_NAME";
 	public static final String EXCEL_PROPERTY_NAME_DEFAULT = "Excel";
 	public static final String EXCEL_PROPERTY_FILE = "EXCEL_FILE";
@@ -64,10 +56,6 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 	protected File excelFile = null;
 
 	final Map<String, HasType> idMap = new HashMap<String, HasType>();
-
-//	final Map<Sheet, ExcelSheet> _sheets = new HashMap<Sheet, ExcelSheet>();
-//	final Map<Row, ExcelRow> _rows = new HashMap<Row, ExcelRow>();
-//	final Map<Cell, ExcelCell> _cells = new HashMap<Cell, ExcelCell>();
 
 	WorkbookEvaluator evaluator = null;
 	FormulaParsingWorkbook fpw = null;
@@ -91,38 +79,7 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 
 	@Override
 	public Object getElementById(String id) {
-		final String[] parts = id.split("/");
-
-		if (parts.length == 0 || !parts[BOOK_IDX].equals(getId())) {
-			return null;
-		}
-
-		ISheet sheet = null;
-		if (SHEET_IDX < parts.length) {
-			sheet = getSheet(parts[SHEET_IDX]);
-		} else {
-			return this;
-		}
-
-		IRow row = null;
-		if (ROW_IDX < parts.length) {
-			row = getRow(sheet, Integer.parseInt(parts[ROW_IDX]));
-		} else {
-			return sheet;
-		}
-
-		ICell cell = null;
-		if (COL_IDX < parts.length) {
-			cell = getCell(row, Integer.parseInt(parts[COL_IDX]));
-		} else {
-			return row;
-		}
-
-		if (parts.length > COL_IDX) {
-			return cell;
-		}
-
-		throw new UnsupportedOperationException();
+		return IBook.super.getElementById(id);
 	}
 
 	@Override
@@ -136,11 +93,6 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 					"ID not implemented for model type: " + ((HasType) instance).getType());
 		}
 		throw new IllegalArgumentException("No such model element type exists for " + instance.toString());
-	}
-
-	@Override
-	public String getId() {
-		return getName();
 	}
 
 	@Override

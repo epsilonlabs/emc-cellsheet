@@ -63,7 +63,7 @@ public interface IFormulaTree extends HasType {
 	public String evaluate();
 
 	/**
-	 * Return the Cell element that the evaulation result is held in.
+	 * Return the Cell element that the evaluation result is held in.
 	 * 
 	 * For reference functions such as LOOKUPS this will be where the cell value is
 	 * located. For all other functions (such as stat operations) the value is

@@ -35,4 +35,9 @@ public interface ICell extends HasId, HasType, Comparable<ICell> {
 	default Type[] getKinds() {
 		return ICell.KINDS;
 	}
+	
+	@Override
+	default String getId() {
+		return ElementId.toString(getBook().getName(), getSheet().getName(), getRowIndex(), getColIndex());
+	}
 }

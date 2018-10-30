@@ -25,7 +25,7 @@ public class ExcelFormulaTreeTest {
 		final String result = tree.evaluate();
 		final ICell aiResult = tree.evaluateCell();
 		assertEquals("C1 Result", result);
-		assertEquals("ExcelFormulaTreeTest.xlsx/Lookup/0/2", aiResult);
+		assertEquals(book.getCell("Lookup", 0, 2), aiResult);
 	}
 
 	@Test

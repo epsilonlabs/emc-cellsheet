@@ -45,11 +45,6 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 	}
 
 	@Override
-	public String getId() {
-		return sheet.getId() + "/" + getIndex();
-	}
-
-	@Override
 	public int getIndex() {
 		return delegate.getRowNum();
 	}

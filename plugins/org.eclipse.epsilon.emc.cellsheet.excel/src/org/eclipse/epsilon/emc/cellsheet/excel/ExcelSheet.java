@@ -27,11 +27,6 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 	}
 
 	@Override
-	public String getId() {
-		return book.getId() + "/" + getName();
-	}
-
-	@Override
 	public int getIndex() {
 		return book.getDelegate().getSheetIndex(this.delegate);
 	}

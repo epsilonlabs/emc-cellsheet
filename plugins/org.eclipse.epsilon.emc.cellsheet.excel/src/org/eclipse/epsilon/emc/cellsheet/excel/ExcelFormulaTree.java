@@ -96,7 +96,6 @@ public class ExcelFormulaTree implements IFormulaTree {
 		}
 		
 		AbstractFunctionPtg function = (AbstractFunctionPtg) token.delegate;
-		String newFormula = null;
 		
 		// TODO: Translate this to a transformation
 		switch (function.getName()) {
@@ -121,23 +120,21 @@ public class ExcelFormulaTree implements IFormulaTree {
 			}
 
 			// ADDRESS( MATCH ($lookup_value, $lookup_array, $is_exact_match), $not_needed, $not_needed, $sheet_to_look_in)
-			newFormula = String.format(
+			String newFormula = String.format(
 					"ADDRESS(MATCH(%s,%s,%s),%s,,,\"%s\")",
 					getChildAt(0).getFormula(),
 					newTableArray,
 					isRangeLookup,
 					getChildAt(2).getFormula(),
 					sheetName);
-			break;
+			
+			// Evaluate and get cell reference
+			CellReference cr = new CellReference(doEvaluation(newFormula));
+			return CellReferenceUtil.getCell(book, cr);
+			
 		default:
 			throw new UnsupportedOperationException();
-		}
-		
-		System.out.println(newFormula);
-		String doEvaluation = doEvaluation(newFormula);
-		System.out.println(doEvaluation);
-		
-		return null;
+		}		
 	}
 
 	String doEvaluation(String formula) {

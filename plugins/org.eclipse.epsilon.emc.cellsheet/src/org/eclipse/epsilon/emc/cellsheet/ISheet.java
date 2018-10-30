@@ -33,5 +33,10 @@ public interface ISheet extends HasId, Comparable<ISheet>, Iterable<IRow> {
 	default Type[] getKinds() {
 		return ISheet.KIND;
 	}
+	
+	@Override
+	default String getId() {
+		return ElementId.toString(getBook().getName(), getName(), -1, -1);
+	}
 
 }

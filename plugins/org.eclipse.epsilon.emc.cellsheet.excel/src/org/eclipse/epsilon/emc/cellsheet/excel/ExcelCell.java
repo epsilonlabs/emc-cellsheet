@@ -58,11 +58,6 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	}
 
 	@Override
-	public String getId() {
-		return row.getId() + "/" + getColIndex();
-	}
-
-	@Override
 	public Cell getDelegate() {
 		return this.delegate;
 	}

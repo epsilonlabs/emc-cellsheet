@@ -37,4 +37,8 @@ public interface IRow extends HasId, Comparable<IRow>, Iterable<ICell> {
 		return IRow.KINDS;
 	}
 
+	@Override
+	default String getId() {
+		return ElementId.toString(getBook().getName(), getSheet().getName(), getIndex(), -1);
+	}
 }
