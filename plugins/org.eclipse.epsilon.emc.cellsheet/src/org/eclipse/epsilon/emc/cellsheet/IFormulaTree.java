@@ -20,13 +20,6 @@ public interface IFormulaTree extends HasType {
 	public IFormulaCellValue getCellValue();
 
 	/**
-	 * Returns the token of this tree.
-	 * 
-	 * @return the token of this tree.
-	 */
-	public IFormulaToken getToken();
-
-	/**
 	 * @return the parent of this {@link IFormulaTree} or {@code null} if no parent
 	 *         exists
 	 */
@@ -80,6 +73,8 @@ public interface IFormulaTree extends HasType {
 	 * @return a formula string representation of this tree
 	 */
 	public String getFormula();
+	
+	public String getToken();
 
 	@Override
 	default Type getType() {

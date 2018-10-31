@@ -1,6 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
@@ -113,4 +113,5 @@ public class ExcelFormulaTreeTest {
 		assertEquals("(SUM(Data!B1:D5))", right.getFormula());
 		assertEquals(15, Double.parseDouble(right.evaluate()), 0);
 	}
+	
 }
