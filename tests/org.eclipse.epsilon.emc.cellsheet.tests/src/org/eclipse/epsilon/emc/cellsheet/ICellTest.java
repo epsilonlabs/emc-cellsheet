@@ -3,13 +3,15 @@ package org.eclipse.epsilon.emc.cellsheet;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Answers;
-import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -24,16 +26,16 @@ public class ICellTest {
 	@Rule
 	public MockitoRule mockito = MockitoJUnit.rule().silent();
 
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	@Spy
 	ICell cellA;
 
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	@Spy
 	ICell cellB;
 
-	@Mock
+	@Spy
 	IRow row;
 
-	@Mock
+	@Spy
 	ISheet sheet;
 
 	@Before
@@ -90,6 +92,20 @@ public class ICellTest {
 	@Test
 	public void getKinds_should_contain_TypeSheet() throws Exception {
 		assertThat(Arrays.asList(cellA.getKinds()), hasItem(Type.CELL));
+	}
+	
+	@Test
+	public void getId_should_return_valid_id() throws Exception {
+		IBook book = spy(IBook.class);
+		when(sheet.getBook()).thenReturn(book);
+		when(row.getBook()).thenReturn(book);
+
+		when(book.getName()).thenReturn("Test Book.xlsx");
+		when(sheet.getName()).thenReturn("Test Sheet");
+		when(row.getIndex()).thenReturn(4);
+		when(cellA.getColIndex()).thenReturn(9);
+		
+		assertEquals("Test Book.xlsx/Test Sheet/4/9/", cellA.getId());
 	}
 
 }

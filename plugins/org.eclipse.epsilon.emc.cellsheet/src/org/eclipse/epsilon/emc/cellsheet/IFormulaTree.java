@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  * @author Jonathan Co
  *
  */
-public interface IFormulaTree extends HasType {
+public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 
 	public static final Type TYPE = Type.FORMULA_TREE;
 	public static final Type[] KINDS = { IFormulaTree.TYPE };
@@ -100,6 +101,11 @@ public interface IFormulaTree extends HasType {
 	}
 
 	@Override
+	default Iterator<IFormulaTree> iterator() {
+		return getChildren().iterator();
+	}
+	
+	@Override
 	default Type getType() {
 		return IFormulaTree.TYPE;
 	}
@@ -109,5 +115,9 @@ public interface IFormulaTree extends HasType {
 		return IFormulaTree.KINDS;
 	}
 
+	@Override
+	default String getId() {
+		return isRoot() ? getCellValue().getId() + "0/" : getParent().getId() + getParent().getChildren().indexOf(this) + "/";
+	}
 
 }

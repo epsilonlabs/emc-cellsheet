@@ -1,15 +1,15 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Answers;
-import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -24,13 +24,13 @@ public class IRowTest {
 	@Rule
 	public MockitoRule mockito = MockitoJUnit.rule().silent();
 
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	@Spy
 	IRow rowA;
 
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	@Spy
 	IRow rowB;
 
-	@Mock
+	@Spy
 	ISheet sheet;
 
 	@Before
@@ -87,5 +87,17 @@ public class IRowTest {
 	@Test
 	public void getKinds_should_contain_TypeRow() throws Exception {
 		assertThat(Arrays.asList(rowA.getKinds()), hasItem(Type.ROW));
+	}
+	
+	@Test
+	public void getId_should_return_valid_id() throws Exception {
+		IBook book = spy(IBook.class);
+		when(sheet.getBook()).thenReturn(book);
+
+		when(book.getName()).thenReturn("Test Book.xlsx");
+		when(sheet.getName()).thenReturn("Test Sheet");
+		when(rowA.getIndex()).thenReturn(4);
+		
+		assertEquals("Test Book.xlsx/Test Sheet/4/", rowA.getId());
 	}
 }

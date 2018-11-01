@@ -1,13 +1,17 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Answers;
-import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -22,10 +26,10 @@ public class ISheetTest {
 	@Rule
 	public MockitoRule mockito = MockitoJUnit.rule();
 
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	@Spy
 	ISheet sheetA;
 
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	@Spy
 	ISheet sheetB;
 
 	@Test
@@ -69,4 +73,12 @@ public class ISheetTest {
 		assertThat(Arrays.asList(sheetA.getKinds()), hasItem(Type.SHEET));
 	}
 
+	@Test
+	public void getId_should_return_valid_id() throws Exception {
+		IBook book = Mockito.mock(IBook.class, Answers.CALLS_REAL_METHODS);
+		when(book.getName()).thenReturn("Test Book.xlsx");
+		when(sheetA.getBook()).thenReturn(book);
+		when(sheetA.getName()).thenReturn("Test Sheet");
+		assertEquals("Test Book.xlsx/Test Sheet/", sheetA.getId());
+	}
 }

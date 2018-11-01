@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.Collection;
 
 import org.eclipse.epsilon.common.util.StringProperties;
+import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.eclipse.epsilon.emc.cellsheet.Type;
@@ -245,7 +246,8 @@ public class ExcelBookTest {
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void getElementId_should_throw_excpetion_when_given_unsupported_type() throws Exception {
-		book.getElementId(book.getCell("Data", 3, 0).getValue());
+		HasType mock = Mockito.mock(HasType.class);
+		book.getElementId(mock);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

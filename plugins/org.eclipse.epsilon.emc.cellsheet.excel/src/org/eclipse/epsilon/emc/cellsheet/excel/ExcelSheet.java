@@ -63,6 +63,11 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
 	@Override
 	public String toString() {
-		return getId();
+		StringBuilder sb = new StringBuilder();
+		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
+		sb.append("(id: ").append(getId());
+		sb.append(", excelRef: ").append("[").append(getBook().getName()).append("]'").append(getName()).append("'");
+		sb.append(")");
+		return sb.toString();
 	}
 }

@@ -1,12 +1,16 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
+
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Answers;
-import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -15,7 +19,7 @@ public class IBookTest {
 	@Rule
 	public MockitoRule mockito = MockitoJUnit.rule();
 
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	@Spy
 	IBook book;
 
 	@Test
@@ -71,6 +75,12 @@ public class IBookTest {
 	@Test
 	public void getKinds_should_contain_TypeBook() throws Exception {
 		assertTrue(Arrays.asList(book.getKinds()).contains(Type.BOOK));
+	}
+	
+	@Test
+	public void getId_should_return_valid_id() throws Exception {
+		when(book.getName()).thenReturn("Test Book.xlsx");
+		assertEquals("Test Book.xlsx/", book.getId());
 	}
 
 }

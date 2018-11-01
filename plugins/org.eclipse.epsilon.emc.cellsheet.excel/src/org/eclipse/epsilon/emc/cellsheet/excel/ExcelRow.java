@@ -71,7 +71,13 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 
 	@Override
 	public String toString() {
-		return getId();
+		StringBuilder sb = new StringBuilder();
+		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
+		sb.append("(id: ").append(getId());
+		sb.append(", excelRef: ").append("[").append(getBook().getName()).append("]'").append(sheet.getName()).append("'!");
+		sb.append("A").append("$").append(getIndex());
+		sb.append(")");
+		return sb.toString();
 	}
 
 }

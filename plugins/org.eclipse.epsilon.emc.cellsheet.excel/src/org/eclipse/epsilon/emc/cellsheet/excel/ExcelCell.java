@@ -122,7 +122,13 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 
 	@Override
 	public String toString() {
-		return this.getId();
+		StringBuilder sb = new StringBuilder();
+		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
+		sb.append("(id: ").append(getId());
+		sb.append(", excelRef: ").append("[").append(getBook().getName()).append("]'").append(sheet.getName()).append("'!");
+		sb.append("$").append(getCol()).append("$").append(getRowIndex());
+		sb.append(")");
+		return sb.toString();
 	}
 
 	// private void moveSelf(int rowIdx, int colIdx) {

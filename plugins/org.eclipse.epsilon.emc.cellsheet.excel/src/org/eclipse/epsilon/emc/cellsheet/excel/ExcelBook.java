@@ -451,7 +451,12 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 
 	@Override
 	public String toString() {
-		return "[" + excelFile.getName().toString() + "]";
+		StringBuilder sb = new StringBuilder();
+		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
+		sb.append("(id: ").append(getId());
+		sb.append(", excelRef: ").append("[").append(getName()).append("]");
+		sb.append(")");
+		return sb.toString();
 	}
 
 }

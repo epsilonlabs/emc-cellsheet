@@ -20,7 +20,6 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.ICellRegion;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
-import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
 
 /**
  * Excel based representation of a Cell's Formula
@@ -124,7 +123,7 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 	}
 
 	@Override
-	public IFormulaTree getFormulaTree() {
+	public ExcelFormulaTree getFormulaTree() {
 		final Stack<ExcelFormulaTree> trees = new Stack<>();
 		final Stack<ExcelFormulaTree> operands = new Stack<>();
 		
@@ -169,7 +168,13 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 
 	@Override
 	public String toString() {
-		return this.getFormula();
+		StringBuilder sb = new StringBuilder();
+		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
+		sb.append("(id: ").append(getId());
+		sb.append(", formula: ").append(getFormula());
+		sb.append(", value: ").append(getValue());
+		sb.append(")");
+		return sb.toString();
 	}
 
 	@Override

@@ -140,8 +140,7 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 
 			// Evaluate and get cell reference
 			CellReference cr = new CellReference(doEvaluation(newFormula));
-			return CellReferenceUtil.getCell(book, cr);
-
+			return book.getCell(cr.getSheetName(), cr.getRow(), cr.getCol());
 		default:
 			throw new UnsupportedOperationException();
 		}
@@ -173,11 +172,6 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 		return FormulaRenderer.toFormulaString((FormulaRenderingWorkbook) book.fpw, stack.toArray(new Ptg[0]));
 	}
 
-	@Override
-	public String toString() {
-		return getToken();
-	}
-	
 	@Override
 	public String getToken() {
 		return ptgToStr(getDelegate());
@@ -235,4 +229,14 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 		}
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
+		sb.append("(id: ").append(getId());
+		sb.append(", formula: ").append(getFormula());
+		sb.append(", token: ").append(getToken());
+		sb.append(")");
+		return sb.toString();
+	}
 }

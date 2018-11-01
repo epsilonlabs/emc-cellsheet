@@ -1,5 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
@@ -55,47 +57,85 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 			throw new IllegalArgumentException("Object not a model element");
 		return type;
 	}
-	
-	default HasId getElementById(ElementId id) {
-		// ID same as this book
-		if (getId().equals(id.toString())) {
-			return this;
-		}
 
-		// Check which book the element belongs to
+	@Override
+	default Object getElementById(String id) {
+		// Sanitise if this is a relative id
+		if (id.startsWith("/")) {
+			id = getName() + id;
+		}
+		
+		Iterator<String> parts = Arrays.stream(id.split("/")).iterator();
+				
 		IBook book;
-		if (id.getBook() != null) {
-			if (getName().equals(id.getBook())) {
-				book = this;
-			} else {
-				return null;
-			}
-		} else {
+		if (parts.hasNext() && getName().equals(parts.next())) {
 			book = this;
+		} else {
+			return null;
 		}
-
-		ISheet sheet = book.getSheet(id.getSheet());
-
+		
+		ISheet sheet;		
+		if (parts.hasNext()) {
+			sheet = book.getSheet(parts.next());
+		} else {
+			return book;
+		}
+		
 		IRow row;
-		if (id.getRow() > -1) {
-			row = sheet.getRow(id.getRow());
+		if (parts.hasNext()) {
+			row = sheet.getRow(Integer.parseInt(parts.next()));
 		} else {
 			return sheet;
 		}
 
 		ICell cell;
-		if (id.getCol() > -1) {
-			cell = row.getCell(id.getCol());
+		if (parts.hasNext()) {
+			cell = row.getCell(Integer.parseInt(parts.next()));
 		} else {
 			return row;
 		}
-
-		return cell;
-	}
-
-	@Override
-	default Object getElementById(String id) {
-		return getElementById(ElementId.fromString(id));
+		
+		if (!parts.hasNext()) {
+			return cell;
+		}
+		
+		Object toReturn = null;
+		switch(parts.next()) {
+		case "value":
+			if (cell.getValue().getType() != Type.FORMULA_CELL_VALUE) {
+				toReturn = cell.getValue();
+				break;
+			}
+			
+			// No more parts, only interested in the formula cell value element
+			if (!parts.hasNext()) {
+				toReturn = cell.getFormulaCellValue();
+				break;
+			}
+			
+			// Get the first tree element
+			IFormulaTree tree = cell.getFormulaCellValue().getFormulaTree();
+			toReturn = tree;
+			if (Integer.parseInt(parts.next()) != 0) {
+				throw new IllegalArgumentException("Given root node that is not 0");
+			}
+			
+			// Continue walking the tree
+			while (parts.hasNext()) {
+				tree = tree.getChildAt(Integer.parseInt(parts.next()));
+				toReturn = tree;
+			}
+			
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown type given");
+		}
+		
+		if (parts.hasNext()) {
+			throw new IllegalArgumentException("Unconsumed parts in ID");
+		}
+		
+		return toReturn;
 	}
 
 	@Override
@@ -128,7 +168,7 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 
 	@Override
 	default String getId() {
-		return ElementId.toString(getName(), null, -1, -1);
+		return getName() + "/";
 	}
 
 }
