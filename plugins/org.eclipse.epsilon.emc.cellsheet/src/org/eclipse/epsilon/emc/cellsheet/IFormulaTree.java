@@ -18,6 +18,9 @@ public interface IFormulaTree extends HasType {
 	 *         from.
 	 */
 	public IFormulaCellValue getCellValue();
+	
+	public void setCellValue(IFormulaCellValue cellValue);
+
 
 	/**
 	 * @return the parent of this {@link IFormulaTree} or {@code null} if no parent
@@ -75,6 +78,26 @@ public interface IFormulaTree extends HasType {
 	public String getFormula();
 	
 	public String getToken();
+	
+	default boolean isRoot() {
+		return getParent() == null;
+	}
+	
+	default boolean isLeaf() {
+		return getChildren().isEmpty();
+	}
+	
+	default int countAllChildren() {
+		if (isLeaf()) {
+			return 0;
+		}
+
+		int count = getChildren().size();
+		for (IFormulaTree tree : getChildren()) {
+			count += tree.countAllChildren();
+		}
+		return count;
+	}
 
 	@Override
 	default Type getType() {
@@ -85,5 +108,6 @@ public interface IFormulaTree extends HasType {
 	default Type[] getKinds() {
 		return IFormulaTree.KINDS;
 	}
+
 
 }

@@ -2,6 +2,7 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.ICellValue;
 
@@ -11,6 +12,8 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	protected ExcelSheet sheet;
 	protected ExcelRow row;
 	protected Cell delegate;
+	
+	protected ICellValue<?> cellValue = null;
 
 	ExcelCell(ExcelRow row, Cell delegate) {
 		this.book = row.getBook();
@@ -41,20 +44,65 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 
 	@Override
 	public ICellValue<?> getValue() {
-		switch (this.delegate.getCellTypeEnum()) {
-		case BOOLEAN:
-			return new ExcelBooleanCellValue(this);
-		case NUMERIC:
-			return new ExcelNumericCellValue(this);
-		case STRING:
-			return new ExcelStringCellValue(this);
-		case FORMULA:
-			return new ExcelFormulaCellValue(this);
-		case BLANK:
-			return new ExcelBlankCellValue(this);
-		default:
-			throw new UnsupportedOperationException();
+		if (cellValue == null) {
+			switch (delegate.getCellTypeEnum()) {
+			case BOOLEAN:
+				cellValue = new ExcelBooleanCellValue(this);
+				break;
+			case NUMERIC:
+				cellValue = new ExcelNumericCellValue(this);
+				break;
+			case STRING:
+				cellValue = new ExcelStringCellValue(this);
+				break;
+			case FORMULA:
+				cellValue = new ExcelFormulaCellValue(this);
+				break;
+			case BLANK:
+				cellValue = new ExcelBlankCellValue(this);
+				break;
+			default:
+				throw new IllegalStateException("Cell Value type not supported yet: " + delegate.getCellTypeEnum());
+			}
 		}
+		return cellValue;
+	}
+	
+	@Override
+	public ExcelBooleanCellValue getBooleanCellValue() {
+		if (delegate.getCellTypeEnum() != CellType.BOOLEAN) {
+			throw new IllegalStateException("Not a boolean");
+		}
+		return (ExcelBooleanCellValue) getValue();
+	}
+
+	@Override
+	public ExcelFormulaCellValue getFormulaCellValue() {
+		if (delegate.getCellTypeEnum() != CellType.FORMULA) {
+			throw new IllegalStateException("Not a Formula");
+		}
+		return (ExcelFormulaCellValue) getValue();
+	}
+
+	@Override
+	public ExcelStringCellValue getStringCellValue() {
+		if (delegate.getCellTypeEnum() != CellType.STRING || delegate.getCellTypeEnum() != CellType.FORMULA) {
+			throw new IllegalStateException("Not a String");
+		}
+		return (ExcelStringCellValue) getValue();
+	}
+
+	@Override
+	public ExcelNumericCellValue getNumericCellValue() {
+		if (delegate.getCellTypeEnum() != CellType.NUMERIC) {
+			throw new IllegalStateException("Not a numeric");
+		}
+		return (ExcelNumericCellValue) getValue();
+	}
+
+	@Override
+	public boolean isBlank() {
+		return delegate.getCellTypeEnum() == CellType.BLANK;
 	}
 
 	@Override

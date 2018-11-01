@@ -10,6 +10,12 @@ public interface ICell extends HasId, Comparable<ICell> {
 	public int getRowIndex();
 	
 	public ICellValue<?> getValue();
+	public IBooleanCellValue getBooleanCellValue();
+	public IFormulaCellValue getFormulaCellValue();
+	public IStringCellValue getStringCellValue();
+	public INumericCellValue getNumericCellValue();
+	
+	public boolean isBlank();
 
 	public IRow getRow();
 	public ISheet getSheet();

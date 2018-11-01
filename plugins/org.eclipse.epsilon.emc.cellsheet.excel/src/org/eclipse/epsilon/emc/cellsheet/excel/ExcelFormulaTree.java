@@ -1,20 +1,25 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.lang.reflect.Method;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.Deque;
 import java.util.List;
 
+import org.apache.poi.ss.formula.FormulaRenderer;
+import org.apache.poi.ss.formula.FormulaRenderingWorkbook;
 import org.apache.poi.ss.formula.eval.OperandResolver;
 import org.apache.poi.ss.formula.eval.ValueEval;
 import org.apache.poi.ss.formula.ptg.AbstractFunctionPtg;
 import org.apache.poi.ss.formula.ptg.Area3DPxg;
 import org.apache.poi.ss.formula.ptg.AreaPtgBase;
-import org.apache.poi.ss.formula.ptg.PercentPtg;
+import org.apache.poi.ss.formula.ptg.ControlPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
 import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
+import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
 
 /**
@@ -23,38 +28,42 @@ import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
  *
  */
 public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
+	
+	protected ExcelFormulaCellValue cellValue;
+	protected Ptg[] ptgs;
+	protected int ptgIndex;
 
 	protected ExcelBook book;
 	protected ExcelCell cell;
-	protected ExcelFormulaCellValue cellValue;
-	protected ExcelFormulaTree parent;
 	protected List<ExcelFormulaTree> children;
 	
-	// Ptg token from POI formula parser
-	protected Ptg delegate;
-
-	public ExcelFormulaTree(ExcelFormulaCellValue cellValue, ExcelFormulaTree parent, Ptg ptg) {
-		super();
-		this.book = cellValue.getCell().getBook();
-		this.cell = cellValue.getCell();
+	protected ExcelFormulaTree parent;
+	
+	public ExcelFormulaTree(ExcelFormulaCellValue cellValue, Ptg[] ptgs, int ptgIndex) {
 		this.cellValue = cellValue;
-		this.parent = parent;
-		this.children = new LinkedList<>();
-		this.delegate = ptg;
-	}
-
-	public ExcelFormulaTree(ExcelFormulaCellValue cellValue, Ptg ptg) {
-		this(cellValue, null, ptg);
+		this.ptgs = ptgs;
+		this.ptgIndex = ptgIndex;
+		
+		this.cell = cellValue.getCell();
+		this.book = cell.getBook();
+		this.children = new ArrayList<ExcelFormulaTree>();
 	}
 
 	@Override
 	public ExcelFormulaCellValue getCellValue() {
-		return this.cellValue;
+		return cellValue;
+	}
+	
+	@Override
+	public void setCellValue(IFormulaCellValue cellValue) {
+		if (!(cellValue instanceof ExcelFormulaCellValue))
+			throw new IllegalArgumentException("Parent must be of type ExcelFormulaCellValue");
+		this.cellValue = (ExcelFormulaCellValue) cellValue;
 	}
 
 	@Override
 	public Ptg getDelegate() {
-		return this.delegate;
+		return ptgs[ptgIndex];
 	}
 
 	@Override
@@ -94,17 +103,18 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 
 	@Override
 	public ICell evaluateCell() {
-		if (!(delegate instanceof AbstractFunctionPtg)) {
+		if (!(getDelegate() instanceof AbstractFunctionPtg)) {
 			return cell;
 		}
 
-		AbstractFunctionPtg function = (AbstractFunctionPtg) delegate;
+		AbstractFunctionPtg function = (AbstractFunctionPtg) getDelegate();
 
 		// TODO: Translate this to a transformation
+		// TODO: Move to register based system
 		switch (function.getName()) {
 		case "VLOOKUP":
 			// Determine new lookup table
-			AreaPtgBase table_array = (AreaPtgBase) getChildAt(1).delegate;
+			AreaPtgBase table_array = (AreaPtgBase) getChildAt(1).getDelegate();
 			String lookupCol = CellReference.convertNumToColString(table_array.getFirstColumn());
 			int firstRow = table_array.getFirstRow();
 			int lastRow = table_array.getLastRow();
@@ -147,71 +157,31 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 
 	@Override
 	public String getFormula() {
-		final StringBuilder sb = new StringBuilder();
-		// Open a bracket to preserve precedence
-		sb.append("(");
-
-		if (getDelegate() instanceof ValueOperatorPtg) {
-			final ValueOperatorPtg cast = (ValueOperatorPtg) delegate;
-
-			// Special case where operator occurs after operand
-			if (cast instanceof PercentPtg) {
-				sb.append(getChildAt(0).getFormula());
-				sb.append(ptgToStr(delegate));
+		// AST does not take into account control characters such as brackets, therefore they are not children.
+		// Rebuild the PTG stack with these characters
+		Deque<Ptg> stack = new ArrayDeque<>();
+		int current = ptgIndex;
+		int count = countAllChildren() + 1;
+		
+		while (count > 0) {
+			stack.push(ptgs[current]);
+			if (!(ptgs[current] instanceof ControlPtg) || FormulaUtil.isSumPtg(ptgs[current])) {
+				count--;
 			}
-
-			// Special case for only one operand and operator occurs before
-			else if (cast.getNumberOfOperands() < 2) {
-				sb.append(ptgToStr(delegate));
-				sb.append(getChildAt(0).getFormula());
-			}
-
-			// For most arithmetic operations
-			else {
-				sb.append(getChildAt(0).getFormula());
-				sb.append(ptgToStr(delegate));
-				sb.append(getChildAt(1).getFormula());
-			}
+			current--;
 		}
-
-		// Special case for SUM with 1 operand
-		if (FormulaUtil.isSumPtg(delegate)) {
-			sb.append(ptgToStr(delegate));
-			sb.append("(");
-			sb.append(getChildAt(0).getFormula());
-			sb.append(")");
-		}
-
-		// General Functions
-		if (delegate instanceof AbstractFunctionPtg) {
-			final AbstractFunctionPtg cast = (AbstractFunctionPtg) delegate;
-
-			sb.append(ptgToStr(delegate));
-			sb.append("(");
-
-			for (int i = 0; i < cast.getNumberOfOperands(); i++) {
-				sb.append(getChildAt(i).getFormula());
-				if (!(cast.getNumberOfOperands() == i + 1))
-					sb.append(",");
-			}
-			sb.append(")");
-		}
-
-		// Close bracket to complete the part
-		sb.append(")");
-		return sb.toString().equals("()") ? ptgToStr(delegate) : sb.toString();
+		return FormulaRenderer.toFormulaString((FormulaRenderingWorkbook) book.fpw, stack.toArray(new Ptg[0]));
 	}
 
 	@Override
 	public String toString() {
-		return delegate + " -> " + this.getFormula();
+		return getToken();
 	}
 	
 	@Override
 	public String getToken() {
-		return ptgToStr(delegate);
+		return ptgToStr(getDelegate());
 	}
-	
 	
 	/**
 	 * Utility method for converting a 

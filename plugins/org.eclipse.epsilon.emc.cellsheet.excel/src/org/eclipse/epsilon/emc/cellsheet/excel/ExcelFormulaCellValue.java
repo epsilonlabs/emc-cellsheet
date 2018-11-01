@@ -3,6 +3,7 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
 import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaType;
 import org.apache.poi.ss.formula.ptg.Area3DPtg;
@@ -28,6 +29,8 @@ import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
  */
 public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implements IFormulaCellValue {
 
+	protected Ptg[] ptgs;
+	
 	ExcelFormulaCellValue(ExcelCell cell) {
 		super(cell);
 		if (cell.delegate.getCellTypeEnum() != CellType.FORMULA)
@@ -45,14 +48,20 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 			return "";
 		}
 	}
+	
+	Ptg[] getPtgs() {
+		if (ptgs == null) {
+			ptgs = FormulaParser.parse(getFormula(), book.fpw, FormulaType.CELL, sheet.getIndex());
+		}
+		return ptgs;
+	}
 
 	@Deprecated
 	@Override
 	public List<ICellRegion> getReferencedRegions() {
-		final Ptg[] tokens = this.parseFormula();
 		final List<ICellRegion> regions = new ArrayList<ICellRegion>();
 
-		for (Ptg ptg : tokens) {
+		for (Ptg ptg : getPtgs()) {
 			if (!(ptg instanceof OperandPtg))
 				continue;
 
@@ -116,15 +125,16 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 
 	@Override
 	public IFormulaTree getFormulaTree() {
-		final Ptg[] ptgs = this.parseFormula();
 		final Stack<ExcelFormulaTree> trees = new Stack<>();
 		final Stack<ExcelFormulaTree> operands = new Stack<>();
-
-		for (Ptg ptg : ptgs) {
+		
+		for (int ptgIndex = 0; ptgIndex < getPtgs().length; ptgIndex++) {
+			
+			Ptg ptg = ptgs[ptgIndex];
 			if (ptg instanceof ControlPtg && !(ptg instanceof AttrPtg))
 				continue;
 
-			final ExcelFormulaTree current = new ExcelFormulaTree(this, ptg);
+			final ExcelFormulaTree current = new ExcelFormulaTree(this, ptgs, ptgIndex);
 
 			// Special Case for SUM only
 			if (FormulaUtil.isSumPtg(ptg)) {
@@ -165,10 +175,6 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 	@Override
 	public String getFormula() {
 		return cell.getDelegate().getCellFormula();
-	}
-
-	Ptg[] parseFormula() {
-		return FormulaParser.parse(getFormula(), book.fpw, FormulaType.CELL, sheet.getIndex());
 	}
 
 }

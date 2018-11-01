@@ -2,7 +2,7 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.List;
 
-public interface IFormulaCellValue extends ICellValue<String> {
+public interface IFormulaCellValue extends IStringCellValue {
 
 	public static final Type TYPE = Type.FORMULA_CELL_VALUE;
 	public static final Type[] KINDS = { IFormulaCellValue.TYPE, Type.CELL_VALUE };
