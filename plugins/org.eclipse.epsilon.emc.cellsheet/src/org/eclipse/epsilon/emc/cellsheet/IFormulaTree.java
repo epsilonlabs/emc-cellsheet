@@ -19,9 +19,13 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 *         from.
 	 */
 	public IFormulaCellValue getCellValue();
-	
-	public void setCellValue(IFormulaCellValue cellValue);
 
+	/**
+	 * Set the parent {@link IFormulaCellValue}
+	 * 
+	 * @param cellValue
+	 */
+	public void setCellValue(IFormulaCellValue cellValue);
 
 	/**
 	 * @return the parent of this {@link IFormulaTree} or {@code null} if no parent
@@ -29,6 +33,11 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 */
 	public IFormulaTree getParent();
 
+	/**
+	 * Set the parent of this {@link IFormulaTree}
+	 * 
+	 * @param parent
+	 */
 	public void setParent(IFormulaTree parent);
 
 	/**
@@ -77,17 +86,42 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * @return a formula string representation of this tree
 	 */
 	public String getFormula();
-	
+
+	/**
+	 * Get the token associated with this node in the tree
+	 * 
+	 * @return {@code String} representation of this node's token
+	 */
 	public String getToken();
-	
+
+	/**
+	 * Returns {@code true} if this node is the root of the tree.
+	 * 
+	 * @return {@code true} if this is the root of the tree, {@code false} otherwise
+	 */
 	default boolean isRoot() {
 		return getParent() == null;
 	}
-	
+
+	/**
+	 * Returns {@code true} if this node a leaf element of the tree (has no
+	 * children)
+	 * 
+	 * @return {@code true} if this is a leaf element of the tree, {@code false}
+	 *         otherwise
+	 */
 	default boolean isLeaf() {
 		return getChildren().isEmpty();
 	}
-	
+
+	/**
+	 * Count all children associated with this node - this includes all subtrees of
+	 * this node.
+	 * 
+	 * Does not count self.
+	 * 
+	 * @return count of all sub-nodes starting from this node.
+	 */
 	default int countAllChildren() {
 		if (isLeaf()) {
 			return 0;
@@ -100,11 +134,65 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 		return count;
 	}
 
+	/**
+	 * Return this tree as a tree structure diagram
+	 * 
+	 * <pre>
+	 * {@code
+	 * C4*VLOOKUP($A5,Assumptions!$B$4:$N$6,C$2)
+	 * └── *
+	 *     ├── C4
+	 *     └── VLOOKUP
+	 *         ├── $A5
+	 *         ├── Assumptions!$B$4:$N$6
+	 *         └── C$2
+	 * }
+	 * </pre>
+	 * 
+	 * @return this tree formatted as a tree structure diagram
+	 */
+	default String formatAsTree() {
+		return getFormula() + "\n" + formatAsTree("", true);
+	}
+
+	/**
+	 * Return this tree as a tree structure diagram
+	 * 
+	 * <pre>
+	 * {@code
+	 * └── *
+	 *     ├── C4
+	 *     └── VLOOKUP
+	 *         ├── $A5
+	 *         ├── Assumptions!$B$4:$N$6
+	 *         └── C$2
+	 * }
+	 * </pre>
+	 * 
+	 * @param prefix to append onto start of this line
+	 * @param isTail is this a tail element
+	 * @return this tree formatted as a tree structure diagram
+	 */
+	default String formatAsTree(String prefix, boolean isTail) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(prefix).append(isTail ? "└── " : "├── ").append(getToken()).append("\n");
+
+		for (int i = 0; i < getChildren().size() - 1; i++) {
+			sb.append(getChildAt(i).formatAsTree(prefix + (isTail ? "    " : "│   "), false));
+		}
+
+		if (getChildren().size() > 0) {
+			sb.append(getChildAt(getChildren().size() - 1).formatAsTree(prefix + (isTail ? "    " : "│   "), true));
+		}
+
+		return sb.toString();
+	}
+
 	@Override
 	default Iterator<IFormulaTree> iterator() {
 		return getChildren().iterator();
 	}
-	
+
 	@Override
 	default Type getType() {
 		return IFormulaTree.TYPE;
@@ -117,7 +205,8 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 
 	@Override
 	default String getId() {
-		return isRoot() ? getCellValue().getId() + "0/" : getParent().getId() + getParent().getChildren().indexOf(this) + "/";
+		return isRoot() ? getCellValue().getId() + "0/"
+				: getParent().getId() + getParent().getChildren().indexOf(this) + "/";
 	}
 
 }

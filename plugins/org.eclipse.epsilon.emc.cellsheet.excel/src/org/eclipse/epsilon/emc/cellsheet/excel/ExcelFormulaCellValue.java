@@ -29,7 +29,7 @@ import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implements IFormulaCellValue {
 
 	protected Ptg[] ptgs;
-	
+
 	ExcelFormulaCellValue(ExcelCell cell) {
 		super(cell);
 		if (cell.delegate.getCellTypeEnum() != CellType.FORMULA)
@@ -47,7 +47,7 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 			return "";
 		}
 	}
-	
+
 	Ptg[] getPtgs() {
 		if (ptgs == null) {
 			ptgs = FormulaParser.parse(getFormula(), book.fpw, FormulaType.CELL, sheet.getIndex());
@@ -126,9 +126,9 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 	public ExcelFormulaTree getFormulaTree() {
 		final Stack<ExcelFormulaTree> trees = new Stack<>();
 		final Stack<ExcelFormulaTree> operands = new Stack<>();
-		
+
 		for (int ptgIndex = 0; ptgIndex < getPtgs().length; ptgIndex++) {
-			
+
 			Ptg ptg = ptgs[ptgIndex];
 			if (ptg instanceof ControlPtg && !(ptg instanceof AttrPtg))
 				continue;
