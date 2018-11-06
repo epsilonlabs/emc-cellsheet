@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="EMC Cellsheet Update Site" url="https://github.com/epsilonlabs/emc-cellsheet/tree/master/org.eclipse.epsilon.emc.cellsheet.updatesite">
+      An EMC Driver that uses spreadsheets as the input file. Interaction is done on model elements conforming to common spreadsheet metaphors i.e. cell, row, sheet, book
+   </description>
+   <feature url="features/org.eclipse.epsilon.emc.cellsheet.excel.feature_1.0.0.qualifier.jar" id="org.eclipse.epsilon.emc.cellsheet.excel.feature" version="1.0.0.qualifier">
+      <category name="Cellsheet"/>
+   </feature>
+   <category-def name="Cellsheet" label="EMC Cellsheet">
+      <description>
+         EMC Cellsheet Drivers
+      </description>
+   </category-def>
+</site>
