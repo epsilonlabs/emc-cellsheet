@@ -1,78 +1,73 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.collections4.iterators.TransformIterator;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.eclipse.epsilon.emc.cellsheet.HasDelegate;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 
 public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
-  protected ExcelBook book;
-  protected Sheet delegate;
+	protected ExcelBook book;
+	protected Sheet delegate;
 
-  ExcelSheet(ExcelBook book, Sheet sheet) {
-    this.book = book;
-    this.delegate = sheet;
-  }
+	ExcelSheet(ExcelBook book, Sheet sheet) {
+		this.book = book;
+		this.delegate = sheet;
+	}
 
-  @Override
-  public ExcelBook getBook() {
-    return this.book;
-  }
+	@Override
+	public ExcelBook getBook() {
+		return book;
+	}
 
-  @Override
-  public String getId() {
-    return this.getBook()._idResolver.getId(this);
-  }
+	@Override
+	public int getIndex() {
+		return book.getDelegate().getSheetIndex(this.delegate);
+	}
 
-  @Override
-  public int getIndex() {
-    return this.book.getDelegate().getSheetIndex(this.delegate);
-  }
+	@Override
+	public String getName() {
+		return delegate.getSheetName();
+	}
 
-  @Override
-  public String getName() {
-    return this.delegate.getSheetName();
-  }
+	@Override
+	public Sheet getDelegate() {
+		return delegate;
+	}
 
-  @Override
-  public Sheet getDelegate() {
-    return this.delegate;
-  }
+	@Override
+	public ExcelRow getRow(int rowIdx) {
+		return book.getRow(this, rowIdx);
+	}
 
-  @Override
-  public ExcelRow getRow(int rowIdx) {
-    return this.book.getRow(this, rowIdx);
-  }
+	@Override
+	public Iterator<IRow> iterator() {
+		return new TransformIterator<Row, IRow>(delegate.iterator(), new Transformer<Row, IRow>() {
+			@Override
+			public IRow transform(Row row) {
+				return ExcelSheet.this.getRow(row.getRowNum());
+			}
+		});
+	}
 
-  @Override
-  public Iterator<IRow> iterator() {
-    return this.rows().iterator();
-  }
+	@Override
+	public List<IRow> rows() {
+		return IteratorUtils.toList(iterator());
+	}
 
-  @Override
-  public Iterator<IRow> rowIterator() {
-    return this.rows().iterator();
-  }
-
-  @Override
-  public List<IRow> rows() {
-    final List<IRow> rows = new ArrayList<>();
-    this.delegate.rowIterator()
-        .forEachRemaining(r -> rows.add(this.book.getRow(this, r.getRowNum())));
-    return rows;
-  }
-
-  @Override
-  public void setDelegate(Sheet delegate) {
-    this.delegate = delegate;
-  }
-
-  @Override
-  public String toString() {
-    return this.getId();
-  }
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
+		sb.append("(id: ").append(getId());
+		sb.append(", excelRef: ").append("[").append(getBook().getName()).append("]'").append(getName()).append("'");
+		sb.append(")");
+		return sb.toString();
+	}
 }

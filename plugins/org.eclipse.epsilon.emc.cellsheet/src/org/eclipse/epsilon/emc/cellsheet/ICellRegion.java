@@ -11,28 +11,28 @@ import java.util.List;
  */
 public interface ICellRegion {
 
-  public IBook getBook();
+	public IBook getBook();
 
-  public ISheet getSheet();
+	public ISheet getSheet();
 
-  public int getStartRowIdx();
+	public int getStartRowIdx();
 
-  public int getEndRowIdx();
+	public int getEndRowIdx();
 
-  public int getStartColIdx();
+	public int getStartColIdx();
 
-  public int getEndColIdx();
+	public int getEndColIdx();
 
-  public void setStartRowIdx(int idx);
+	public void setStartRowIdx(int idx);
 
-  public void setEndRowIdx(int idx);
+	public void setEndRowIdx(int idx);
 
-  public void setStartColIdx(int idx);
+	public void setStartColIdx(int idx);
 
-  public void setEndColIdx(int idx);
+	public void setEndColIdx(int idx);
 
-  public <T extends ICell> List<ICell> cells();
+	public <T extends ICell> List<ICell> cells();
 
-  public <T extends ICell> Iterator<ICell> cellIterator();
+	public <T extends ICell> Iterator<ICell> cellIterator();
 
 }

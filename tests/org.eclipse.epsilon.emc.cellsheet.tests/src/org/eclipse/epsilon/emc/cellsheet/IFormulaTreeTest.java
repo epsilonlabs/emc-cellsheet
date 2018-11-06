@@ -19,20 +19,20 @@ import org.mockito.junit.MockitoRule;
  */
 public class IFormulaTreeTest {
 
-  @Rule
-  public MockitoRule mockito = MockitoJUnit.rule();
+	@Rule
+	public MockitoRule mockito = MockitoJUnit.rule();
 
-  @Mock(answer = Answers.CALLS_REAL_METHODS)
-  IFormulaTree value;
+	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	IFormulaTree value;
 
-  @Test
-  public void getType_should_return_TypeFromulaTree() throws Exception {
-    assertEquals(Type.FORMULA_TREE, value.getType());
-  }
+	@Test
+	public void getType_should_return_TypeFromulaTree() throws Exception {
+		assertEquals(Type.FORMULA_TREE, value.getType());
+	}
 
-  @Test
-  public void getKinds_should_contain_TypeFormulaTree() throws Exception {
-    assertThat(Arrays.asList(value.getKinds()), hasItem(Type.FORMULA_TREE));
-  }
+	@Test
+	public void getKinds_should_contain_TypeFormulaTree() throws Exception {
+		assertThat(Arrays.asList(value.getKinds()), hasItem(Type.FORMULA_TREE));
+	}
 
 }

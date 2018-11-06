@@ -5,6 +5,11 @@
 version: 2
 jobs:
   build:
+    branches:
+      only:
+        - master
+        - develop
+
     docker:
       - image: circleci/openjdk:8-jdk
 
@@ -38,17 +43,8 @@ jobs:
       # ========================================================
       # Plugins
       - store_artifacts:
-          path: ~/repo/plugins/org.apache.commons.codec_1.10/target/org.apache.commons.codec_1.10.0-1.10.0.jar
-          destination: plugins/org.apache.commons.codec_1.10.0-1.10.0.jar
-      - store_artifacts:
           path: ~/repo/plugins/org.apache.commons.collections_4.1.0/target/org.apache.commons.collections_4.1.0-4.1.0.jar
           destination: plugins/org.apache.commons.collections_4.1.0-4.1.0.jar
-      - store_artifacts:
-          path: ~/repo/plugins/org.apache.commons.logging_1.2.0/target/org.apache.commons.logging_1.2.0-1.2.0.jar
-          destination: plugins/org.apache.commons.logging_1.2.0-1.2.0.jar
-      - store_artifacts:
-          path: ~/repo/plugins/org.apache.log4j_1.2.17/target/org.apache.log4j_1.2.17-1.2.17.jar
-          destination: plugins/org.apache.log4j_1.2.17-1.2.17.jar
       - store_artifacts:
           path: ~/repo/plugins/org.apache.poi/target/org.apache.poi-3.17.0.jar
           destination: plugins/org.apache.poi-3.17.0.jar
@@ -75,20 +71,11 @@ jobs:
       - store_artifacts:
           path: ~/repo/features/org.eclipse.epsilon.emc.cellsheet.excel.feature/target/org.eclipse.epsilon.emc.cellsheet.excel.feature-1.0.0-SNAPSHOT.jar
           destination: features/org.eclipse.epsilon.emc.cellsheet.excel.feature-1.0.0-SNAPSHOT.jar
-      - store_artifacts:
-          path: ~/repo/features/org.eclipse.epsilon.emc.cellsheet.feature/target/org.eclipse.epsilon.emc.cellsheet.feature-1.0.0-SNAPSHOT.jar
-          destination: features/org.eclipse.epsilon.emc.cellsheet.feature-1.0.0-SNAPSHOT.jar
       
       # Update Site
       - store_artifacts:
-          path: ~/repo/org.eclipse.epsilon.emc.cellsheet.updatesite/site.xml
+          path: ~/repo/site.xml
           destination: site.xml
-      - store_artifacts:
-          path: ~/repo/org.eclipse.epsilon.emc.cellsheet.updatesite/index.html
-          destination: index.html
-      - store_artifacts:
-          path: ~/repo/org.eclipse.epsilon.emc.cellsheet.updatesite/web
-          destination: web
 
       # Trigger updatesite build
       #- run: curl -X POST "https://circleci.com/api/v1.1/project/github/epsilonlabs/epsilonlabs-updatesite?circle-token=$TRIGGER_BUILD"

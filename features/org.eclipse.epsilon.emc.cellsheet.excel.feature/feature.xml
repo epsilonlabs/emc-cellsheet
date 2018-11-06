@@ -6,13 +6,14 @@
       provider-name="Epsilon">
 
    <description>
-      EMC Cellsheet Driver implementation that targets Excel-based
-spreadsheets. Works with both .xls and .xlsx formats
+      EMC Cellsheet Driver implementation that targets Excel-based spreadsheets. Works with both .xls and .xlsx formats
    </description>
 
    <copyright>
       Copyright (c) 2008 The University of York
 Contributors: Dimitrios Kolovos and others.
+
+This project uses the Apache POI Library which is available under the Apache License, Version 2.0
    </copyright>
 
    <license url="http://www.eclipse.org/legal/epl-v10.html">
@@ -88,17 +89,31 @@ Everyone is permitted to copy and distribute copies of this Agreement, but in or
 This Agreement is governed by the laws of the State of New York and the intellectual property laws of the United States of America. No party to this Agreement will bring a legal action under this Agreement more than one year after the cause of action arose. Each party waives its rights to a jury trial in any resulting litigation.
    </license>
 
-   <includes
-         id="org.eclipse.epsilon.emc.cellsheet.feature"
-         version="0.0.0"/>
-
    <requires>
-      <import plugin="org.eclipse.epsilon.emc.cellsheet"/>
-      <import plugin="org.eclipse.epsilon.emc.cellsheet.excel.dependencies"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.e4.core.services"/>
+      <import plugin="org.slf4j.api"/>
+      <import plugin="org.eclipse.epsilon.eol.engine"/>
+      <import plugin="org.eclipse.epsilon.emc.emf"/>
+      <import plugin="org.eclipse.epsilon.emc.emf.virtual"/>
+      <import plugin="org.apache.poi" version="3.17.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="org.eclipse.epsilon.emc.cellsheet.excel"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.epsilon.emc.cellsheet.excel.dependencies"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.epsilon.emc.cellsheet"
          download-size="0"
          install-size="0"
          version="0.0.0"

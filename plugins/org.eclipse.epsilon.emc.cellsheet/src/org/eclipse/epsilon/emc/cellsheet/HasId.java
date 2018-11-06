@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-public interface HasId {
-  public String getId();
+public interface HasId extends HasType {
+	public String getId();
+
 }

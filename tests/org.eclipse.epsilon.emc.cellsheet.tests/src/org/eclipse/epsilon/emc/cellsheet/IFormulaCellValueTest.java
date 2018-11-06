@@ -19,20 +19,20 @@ import org.mockito.junit.MockitoRule;
  */
 public class IFormulaCellValueTest {
 
-  @Rule
-  public MockitoRule mockito = MockitoJUnit.rule();
+	@Rule
+	public MockitoRule mockito = MockitoJUnit.rule();
 
-  @Mock(answer = Answers.CALLS_REAL_METHODS)
-  IFormulaCellValue value;
+	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	IFormulaCellValue value;
 
-  @Test
-  public void getType_should_return_TypeFormulaCellValue() throws Exception {
-    assertEquals(Type.FORMULA_CELL_VALUE, value.getType());
-  }
+	@Test
+	public void getType_should_return_TypeFormulaCellValue() throws Exception {
+		assertEquals(Type.FORMULA_CELL_VALUE, value.getType());
+	}
 
-  @Test
-  public void getKinds_should_contain_TypeFormulaCellValue_and_TypeCellValue() throws Exception {
-    assertThat(Arrays.asList(value.getKinds()), hasItems(Type.FORMULA_CELL_VALUE, Type.CELL_VALUE));
-  }
+	@Test
+	public void getKinds_should_contain_TypeFormulaCellValue_and_TypeCellValue() throws Exception {
+		assertThat(Arrays.asList(value.getKinds()), hasItems(Type.FORMULA_CELL_VALUE, Type.CELL_VALUE));
+	}
 
 }

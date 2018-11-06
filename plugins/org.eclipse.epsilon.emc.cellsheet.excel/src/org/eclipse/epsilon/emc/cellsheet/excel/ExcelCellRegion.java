@@ -10,80 +10,80 @@ import org.eclipse.epsilon.emc.cellsheet.ISheet;
 
 public class ExcelCellRegion implements ICellRegion {
 
-  protected ExcelBook book;
-  protected ExcelSheet sheet;
-  protected int startRowIdx;
-  protected int endRowIdx;
-  protected int startColIdx;
-  protected int endColIdx;
+	protected ExcelBook book;
+	protected ExcelSheet sheet;
+	protected int startRowIdx;
+	protected int endRowIdx;
+	protected int startColIdx;
+	protected int endColIdx;
 
-  public ExcelCellRegion(ExcelBook book, ExcelSheet sheet, int startRowIdx, int endRowIdx,
-      int startColIdx, int endColIdx) {
-    this.book = book;
-    this.sheet = sheet;
-    this.startRowIdx = startRowIdx;
-    this.endRowIdx = endRowIdx;
-    this.startColIdx = startColIdx;
-    this.endColIdx = endColIdx;
-  }
+	public ExcelCellRegion(ExcelBook book, ExcelSheet sheet, int startRowIdx, int endRowIdx, int startColIdx,
+			int endColIdx) {
+		this.book = book;
+		this.sheet = sheet;
+		this.startRowIdx = startRowIdx;
+		this.endRowIdx = endRowIdx;
+		this.startColIdx = startColIdx;
+		this.endColIdx = endColIdx;
+	}
 
-  @Override
-  public IBook getBook() {
-    return this.getBook();
-  }
+	@Override
+	public IBook getBook() {
+		return this.getBook();
+	}
 
-  @Override
-  public ISheet getSheet() {
-    return this.sheet;
-  }
+	@Override
+	public ISheet getSheet() {
+		return this.sheet;
+	}
 
-  public int getStartRowIdx() {
-    return this.startRowIdx;
-  }
+	public int getStartRowIdx() {
+		return this.startRowIdx;
+	}
 
-  public void setStartRowIdx(int startRowIdx) {
-    this.startRowIdx = startRowIdx;
-  }
+	public void setStartRowIdx(int startRowIdx) {
+		this.startRowIdx = startRowIdx;
+	}
 
-  public int getEndRowIdx() {
-    return this.endRowIdx;
-  }
+	public int getEndRowIdx() {
+		return this.endRowIdx;
+	}
 
-  public void setEndRowIdx(int endRowIdx) {
-    this.endRowIdx = endRowIdx;
-  }
+	public void setEndRowIdx(int endRowIdx) {
+		this.endRowIdx = endRowIdx;
+	}
 
-  public int getStartColIdx() {
-    return this.startColIdx;
-  }
+	public int getStartColIdx() {
+		return this.startColIdx;
+	}
 
-  public void setStartColIdx(int startColIdx) {
-    this.startColIdx = startColIdx;
-  }
+	public void setStartColIdx(int startColIdx) {
+		this.startColIdx = startColIdx;
+	}
 
-  public int getEndColIdx() {
-    return this.endColIdx;
-  }
+	public int getEndColIdx() {
+		return this.endColIdx;
+	}
 
-  public void setEndColIdx(int endColIdx) {
-    this.endColIdx = endColIdx;
-  }
+	public void setEndColIdx(int endColIdx) {
+		this.endColIdx = endColIdx;
+	}
 
-  @Override
-  public <T extends ICell> List<ICell> cells() {
-    final List<ICell> cells = new ArrayList<>();
-    for (int r = startRowIdx; r < endRowIdx; r++) {
-      for (int c = startColIdx; c < endColIdx; c++) {
-        cells.add(book.getCell(this.sheet, r, c));
-      }
-    }
+	@Override
+	public <T extends ICell> List<ICell> cells() {
+		final List<ICell> cells = new ArrayList<>();
+		for (int r = startRowIdx; r < endRowIdx; r++) {
+			for (int c = startColIdx; c < endColIdx; c++) {
+				cells.add(book.getCell(this.sheet, r, c));
+			}
+		}
 
-    return cells;
-  }
+		return cells;
+	}
 
-  @Override
-  public <T extends ICell> Iterator<ICell> cellIterator() {
-    return this.cells().iterator();
-  }
+	@Override
+	public <T extends ICell> Iterator<ICell> cellIterator() {
+		return this.cells().iterator();
+	}
 
 }

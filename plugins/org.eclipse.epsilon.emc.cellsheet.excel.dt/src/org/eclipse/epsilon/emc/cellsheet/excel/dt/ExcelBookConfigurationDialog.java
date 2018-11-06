@@ -1,6 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet.excel.dt;
 
 import org.eclipse.epsilon.common.dt.launching.dialogs.AbstractModelConfigurationDialog;
+import org.eclipse.epsilon.common.dt.util.DialogUtil;
 import org.eclipse.epsilon.emc.cellsheet.excel.ExcelBook;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -23,8 +24,7 @@ public class ExcelBookConfigurationDialog extends AbstractModelConfigurationDial
 
   protected void createExcelGroup(final Composite parent) {
     // Create Spreadsheet Configuration
-    final Composite groupContent =
-        super.createGroupContainer(parent, "Excel Spreadsheet Details", 3);
+    final Composite groupContent = DialogUtil.createGroupContainer(parent, "Excel Spreadsheet Details", 3);
 
     this.fileLabel = new Label(groupContent, SWT.NONE);
     this.fileLabel.setText("File: ");
