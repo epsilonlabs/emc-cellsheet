@@ -25,8 +25,8 @@
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>eclipseNeon</id>
-      <url>http://download.eclipse.org/releases/neon/</url>
+      <id>eclipsePhoton</id>
+      <url>http://download.eclipse.org/releases/photon/</url>
       <layout>p2</layout>
     </repository>
     <repository>
