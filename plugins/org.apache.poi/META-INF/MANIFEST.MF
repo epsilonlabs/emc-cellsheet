@@ -117,7 +117,6 @@ Export-Package: org.apache.poi,
  org.openxmlformats.schemas.wordprocessingml.x2006.main,
  org.openxmlformats.schemas.wordprocessingml.x2006.main.impl
 Require-Bundle: org.eclipse.core.runtime,
- org.apache.batik.pdf,
  org.junit,
  javax.xml,
  org.apache.commons.collections_4.1.0;bundle-version="4.1.0";visibility:=reexport,
