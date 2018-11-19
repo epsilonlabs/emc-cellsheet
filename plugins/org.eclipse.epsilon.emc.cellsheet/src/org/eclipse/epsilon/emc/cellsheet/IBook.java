@@ -64,9 +64,9 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 		if (id.startsWith("/")) {
 			id = getName() + id;
 		}
-		
+
 		Iterator<String> parts = Arrays.stream(id.split("/")).iterator();
-				
+		
 		IBook book;
 		if (parts.hasNext() && getName().equals(parts.next())) {
 			book = this;

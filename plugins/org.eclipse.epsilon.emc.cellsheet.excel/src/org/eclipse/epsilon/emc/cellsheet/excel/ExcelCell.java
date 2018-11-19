@@ -3,6 +3,7 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.ICellValue;
 
@@ -12,7 +13,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	protected ExcelSheet sheet;
 	protected ExcelRow row;
 	protected Cell delegate;
-	
+
 	protected ICellValue<?> cellValue = null;
 
 	ExcelCell(ExcelRow row, Cell delegate) {
@@ -50,7 +51,11 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 				cellValue = new ExcelBooleanCellValue(this);
 				break;
 			case NUMERIC:
-				cellValue = new ExcelNumericCellValue(this);
+				if (DateUtil.isCellDateFormatted(delegate)) {
+					cellValue = new ExcelDateCellValue(this);
+				} else {
+					cellValue = new ExcelNumericCellValue(this);
+				}
 				break;
 			case STRING:
 				cellValue = new ExcelStringCellValue(this);
@@ -61,13 +66,15 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 			case BLANK:
 				cellValue = new ExcelBlankCellValue(this);
 				break;
+			case ERROR:
+				cellValue = new ExcelErrorCellValue(this);
 			default:
 				throw new IllegalStateException("Cell Value type not supported yet: " + delegate.getCellTypeEnum());
 			}
 		}
 		return cellValue;
 	}
-	
+
 	@Override
 	public ExcelBooleanCellValue getBooleanCellValue() {
 		if (delegate.getCellTypeEnum() != CellType.BOOLEAN) {
@@ -109,7 +116,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	public Cell getDelegate() {
 		return this.delegate;
 	}
-	
+
 	@Override
 	public ExcelSheet getSheet() {
 		return sheet;

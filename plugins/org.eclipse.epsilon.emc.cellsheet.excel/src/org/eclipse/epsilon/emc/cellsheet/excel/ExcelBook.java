@@ -102,22 +102,12 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 
 	@Override
 	public boolean owns(Object instance) {
-		if (instance == null) {
+		try {
+			String id = getElementId(instance);
+			return getElementById(id) != null;
+		} catch (IllegalArgumentException e) {
 			return false;
 		}
-		if (instance instanceof IBook) {
-			return this.equals(instance);
-		}
-		if (instance instanceof ISheet) {
-			return this.owns(((ISheet) instance).getBook());
-		}
-		if (instance instanceof IRow) {
-			return this.owns(((IRow) instance).getBook());
-		}
-		if (instance instanceof ICell) {
-			return this.owns(((ICell) instance).getBook());
-		}
-		return false;
 	}
 
 	@Override
@@ -371,6 +361,10 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 			final IllegalArgumentException e = new IllegalArgumentException("Bad filepath given: " + filepath);
 			throw e;
 		}
+	}
+	
+	public void setExcelFile(File file) {
+		excelFile = file;
 	}
 
 	@Override
