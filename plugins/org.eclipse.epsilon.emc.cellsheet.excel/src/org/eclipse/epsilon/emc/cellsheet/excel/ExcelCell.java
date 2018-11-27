@@ -68,6 +68,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 				break;
 			case ERROR:
 				cellValue = new ExcelErrorCellValue(this);
+				break;
 			default:
 				throw new IllegalStateException("Cell Value type not supported yet: " + delegate.getCellTypeEnum());
 			}
