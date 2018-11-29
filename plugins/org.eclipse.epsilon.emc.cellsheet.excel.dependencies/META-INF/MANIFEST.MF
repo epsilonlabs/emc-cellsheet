@@ -4,4 +4,7 @@ Bundle-Name: Dependencies
 Bundle-SymbolicName: org.eclipse.epsilon.emc.cellsheet.excel.dependencies
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: eclipse.org
-Require-Bundle: org.apache.poi;bundle-version="3.17.0";visibility:=reexport
+Require-Bundle: org.apache.poi.ooxml.schemas_3.17;bundle-version="3.17.0";visibility:=reexport,
+ org.apache.poi.ooxml_3.17;bundle-version="3.17.0";visibility:=reexport,
+ org.apache.poi_3.17;bundle-version="3.17.0";visibility:=reexport,
+ org.apache.commons.collections_4.1.0;bundle-version="4.1.0";visibility:=reexport
