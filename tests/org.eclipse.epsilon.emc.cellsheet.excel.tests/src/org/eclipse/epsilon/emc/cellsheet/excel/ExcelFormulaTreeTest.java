@@ -110,7 +110,6 @@ public class ExcelFormulaTreeTest {
 		assertEquals(20, Double.parseDouble(left.evaluate()), 0);
 
 		final IFormulaTree right = root.getChildAt(1);
-		System.out.println(right.countAllChildren());
 		assertEquals("SUM(Data!B1:D5)", right.getFormula());
 		assertEquals(15, Double.parseDouble(right.evaluate()), 0);
 	}
