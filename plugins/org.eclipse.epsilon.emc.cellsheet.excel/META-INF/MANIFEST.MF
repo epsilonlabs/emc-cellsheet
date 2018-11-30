@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.e4.core.services,
- org.slf4j.api,
  org.eclipse.epsilon.emc.cellsheet;visibility:=reexport,
  org.eclipse.epsilon.emc.cellsheet.excel.dependencies;visibility:=reexport,
  org.eclipse.epsilon.eol.engine
@@ -14,4 +13,3 @@ Bundle-ManifestVersion: 2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: eclipse.org
 Automatic-Module-Name: org.eclipse.epsilon.emc.cellsheet.excel
-

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apache POI OOXML *subset* 3.17
 Bundle-SymbolicName: org.apache.poi.ooxml_3.17
-Bundle-Version: 3.17
+Bundle-Version: 3.17.0
 Bundle-Vendor: The Apache Software Foundation
 Automatic-Module-Name: org.apache.poi.ooxml_3.17
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -52,3 +52,5 @@ Export-Package: org.apache.poi,
  org.apache.poi.xwpf.extractor,
  org.apache.poi.xwpf.model,
  org.apache.poi.xwpf.usermodel
+Require-Bundle: org.apache.poi_3.17;bundle-version="3.17.0";visibility:=reexport,
+ org.apache.poi.ooxml.schemas_3.17;bundle-version="3.17.0";visibility:=reexport
