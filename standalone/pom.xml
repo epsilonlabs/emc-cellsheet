@@ -60,18 +60,18 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.codehaus.maven</groupId>
+				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.6.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
 						<goals>
-							<goal>run</goal>
+							<goal>exec</goal>
 						</goals>
 						<configuration>
-							<executable>sh</executable>
-							<commandlineArgs>build-javadoc.sh</commandlineArgs>
+							<executable>bash</executable>
+							<commandlineArgs>build-javadoc-jar.sh</commandlineArgs>
 						</configuration>
 					</execution>
 				</executions>

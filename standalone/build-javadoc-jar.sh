@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # For Java 8
 #JAVADOC_FLAGS="-Xdoclint:none"

@@ -14,9 +14,7 @@
         <include>*.jar</include>
         <include>org.apache.commons.collections_4.1.0*.jar</include>
         <include>org.apache.xmlbeans_2.6.0*.jar</include>
-        <include>org.apache.poi_3.17*.jar</include>
-        <include>org.apache.poi.ooxml_3.17*.jar</include>
-        <include>org.apache.poi.ooxml.schemas_3.17*.jar</include>
+        <include>org.apache.servicemix.bundles.poi_3.17.0*.jar</include>
       </includes>
     </fileSet>
   </fileSets>
