@@ -1,36 +1,19 @@
-# Java Maven CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
 version: 2
 jobs:
   build:
-    branches:
-      only:
-        - master
-        - develop
-
     docker:
       - image: circleci/openjdk:8-jdk
 
     working_directory: ~/repo
 
-    environment:
-      MAVEN_OPTS: -Xmx3200m
-
-      # ========================================================
-      # Checkout/Build
-      # ========================================================
     steps:
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "pom.xml" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
+      
       - run: mvn clean install -Pjacoco coveralls:report -DrepoToken=$COVERALLS_TOKEN
 
       - save_cache:
@@ -38,16 +21,14 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
-      # ========================================================
       # Store Artifacts
-      # ========================================================
       # Plugins
       - store_artifacts:
           path: ~/repo/plugins/org.apache.commons.collections_4.1.0/target/org.apache.commons.collections_4.1.0-4.1.0.jar
           destination: plugins/org.apache.commons.collections_4.1.0-4.1.0.jar
       - store_artifacts:
-          path: ~/repo/plugins/org.apache.poi/target/org.apache.poi-3.17.0.jar
-          destination: plugins/org.apache.poi-3.17.0.jar
+          path: ~/repo/plugins/org.apache.servicemix.bundles.poi_3.17.0/target/org.apache.servicemix.bundles.poi_3.17.0-3.17.0.jar
+          destination: plugins/org.apache.servicemix.bundles.poi_3.17.0-3.17.0.jar
       - store_artifacts:
           path: ~/repo/plugins/org.apache.xmlbeans_2.6.0/target/org.apache.xmlbeans_2.6.0-2.6.0.jar
           destination: plugins/org.apache.xmlbeans_2.6.0-2.6.0.jar
@@ -77,5 +58,35 @@ jobs:
           path: ~/repo/site.xml
           destination: site.xml
 
-      # Trigger updatesite build
-      - run: curl -X POST "https://circleci.com/api/v1.1/project/github/epsilonlabs/epsilonlabs-updatesite?circle-token=$TRIGGER_BUILD"
+  deploy-snapshot:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    
+    working_directory: ~/repo
+
+    steps:
+      - run:
+          name: Deploy if on master or develop branch
+          command: echo "on master or deploy"
+
+workflows:
+  version: 2
+  build-only:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - master
+                - develop
+  build-deploy:
+    jobs:
+      - build
+      - deploy-snapshot:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+                - develop
