@@ -1,0 +1,42 @@
+rule Jar2BinaryAssembly
+	transform jar : JarModel!t_jar {
+	parameters {
+		return Map {'type' = 'binary'};
+	} 
+	template : 'jarmodel2assembly.egl'
+	target : 'assembly/' + jar.a_name + '.xml'
+}
+
+rule Jar2BinaryWithSourcesAssembly
+	transform jar : JarModel!t_jar {
+	parameters {
+		return Map {'type' = 'binary+sources'};
+	}
+	template : 'jarmodel2assembly.egl'
+	target : 'assembly/' + jar.a_name + '-src.xml'
+}
+
+rule Jar2SourcesAssembly
+	transform jar : JarModel!t_jar {
+	parameters {
+		return Map {'type' = 'sources'};
+	}
+	template : 'jarmodel2assembly.egl'
+	target : 'assembly/' + jar.a_name + '-sources.xml'
+}
+
+rule Jar2DepsAssembly
+	transform jar : JarModel!t_jar {
+	guard : jar.c_plugin.size() > 0
+	parameters {
+		return Map {'type' = 'dependencies'};
+	}
+	template : 'jarmodel2assembly.egl'
+	target : 'assembly/' + jar.a_name + '-deps.xml'
+}
+
+rule Jar2POM
+	transform jar : JarModel!t_jar {
+	template : 'jarmodel2pom.egl'
+	target : 'assembly/' + jar.a_name + '.pom'
+}
