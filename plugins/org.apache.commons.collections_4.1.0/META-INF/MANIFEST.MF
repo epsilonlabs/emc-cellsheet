@@ -23,3 +23,4 @@ Export-Package: org.apache.commons.collections4,
  org.apache.commons.collections4.trie,
  org.apache.commons.collections4.trie.analyzer
 Automatic-Module-Name: org.apache.commons.collections_4.1.0
+Bundle-Vendor: The Apache Software Foundation
