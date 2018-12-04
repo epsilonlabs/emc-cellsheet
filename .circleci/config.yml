@@ -72,7 +72,7 @@ jobs:
             - v1-dependencies-{{ checksum "pom.xml" }}
             - v1-dependencies-
 
-      - run: mvn clean install javadoc:aggregate -P ossrh
+      - run: mvn clean install javadoc:aggregate
 
       - save_cache:
           paths:
