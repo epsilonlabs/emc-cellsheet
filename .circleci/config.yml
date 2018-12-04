@@ -65,20 +65,35 @@ jobs:
     working_directory: ~/repo
 
     steps:
-      - run:
-          name: Deploy if on master or develop branch
-          command: echo "on master or deploy"
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
+
+      - run: mvn clean install javadoc:aggregate -P ossrh
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+
+
+  deploy-labs:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    
+    working_directory: ~/repo
+
+    steps:
+      - run: 
+          name: Trigger Epsilon Labs Deployment
+          command: curl -X POST "https://circleci.com/api/v1.1/project/github/epsilonlabs/epsilonlabs-updatesite?circle-token=$TRIGGER_BUILD"
+
 
 workflows:
   version: 2
-  build-only:
-    jobs:
-      - build:
-          filters:
-            branches:
-              ignore:
-                - master
-                - develop
   build-deploy:
     jobs:
       - build
@@ -89,4 +104,12 @@ workflows:
             branches:
               only:
                 - master
-                - develop
+                - /^release*/
+      - deploy-labs:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+                - /^release*/
