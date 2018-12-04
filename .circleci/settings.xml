@@ -3,11 +3,13 @@
 	xmlns="http://maven.apache.org/SETTINGS/1.1.0" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-	<server>
-		<id>ossrh</id>
-		<username>${env.OSSRH_USER}</username>
-		<password>${env.OSSRH_PASS}</password>
-	</server>
+	<servers>
+		<server>
+			<id>ossrh</id>
+			<username>${env.OSSRH_USER}</username>
+			<password>${env.OSSRH_PASS}</password>
+		</server>
+	</servers>
 
 	<profiles>
 		<profile>
