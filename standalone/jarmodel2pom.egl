@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.eclipse.epsilon</groupId>
+  <groupId>[%=jar.getGroupId()%]</groupId>
   <artifactId>[%=jar.getArtifactId()%]</artifactId>
   <version>[%=jar.getVersion()%]</version>
 [%
@@ -92,8 +92,12 @@ operation JarModel!t_jar getRequires() : Sequence(JarModel!t_jar) {
   return results;
 }
 
+operation JarModel!t_jar getGroupId() {
+  return self.parentNode.a_groupId;
+}
+
 operation JarModel!t_jar getArtifactId() {
-  return 'epsilon-' + self.a_name;
+  return self.parentNode.a_prefix + '-' + self.a_name;
 }
 
 operation JarModel!t_jar getVersion() {

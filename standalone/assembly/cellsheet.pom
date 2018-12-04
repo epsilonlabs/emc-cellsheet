@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.eclipse.epsilon</groupId>
-  <artifactId>epsilon-emc-cellsheet</artifactId>
+  <groupId>org.eclipse.epsilon.labs</groupId>
+  <artifactId>epsilonlabs-cellsheet</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <dependencies>
    <dependency>
@@ -26,9 +26,7 @@
    </dependency>
   </dependencies>
   <name>Epsilon jar component</name>
-  <description>
-               			EMC Cellsheet Drivers for low level interaction with spreadsheets
-               		</description>
+  <description>EMC Cellsheet Drivers for low level interaction with spreadsheets</description>
   <url>https://github.com/epsilonlabs/emc-cellsheet</url>
   <licenses>
   	<license>

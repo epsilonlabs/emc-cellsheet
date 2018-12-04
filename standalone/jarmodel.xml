@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><jarmodel dir="jars" interim="true" plugins="../plugins" prefix="epsilon" projects="../plugins/" version="1.0.0">
+<?xml version="1.0" encoding="UTF-8"?><jarmodel dir="jars" groupId="org.eclipse.epsilon.labs" interim="true" plugins="../plugins" prefix="epsilonlabs" projects="../plugins/" version="1.0.0">
 	
-	<jar name="emc-cellsheet" url="https://github.com/epsilonlabs/emc-cellsheet">
-		<description>
-			EMC Cellsheet Drivers for low level interaction with spreadsheets
-		</description>
+	<jar name="cellsheet" url="https://github.com/epsilonlabs/emc-cellsheet">
+		<description>EMC Cellsheet Drivers for low level interaction with spreadsheets</description>
 
 		<project name="org.eclipse.epsilon.emc.cellsheet"/>
 		<project name="org.eclipse.epsilon.emc.cellsheet.excel"/>
