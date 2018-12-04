@@ -95,7 +95,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.epsilon.labs</groupId>
-            <artifactId>org.apache.poi</artifactId>
+            <artifactId>org.apache.servicemix.bundles.poi_3.17.0</artifactId>
             <version>3.17.0</version>
             <scope>test</scope>
         </dependency>
