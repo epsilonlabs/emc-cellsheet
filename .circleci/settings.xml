@@ -13,7 +13,10 @@
 
 	<profiles>
 		<profile>
-			<id>ossrh</id>
+			<id>ossrh-ci</id>
+			<activation>
+      	<activeByDefault>true</activeByDefault>
+  		</activation>
 			<properties>
 				<gpg.executable>gpg</gpg.executable>
 				<gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
