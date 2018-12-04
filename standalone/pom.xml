@@ -76,8 +76,30 @@
 					</execution>
 				</executions>
 			</plugin>
-			
-			
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.0.0-M1</version>
+				<executions>
+					<execution>
+						<phase>deploy</phase>
+						<goals>
+							<goal>deploy-file</goal>
+						</goals>
+						<configuration>
+							<file>${project.build.directory}/epsilonlabs-1.0.0-cellsheet.jar</file>
+							<repositoryId>ossrh</repositoryId>
+							<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+							<pomFile>assembly/cellsheet.pom</pomFile>
+							<sources>${project.build.directory}/epsilonlabs-1.0.0-cellsheet-sources.jar</sources>
+							<javadoc>${project.build.directory}/epsilonlabs-1.0.0-cellsheet-javadoc.jar</javadoc>
+						</configuration>
+					</execution>
+				</executions>
+
+			</plugin>
+
 		</plugins>
 	</build>
 
