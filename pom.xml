@@ -115,42 +115,6 @@
 			</build>
 		</profile>
 		<profile>
-			<id>ossrh</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.sonatype.plugins</groupId>
-						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.7</version>
-						<extensions>true</extensions>
-						<configuration>
-							<serverId>ossrh</serverId>
-							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-
-							<!-- We want to check staged releases manually on Sonatype OSSRH before we propagate to Central. -->
-							<autoReleaseAfterClose>false</autoReleaseAfterClose>
-						</configuration>
-					</plugin>
-
-					<!-- Anything that goes to Central must be GPG signed -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
 			<id>java8-doclint-disabled</id>
 			<activation>
 				<jdk>[1.8,)</jdk>
@@ -249,18 +213,6 @@
 				<configuration>
 					<additionalparam>${javadoc.opts}</additionalparam>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<!-- Bugs in older versions prevent altReleaseDeploymentRepository and altSnapshotDeploymentRepository from working correctly 
-					https://maven.apache.org/plugins/maven-deploy-plugin/deploy-mojo.html -->
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.0.0-M1</version>
-				<executions>
-					<execution>
-						<phase>none</phase>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
