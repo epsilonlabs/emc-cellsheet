@@ -72,8 +72,8 @@ jobs:
             - v1-dependencies-{{ checksum "pom.xml" }}
             - v1-dependencies-
 
-      - run: echo $GPG_SECRET_KEYS | base64 --decode | gpg --import
-      - run: echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
+      - run: echo $GPG_SECRET_KEYS | base64 --decode | gpg --import --no-tty --batch --yes
+      - run: echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust --no-tty --batch --yes
       - run: mvn -s .circleci/settings.xml -f standalone/pom.xml clean deploy -P ossrh -B -U -DskipTests=true
 
       - save_cache:
