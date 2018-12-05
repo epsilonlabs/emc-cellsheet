@@ -74,6 +74,7 @@ jobs:
 
       - run: echo $GPG_SECRET_KEYS | base64 --decode | gpg --import --no-tty --batch --yes
       - run: echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust --no-tty --batch --yes
+      - run: mvn clean install -B -U -DskipTests=true
       - run: mvn -s .circleci/settings.xml -f standalone/pom.xml clean deploy -P ossrh -B -U -DskipTests=true
 
       - save_cache:
