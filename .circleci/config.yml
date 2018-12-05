@@ -21,6 +21,49 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - plugins
+            - site.xml
+            - features
+
+
+  deploy-snapshot:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+            - v1-dependencies-
+
+      - run: echo $GPG_SECRET_KEYS | base64 --decode | gpg --import --no-tty --batch --yes
+      - run: echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust --no-tty --batch --yes
+      - run: mvn clean install -B -U -DskipTests=true
+      - run: mvn -s .circleci/settings.xml -f standalone/pom.xml clean deploy -P ossrh -B -U -DskipTests=true
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+
+
+  deploy-labs:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    
+    working_directory: ~/repo
+
+    steps:
+      - attach_workspace:
+          at: ~/repo
+
       # Store Artifacts
       # Plugins
       - store_artifacts:
@@ -58,38 +101,6 @@ jobs:
           path: ~/repo/site.xml
           destination: site.xml
 
-  deploy-snapshot:
-    docker:
-      - image: circleci/openjdk:8-jdk
-    
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            - v1-dependencies-
-
-      - run: echo $GPG_SECRET_KEYS | base64 --decode | gpg --import --no-tty --batch --yes
-      - run: echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust --no-tty --batch --yes
-      - run: mvn clean install -B -U -DskipTests=true
-      - run: mvn -s .circleci/settings.xml -f standalone/pom.xml clean deploy -P ossrh -B -U -DskipTests=true
-
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
-
-
-  deploy-labs:
-    docker:
-      - image: circleci/openjdk:8-jdk
-    
-    working_directory: ~/repo
-
-    steps:
       - run: 
           name: Trigger Epsilon Labs Deployment
           command: curl -X POST "https://circleci.com/api/v1.1/project/github/epsilonlabs/epsilonlabs-updatesite?circle-token=$TRIGGER_BUILD"
