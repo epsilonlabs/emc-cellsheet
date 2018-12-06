@@ -80,6 +80,27 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>3.0.0-M1</version>
+				<executions>
+					<execution>
+						<id>install-cellsheet</id>
+						<phase>install</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<pomFile>assembly/cellsheet.pom</pomFile>
+							<file>${project.build.directory}/${cellsheet.prefix}.jar</file>
+							<javadoc>${project.build.directory}/${cellsheet.prefix}-javadoc.jar</javadoc>
+							<sources>${project.build.directory}/${cellsheet.prefix}-sources.jar</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
