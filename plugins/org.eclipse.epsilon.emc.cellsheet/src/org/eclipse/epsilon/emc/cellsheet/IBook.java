@@ -102,8 +102,8 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 		Object toReturn = null;
 		switch(parts.next()) {
 		case "value":
-			if (cell.getValue().getType() != Type.FORMULA_CELL_VALUE) {
-				toReturn = cell.getValue();
+			if (cell.getCellValue().getType() != Type.FORMULA_CELL_VALUE) {
+				toReturn = cell.getCellValue();
 				break;
 			}
 			
@@ -140,20 +140,35 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 
 	@Override
 	default String getTypeNameOf(Object obj) {
-		return ((Type) getTypeOf(obj)).getTypeName();
+		return ((Type) getTypeOf(obj)).getName();
 	}
 
 	@Override
-	default boolean isOfType(Object obj, String typename) throws EolModelElementTypeNotFoundException {
-		Type type = Type.fromTypeName(typename);
-		if (type == null)
+	default boolean isOfType(Object instance, String typename) throws EolModelElementTypeNotFoundException {
+		Type type = Type.fromName(typename);
+		if (type == null) {
 			throw new EolModelElementTypeNotFoundException(this.getName(), typename);
-		return type == (Type) getTypeOf(obj);
+		}
+		if (!(instance instanceof HasType)) {
+			throw new IllegalArgumentException("Element is not typed: " + instance);
+		}
+		return ((HasType) instance).getType() == type;
+	}
+	
+	@Override
+	default boolean isOfKind(Object instance, String typename) throws EolModelElementTypeNotFoundException {
+		Type type = Type.fromName(typename);
+		if (type == null) {
+			throw new EolModelElementTypeNotFoundException(this.getName(), typename);}
+		if (!(instance instanceof HasType)) {
+			throw new IllegalArgumentException("Element is not typed: " + instance);
+		}
+		return Arrays.stream(((HasType) instance).getKinds()).anyMatch(type::equals);
 	}
 
 	@Override
 	default boolean hasType(String type) {
-		return Type.fromTypeName(type) != null;
+		return Type.fromName(type) != null;
 	}
 
 	@Override

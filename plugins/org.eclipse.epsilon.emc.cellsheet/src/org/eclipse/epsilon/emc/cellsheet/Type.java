@@ -17,24 +17,24 @@ public enum Type {
 	NUMERIC_TOKEN("NumericToken"), STRING_TOKEN("StringToken");
 	// @formatter:off
 
-	private final String typename;
+	private final String name;
 
 	private Type(String typename) {
-		this.typename = typename;
+		this.name = typename;
 	}
 
 	@Override
 	public String toString() {
-		return this.typename;
+		return this.name;
 	}
 
-	public String getTypeName() {
-		return this.typename;
+	public String getName() {
+		return this.name;
 	}
 
-	public static Type fromTypeName(String typename) {
+	public static Type fromName(String typename) {
 		for (Type ct : Type.values()) {
-			if (ct.typename.equals(typename))
+			if (ct.name.equals(typename))
 				return ct;
 		}
 		return null;

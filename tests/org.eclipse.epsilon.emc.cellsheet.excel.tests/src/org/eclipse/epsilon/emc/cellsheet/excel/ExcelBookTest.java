@@ -10,8 +10,11 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.epsilon.common.util.StringProperties;
+import org.eclipse.epsilon.emc.cellsheet.HasId;
 import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
@@ -184,27 +187,40 @@ public class ExcelBookTest {
 
 	@Test
 	public void getAllOfType_should_return_Book_when_given_TypeBook() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.BOOK.getTypeName());
+		Collection<?> all = book.getAllOfType(Type.BOOK.getName());
 		assertEquals(1, all.size());
 		assertEquals(book, all.iterator().next());
 	}
 
 	@Test
 	public void getAllOfType_should_return_Sheet_when_given_TypeSheet() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.SHEET.getTypeName());
+		Collection<?> all = book.getAllOfType(Type.SHEET.getName());
 		assertEquals(2, all.size());
 	}
 
 	@Test
 	public void getAllOfType_should_return_Row_when_given_TypeRow() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.ROW.getTypeName());
+		Collection<?> all = book.getAllOfType(Type.ROW.getName());
 		assertEquals(9, all.size());
 	}
 
 	@Test
 	public void getAllOfType_should_return_Cell_when_given_TypeCell() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.CELL.getTypeName());
+		Collection<?> all = book.getAllOfType(Type.CELL.getName());
 		assertEquals(25, all.size());
+	}
+	
+	@Test
+	public void getAllOfType_should_return_Cell_when_given_TypeFORMULACELLVALUE() throws Exception {
+		Collection<?> all = book.getAllOfType(Type.FORMULA_CELL_VALUE.getName());
+		assertEquals(1, all.size());
+	}
+	
+	@Test
+	public void getAllOfKind_should_return_all_CellValue_when_given_TypeCellValue() throws Exception {		
+		Collection<?> allCells = book.getAllOfType(Type.CELL.getName());
+		Collection<?> allCellValues = book.getAllOfKind(Type.CELL_VALUE.getName());
+		assertEquals(allCells.size(), allCellValues.size());
 	}
 
 	@Test(expected = EolModelElementTypeNotFoundException.class)
@@ -298,6 +314,23 @@ public class ExcelBookTest {
 
 	@Test
 	public void testGetAllOfKind() throws Exception {
-		assertEquals(2, book.getAllOfKind(Type.SHEET.getTypeName()).size());
+		assertEquals(2, book.getAllOfKind(Type.SHEET.getName()).size());
+	}
+
+	@Test
+	public void allContents_should_return_same_values_when_cached_and_uncached() throws Exception {
+		ExcelBook cachedBook = ExcelTestUtil.getBook(ExcelBookTest.class);
+		cachedBook.setCachingEnabled(true);
+		cachedBook.dispose();
+		cachedBook.load();
+		
+		Collection<HasId> uncachedContents = book.allContents();
+		Collection<HasId> cachedContents = cachedBook.allContents();
+		assertEquals(uncachedContents.size(), cachedContents.size());
+		
+		List<String> uncachedIds = uncachedContents.stream().map(t -> t.getId()).sorted().collect(Collectors.toList());
+		List<String> cachedIds = cachedContents.stream().map(t -> t.getId()).sorted().collect(Collectors.toList());
+		assertEquals(uncachedIds, cachedIds);
+
 	}
 }

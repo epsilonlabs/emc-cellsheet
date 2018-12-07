@@ -9,7 +9,7 @@ public interface ICell extends HasId, Comparable<ICell> {
 	public String getCol();
 	public int getRowIndex();
 	
-	public ICellValue<?> getValue();
+	public ICellValue<?> getCellValue();
 	public IBooleanCellValue getBooleanCellValue();
 	public IFormulaCellValue getFormulaCellValue();
 	public IStringCellValue getStringCellValue();

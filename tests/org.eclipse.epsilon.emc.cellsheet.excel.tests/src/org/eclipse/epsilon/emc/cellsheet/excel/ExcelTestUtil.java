@@ -8,12 +8,13 @@ public class ExcelTestUtil {
 
 	private static final String RES_PATH = "./resources/";
 
-	public static ExcelBook getBook(String filename, String modelName, boolean load) throws EolModelLoadingException {
+	public static ExcelBook getBook(String filename, String modelName, boolean load) throws EolModelLoadingException {	
 		final ExcelBook book = new ExcelBook();
 		book.setExcelFile(RES_PATH + filename);
 		book.setName(modelName);
-		if (load)
+		if (load) {
 			book.load();
+		}
 		return book;
 	}
 

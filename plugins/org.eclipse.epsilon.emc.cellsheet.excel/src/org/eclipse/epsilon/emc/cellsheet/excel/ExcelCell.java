@@ -44,7 +44,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	}
 
 	@Override
-	public ICellValue<?> getValue() {
+	public ICellValue<?> getCellValue() {
 		if (cellValue == null) {
 			switch (delegate.getCellTypeEnum()) {
 			case BOOLEAN:
@@ -81,7 +81,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 		if (delegate.getCellTypeEnum() != CellType.BOOLEAN) {
 			throw new IllegalStateException("Not a boolean");
 		}
-		return (ExcelBooleanCellValue) getValue();
+		return (ExcelBooleanCellValue) getCellValue();
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 		if (delegate.getCellTypeEnum() != CellType.FORMULA) {
 			throw new IllegalStateException("Not a Formula");
 		}
-		return (ExcelFormulaCellValue) getValue();
+		return (ExcelFormulaCellValue) getCellValue();
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 		if (delegate.getCellTypeEnum() != CellType.STRING || delegate.getCellTypeEnum() != CellType.FORMULA) {
 			throw new IllegalStateException("Not a String");
 		}
-		return (ExcelStringCellValue) getValue();
+		return (ExcelStringCellValue) getCellValue();
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 		if (delegate.getCellTypeEnum() != CellType.NUMERIC) {
 			throw new IllegalStateException("Not a numeric");
 		}
-		return (ExcelNumericCellValue) getValue();
+		return (ExcelNumericCellValue) getCellValue();
 	}
 
 	@Override
@@ -126,6 +126,31 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	@Override
 	public ExcelBook getBook() {
 		return this.book;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((delegate == null) ? 0 : delegate.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ExcelCell other = (ExcelCell) obj;
+		if (delegate == null) {
+			if (other.delegate != null)
+				return false;
+		} else if (!delegate.equals(other.delegate))
+			return false;
+		return true;
 	}
 
 	@Override
