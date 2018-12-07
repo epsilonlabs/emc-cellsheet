@@ -10,8 +10,11 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.epsilon.common.util.StringProperties;
+import org.eclipse.epsilon.emc.cellsheet.HasId;
 import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
@@ -299,5 +302,22 @@ public class ExcelBookTest {
 	@Test
 	public void testGetAllOfKind() throws Exception {
 		assertEquals(2, book.getAllOfKind(Type.SHEET.getTypeName()).size());
+	}
+
+	@Test
+	public void allContents_should_return_same_values_when_cached_and_uncached() throws Exception {
+		ExcelBook cachedBook = ExcelTestUtil.getBook(ExcelBookTest.class);
+		cachedBook.setCachingEnabled(true);
+		cachedBook.dispose();
+		cachedBook.load();
+		
+		Collection<HasId> uncachedContents = book.allContents();
+		Collection<HasId> cachedContents = cachedBook.allContents();
+		assertEquals(uncachedContents.size(), cachedContents.size());
+		
+		List<String> uncachedIds = uncachedContents.stream().map(t -> t.getId()).sorted().collect(Collectors.toList());
+		List<String> cachedIds = cachedContents.stream().map(t -> t.getId()).sorted().collect(Collectors.toList());
+		assertEquals(uncachedIds, cachedIds);
+
 	}
 }

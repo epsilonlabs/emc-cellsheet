@@ -34,6 +34,7 @@ import org.eclipse.epsilon.emc.cellsheet.HasId;
 import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
+import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.eclipse.epsilon.emc.cellsheet.Type;
@@ -82,16 +83,20 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 				return cell;
 			}
 		}
-		
+
 		// No cached value available, create new ExcelCell
 		Cell poi = ((ExcelRow) row).getDelegate().getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK);
 		ExcelCell cell = new ExcelCell((ExcelRow) row, poi);
 		if (cachingEnabled) {
 			idMap.put(cell.getId(), cell);
+			idMap.put(cell.getCellValue().getId(), cell.getCellValue());
+			if (cell.getCellValue().getType() == Type.FORMULA_CELL_VALUE) {
+				for (IFormulaTree tree : cell.getFormulaCellValue().getFormulaTree().getAllTrees()) {
+					idMap.put(tree.getId(), tree);
+				}
+			}
 		}
-		
-		// TODO: Cache cell values as well
-		
+
 		return cell;
 	}
 
@@ -147,7 +152,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 				return row;
 			}
 		}
-		
+
 		// No cached value available, create new ExcelRow
 		Row poi = ((ExcelSheet) sheet).getDelegate().getRow(index);
 		if (poi == null) {
@@ -157,7 +162,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 		if (cachingEnabled) {
 			idMap.put(row.getId(), row);
 		}
-		
+
 		return row;
 	}
 
@@ -198,7 +203,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 				return sheet;
 			}
 		}
-		
+
 		// No cached value available, create new ExcelSheet
 		ExcelSheet sheet = new ExcelSheet(this, poi);
 		if (cachingEnabled) {
@@ -237,17 +242,28 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 		// TODO: Add in concurrent loading?
 		if (cachingEnabled) {
 			idMap = new HashMap<>();
+			forEach(sheet -> sheet.forEach(row -> row.forEach(cell -> cell.getCellValue())));
+			return idMap.values();
 		}
 
-		for (ISheet sheet : this) {
-			for (IRow row : sheet) {
-				for (ICell cell : row) {
-					cell.getValue();
-				}
-			}
-		}
+		// No caching, iterate and store
+		Collection<HasId> allContents = new ArrayList<>();
+		forEach(sheet -> {
+			allContents.add(sheet);
+			sheet.forEach(row -> {
+				allContents.add(row);
+				row.forEach(cell -> {
+					allContents.add(cell);
+					allContents.add(cell.getCellValue());
+					if (cell.getCellValue().getType() == Type.FORMULA_CELL_VALUE) {
+						allContents.addAll(cell.getFormulaCellValue().getFormulaTree().getAllTrees());
+					}
+				});
 
-		return idMap.values();
+			});
+		});
+
+		return allContents;
 	}
 
 	@Override
@@ -303,6 +319,12 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 
 	@Override
 	public Object getElementById(String id) {
+		if (cachingEnabled) {
+			HasId element = idMap.get(id);
+			if (element != null) {
+				return element;
+			}
+		}
 		return IBook.super.getElementById(id);
 	}
 
@@ -432,15 +454,11 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 
 	@Override
 	protected void disposeModel() {
-		throw new UnsupportedOperationException();
+		idMap.clear();
 	}
 
-	public void setExcelFile(final String filepath) {
-		excelFile = (new File(filepath)).getAbsoluteFile();
-		if (!excelFile.exists()) {
-			final IllegalArgumentException e = new IllegalArgumentException("Bad filepath given: " + filepath);
-			throw e;
-		}
+	public void setExcelFile(String filepath) {
+		setExcelFile(new File(filepath));
 	}
 
 	public void setExcelFile(File file) {

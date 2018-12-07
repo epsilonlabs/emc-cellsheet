@@ -102,8 +102,8 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 		Object toReturn = null;
 		switch(parts.next()) {
 		case "value":
-			if (cell.getValue().getType() != Type.FORMULA_CELL_VALUE) {
-				toReturn = cell.getValue();
+			if (cell.getCellValue().getType() != Type.FORMULA_CELL_VALUE) {
+				toReturn = cell.getCellValue();
 				break;
 			}
 			

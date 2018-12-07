@@ -1,5 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -41,7 +43,22 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	public void setParent(IFormulaTree parent);
 
 	/**
-	 * @return any child trees this Formula Tree may have.
+	 * @return this tree and all descendant trees
+	 */
+	default public List<IFormulaTree> getAllTrees() {
+		List<IFormulaTree> children = new ArrayList<>(Arrays.asList(this));
+		if (isLeaf()) {
+			return children;
+		}
+		
+		for (IFormulaTree child : getChildren()) {
+			children.addAll(child.getAllTrees());
+		}
+		return children;
+	}
+
+	/**
+	 * @return the direct child trees this Formula Tree may have.
 	 */
 	public List<IFormulaTree> getChildren();
 
