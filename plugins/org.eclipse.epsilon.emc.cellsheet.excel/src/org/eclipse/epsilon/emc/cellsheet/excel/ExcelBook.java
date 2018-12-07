@@ -242,12 +242,14 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 		// TODO: Add in concurrent loading?
 		if (cachingEnabled) {
 			idMap = new HashMap<>();
+			idMap.put(getId(), this);
 			forEach(sheet -> sheet.forEach(row -> row.forEach(cell -> cell.getCellValue())));
 			return idMap.values();
 		}
 
 		// No caching, iterate and store
 		Collection<HasId> allContents = new ArrayList<>();
+		allContents.add(this);
 		forEach(sheet -> {
 			allContents.add(sheet);
 			sheet.forEach(row -> {
@@ -259,7 +261,6 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 						allContents.addAll(cell.getFormulaCellValue().getFormulaTree().getAllTrees());
 					}
 				});
-
 			});
 		});
 
@@ -292,14 +293,14 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	@Override
 	protected Collection<String> getAllTypeNamesOf(Object instance) {
 		if (instance instanceof HasType) {
-			return Arrays.stream(((HasType) instance).getKinds()).map(k -> k.getTypeName()).collect(Collectors.toSet());
+			return Arrays.stream(((HasType) instance).getKinds()).map(k -> k.getName()).collect(Collectors.toSet());
 		}
 		throw new IllegalArgumentException();
 	}
 
 	@Override
 	protected Object getCacheKeyForType(String typename) throws EolModelElementTypeNotFoundException {
-		Type type = Type.fromTypeName(typename);
+		Type type = Type.fromName(typename);
 		if (type == null) {
 			throw new EolModelElementTypeNotFoundException(name, typename);
 		}
@@ -374,8 +375,14 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 
 	@Override
 	public Collection<HasId> getAllOfKindFromModel(String type) throws EolModelElementTypeNotFoundException {
-		// FIXME: Add in sub-types for Excel only implementations
-		return getAllOfTypeFromModel(type);
+		if (!hasType(type)) {
+			throw new EolModelElementTypeNotFoundException(name, type);
+		}
+		
+		return allContents()
+				.stream()
+				.filter(e -> Arrays.stream(e.getKinds()).anyMatch(Type.fromName(type)::equals))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -384,27 +391,10 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 			throw new EolModelElementTypeNotFoundException(name, typename);
 		}
 
-		final List<HasId> list = new ArrayList<HasId>();
-
-		switch (Type.fromTypeName(typename)) {
-		case BOOK:
-			list.add(this);
-			break;
-		case SHEET:
-			list.addAll(sheets());
-			break;
-		case ROW:
-			iterator().forEachRemaining(s -> list.addAll(s.rows()));
-			break;
-		case CELL:
-			iterator().forEachRemaining(s -> s.iterator().forEachRemaining(r -> list.addAll(r.cells())));
-			break;
-
-		default:
-			throw new AssertionError();
-		}
-
-		return list;
+		return allContents()
+				.stream()
+				.filter(e -> e.getType() == Type.fromName(typename))
+				.collect(Collectors.toList());
 	}
 
 	@Override

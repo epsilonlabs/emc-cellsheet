@@ -187,27 +187,40 @@ public class ExcelBookTest {
 
 	@Test
 	public void getAllOfType_should_return_Book_when_given_TypeBook() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.BOOK.getTypeName());
+		Collection<?> all = book.getAllOfType(Type.BOOK.getName());
 		assertEquals(1, all.size());
 		assertEquals(book, all.iterator().next());
 	}
 
 	@Test
 	public void getAllOfType_should_return_Sheet_when_given_TypeSheet() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.SHEET.getTypeName());
+		Collection<?> all = book.getAllOfType(Type.SHEET.getName());
 		assertEquals(2, all.size());
 	}
 
 	@Test
 	public void getAllOfType_should_return_Row_when_given_TypeRow() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.ROW.getTypeName());
+		Collection<?> all = book.getAllOfType(Type.ROW.getName());
 		assertEquals(9, all.size());
 	}
 
 	@Test
 	public void getAllOfType_should_return_Cell_when_given_TypeCell() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.CELL.getTypeName());
+		Collection<?> all = book.getAllOfType(Type.CELL.getName());
 		assertEquals(25, all.size());
+	}
+	
+	@Test
+	public void getAllOfType_should_return_Cell_when_given_TypeFORMULACELLVALUE() throws Exception {
+		Collection<?> all = book.getAllOfType(Type.FORMULA_CELL_VALUE.getName());
+		assertEquals(1, all.size());
+	}
+	
+	@Test
+	public void getAllOfKind_should_return_all_CellValue_when_given_TypeCellValue() throws Exception {		
+		Collection<?> allCells = book.getAllOfType(Type.CELL.getName());
+		Collection<?> allCellValues = book.getAllOfKind(Type.CELL_VALUE.getName());
+		assertEquals(allCells.size(), allCellValues.size());
 	}
 
 	@Test(expected = EolModelElementTypeNotFoundException.class)
@@ -301,7 +314,7 @@ public class ExcelBookTest {
 
 	@Test
 	public void testGetAllOfKind() throws Exception {
-		assertEquals(2, book.getAllOfKind(Type.SHEET.getTypeName()).size());
+		assertEquals(2, book.getAllOfKind(Type.SHEET.getName()).size());
 	}
 
 	@Test

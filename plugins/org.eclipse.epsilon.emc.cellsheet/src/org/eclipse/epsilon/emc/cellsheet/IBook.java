@@ -140,12 +140,12 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 
 	@Override
 	default String getTypeNameOf(Object obj) {
-		return ((Type) getTypeOf(obj)).getTypeName();
+		return ((Type) getTypeOf(obj)).getName();
 	}
 
 	@Override
 	default boolean isOfType(Object obj, String typename) throws EolModelElementTypeNotFoundException {
-		Type type = Type.fromTypeName(typename);
+		Type type = Type.fromName(typename);
 		if (type == null)
 			throw new EolModelElementTypeNotFoundException(this.getName(), typename);
 		return type == (Type) getTypeOf(obj);
@@ -153,7 +153,7 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 
 	@Override
 	default boolean hasType(String type) {
-		return Type.fromTypeName(type) != null;
+		return Type.fromName(type) != null;
 	}
 
 	@Override
