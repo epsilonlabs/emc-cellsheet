@@ -61,56 +61,6 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 	FormulaParsingWorkbook fpw = null;
 
 	@Override
-	protected Collection<HasType> allContentsFromModel() {
-		this.forEach(s -> s.forEach(r -> r.forEach(c -> c.getValue())));
-		return idMap.values();
-	}
-
-	@Override
-	protected HasType createInstanceInModel(String type)
-			throws EolModelElementTypeNotFoundException, EolNotInstantiableModelElementTypeException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected boolean deleteElementInModel(Object instance) throws EolRuntimeException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Object getElementById(String id) {
-		return IBook.super.getElementById(id);
-	}
-
-	@Override
-	public String getElementId(Object instance) {
-		if (instance instanceof HasId) {
-			return ((HasId) instance).getId();
-		}
-
-		if (instance instanceof HasType) {
-			throw new UnsupportedOperationException(
-					"ID not implemented for model type: " + ((HasType) instance).getType());
-		}
-		throw new IllegalArgumentException("No such model element type exists for " + instance.toString());
-	}
-
-	@Override
-	public boolean isInstantiable(String type) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean owns(Object instance) {
-		try {
-			String id = getElementId(instance);
-			return getElementById(id) != null;
-		} catch (IllegalArgumentException e) {
-			return false;
-		}
-	}
-
-	@Override
 	public ExcelCell getCell(IRow row, int col) {
 		if (col < 0) {
 			throw new IndexOutOfBoundsException("col index must be positive, was given: " + col);
@@ -240,11 +190,6 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 	}
 
 	@Override
-	public void setElementId(Object instance, String newId) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public Iterator<ISheet> iterator() {
 		return new TransformIterator<Sheet, ISheet>(delegate.iterator(), new Transformer<Sheet, ISheet>() {
 			@Override
@@ -257,6 +202,114 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 	@Override
 	public List<ISheet> sheets() {
 		return IteratorUtils.toList(iterator());
+	}
+
+	@Override
+	public Workbook getDelegate() {
+		return delegate;
+	}
+
+	public WorkbookEvaluator getEvaluator() {
+		return evaluator;
+	}
+
+	@Override
+	protected Collection<HasType> allContentsFromModel() {
+		// TODO: Add in concurrent loading?
+		if (cachingEnabled) {
+
+		}
+
+		for (ISheet sheet : this) {
+			for (IRow row : sheet) {
+				for (ICell cell : row) {
+					cell.getValue();
+				}
+			}
+		}
+
+		return idMap.values();
+	}
+
+	@Override
+	public Object getTypeOf(Object instance) {
+		return IBook.super.getTypeOf(instance);
+	}
+
+	@Override
+	public String getTypeNameOf(Object instance) {
+		return IBook.super.getTypeNameOf(instance);
+	}
+
+	@Override
+	public boolean isOfType(Object instance, String metaClass) throws EolModelElementTypeNotFoundException { // stub
+		return IBook.super.isOfType(instance, metaClass);
+	}
+
+	@Override
+	protected Collection<String> getAllTypeNamesOf(Object instance) {
+		if (instance instanceof HasType) {
+			return Arrays.stream(((HasType) instance).getKinds()).map(k -> k.getTypeName()).collect(Collectors.toSet());
+		}
+		throw new IllegalArgumentException();
+	}
+
+	@Override
+	protected Object getCacheKeyForType(String typename) throws EolModelElementTypeNotFoundException {
+		Type type = Type.fromTypeName(typename);
+		if (type == null) {
+			throw new EolModelElementTypeNotFoundException(name, typename);
+		}
+		return type;
+	}
+
+	@Override
+	protected HasType createInstanceInModel(String type)
+			throws EolModelElementTypeNotFoundException, EolNotInstantiableModelElementTypeException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected boolean deleteElementInModel(Object instance) throws EolRuntimeException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object getElementById(String id) {
+		return IBook.super.getElementById(id);
+	}
+
+	@Override
+	public String getElementId(Object instance) {
+		if (instance instanceof HasId) {
+			return ((HasId) instance).getId();
+		}
+
+		if (instance instanceof HasType) {
+			throw new UnsupportedOperationException(
+					"ID not implemented for model type: " + ((HasType) instance).getType());
+		}
+		throw new IllegalArgumentException("No such model element type exists for " + instance.toString());
+	}
+
+	@Override
+	public void setElementId(Object instance, String newId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean isInstantiable(String type) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean owns(Object instance) {
+		try {
+			String id = getElementId(instance);
+			return getElementById(id) != null;
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
 	}
 
 	@Override
@@ -317,7 +370,7 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 	public void loadModel() throws EolModelLoadingException {
 		try {
 			fpw = null;
-			delegate = WorkbookFactory.create(excelFile);
+			delegate = WorkbookFactory.create(excelFile, null, true);
 			delegate.setMissingCellPolicy(MissingCellPolicy.CREATE_NULL_AS_BLANK);
 
 			if (delegate instanceof HSSFWorkbook) {
@@ -362,14 +415,9 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 			throw e;
 		}
 	}
-	
+
 	public void setExcelFile(File file) {
 		excelFile = file;
-	}
-
-	@Override
-	public Workbook getDelegate() {
-		return delegate;
 	}
 
 	@Override
@@ -396,42 +444,6 @@ public class ExcelBook extends CachedModel<HasType> implements IBook, HasDelegat
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public Object getTypeOf(Object instance) {
-		return IBook.super.getTypeOf(instance);
-	}
-
-	@Override
-	public String getTypeNameOf(Object instance) {
-		return IBook.super.getTypeNameOf(instance);
-	}
-
-	@Override
-	public boolean isOfType(Object instance, String metaClass) throws EolModelElementTypeNotFoundException { // stub
-		return IBook.super.isOfType(instance, metaClass);
-	}
-
-	@Override
-	protected Collection<String> getAllTypeNamesOf(Object instance) {
-		if (instance instanceof HasType) {
-			return Arrays.stream(((HasType) instance).getKinds()).map(k -> k.getTypeName()).collect(Collectors.toSet());
-		}
-		throw new IllegalArgumentException();
-	}
-
-	@Override
-	protected Object getCacheKeyForType(String typename) throws EolModelElementTypeNotFoundException {
-		Type type = Type.fromTypeName(typename);
-		if (type == null) {
-			throw new EolModelElementTypeNotFoundException(name, typename);
-		}
-		return type;
-	}
-
-	public WorkbookEvaluator getEvaluator() {
-		return evaluator;
 	}
 
 	@Override
