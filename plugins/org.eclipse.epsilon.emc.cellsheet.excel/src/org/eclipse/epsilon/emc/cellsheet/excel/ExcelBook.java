@@ -369,8 +369,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 
 	@Override
 	public boolean isOfKind(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
-		// FIXME: Add in sub-types for Excel only implementations
-		return isOfType(instance, metaClass);
+		return IBook.super.isOfKind(instance, metaClass);
 	}
 
 	@Override
