@@ -127,7 +127,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	public ExcelBook getBook() {
 		return this.book;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -158,9 +158,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
 		sb.append("(id: ").append(getId());
-		sb.append(", excelRef: ").append("[").append(getBook().getName()).append("]'").append(sheet.getName())
-				.append("'!");
-		sb.append("$").append(getCol()).append("$").append(getRowIndex() + 1);
+		sb.append(", excelRef: ").append(getExternalRef());
 		sb.append(")");
 		return sb.toString();
 	}

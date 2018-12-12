@@ -41,4 +41,8 @@ public interface IRow extends HasId, Comparable<IRow>, Iterable<ICell> {
 	default String getId() {
 		return getSheet().getId() + getIndex() + "/";
 	}
+	
+	default String getExternalRef() {
+		return getSheet().getExternalRef() + "!A$" + (getIndex() + 1);
+	}
 }

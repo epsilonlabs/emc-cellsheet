@@ -99,8 +99,7 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
 		sb.append("(id: ").append(getId());
-		sb.append(", excelRef: ").append("[").append(getBook().getName()).append("]'").append(sheet.getName()).append("'!");
-		sb.append("A").append("$").append(getIndex());
+		sb.append(", excelRef: ").append(getExternalRef());
 		sb.append(")");
 		return sb.toString();
 	}

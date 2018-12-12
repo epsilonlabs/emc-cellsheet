@@ -46,4 +46,8 @@ public interface ICell extends HasId, Comparable<ICell> {
 	default String getId() {
 		return getRow().getId() + getColIndex() + "/";
 	}
+	
+	default String getExternalRef() {
+		return getSheet().getExternalRef() + "$" + getCol() + "$" + (getRowIndex() + 1);
+	}
 }
