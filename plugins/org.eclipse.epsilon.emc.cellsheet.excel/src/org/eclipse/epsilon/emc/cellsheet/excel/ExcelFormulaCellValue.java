@@ -2,17 +2,13 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaType;
 import org.apache.poi.ss.formula.ptg.Area3DPtg;
 import org.apache.poi.ss.formula.ptg.Area3DPxg;
 import org.apache.poi.ss.formula.ptg.AreaPtg;
-import org.apache.poi.ss.formula.ptg.AttrPtg;
-import org.apache.poi.ss.formula.ptg.ControlPtg;
 import org.apache.poi.ss.formula.ptg.OperandPtg;
-import org.apache.poi.ss.formula.ptg.OperationPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.Ref3DPxg;
 import org.apache.poi.ss.formula.ptg.RefPtg;
@@ -127,52 +123,8 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 	@Override
 	public ExcelFormulaTree getFormulaTree() {
 		if (formulaTree == null) {
-			final Stack<ExcelFormulaTree> trees = new Stack<>();
-			final Stack<ExcelFormulaTree> operands = new Stack<>();
-
-			for (int ptgIndex = 0; ptgIndex < getPtgs().length; ptgIndex++) {
-
-				Ptg ptg = ptgs[ptgIndex];
-				if (ptg instanceof ControlPtg) {
-					if (ptg instanceof AttrPtg && ((AttrPtg) ptg).isSkip()) {
-						continue;
-					}
-					continue;
-				}
-
-				final ExcelFormulaTree current = new ExcelFormulaTree(this, ptgs, ptgIndex);
-
-				// Special Case for SUM only
-				if (FormulaUtil.isSumPtg(ptg)) {
-					current.addChild(trees.pop());
-					if (!operands.isEmpty())
-						throw new IllegalStateException("Not enough operands available for consumption by: " + ptg);
-				}
-
-				if (ptg instanceof OperationPtg) {
-					OperationPtg operationPtg = (OperationPtg) ptg;
-					for (int i = 0; i < operationPtg.getNumberOfOperands(); i++) {
-						operands.push(trees.pop());
-					}
-
-					for (int i = 0; i < operationPtg.getNumberOfOperands(); i++) {
-						current.addChild(operands.pop());
-					}
-
-					if (!operands.isEmpty()) {
-						throw new IllegalStateException();
-					}
-				}
-
-				trees.push(current);
-			}
-
-			if (trees.size() != 1)
-				throw new AssertionError("Not all tokens consumed: " + this);
-
-			formulaTree = trees.pop();
-		}
-
+			formulaTree = FormulaUtil.buildFormulaTree(this);
+		}		
 		return formulaTree;
 	}
 

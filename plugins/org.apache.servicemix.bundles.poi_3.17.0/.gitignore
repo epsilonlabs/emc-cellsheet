@@ -1,3 +1,4 @@
+src/
 !.settings/
 !META-INF/*.class
 !OSGI-INF/*.class
