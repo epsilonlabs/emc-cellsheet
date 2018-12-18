@@ -1,11 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.eclipse.epsilon.emc.cellsheet.ICellValue;
-import org.eclipse.epsilon.emc.cellsheet.Type;
-import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
