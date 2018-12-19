@@ -5,7 +5,9 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.poi.ss.formula.FormulaRenderer;
 import org.apache.poi.ss.formula.FormulaRenderingWorkbook;
@@ -21,6 +23,7 @@ import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
+import org.eclipse.epsilon.emc.cellsheet.Type;
 
 /**
  * 
@@ -28,38 +31,35 @@ import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
  *
  */
 public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
-	
+
 	protected ExcelFormulaTree parent;
-	
+	protected ExcelFormulaCellValue cellValue;
 	protected Ptg[] ptgs;
 	protected int ptgIndex;
-	protected List<ExcelFormulaTree> children = null;
+	protected List<ExcelFormulaTree> children;
 
-	protected ExcelFormulaCellValue cellValue;
-	protected ExcelBook book;
-	protected ExcelCell cell;
-	
-	public ExcelFormulaTree(Ptg[] ptgs, int ptgIndex) {
-		this(null, ptgs, ptgIndex);
-	}
-	
+	protected Type type;
+	protected Set<Type> kinds;
+
 	public ExcelFormulaTree(ExcelFormulaCellValue cellValue, Ptg[] ptgs, int ptgIndex) {
+		this.cellValue = cellValue;
 		this.ptgs = ptgs;
 		this.ptgIndex = ptgIndex;
+
 		this.children = new ArrayList<>();
-		
-		this.cellValue = cellValue;
-		if (cellValue != null) {
-			this.cell = cellValue.cell;
-			this.book = cell.book;
-		}
+		this.kinds = EnumSet.of(Type.FORMULA_TREE);
+	}
+
+	public ExcelFormulaTree(ExcelFormulaTree parent, int ptgIndex) {
+		this(parent.cellValue, parent.ptgs, ptgIndex);
+		this.parent = parent;
 	}
 
 	@Override
 	public ExcelFormulaCellValue getCellValue() {
 		return cellValue;
 	}
-	
+
 	@Override
 	public void setCellValue(IFormulaCellValue cellValue) {
 		if (!(cellValue instanceof ExcelFormulaCellValue))
@@ -110,7 +110,7 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 	@Override
 	public ICell evaluateCell() {
 		if (!(getDelegate() instanceof AbstractFunctionPtg)) {
-			return cell;
+			return getCell();
 		}
 
 		AbstractFunctionPtg function = (AbstractFunctionPtg) getDelegate();
@@ -125,7 +125,7 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 			int firstRow = table_array.getFirstRow();
 			int lastRow = table_array.getLastRow();
 
-			String sheetName = cell.getSheet().getName(); // Determine the sheet to use for refs
+			String sheetName = getSheet().getName(); // Determine the sheet to use for refs
 			if (table_array instanceof Area3DPxg) {
 				sheetName = ((Area3DPxg) table_array).getSheetName();
 			}
@@ -146,28 +146,29 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 
 			// Evaluate and get cell reference
 			CellReference cr = new CellReference(doEvaluation(newFormula));
-			return book.getCell(cr.getSheetName(), cr.getRow(), cr.getCol());
+			return getBook().getCell(cr.getSheetName(), cr.getRow(), cr.getCol());
 		default:
 			throw new UnsupportedOperationException();
 		}
 	}
 
 	String doEvaluation(String formula) {
-		CellReference ref = new CellReference(cell.getSheet().getName(), cell.getRowIndex(), cell.getColIndex(), false,
+		CellReference ref = new CellReference(getSheet().getName(), getRow().getIndex(), getCell().getColIndex(), false,
 				false);
 
-		ValueEval result = book.evaluator.evaluate(formula, ref);
+		ValueEval result = ((ExcelBook) getBook()).evaluator.evaluate(formula, ref);
 		return OperandResolver.coerceValueToString(result);
 	}
 
 	@Override
 	public String getFormula() {
-		// AST does not take into account control characters such as brackets, therefore they are not children.
+		// AST does not take into account control characters such as brackets, therefore
+		// they are not children.
 		// Rebuild the PTG stack with these characters
 		Deque<Ptg> stack = new ArrayDeque<>();
 		int current = ptgIndex;
 		int count = countAllChildren() + 1;
-		
+
 		while (count > 0) {
 			stack.push(ptgs[current]);
 			if (!(ptgs[current] instanceof ControlPtg) || FormulaUtil.isSumPtg(ptgs[current])) {
@@ -175,21 +176,45 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 			}
 			current--;
 		}
-		return FormulaRenderer.toFormulaString((FormulaRenderingWorkbook) book.fpw, stack.toArray(new Ptg[0]));
+		return FormulaRenderer.toFormulaString((FormulaRenderingWorkbook) ((ExcelBook) getBook()).fpw,
+				stack.toArray(new Ptg[0]));
 	}
 
 	@Override
 	public String getToken() {
 		return ptgToStr(getDelegate());
 	}
-	
+
+	@Override
+	public Type getType() {
+		return type == null ? IFormulaTree.super.getType() : type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+		kinds.add(type);
+	}
+
+	@Override
+	public Type[] getKinds() {
+		return kinds.isEmpty() ? IFormulaTree.super.getKinds() : kinds.toArray(new Type[0]);
+	}
+
+	public void addKind() {
+		kinds.add(type);
+	}
+
 	/**
-	 * Utility method for converting a 
-	 * @param ptg
-	 * @return
+	 * Utility method for converting a PTG to String representation
+	 * 
+	 * @param ptg to convert
+	 * @return String representation
+	 * 
+	 * @throws UnsupportedOperationException Encounters a ptg that cannot be
+	 *                                       converted
 	 */
 	static String ptgToStr(Ptg ptg) {
-		
+
 		try {
 			if (ptg instanceof ValueOperatorPtg) {
 				Method method = ValueOperatorPtg.class.getDeclaredMethod("getSid");
@@ -242,6 +267,7 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 		sb.append("(id: ").append(getId());
 		sb.append(", formula: ").append(getFormula());
 		sb.append(", token: ").append(getToken());
+		sb.append(", type: ").append(getType());
 		sb.append(")");
 		return sb.toString();
 	}

@@ -3,19 +3,35 @@ package org.eclipse.epsilon.emc.cellsheet;
 public enum Type {
 
 	// @formatter:off
-	BOOK("Book"), SHEET("Sheet"), ROW("Row"), CELL("Cell"),
+	BOOK("Book"),
+	SHEET("Sheet"),
+	ROW("Row"),
+	CELL("Cell"),
 
 	// Cell Value Types
-	CELL_VALUE("CellValue"), BOOLEAN_CELL_VALUE("BooleanCellValue"), STRING_CELL_VALUE("StringCellValue"),
-	NUMERIC_CELL_VALUE("NumericCellValue"), DATE_CELL_VALUE("DateCellValue"), FORMULA_CELL_VALUE("FormulaCellValue"), ERROR_CELL_VALUE("ErrorCellValue"), BLANK_CELL_VALUE("BlankCellValue"),
+	CELL_VALUE("CellValue"),
+	BOOLEAN_CELL_VALUE("BooleanCellValue"),
+	STRING_CELL_VALUE("StringCellValue"),
+	NUMERIC_CELL_VALUE("NumericCellValue"),
+	DATE_CELL_VALUE("DateCellValue"),
+	FORMULA_CELL_VALUE("FormulaCellValue"),
+	ERROR_CELL_VALUE("ErrorCellValue"),
+	BLANK_CELL_VALUE("BlankCellValue"),
 
 	// Related to Formula
 	FORMULA_TREE("FormulaTree"),
-
-	FORMULA_TOKEN("FormulaToken"), AREA_REF_TOKEN("AreaRefToken"), CELL_REF_TOKEN("CellRefToken"),
-	FUNCTION_TOKEN("FunctionToken"), OPERATION_TOKEN("OperationToken"), OPERAND_TOKEN("OperandToken"),
-	NUMERIC_TOKEN("NumericToken"), STRING_TOKEN("StringToken");
-	// @formatter:off
+	
+	NUMERIC_VALUE_NODE("NumericValueNode"),
+	INT_VALUE_NODE("IntValueNode"),
+	DOUBLE_VALUE_NODE("DoubleValueNode"),
+	STRING_VALUE_NODE("StringValueNode"),
+	BOOLEAN_VALUE_NODE("BooleanValueNode"),
+	CELL_REF_NODE("CellRefNode"),
+	ARRAY_REF_NODE("ArrayRefNode"),
+	OPERATOR_NODE("OperatorNode"),
+	FUNCTION_NODE("FunctionNode"),
+	UNKNOWN_NODE("UnknownNode");
+	// @formatter:on
 
 	private final String name;
 
