@@ -1,4 +1,8 @@
-version: 2
+version: 2.1
+
+# orbs:
+#   codecov: codecov/codecov@1.0.1
+
 jobs:
   build:
     docker:
@@ -15,6 +19,9 @@ jobs:
             - v1-dependencies-
       
       - run: mvn clean install -Pjacoco coveralls:report -DrepoToken=$COVERALLS_TOKEN
+
+      # - codecov/upload:
+      #     file: reports/target/site/jacoco-aggregate/jacoco.xml
 
       - save_cache:
           paths:

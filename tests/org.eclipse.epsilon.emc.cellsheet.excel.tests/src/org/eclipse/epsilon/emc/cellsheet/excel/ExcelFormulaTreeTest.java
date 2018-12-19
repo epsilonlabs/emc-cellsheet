@@ -1,7 +1,8 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import org.apache.poi.ss.formula.ptg.AttrPtg;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
@@ -113,12 +114,30 @@ public class ExcelFormulaTreeTest {
 		assertEquals("SUM(Data!B1:D5)", right.getFormula());
 		assertEquals(15, Double.parseDouble(right.evaluate()), 0);
 	}
-	
+
 	@Test
 	public void getAllChildren_should_return_all_tokens() throws Exception {
 		final ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 8, 0);
 		final IFormulaCellValue cellValue = cell.getFormulaCellValue();
-		final IFormulaTree tree = cellValue.getFormulaTree();	
+		final IFormulaTree tree = cellValue.getFormulaTree();
 		assertEquals(5, tree.getAllTrees().size());
+	}
+
+	/**
+	 * Regression test to check that all tokens are consumed when constructing the
+	 * FormulaTree for a formula with a {@code IF()} function.
+	 * 
+	 * {@code IF()} functions introduce special unseen tokens during the
+	 * tokenisation process that optimise how the formula should be evaluated.
+	 * Specifically these are {@link AttrPtg} with the {@code AttrPtg#isSkip()} set
+	 * to {@code true}.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void test_if_funcvar_should_consume_all_tokens_when_building_formula_tree() throws Exception {
+		ExcelCell ifCell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 11, "A");
+		ExcelFormulaTree ifTree = ifCell.getFormulaCellValue().getFormulaTree();
+		assertEquals(8, ifTree.getAllTrees().size());
 	}
 }

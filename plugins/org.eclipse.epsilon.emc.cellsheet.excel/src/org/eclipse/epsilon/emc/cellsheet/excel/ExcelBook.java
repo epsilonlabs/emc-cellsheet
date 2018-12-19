@@ -494,7 +494,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 		StringBuilder sb = new StringBuilder();
 		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
 		sb.append("(id: ").append(getId());
-		sb.append(", excelRef: ").append("[").append(getName()).append("]");
+		sb.append(", excelRef: ").append(getExternalRef());
 		sb.append(")");
 		return sb.toString();
 	}

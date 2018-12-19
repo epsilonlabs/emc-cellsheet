@@ -2,17 +2,13 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaType;
 import org.apache.poi.ss.formula.ptg.Area3DPtg;
 import org.apache.poi.ss.formula.ptg.Area3DPxg;
 import org.apache.poi.ss.formula.ptg.AreaPtg;
-import org.apache.poi.ss.formula.ptg.AttrPtg;
-import org.apache.poi.ss.formula.ptg.ControlPtg;
 import org.apache.poi.ss.formula.ptg.OperandPtg;
-import org.apache.poi.ss.formula.ptg.OperationPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.Ref3DPxg;
 import org.apache.poi.ss.formula.ptg.RefPtg;
@@ -29,6 +25,7 @@ import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implements IFormulaCellValue {
 
 	protected Ptg[] ptgs;
+	protected ExcelFormulaTree formulaTree = null;
 
 	ExcelFormulaCellValue(ExcelCell cell) {
 		super(cell);
@@ -50,7 +47,8 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 
 	Ptg[] getPtgs() {
 		if (ptgs == null) {
-			ptgs = FormulaParser.parse(getFormula(), book.fpw, FormulaType.CELL, sheet.getIndex());
+			ptgs = FormulaParser.parse(getFormula(), cell.getBook().fpw, FormulaType.CELL, cell.getSheet().getIndex(),
+					cell.getRowIndex());
 		}
 		return ptgs;
 	}
@@ -124,46 +122,10 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 
 	@Override
 	public ExcelFormulaTree getFormulaTree() {
-		final Stack<ExcelFormulaTree> trees = new Stack<>();
-		final Stack<ExcelFormulaTree> operands = new Stack<>();
-
-		for (int ptgIndex = 0; ptgIndex < getPtgs().length; ptgIndex++) {
-
-			Ptg ptg = ptgs[ptgIndex];
-			if (ptg instanceof ControlPtg && !(ptg instanceof AttrPtg))
-				continue;
-
-			final ExcelFormulaTree current = new ExcelFormulaTree(this, ptgs, ptgIndex);
-
-			// Special Case for SUM only
-			if (FormulaUtil.isSumPtg(ptg)) {
-				current.addChild(trees.pop());
-				if (!operands.isEmpty())
-					throw new IllegalStateException("Not all operands have been consumed for " + ptg);
-			}
-
-			if (ptg instanceof OperationPtg) {
-				OperationPtg operationPtg = (OperationPtg) ptg;
-				for (int i = 0; i < operationPtg.getNumberOfOperands(); i++) {
-					operands.push(trees.pop());
-				}
-
-				for (int i = 0; i < operationPtg.getNumberOfOperands(); i++) {
-					current.addChild(operands.pop());
-				}
-
-				if (!operands.isEmpty()) {
-					throw new IllegalStateException();
-				}
-			}
-
-			trees.push(current);
-		}
-
-		if (trees.size() != 1)
-			throw new AssertionError("Not all tokens consumed");
-
-		return trees.pop();
+		if (formulaTree == null) {
+			formulaTree = FormulaUtil.buildFormulaTree(this);
+		}		
+		return formulaTree;
 	}
 
 	@Override

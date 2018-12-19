@@ -39,4 +39,7 @@ public interface ISheet extends HasId, Comparable<ISheet>, Iterable<IRow> {
 		return getBook().getId() + getName() + "/";
 	}
 
+	default String getExternalRef() {
+		return getBook().getExternalRef() + "'" + getName() + "'";
+	}
 }

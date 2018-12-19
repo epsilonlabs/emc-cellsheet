@@ -186,4 +186,7 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 		return getName() + "/";
 	}
 
+	default String getExternalRef() {
+		return "[" + getName() + "]";
+	}
 }

@@ -29,24 +29,30 @@ import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
  */
 public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 	
-	protected ExcelFormulaCellValue cellValue;
-	protected Ptg[] ptgs;
-	protected int ptgIndex;
-
-	protected ExcelBook book;
-	protected ExcelCell cell;
-	protected List<ExcelFormulaTree> children;
-	
 	protected ExcelFormulaTree parent;
 	
+	protected Ptg[] ptgs;
+	protected int ptgIndex;
+	protected List<ExcelFormulaTree> children = null;
+
+	protected ExcelFormulaCellValue cellValue;
+	protected ExcelBook book;
+	protected ExcelCell cell;
+	
+	public ExcelFormulaTree(Ptg[] ptgs, int ptgIndex) {
+		this(null, ptgs, ptgIndex);
+	}
+	
 	public ExcelFormulaTree(ExcelFormulaCellValue cellValue, Ptg[] ptgs, int ptgIndex) {
-		this.cellValue = cellValue;
 		this.ptgs = ptgs;
 		this.ptgIndex = ptgIndex;
+		this.children = new ArrayList<>();
 		
-		this.cell = cellValue.getCell();
-		this.book = cell.getBook();
-		this.children = new ArrayList<ExcelFormulaTree>();
+		this.cellValue = cellValue;
+		if (cellValue != null) {
+			this.cell = cellValue.cell;
+			this.book = cell.book;
+		}
 	}
 
 	@Override
