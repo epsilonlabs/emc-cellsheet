@@ -21,6 +21,7 @@ public enum Type {
 	// Related to Formula
 	FORMULA_TREE("FormulaTree"),
 	
+	ROOT_NODE("RootNode"),
 	NUMERIC_VALUE_NODE("NumericValueNode"),
 	INT_VALUE_NODE("IntValueNode"),
 	DOUBLE_VALUE_NODE("DoubleValueNode"),

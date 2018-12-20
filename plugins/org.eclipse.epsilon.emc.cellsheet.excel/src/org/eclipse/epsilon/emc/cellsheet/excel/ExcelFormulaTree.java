@@ -200,7 +200,7 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 		return kinds.isEmpty() ? IFormulaTree.super.getKinds() : kinds.toArray(new Type[0]);
 	}
 
-	public void addKind() {
+	public void addKind(Type type) {
 		kinds.add(type);
 	}
 
@@ -268,6 +268,9 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 		sb.append(", formula: ").append(getFormula());
 		sb.append(", token: ").append(getToken());
 		sb.append(", type: ").append(getType());
+		if (isRoot()) {
+			sb.append(", isRoot: true");
+		}
 		sb.append(")");
 		return sb.toString();
 	}

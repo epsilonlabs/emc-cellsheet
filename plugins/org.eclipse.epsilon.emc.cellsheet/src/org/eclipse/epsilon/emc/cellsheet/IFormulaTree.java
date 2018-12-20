@@ -185,7 +185,7 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * @return this tree formatted as a tree structure diagram
 	 */
 	default String formatAsTree() {
-		return getFormula() + "\n" + formatAsTree("", true);
+		return getCell().getExternalRef() + "\n" + getFormula() + "\n" + formatAsTree("", true);
 	}
 
 	/**

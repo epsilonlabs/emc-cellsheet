@@ -163,6 +163,7 @@ class FormulaUtil {
 		if (stack.size() > 1)
 			throw new AssertionError();
 
+		stack.peek().addKind(Type.ROOT_NODE);
 		return stack.pop();
 	}
 }
