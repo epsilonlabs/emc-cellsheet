@@ -1,7 +1,6 @@
 # EMC Driver - Cellsheet
 [![CircleCI](https://img.shields.io/circleci/project/github/epsilonlabs/emc-cellsheet/master.svg)](https://circleci.com/gh/epsilonlabs/emc-cellsheet/tree/master)
-[![Coverage Status](https://img.shields.io/coveralls/github/epsilonlabs/emc-cellsheet/master.svg)](https://coveralls.io/github/epsilonlabs/emc-cellsheet?branch=master)
-[![Commits to be Deployed](https://img.shields.io/github/commits-since/epsilonlabs/emc-cellsheet/develop.svg?label=commits%20to%20be%20deployed)](https://github.com/epsilonlabs/emc-cellsheet/compare/master...develop)
+[![codecov](https://codecov.io/gh/epsilonlabs/emc-cellsheet/branch/master/graph/badge.svg)](https://codecov.io/gh/epsilonlabs/emc-cellsheet)
 
 **NOTE THIS DRIVER IS UNDER ACTIVE DEVELOPMENT. API MAY CHANGE WITHOUT WARNING**
 
