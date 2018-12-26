@@ -19,7 +19,7 @@ jobs:
             - v1-dependencies-
       
       - run:
-          command:
+          command: |
             mvn clean install
             bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
 
