@@ -77,11 +77,14 @@
 	</modules>
 
 	<profiles>
-		<!-- Jacoco coverage report, aggregates report then pushes to coveralls.io -->
+		<!-- Jacoco coverage report, aggregates reports -->
 		<profile>
 			<id>jacoco</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<property>
+					<name>env.CI</name>
+					<value>true</value>
+				</property>
 			</activation>
 			<build>
 				<plugins>
@@ -98,20 +101,6 @@
 						</executions>
 					</plugin>
 				</plugins>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.eluder.coveralls</groupId>
-							<artifactId>coveralls-maven-plugin</artifactId>
-							<version>4.3.0</version>
-							<configuration>
-								<jacocoReports>
-									<jacocoReport>${project.basedir}/reports/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
-								</jacocoReports>
-							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
 			</build>
 		</profile>
 		<profile>
