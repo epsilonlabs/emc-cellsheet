@@ -48,9 +48,8 @@ import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 
 public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<Workbook> {
 
-	public static final String EXCEL_PROPERTY_NAME = "EXCEL_NAME";
-	public static final String EXCEL_PROPERTY_NAME_DEFAULT = "Excel";
-	public static final String EXCEL_PROPERTY_FILE = "EXCEL_FILE";
+	public static final String PROPERTY_NAME_DEFAULT = "Excel";
+	public static final String PROPERTY_FILE = "file";
 
 	// Lower level access fields
 	protected Workbook delegate = null;
@@ -399,8 +398,8 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	@Override
 	public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
 		super.load(properties, resolver);
-		setExcelFile(properties.getProperty(ExcelBook.EXCEL_PROPERTY_FILE));
-		setName(properties.getProperty(ExcelBook.EXCEL_PROPERTY_NAME, "Excel"));
+		setExcelFile(properties.getProperty(ExcelBook.PROPERTY_FILE));
+		setName(properties.getProperty(ExcelBook.PROPERTY_NAME, "Excel"));
 		load();
 	}
 
@@ -499,4 +498,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 		return sb.toString();
 	}
 
+	public boolean isLoaded() {
+		return allContentsAreCached;
+	}
 }

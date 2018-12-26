@@ -27,7 +27,7 @@ public class IFormulaTreeTest {
 
 	@Test
 	public void getType_should_return_TypeFromulaTree() throws Exception {
-		assertEquals(Type.FORMULA_TREE, value.getType());
+		assertEquals(Type.UNKNOWN_NODE, value.getType());
 	}
 
 	@Test

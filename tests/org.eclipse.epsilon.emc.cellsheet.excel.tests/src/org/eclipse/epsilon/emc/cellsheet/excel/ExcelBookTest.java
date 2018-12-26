@@ -49,8 +49,8 @@ public class ExcelBookTest {
 		final String filepath = "./resources/ExcelBookTest.xlsx";
 
 		final StringProperties props = new StringProperties();
-		props.setProperty(ExcelBook.EXCEL_PROPERTY_NAME, name);
-		props.setProperty(ExcelBook.EXCEL_PROPERTY_FILE, filepath);
+		props.setProperty(ExcelBook.PROPERTY_NAME, name);
+		props.setProperty(ExcelBook.PROPERTY_FILE, filepath);
 
 		final ExcelBook bookload = new ExcelBook();
 		bookload.load(props);

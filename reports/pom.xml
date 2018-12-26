@@ -16,7 +16,10 @@
         <profile>
             <id>jacoco</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+				<property>
+					<name>env.CI</name>
+					<value>true</value>
+				</property>
             </activation>
             <build>
                 <plugins>

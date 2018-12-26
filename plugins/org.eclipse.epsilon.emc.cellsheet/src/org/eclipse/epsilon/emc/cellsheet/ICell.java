@@ -47,7 +47,23 @@ public interface ICell extends HasId, Comparable<ICell> {
 		return getRow().getId() + getColIndex() + "/";
 	}
 	
+	/**
+	 * @return common reference for a cell in A1 style notation with sheet and book name
+	 */
 	default String getExternalRef() {
-		return getSheet().getExternalRef() + "$" + getCol() + "$" + (getRowIndex() + 1);
+		return getExternalRef(false);
+	}
+	
+	/**
+	 * @return common reference for a cell in A1 absolute style notation with sheet and book names
+	 */
+	default String getExternalRef(boolean absolute) {
+		StringBuilder sb = new StringBuilder(getSheet().getExternalRef());
+		sb.append("!");
+		if (absolute) sb.append("$");
+		sb.append(getCol());
+		if (absolute) sb.append("$");
+		sb.append(getRowIndex()+1);
+		return sb.toString();
 	}
 }
