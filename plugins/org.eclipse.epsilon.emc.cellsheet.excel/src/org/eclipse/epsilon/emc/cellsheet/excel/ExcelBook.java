@@ -105,7 +105,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	}
 
 	@Override
-	public ICell getCell(ISheet sheet, int row, String col) {
+	public ICell getA1Cell(ISheet sheet, String col, int row) {
 		return getCell(sheet.getRow(row), CellReference.convertColStringToIndex(col));
 	}
 
@@ -120,12 +120,12 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	}
 
 	@Override
-	public ExcelCell getCell(String sheetName, int row, String col) {
+	public ExcelCell getA1Cell(String sheetName, String col, int row) {
 		return getCell(getRow(sheetName, row), CellReference.convertColStringToIndex(col));
 	}
 
 	@Override
-	public ExcelCell getCell(int sheetIndex, int row, String col) {
+	public ExcelCell getA1Cell(int sheetIndex, String col, int row) {
 		return getCell(getRow(sheetIndex, row), CellReference.convertColStringToIndex(col));
 	}
 
@@ -493,7 +493,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 		StringBuilder sb = new StringBuilder();
 		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
 		sb.append("(id: ").append(getId());
-		sb.append(", excelRef: ").append(getExternalRef());
+		sb.append(", excelRef: ").append(getA1Ref());
 		sb.append(")");
 		return sb.toString();
 	}

@@ -47,8 +47,8 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 
 	Ptg[] getPtgs() {
 		if (ptgs == null) {
-			ptgs = FormulaParser.parse(getFormula(), cell.getBook().fpw, FormulaType.CELL, cell.getSheet().getIndex(),
-					cell.getRowIndex());
+			ptgs = FormulaParser.parse(getFormula(), ((ExcelBook) cell.getBook()).fpw, FormulaType.CELL,
+					cell.getSheet().getIndex(), cell.getRowIndex());
 		}
 		return ptgs;
 	}
@@ -67,19 +67,19 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 			// @formatter:off
 			if (ptg instanceof RefPtg) {
 				RefPtg rp = (RefPtg) ptg;
-				region = new ExcelCellRegion(cell.getBook(), cell.getSheet(), rp.getRow(), rp.getRow() + 1,
+				region = new ExcelCellRegion((ExcelBook) cell.getBook(), (ExcelSheet) cell.getSheet(), rp.getRow(), rp.getRow() + 1,
 						rp.getColumn(), rp.getColumn() + 1);
 			}
 
 			if (ptg instanceof Ref3DPxg) {
 				Ref3DPxg rp = (Ref3DPxg) ptg;
-				region = new ExcelCellRegion(cell.getBook(), cell.getBook().getSheet(rp.getSheetName()), rp.getRow(),
+				region = new ExcelCellRegion((ExcelBook) cell.getBook(), (ExcelSheet) cell.getBook().getSheet(rp.getSheetName()), rp.getRow(),
 						rp.getRow() + 1, rp.getColumn(), rp.getColumn() + 1);
 			}
 
 			if (ptg instanceof AreaPtg) {
 				AreaPtg ap = (AreaPtg) ptg;
-				region = new ExcelCellRegion(cell.getBook(), cell.getSheet(), ap.getFirstRow(), ap.getLastRow() + 1,
+				region = new ExcelCellRegion((ExcelBook) cell.getBook(), (ExcelSheet) cell.getSheet(), ap.getFirstRow(), ap.getLastRow() + 1,
 						ap.getFirstColumn(), ap.getLastColumn() + 1);
 			}
 			// @formatter:on
@@ -92,7 +92,7 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 					throw new UnsupportedOperationException();
 
 				// @formatter:off
-				region = new ExcelCellRegion(cell.getBook(), cell.getBook().getSheet(ap.getSheetName()),
+				region = new ExcelCellRegion((ExcelBook) cell.getBook(), (ExcelSheet) cell.getBook().getSheet(ap.getSheetName()),
 						ap.getFirstRow(), ap.getLastRow() + 1, ap.getFirstColumn(), ap.getLastColumn() + 1);
 				// @formatter:on
 			}
@@ -124,7 +124,7 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 	public ExcelFormulaTree getFormulaTree() {
 		if (formulaTree == null) {
 			formulaTree = FormulaUtil.buildFormulaTree(this);
-		}		
+		}
 		return formulaTree;
 	}
 

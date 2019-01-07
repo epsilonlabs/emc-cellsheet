@@ -3,16 +3,19 @@ package org.eclipse.epsilon.emc.cellsheet;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+
 import java.util.Arrays;
+
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Answers;
-import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 /**
- * Tests for default method implementations in {@link INumericCellValue}
+ * <p>
+ * Unit tests for default method implementations in {@link INumericCellValue}
+ * </p>
  * 
  * @author Jonathan Co
  *
@@ -22,7 +25,7 @@ public class INumericCellValueTest {
 	@Rule
 	public MockitoRule mockito = MockitoJUnit.rule();
 
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	@Spy
 	INumericCellValue value;
 
 	@Test

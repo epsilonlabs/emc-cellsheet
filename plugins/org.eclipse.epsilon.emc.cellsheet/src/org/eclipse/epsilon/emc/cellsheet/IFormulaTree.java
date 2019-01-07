@@ -42,20 +42,32 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 */
 	public void setParent(IFormulaTree parent);
 
+	/**
+	 * @return the Cell this FormulaTree belongs to
+	 */
 	default public ICell getCell() {
 		return getCellValue().getCell();
 	}
 
+	/**
+	 * @return the Row this FormulaTree belongs to
+	 */
 	default public IRow getRow() {
-		return getCell().getRow();
+		return getCellValue().getRow();
 	}
 
+	/**
+	 * @return the Sheet this FormulaTree belongs to
+	 */
 	default public ISheet getSheet() {
-		return getCell().getSheet();
+		return getCellValue().getSheet();
 	}
 
+	/**
+	 * @return the Book this FormulaTree belongs to
+	 */
 	default public IBook getBook() {
-		return getCell().getBook();
+		return getCellValue().getBook();
 	}
 
 	/**
@@ -185,7 +197,7 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * @return this tree formatted as a tree structure diagram
 	 */
 	default String formatAsTree() {
-		return getCell().getExternalRef() + "\n" + getFormula() + "\n" + formatAsTree("", true);
+		return getCell().getA1Ref() + "\n" + getFormula() + "\n" + formatAsTree("", true);
 	}
 
 	/**

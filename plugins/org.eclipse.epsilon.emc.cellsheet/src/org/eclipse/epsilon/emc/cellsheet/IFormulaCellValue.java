@@ -2,35 +2,65 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.List;
 
+/**
+ * <p>
+ * Model element denoting a Formula cell value. In addition to the evaluation
+ * result of the formula, the formula itself as a string and in AST form are
+ * also given.
+ * </p>
+ * 
+ * <p>
+ * A {@link IFormulaCellValue} will contain an AST represented by
+ * {@link IFormulaTree}'s.
+ * </p>
+ * 
+ * @author Jonathan Co
+ *
+ */
 public interface IFormulaCellValue extends IStringCellValue {
 
+	/**
+	 * <p>
+	 * Model element type: {@link Type#FORMULA_CELL_VALUE}
+	 * </p>
+	 */
 	public static final Type TYPE = Type.FORMULA_CELL_VALUE;
+
+	/**
+	 * <p>
+	 * Model element kinds: [{@link Type#FORMULA_CELL_VALUE},
+	 * {@link Type#CELL_VALUE}]
+	 * </p>
+	 */
 	public static final Type[] KINDS = { IFormulaCellValue.TYPE, Type.CELL_VALUE };
 
+	@Deprecated
 	public List<ICellRegion> getReferencedRegions();
 
+	@Deprecated
 	public List<ICell> getReferencedCells();
 
 	/**
-	 * Will return this Cell's formula as defined in the spreadsheet itself. If a
-	 * representation of the formula is required that is derived from the parse tree
-	 * of this formula, then this can be retrieved by calling
-	 * {@link IFormulaTree#getFormula()}.on the tree retrieved from
-	 * {@link #getFormulaTree()}.
+	 * <p>
+	 * Get the raw formula String of this cell value
+	 * </p>
 	 * 
 	 * @return this Cell's formula as defined in the spreadsheet itself.
 	 */
 	public String getFormula();
 
 	/**
-	 * Return the parse tree of the formula in this cell
+	 * <p>
+	 * Get the AST of the Formula String wrapped by this cell value.
+	 * </p>
 	 * 
-	 * @return parse tree of this cell's formula
+	 * @return the AST of the formula
 	 */
 	public IFormulaTree getFormulaTree();
 
 	/**
-	 * Return this tree as a tree structure diagram
+	 * <p>
+	 * Return this tree as a formatted string in the form:
 	 * 
 	 * <pre>
 	 * {@code
@@ -43,6 +73,7 @@ public interface IFormulaCellValue extends IStringCellValue {
 	 *         └── C$2
 	 * }
 	 * </pre>
+	 * </p>
 	 * 
 	 * @return this tree formatted as a tree structure diagram
 	 */

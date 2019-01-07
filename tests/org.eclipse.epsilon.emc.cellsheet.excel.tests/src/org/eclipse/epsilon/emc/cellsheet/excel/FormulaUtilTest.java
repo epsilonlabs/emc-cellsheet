@@ -17,7 +17,7 @@ public class FormulaUtilTest {
 	@Test
 	public void buildFormulaTree_should_return_tree_of_size_6_when_given_cellvalue() throws Exception {
 		ExcelCell cell = book.getCell("Florida", 4, 2);
-		ExcelFormulaCellValue cellValue = cell.getFormulaCellValue();
+		ExcelFormulaCellValue cellValue = (ExcelFormulaCellValue) cell.getFormulaCellValue();
 		ExcelFormulaTree formulaTree = FormulaUtil.buildFormulaTree(cellValue);
 		assertEquals(6, formulaTree.getAllTrees().size());
 	}

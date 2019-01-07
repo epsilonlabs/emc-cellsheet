@@ -29,7 +29,7 @@ public class ExcelFormulaCellValueTest {
 
 	@Test
 	public void testGetReferencedCellsEqualLabel() {
-		final ExcelCell formulaCell = legacyBook.getCell("Formula", 0, "B");
+		final ExcelCell formulaCell = legacyBook.getA1Cell("Formula", "B", 0);
 		assertTrue(formulaCell.getCellValue() instanceof ExcelFormulaCellValue);
 		final ExcelFormulaCellValue formulaValue = (ExcelFormulaCellValue) formulaCell.getCellValue();
 
@@ -44,7 +44,7 @@ public class ExcelFormulaCellValueTest {
 
 	@Test
 	public void testGetReferencedCellsEqualLabelLegacy() {
-		final ExcelCell formulaCell = legacyBook.getCell("Formula", 1, "B");
+		final ExcelCell formulaCell = legacyBook.getA1Cell("Formula", "B", 1);
 		assertTrue(formulaCell.getCellValue() instanceof ExcelFormulaCellValue);
 		final ExcelFormulaCellValue formulaValue = (ExcelFormulaCellValue) formulaCell.getCellValue();
 
@@ -59,7 +59,7 @@ public class ExcelFormulaCellValueTest {
 
 	@Test
 	public void testGetReferencedCellsEqualLabelSameSheet() {
-		final ExcelCell formulaCell = legacyBook.getCell("Formula", 2, "B");
+		final ExcelCell formulaCell = legacyBook.getA1Cell("Formula", "B", 2);
 		assertTrue(formulaCell.getCellValue() instanceof ExcelFormulaCellValue);
 		final ExcelFormulaCellValue formulaValue = (ExcelFormulaCellValue) formulaCell.getCellValue();
 
@@ -74,7 +74,7 @@ public class ExcelFormulaCellValueTest {
 
 	@Test
 	public void testGetReferencedCellsEqualLabelSameSheetLegacy() {
-		final ExcelCell formulaCell = legacyBook.getCell("Formula", 3, "B");
+		final ExcelCell formulaCell = legacyBook.getA1Cell("Formula", "B", 3);
 		assertTrue(formulaCell.getCellValue() instanceof ExcelFormulaCellValue);
 		final ExcelFormulaCellValue formulaValue = (ExcelFormulaCellValue) formulaCell.getCellValue();
 
@@ -89,7 +89,7 @@ public class ExcelFormulaCellValueTest {
 
 	@Test
 	public void testGetReferencedCellsSumRegion() {
-		final ExcelCell formulaCell = legacyBook.getCell("Formula", 4, "B");
+		final ExcelCell formulaCell = legacyBook.getA1Cell("Formula", "B", 4);
 		assertTrue(formulaCell.getCellValue() instanceof ExcelFormulaCellValue);
 		final ExcelFormulaCellValue formulaValue = (ExcelFormulaCellValue) formulaCell.getCellValue();
 
@@ -104,7 +104,7 @@ public class ExcelFormulaCellValueTest {
 
 	@Test
 	public void testGetReferencedCellsSumRegionSameSheet() {
-		final ExcelCell formulaCell = legacyBook.getCell("Formula", 5, "B");
+		final ExcelCell formulaCell = legacyBook.getA1Cell("Formula", "B", 5);
 		assertTrue(formulaCell.getCellValue() instanceof ExcelFormulaCellValue);
 		final ExcelFormulaCellValue formulaValue = (ExcelFormulaCellValue) formulaCell.getCellValue();
 

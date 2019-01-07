@@ -19,30 +19,60 @@ import org.eclipse.epsilon.eol.models.IModel;
  * @author Jonathan Co
  *
  */
-public interface IBook extends HasId, IModel, Iterable<ISheet> {
+public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 
 	public static final Type TYPE = Type.BOOK;
 	public static final Type[] KINDS = { TYPE };
 
-	public ICell getCell(IRow row, int col);
+	default ICell getCell(IRow row, int col) {
+		return row.getCell(col);
+	}
 
-	public ICell getCell(ISheet sheet, int row, int col);
+	default ICell getA1Cell(IRow row, String col) {
+		return row.getA1Cell(col);
+	}
 
-	public ICell getCell(ISheet sheet, int row, String col);
+	default ICell getCell(ISheet sheet, int row, int col) {
+		return sheet.getRow(row).getCell(col);
+	}
 
-	public ICell getCell(String sheetName, int row, int col);
+	default ICell getA1Cell(ISheet sheet, String col, int row) {
+		return sheet.getRow(row - 1).getA1Cell(col);
+	}
 
-	public ICell getCell(String sheetName, int row, String col);
+	default ICell getCell(String sheet, int row, int col) {
+		return getSheet(sheet).getRow(row).getCell(col);
+	}
 
-	public ICell getCell(int sheetIndex, int row, int col);
+	default ICell getA1Cell(String name, String col, int row) {
+		return getA1Cell(name, col, row - 1);
+	}
 
-	public ICell getCell(int sheetIndex, int row, String col);
+	default ICell getCell(int sheet, int row, int col) {
+		return getSheet(sheet).getRow(row).getCell(col);
+	}
 
-	public IRow getRow(int sheetIndex, int index);
+	public ICell getA1Cell(int sheet, String col, int row);
 
-	public IRow getRow(ISheet sheet, int index);
+	default IRow getRow(int sheet, int row) {
+		return getSheet(sheet).getRow(row);
+	}
 
-	public IRow getRow(String sheetName, int index);
+	default IRow getA1Row(int sheet, int row) {
+		return getRow(sheet, row - 1);
+	}
+
+	default IRow getRow(ISheet sheet, int row) {
+		return sheet.getRow(row);
+	}
+
+	default IRow getA1Row(ISheet sheet, int row) {
+		return getRow(sheet, row - 1);
+	}
+
+	default IRow getRow(String sheet, int row) {
+		return getSheet(sheet).getRow(row);
+	}
 
 	public ISheet getSheet(int index);
 
@@ -66,21 +96,21 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 		}
 
 		Iterator<String> parts = Arrays.stream(id.split("/")).iterator();
-		
+
 		IBook book;
 		if (parts.hasNext() && getName().equals(parts.next())) {
 			book = this;
 		} else {
 			return null;
 		}
-		
-		ISheet sheet;		
+
+		ISheet sheet;
 		if (parts.hasNext()) {
 			sheet = book.getSheet(parts.next());
 		} else {
 			return book;
 		}
-		
+
 		IRow row;
 		if (parts.hasNext()) {
 			row = sheet.getRow(Integer.parseInt(parts.next()));
@@ -94,47 +124,47 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 		} else {
 			return row;
 		}
-		
+
 		if (!parts.hasNext()) {
 			return cell;
 		}
-		
+
 		Object toReturn = null;
-		switch(parts.next()) {
+		switch (parts.next()) {
 		case "value":
 			if (cell.getCellValue().getType() != Type.FORMULA_CELL_VALUE) {
 				toReturn = cell.getCellValue();
 				break;
 			}
-			
+
 			// No more parts, only interested in the formula cell value element
 			if (!parts.hasNext()) {
 				toReturn = cell.getFormulaCellValue();
 				break;
 			}
-			
+
 			// Get the first tree element
 			IFormulaTree tree = cell.getFormulaCellValue().getFormulaTree();
 			toReturn = tree;
 			if (Integer.parseInt(parts.next()) != 0) {
 				throw new IllegalArgumentException("Given root node that is not 0");
 			}
-			
+
 			// Continue walking the tree
 			while (parts.hasNext()) {
 				tree = tree.getChildAt(Integer.parseInt(parts.next()));
 				toReturn = tree;
 			}
-			
+
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown type given");
 		}
-		
+
 		if (parts.hasNext()) {
 			throw new IllegalArgumentException("Unconsumed parts in ID");
 		}
-		
+
 		return toReturn;
 	}
 
@@ -145,25 +175,12 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 
 	@Override
 	default boolean isOfType(Object instance, String typename) throws EolModelElementTypeNotFoundException {
-		Type type = Type.fromName(typename);
-		if (type == null) {
-			throw new EolModelElementTypeNotFoundException(this.getName(), typename);
-		}
-		if (!(instance instanceof HasType)) {
-			throw new IllegalArgumentException("Element is not typed: " + instance);
-		}
-		return ((HasType) instance).getType() == type;
+		return isOfTypeOrKind(instance, typename, false);
 	}
-	
+
 	@Override
 	default boolean isOfKind(Object instance, String typename) throws EolModelElementTypeNotFoundException {
-		Type type = Type.fromName(typename);
-		if (type == null) {
-			throw new EolModelElementTypeNotFoundException(this.getName(), typename);}
-		if (!(instance instanceof HasType)) {
-			throw new IllegalArgumentException("Element is not typed: " + instance);
-		}
-		return Arrays.stream(((HasType) instance).getKinds()).anyMatch(type::equals);
+		return isOfTypeOrKind(instance, typename, true);
 	}
 
 	@Override
@@ -186,7 +203,24 @@ public interface IBook extends HasId, IModel, Iterable<ISheet> {
 		return getName() + "/";
 	}
 
-	default String getExternalRef() {
+	@Override
+	default String getA1Ref() {
 		return "[" + getName() + "]";
+	}
+
+	default boolean isOfTypeOrKind(Object instance, String typename, boolean isKind)
+			throws EolModelElementTypeNotFoundException {
+		Type type = Type.fromName(typename);
+		if (type == null) {
+			throw new EolModelElementTypeNotFoundException(this.getName(), typename);
+		}
+		if (!(instance instanceof HasType)) {
+			throw new IllegalArgumentException("Element is not typed: " + instance);
+		}
+		if (isKind) {
+			return Arrays.stream(((HasType) instance).getKinds()).anyMatch(type::equals);
+		} else {
+			return ((HasType) instance).getType() == type;
+		}
 	}
 }

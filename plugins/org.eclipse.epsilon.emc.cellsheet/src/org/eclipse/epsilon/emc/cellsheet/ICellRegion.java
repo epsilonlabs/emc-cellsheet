@@ -9,6 +9,8 @@ import java.util.List;
  * @author Jonathan Co
  *
  */
+@Deprecated
+// TODO Refactor to be less POI specific
 public interface ICellRegion {
 
 	public IBook getBook();

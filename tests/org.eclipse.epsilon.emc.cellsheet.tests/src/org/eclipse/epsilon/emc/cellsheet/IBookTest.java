@@ -14,6 +14,14 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+/**
+ * <p>
+ * Unit tests for default method implementations in {@link IBook}
+ * </p>
+ * 
+ * @author Jonathan Co
+ *
+ */
 public class IBookTest {
 
 	@Rule

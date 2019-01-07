@@ -29,7 +29,7 @@ public class ExcelCellTest {
 
 	@Test
 	public void getCol_should_return_String() throws Exception {
-		assertEquals("AA", cell.getCol());
+		assertEquals("AA", cell.getA1Col());
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class ExcelCellTest {
 
 	@Test
 	public void getSheet_should_return_ExcelSheet() throws Exception {
-		ExcelSheet sheet = cell.getSheet();
+		ExcelSheet sheet = (ExcelSheet) cell.getSheet();
 		assertEquals("ExcelCellTest", sheet.getName());
 		assertEquals(0, sheet.getIndex());
 	}

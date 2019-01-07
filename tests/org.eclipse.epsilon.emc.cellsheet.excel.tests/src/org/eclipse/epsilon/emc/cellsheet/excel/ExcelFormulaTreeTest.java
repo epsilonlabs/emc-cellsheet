@@ -136,8 +136,8 @@ public class ExcelFormulaTreeTest {
 	 */
 	@Test
 	public void test_if_funcvar_should_consume_all_tokens_when_building_formula_tree() throws Exception {
-		ExcelCell ifCell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 11, "A");
-		ExcelFormulaTree ifTree = ifCell.getFormulaCellValue().getFormulaTree();
+		ICell ifCell = book.getA1Cell(ExcelFormulaTreeTest.class.getSimpleName(), "A", 11);
+		IFormulaTree ifTree = ifCell.getFormulaCellValue().getFormulaTree();
 		assertEquals(8, ifTree.getAllTrees().size());
 	}
 }

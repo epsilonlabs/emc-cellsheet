@@ -1,6 +1,5 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -26,11 +25,6 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	@Override
 	public int getColIndex() {
 		return this.delegate.getColumnIndex();
-	}
-
-	@Override
-	public String getCol() {
-		return CellReference.convertNumToColString(this.getColIndex());
 	}
 
 	@Override
@@ -77,38 +71,6 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	}
 
 	@Override
-	public ExcelBooleanCellValue getBooleanCellValue() {
-		if (delegate.getCellTypeEnum() != CellType.BOOLEAN) {
-			throw new IllegalStateException("Not a boolean");
-		}
-		return (ExcelBooleanCellValue) getCellValue();
-	}
-
-	@Override
-	public ExcelFormulaCellValue getFormulaCellValue() {
-		if (delegate.getCellTypeEnum() != CellType.FORMULA) {
-			throw new IllegalStateException("Not a Formula");
-		}
-		return (ExcelFormulaCellValue) getCellValue();
-	}
-
-	@Override
-	public ExcelStringCellValue getStringCellValue() {
-		if (delegate.getCellTypeEnum() != CellType.STRING || delegate.getCellTypeEnum() != CellType.FORMULA) {
-			throw new IllegalStateException("Not a String");
-		}
-		return (ExcelStringCellValue) getCellValue();
-	}
-
-	@Override
-	public ExcelNumericCellValue getNumericCellValue() {
-		if (delegate.getCellTypeEnum() != CellType.NUMERIC) {
-			throw new IllegalStateException("Not a numeric");
-		}
-		return (ExcelNumericCellValue) getCellValue();
-	}
-
-	@Override
 	public boolean isBlank() {
 		return delegate.getCellTypeEnum() == CellType.BLANK;
 	}
@@ -116,16 +78,6 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	@Override
 	public Cell getDelegate() {
 		return this.delegate;
-	}
-
-	@Override
-	public ExcelSheet getSheet() {
-		return sheet;
-	}
-
-	@Override
-	public ExcelBook getBook() {
-		return this.book;
 	}
 
 	@Override
@@ -158,58 +110,9 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
 		sb.append("(id: ").append(getId());
-		sb.append(", excelRef: ").append(getExternalRef());
+		sb.append(", excelRef: ").append(getA1Ref());
 		sb.append(")");
 		return sb.toString();
 	}
 
-	// private void moveSelf(int rowIdx, int colIdx) {
-	// final Row row = getRowIdx() == rowIdx ? raw.getRow()
-	// : raw.getSheet().getRow(rowIdx);
-	//
-	// final Cell newCell = row.getCell(colIdx) == null ? row.createCell(colIdx)
-	// : row.getCell(colIdx);
-	//
-	// // Copy cell style
-	// final CellStyle newCellStyle =
-	// raw.getSheet().getWorkbook().createCellStyle();
-	// newCellStyle.cloneStyleFrom(raw.getCellStyle());
-	// newCell.setCellStyle(newCellStyle);
-	//
-	// // Copy comment if it exists
-	// if (raw.getCellComment() != null)
-	// newCell.setCellComment(raw.getCellComment());
-	//
-	// if (raw.getHyperlink() != null)
-	// newCell.setHyperlink(raw.getHyperlink());
-	//
-	// // Set cell values
-	// newCell.setCellType(raw.getCellTypeEnum());
-	// switch (raw.getCellTypeEnum()) {
-	// case BOOLEAN:
-	// newCell.setCellValue(raw.getBooleanCellValue());
-	// break;
-	// case NUMERIC:
-	// newCell.setCellValue(raw.getNumericCellValue());
-	// break;
-	// case STRING:
-	// newCell.setCellValue(raw.getStringCellValue());
-	// break;
-	// case FORMULA:
-	// newCell.setCellValue(raw.getCellFormula());
-	// break
-	// ;
-	// case ERROR:
-	// newCell.setCellErrorValue(raw.getErrorCellValue());
-	// break;
-	// default:
-	// newCell.setCellValue(raw.getStringCellValue());
-	// break;
-	// }
-	//
-	// row.removeCell(raw);
-	// this.setRaw(newCell);
-	// this.row = this.getRow();
-	// this.column = this.getColumn();
-	// }
 }
