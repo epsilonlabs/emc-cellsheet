@@ -5,8 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.Collection;
@@ -16,6 +14,7 @@ import java.util.stream.Collectors;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.emc.cellsheet.HasId;
 import org.eclipse.epsilon.emc.cellsheet.HasType;
+import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.eclipse.epsilon.emc.cellsheet.Type;
@@ -23,7 +22,6 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundExce
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Answers;
 import org.mockito.Mockito;
 
 /**
@@ -76,53 +74,6 @@ public class ExcelBookTest {
 		final ExcelBook mBook = new ExcelBook();
 		assertNull(mBook.excelFile);
 		mBook.setExcelFile(filepath);
-	}
-
-	@Test(expected = IndexOutOfBoundsException.class)
-	public void getCell_should_throw_exception_when_given_negative_column_index() throws Exception {
-		ExcelRow row = Mockito.mock(ExcelRow.class);
-		when(row.getBook()).thenReturn(book);
-		book.getCell(row, -100);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void getCell_should_throw_exception_when_given_null_row() throws Exception {
-		book.getCell(null, 100);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void getCell_should_throw_exception_when_given_row_that_is_not_excel() throws Exception {
-		IRow row = Mockito.mock(IRow.class, Answers.RETURNS_MOCKS);
-		book.getCell(row, 100);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void getCell_should_throw_exception_when_given_row_from_other_book() throws Exception {
-		ExcelRow row = Mockito.mock(ExcelRow.class, Answers.RETURNS_MOCKS);
-		book.getCell(row, 100);
-	}
-
-	@Test(expected = IndexOutOfBoundsException.class)
-	public void getRow_should_throw_exception_when_given_negative_row_index() throws Exception {
-		ExcelSheet sheet = mock(ExcelSheet.class);
-		book.getRow(sheet, -4549);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void getRow_should_throw_exception_when_given_non_ExcelSheet() throws Exception {
-		ISheet sheet = mock(ISheet.class);
-		book.getRow(sheet, 48);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void getRow_should_throw_exception_when_given_sheet_from_other_book() throws Exception {
-		ExcelSheet sheet = mock(ExcelSheet.class, Answers.RETURNS_MOCKS);
-		book.getRow(sheet, 48);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void getRow_should_throw_exception_when_given_null_sheet() throws Exception {
-		book.getRow((ExcelSheet) null, 48);
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
@@ -230,33 +181,25 @@ public class ExcelBookTest {
 	}
 
 	@Test
-	public void getRow_should_return_empty_ExcelRow_when_given_row_index_is_empty() throws Exception {
-		final ExcelSheet sheet = book.getSheet("Data");
-		final ExcelRow row = book.getRow(sheet, 12345);
-		assertEquals(12345, row.getIndex());
-		assertTrue(row.cells().isEmpty());
-	}
-
-	@Test
 	public void getElementId_should_return_book_id_when_given_book() throws Exception {
 		assertEquals("ExcelBookTest.xlsx/", book.getElementId(book));
 	}
 
 	@Test
 	public void getElementId_should_return_sheet_id_when_given_sheet() throws Exception {
-		final ExcelSheet sheet = book.getSheet("Data");
+		final ISheet sheet = book.getSheet("Data");
 		assertEquals("ExcelBookTest.xlsx/Data/", book.getElementId(sheet));
 	}
 
 	@Test
 	public void getElementId_should_return_row_id_when_given_row() throws Exception {
-		final ExcelRow row = book.getRow("Data", 3);
+		final IRow row = book.getRow("Data", 3);
 		assertEquals("ExcelBookTest.xlsx/Data/3/", book.getElementId(row));
 	}
 
 	@Test
 	public void getElementId_should_return_cell_id_when_given_cell() throws Exception {
-		final ExcelCell cell = book.getCell("Data", 3, 0);
+		final ICell cell = book.getCell("Data", 3, 0);
 		assertEquals("ExcelBookTest.xlsx/Data/3/0/", book.getElementId(cell));
 	}
 
@@ -286,7 +229,7 @@ public class ExcelBookTest {
 	@Test
 	public void getElementById_should_return_sheet_when_given_sheet_id() throws Exception {
 		final String id = "ExcelBookTest.xlsx/Data/";
-		final ExcelSheet sheet = book.getSheet("Data");
+		final ISheet sheet = book.getSheet("Data");
 		assertEquals(id, sheet.getId());
 		assertEquals(sheet, book.getElementById(id));
 	}
@@ -294,7 +237,7 @@ public class ExcelBookTest {
 	@Test
 	public void getElementById_should_return_row_when_given_row_id() throws Exception {
 		final String id = "ExcelBookTest.xlsx/Data/59/";
-		final ExcelRow row = book.getRow("Data", 59);
+		final IRow row = book.getRow("Data", 59);
 		assertEquals(id, row.getId());
 		assertEquals(row, book.getElementById(id));
 	}
@@ -302,7 +245,7 @@ public class ExcelBookTest {
 	@Test
 	public void getElementById_should_return_cell_when_given_cell_id() throws Exception {
 		final String id = "ExcelBookTest.xlsx/Data/3/0/";
-		final ExcelCell cell = book.getCell("Data", 3, 0);
+		final ICell cell = book.getCell("Data", 3, 0);
 		assertEquals(id, cell.getId());
 		assertEquals(cell, book.getElementById(id));
 	}

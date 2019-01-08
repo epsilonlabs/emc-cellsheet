@@ -28,7 +28,7 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
 	@Override
 	public int getIndex() {
-		return book.getDelegate().getSheetIndex(this.delegate);
+		return delegate.getWorkbook().getSheetIndex(delegate);
 	}
 
 	@Override
@@ -42,8 +42,15 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 	}
 
 	@Override
-	public ExcelRow getRow(int rowIdx) {
-		return book.getRow(this, rowIdx);
+	public ExcelRow getRow(int row) {
+		if (row < 0) {
+			throw new IndexOutOfBoundsException("index must be positive, was given: " + row);
+		}
+		Row poiRow = delegate.getRow(row);
+		if (poiRow == null) {
+			poiRow = delegate.createRow(row);
+		}
+		return new ExcelRow(this, poiRow);
 	}
 
 	@Override

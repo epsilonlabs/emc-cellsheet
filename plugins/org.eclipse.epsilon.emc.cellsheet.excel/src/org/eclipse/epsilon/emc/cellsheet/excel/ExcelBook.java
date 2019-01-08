@@ -1,13 +1,12 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.IteratorUtils;
@@ -18,13 +17,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
 import org.apache.poi.ss.formula.WorkbookEvaluator;
 import org.apache.poi.ss.formula.WorkbookEvaluatorProvider;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
@@ -33,9 +29,6 @@ import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.emc.cellsheet.HasId;
 import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
-import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
-import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.eclipse.epsilon.emc.cellsheet.Type;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
@@ -55,161 +48,25 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	protected Workbook delegate = null;
 	protected File excelFile = null;
 
-	protected Map<String, HasId> idMap = new HashMap<String, HasId>();
-
 	WorkbookEvaluator evaluator = null;
 	FormulaParsingWorkbook fpw = null;
 
-	@Override
-	public ExcelCell getCell(IRow row, int col) {
-		if (col < 0) {
-			throw new IndexOutOfBoundsException("col index must be positive, was given: " + col);
-		}
-		if (row == null) {
-			throw new IllegalArgumentException("row arg must not be null");
-		}
-		if (!(row instanceof ExcelRow)) {
-			throw new IllegalArgumentException("row arg must be an ExcelRow instance, was given: " + row);
-		}
-		if (!owns(row)) {
-			throw new IllegalArgumentException("row arg must belong to this book, was given: " + row);
-		}
-
-		// Check cache for existing ExcelCell
-		if (cachingEnabled) {
-			ExcelCell cell = (ExcelCell) idMap.get(row.getId() + "/" + col);
-			if (cell != null) {
-				return cell;
-			}
-		}
-
-		// No cached value available, create new ExcelCell
-		Cell poi = ((ExcelRow) row).getDelegate().getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK);
-		ExcelCell cell = new ExcelCell((ExcelRow) row, poi);
-		if (cachingEnabled) {
-			idMap.put(cell.getId(), cell);
-			idMap.put(cell.getCellValue().getId(), cell.getCellValue());
-			if (cell.getCellValue().getType() == Type.FORMULA_CELL_VALUE) {
-				for (IFormulaTree tree : cell.getFormulaCellValue().getFormulaTree().getAllTrees()) {
-					idMap.put(tree.getId(), tree);
-				}
-			}
-		}
-
-		return cell;
+	ExcelSheet getSheet(Sheet poiSheet) {
+		return poiSheet == null ? null : new ExcelSheet(this, poiSheet);
 	}
-
+	
 	@Override
-	public ExcelCell getCell(ISheet sheet, int row, int col) {
-		return getCell(sheet.getRow(row), col);
-	}
-
-	@Override
-	public ICell getA1Cell(ISheet sheet, String col, int row) {
-		return getCell(sheet.getRow(row), CellReference.convertColStringToIndex(col));
-	}
-
-	@Override
-	public ExcelCell getCell(String sheetName, int row, int col) {
-		return getCell(getRow(sheetName, row), col);
-	}
-
-	@Override
-	public ExcelCell getCell(int sheetIndex, int row, int col) {
-		return getCell(getRow(sheetIndex, row), col);
-	}
-
-	@Override
-	public ExcelCell getA1Cell(String sheetName, String col, int row) {
-		return getCell(getRow(sheetName, row), CellReference.convertColStringToIndex(col));
-	}
-
-	@Override
-	public ExcelCell getA1Cell(int sheetIndex, String col, int row) {
-		return getCell(getRow(sheetIndex, row), CellReference.convertColStringToIndex(col));
-	}
-
-	@Override
-	public ExcelRow getRow(ISheet sheet, int index) {
-		if (index < 0) {
-			throw new IndexOutOfBoundsException("index must be positive, was given: " + index);
-		}
-		if (sheet == null) {
-			throw new IllegalArgumentException("sheet arg must not be null");
-		}
-		if (!(sheet instanceof ExcelSheet)) {
-			throw new IllegalArgumentException("sheet arg must be an ExcelSheet instance, was given: " + sheet);
-		}
-		if (!this.owns(sheet)) {
-			throw new IllegalArgumentException("sheet arg must belong to this book, was given: " + sheet);
-		}
-
-		// Check cache for existing ExcelRow
-		if (cachingEnabled) {
-			ExcelRow row = (ExcelRow) idMap.get(sheet.getId() + "/" + index);
-			if (row != null) {
-				return row;
-			}
-		}
-
-		// No cached value available, create new ExcelRow
-		Row poi = ((ExcelSheet) sheet).getDelegate().getRow(index);
-		if (poi == null) {
-			poi = ((ExcelSheet) sheet).getDelegate().createRow(index);
-		}
-		ExcelRow row = new ExcelRow((ExcelSheet) sheet, poi);
-		if (cachingEnabled) {
-			idMap.put(row.getId(), row);
-		}
-
-		return row;
-	}
-
-	@Override
-	public ExcelRow getRow(int sheet, int index) {
-		return getRow(getSheet(sheet), index);
-	}
-
-	@Override
-	public ExcelRow getRow(String sheet, int index) {
-		return getRow(getSheet(sheet), index);
-	}
-
-	@Override
-	public ExcelSheet getSheet(int index) {
+	public ISheet getSheet(int index) {
 		if (index < 0 || index >= delegate.getNumberOfSheets()) {
 			throw new IndexOutOfBoundsException(
 					"index must be positive and within range of number of existing sheets, was given: " + index);
 		}
 		return getSheet(delegate.getSheetAt(index));
-
 	}
-
+	
 	@Override
-	public ExcelSheet getSheet(String name) {
+	public ISheet getSheet(String name) {
 		return getSheet(delegate.getSheet(name));
-	}
-
-	ExcelSheet getSheet(Sheet poi) {
-		if (poi == null) {
-			return null;
-		}
-
-		// Check cache for existing ExcelSheet
-		if (cachingEnabled) {
-			ExcelSheet sheet = (ExcelSheet) idMap.get(getId() + "/" + poi.getSheetName());
-			if (sheet != null) {
-				return sheet;
-			}
-		}
-
-		// No cached value available, create new ExcelSheet
-		ExcelSheet sheet = new ExcelSheet(this, poi);
-		if (cachingEnabled) {
-			idMap.put(sheet.getId(), sheet);
-		}
-
-		return sheet;
 	}
 
 	@Override
@@ -238,40 +95,26 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 
 	@Override
 	protected Collection<HasId> allContentsFromModel() {
-		// TODO: Add in concurrent loading?
-		if (cachingEnabled) {
-			idMap = new HashMap<>();
-			idMap.put(getId(), this);
-			forEach(sheet -> sheet.forEach(row -> row.forEach(cell -> cell.getCellValue())));
-			return idMap.values();
-		}
-
-		// No caching, iterate and store
 		Collection<HasId> allContents = new ArrayList<>();
 		allContents.add(this);
-		forEach(sheet -> {
-			allContents.add(sheet);
-			sheet.forEach(row -> {
-				allContents.add(row);
-				row.forEach(cell -> {
-					allContents.add(cell);
-					allContents.add(cell.getCellValue());
-					if (cell.getCellValue().getType() == Type.FORMULA_CELL_VALUE) {
-						allContents.addAll(cell.getFormulaCellValue().getFormulaTree().getAllTrees());
-					}
-				});
+		forEach(sheet ->
+			{
+				allContents.add(sheet);
+				sheet.forEach(row ->
+					{
+						allContents.add(row);
+						row.forEach(cell ->
+							{
+								allContents.add(cell);
+								allContents.add(cell.getCellValue());
+								if (cell.getCellValue().getType() == Type.FORMULA_CELL_VALUE) {
+									allContents.addAll(cell.getFormulaCellValue().getFormulaTree().getAllTrees());
+								}
+							});
+					});
 			});
-		});
 
 		return allContents;
-	}
-
-	@Override
-	protected void addToCache(String type, HasId instance) throws EolModelElementTypeNotFoundException {
-		super.addToCache(type, instance);
-		if (cachingEnabled) {
-			idMap.put(instance.getId(), instance);
-		}
 	}
 
 	@Override
@@ -315,17 +158,6 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	@Override
 	protected boolean deleteElementInModel(Object instance) throws EolRuntimeException {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Object getElementById(String id) {
-		if (cachingEnabled) {
-			HasId element = idMap.get(id);
-			if (element != null) {
-				return element;
-			}
-		}
-		return IBook.super.getElementById(id);
 	}
 
 	@Override
@@ -376,10 +208,8 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 		if (!hasType(type)) {
 			throw new EolModelElementTypeNotFoundException(name, type);
 		}
-		
-		return allContents()
-				.stream()
-				.filter(e -> Arrays.stream(e.getKinds()).anyMatch(Type.fromName(type)::equals))
+
+		return allContents().stream().filter(e -> Arrays.stream(e.getKinds()).anyMatch(Type.fromName(type)::equals))
 				.collect(Collectors.toList());
 	}
 
@@ -389,10 +219,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 			throw new EolModelElementTypeNotFoundException(name, typename);
 		}
 
-		return allContents()
-				.stream()
-				.filter(e -> e.getType() == Type.fromName(typename))
-				.collect(Collectors.toList());
+		return allContents().stream().filter(e -> e.getType() == Type.fromName(typename)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -442,7 +269,12 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 
 	@Override
 	protected void disposeModel() {
-		idMap.clear();
+		try {
+			delegate.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void setExcelFile(String filepath) {

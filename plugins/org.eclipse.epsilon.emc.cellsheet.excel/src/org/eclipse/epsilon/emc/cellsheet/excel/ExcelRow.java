@@ -8,10 +8,9 @@ import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
-import org.eclipse.epsilon.emc.cellsheet.ReferenceUtil;
 
 public class ExcelRow implements IRow, HasDelegate<Row> {
 
@@ -36,8 +35,11 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 	}
 
 	@Override
-	public ExcelCell getCell(int colIdx) {
-		return book.getCell(this, colIdx);
+	public ExcelCell getCell(int col) {
+		if (col < 0) {
+			throw new IndexOutOfBoundsException("col index must be positive, was given: " + col);
+		}
+		return new ExcelCell(this, delegate.getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK));
 	}
 
 	@Override

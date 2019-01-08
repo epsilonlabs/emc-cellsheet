@@ -3,6 +3,7 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.ICellRegion;
@@ -74,10 +75,9 @@ public class ExcelCellRegion implements ICellRegion {
 		final List<ICell> cells = new ArrayList<>();
 		for (int r = startRowIdx; r < endRowIdx; r++) {
 			for (int c = startColIdx; c < endColIdx; c++) {
-				cells.add(book.getCell(this.sheet, r, c));
+				cells.add(book.getCell(sheet.getIndex(), r, c));
 			}
 		}
-
 		return cells;
 	}
 

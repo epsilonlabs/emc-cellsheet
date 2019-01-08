@@ -24,37 +24,21 @@ public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 	public static final Type TYPE = Type.BOOK;
 	public static final Type[] KINDS = { TYPE };
 
-	default ICell getCell(IRow row, int col) {
-		return row.getCell(col);
-	}
+	/*
+	 * SHEETS
+	 */
+	public ISheet getSheet(int index);
 
-	default ICell getA1Cell(IRow row, String col) {
-		return row.getA1Cell(col);
-	}
+	public ISheet getSheet(String name);
 
-	default ICell getCell(ISheet sheet, int row, int col) {
-		return sheet.getRow(row).getCell(col);
-	}
-
-	default ICell getA1Cell(ISheet sheet, String col, int row) {
-		return sheet.getRow(row - 1).getA1Cell(col);
-	}
-
-	default ICell getCell(String sheet, int row, int col) {
-		return getSheet(sheet).getRow(row).getCell(col);
-	}
-
-	default ICell getA1Cell(String name, String col, int row) {
-		return getA1Cell(name, col, row - 1);
-	}
-
-	default ICell getCell(int sheet, int row, int col) {
-		return getSheet(sheet).getRow(row).getCell(col);
-	}
-
-	public ICell getA1Cell(int sheet, String col, int row);
-
+	/*
+	 * ROWS
+	 */
 	default IRow getRow(int sheet, int row) {
+		return getSheet(sheet).getRow(row);
+	}
+
+	default IRow getRow(String sheet, int row) {
 		return getSheet(sheet).getRow(row);
 	}
 
@@ -62,21 +46,28 @@ public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 		return getRow(sheet, row - 1);
 	}
 
-	default IRow getRow(ISheet sheet, int row) {
-		return sheet.getRow(row);
-	}
-
-	default IRow getA1Row(ISheet sheet, int row) {
+	default IRow getA1Row(String sheet, int row) {
 		return getRow(sheet, row - 1);
 	}
 
-	default IRow getRow(String sheet, int row) {
-		return getSheet(sheet).getRow(row);
+	/*
+	 * CELLS
+	 */
+	default ICell getCell(int sheet, int row, int col) {
+		return getSheet(sheet).getRow(row).getCell(col);
 	}
 
-	public ISheet getSheet(int index);
+	default ICell getCell(String sheet, int row, int col) {
+		return getSheet(sheet).getRow(row).getCell(col);
+	}
 
-	public ISheet getSheet(String name);
+	default ICell getA1Cell(int sheet, int row, String col) {
+		return getSheet(sheet).getA1Row(row).getA1Cell(col);
+	}
+
+	default ICell getA1Cell(String sheet, int row, String col) {
+		return getSheet(sheet).getA1Row(row).getA1Cell(col);
+	}
 
 	public List<? extends ISheet> sheets();
 

@@ -2,10 +2,14 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
+import org.eclipse.epsilon.emc.cellsheet.IRow;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,8 +21,8 @@ import org.junit.Test;
  */
 public class ExcelRowTest {
 
-	ExcelBook book;
-	ExcelRow row;
+	IBook book;
+	IRow row;
 
 	@Before
 	public void setup() throws Exception {

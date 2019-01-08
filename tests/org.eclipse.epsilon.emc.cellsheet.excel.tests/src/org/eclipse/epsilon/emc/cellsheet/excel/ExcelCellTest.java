@@ -1,6 +1,10 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.ICellValue;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +18,7 @@ import org.junit.Test;
 public class ExcelCellTest {
 
 	ExcelBook book;
-	ExcelCell cell;
+	ICell cell;
 
 	@Before
 	public void setup() throws Exception {
@@ -34,8 +38,7 @@ public class ExcelCellTest {
 
 	@Test
 	public void getRow_should_return_Row() throws Exception {
-		ExcelRow row = cell.getRow();
-		assertEquals(13, row.getIndex());
+		assertEquals(13, cell.getRow().getIndex());
 	}
 
 	@Test

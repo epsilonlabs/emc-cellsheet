@@ -1,13 +1,19 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
+import org.eclipse.epsilon.emc.cellsheet.ISheet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,8 +26,8 @@ import org.junit.Test;
 public class ExcelSheetTest {
 
 	Set<Integer> expectedRows;
-	ExcelBook book;
-	ExcelSheet sheet;
+	IBook book;
+	ISheet sheet;
 
 	@Before
 	public void setup() throws Exception {
@@ -47,7 +53,7 @@ public class ExcelSheetTest {
 
 	@Test
 	public void getRow_should_return_ExcelRow_with_index_89() throws Exception {
-		final ExcelRow row = sheet.getRow(89);
+		final IRow row = sheet.getRow(89);
 		assertEquals(89, row.getIndex());
 		assertEquals(book, row.getBook());
 		assertEquals(sheet, row.getSheet());
