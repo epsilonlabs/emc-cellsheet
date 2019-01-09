@@ -209,9 +209,8 @@ public class ExcelBookTest {
 		book.getElementId(mock);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void getElementId_should_throw_excpetion_when_given_unknown_type() throws Exception {
-		book.getElementId(new Object());
+	public void getElementId_should_return_null_when_given_untyped_object() throws Exception {
+		assertNull(book.getElementId(new Object()));
 	}
 
 	@Test(expected = UnsupportedOperationException.class)

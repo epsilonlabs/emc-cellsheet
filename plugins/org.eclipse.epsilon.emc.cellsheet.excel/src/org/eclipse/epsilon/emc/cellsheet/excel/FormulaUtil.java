@@ -22,6 +22,7 @@ import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.RefPtgBase;
 import org.apache.poi.ss.formula.ptg.ScalarConstantPtg;
 import org.apache.poi.ss.formula.ptg.StringPtg;
+import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.Type;
 
 class FormulaUtil {
@@ -30,14 +31,27 @@ class FormulaUtil {
 		throw new AssertionError();
 	}
 
-	static boolean isSumPtg(Ptg ptg) {
+	public static Ptg[] getPtgs(IFormulaCellValue cell) {
+		if (cell instanceof ExcelFormulaCellValue) {
+			return getPtgs((ExcelFormulaCellValue) cell);
+		}
+		throw new IllegalArgumentException("Cell is not an ExcelFormulaCellValue");
+	}
+
+	public static Ptg[] getPtgs(ExcelFormulaCellValue cellValue) {
+		return FormulaParser.parse(cellValue.getFormula(), // Formula String
+				((ExcelBook) cellValue.getBook()).fpw, // FormulaParsingWorkbook
+				FormulaType.CELL, // Formula Type
+				cellValue.getSheet().getIndex(), // Absolute Sheet index
+				cellValue.getRow().getIndex()); // Absolute Row index
+	}
+
+	public static boolean isSumPtg(Ptg ptg) {
 		return ptg instanceof AttrPtg && ((AttrPtg) ptg).isSum();
 	}
 
-	public static ExcelFormulaTree buildFormulaTree(ExcelFormulaCellValue cv) {
-		Ptg[] ptgs = FormulaParser.parse(cv.getFormula(), cv.cell.book.fpw, FormulaType.CELL, cv.cell.sheet.getIndex(),
-				cv.cell.getRowIndex());
-		return buildFormulaTree(cv, ptgs);
+	public static ExcelFormulaTree buildFormulaTree(ExcelFormulaCellValue cellValue) {
+		return buildFormulaTree(cellValue, getPtgs(cellValue));
 	}
 
 	/**
@@ -52,19 +66,20 @@ class FormulaUtil {
 	 * @param ptgs Tokens to use to build tree in RPN order
 	 * @return
 	 */
-	static ExcelFormulaTree buildFormulaTree(ExcelFormulaCellValue cv, Ptg[] ptgs) {
+	public static ExcelFormulaTree buildFormulaTree(ExcelFormulaCellValue cv, Ptg[] ptgs) {
 		final Deque<ExcelFormulaTree> stack = new ArrayDeque<>();
-		
+
 		for (int i = 0; i < ptgs.length; i++) {
 			Ptg ptg = ptgs[i];
 			ExcelFormulaTree tree = new ExcelFormulaTree(cv, ptgs, i);
 
 			if (Boolean.parseBoolean(System.getProperty("debug"))) {
 				System.out.println("* ptg " + i + ": " + ptg + ", operations: {");
-				stack.forEach(o -> {
-					System.out.println(o);
-					System.out.println(o.formatAsTree());
-				});
+				stack.forEach(o ->
+					{
+						System.out.println(o);
+						System.out.println(o.formatAsTree());
+					});
 				System.out.println("}");
 			}
 
@@ -119,44 +134,44 @@ class FormulaUtil {
 				for (ExcelFormulaTree child : ops) {
 					tree.addChild(child);
 				}
-				
+
 				if (ptg instanceof AbstractFunctionPtg) {
 					tree.setType(Type.FUNCTION_NODE);
 				} else {
 					tree.setType(Type.OPERATOR_NODE);
 				}
 			}
-			
+
 			if (ptg instanceof ScalarConstantPtg) {
 				if (ptg instanceof IntPtg) {
 					tree.setType(Type.NUMERIC_VALUE_NODE);
 					tree.setType(Type.INT_VALUE_NODE);
 				}
-				
+
 				if (ptg instanceof NumberPtg) {
 					tree.setType(Type.NUMERIC_VALUE_NODE);
 					tree.setType(Type.DOUBLE_VALUE_NODE);
 				}
-				
+
 				if (ptg instanceof StringPtg) {
 					tree.setType(Type.STRING_VALUE_NODE);
 				}
-				
+
 				if (ptg instanceof BoolPtg) {
 					tree.setType(Type.BOOLEAN_VALUE_NODE);
 				}
 			}
-			
+
 			if (ptg instanceof OperandPtg) {
 				if (ptg instanceof AreaI) {
 					tree.setType(Type.ARRAY_REF_NODE);
 				}
-				
+
 				if (ptg instanceof RefPtgBase) {
 					tree.setType(Type.CELL_REF_NODE);
 				}
 			}
-			
+
 			stack.push(tree);
 		}
 

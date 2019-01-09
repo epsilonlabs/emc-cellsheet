@@ -8,20 +8,17 @@ import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IRow;
 
 public class ExcelRow implements IRow, HasDelegate<Row> {
 
-	protected ExcelBook book;
 	protected ExcelSheet sheet;
-	protected Row delegate;
+	protected int index;
 
-	ExcelRow(ExcelSheet sheet, Row delegate) {
-		this.book = sheet.getBook();
+	ExcelRow(ExcelSheet sheet, int index) {
 		this.sheet = sheet;
-		this.delegate = delegate;
+		this.index = index;
 	}
 
 	@Override
@@ -30,26 +27,21 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 	}
 
 	@Override
-	public ExcelBook getBook() {
-		return book;
-	}
-
-	@Override
 	public ExcelCell getCell(int col) {
 		if (col < 0) {
 			throw new IndexOutOfBoundsException("col index must be positive, was given: " + col);
 		}
-		return new ExcelCell(this, delegate.getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK));
+		return new ExcelCell(this, col);
 	}
 
 	@Override
 	public int getIndex() {
-		return delegate.getRowNum();
+		return index;
 	}
 
 	@Override
 	public Row getDelegate() {
-		return delegate;
+		return sheet.getDelegate().getRow(index);
 	}
 
 	@Override
@@ -59,7 +51,7 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 
 	@Override
 	public Iterator<ICell> iterator() {
-		return new TransformIterator<Cell, ICell>(delegate.iterator(), new Transformer<Cell, ExcelCell>() {
+		return new TransformIterator<Cell, ICell>(getDelegate().iterator(), new Transformer<Cell, ExcelCell>() {
 			@Override
 			public ExcelCell transform(Cell cell) {
 				return ExcelRow.this.getCell(cell.getColumnIndex());
@@ -68,10 +60,21 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 	}
 
 	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
+		sb.append("(id: ").append(getId());
+		sb.append(", excelRef: ").append(getA1Ref());
+		sb.append(")");
+		return sb.toString();
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((delegate == null) ? 0 : delegate.hashCode());
+		result = prime * result + index;
+		result = prime * result + ((sheet == null) ? 0 : sheet.hashCode());
 		return result;
 	}
 
@@ -84,22 +87,14 @@ public class ExcelRow implements IRow, HasDelegate<Row> {
 		if (getClass() != obj.getClass())
 			return false;
 		ExcelRow other = (ExcelRow) obj;
-		if (delegate == null) {
-			if (other.delegate != null)
+		if (index != other.index)
+			return false;
+		if (sheet == null) {
+			if (other.sheet != null)
 				return false;
-		} else if (!delegate.equals(other.delegate))
+		} else if (!sheet.equals(other.sheet))
 			return false;
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
-		sb.append("(id: ").append(getId());
-		sb.append(", excelRef: ").append(getA1Ref());
-		sb.append(")");
-		return sb.toString();
 	}
 
 }

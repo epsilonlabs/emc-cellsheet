@@ -7,7 +7,7 @@ public class ExcelStringCellValue extends AbstractExcelCellValue<String> impleme
 
 	ExcelStringCellValue(ExcelCell cell) {
 		super(cell);
-		if (cell.delegate.getCellTypeEnum() != CellType.STRING)
+		if (cell.getDelegate().getCellTypeEnum() != CellType.STRING)
 			throw new IllegalArgumentException("Delegate cell must have a String value");
 	}
 

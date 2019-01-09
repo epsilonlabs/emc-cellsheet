@@ -7,7 +7,7 @@ public class ExcelBlankCellValue extends AbstractExcelCellValue<Void> implements
 
 	public ExcelBlankCellValue(ExcelCell cell) {
 		super(cell);
-		if (cell.delegate.getCellTypeEnum() != CellType.BLANK)
+		if (cell.getDelegate().getCellTypeEnum() != CellType.BLANK)
 			throw new IllegalArgumentException("Delegate cell must have a Formula/String value");
 	}
 

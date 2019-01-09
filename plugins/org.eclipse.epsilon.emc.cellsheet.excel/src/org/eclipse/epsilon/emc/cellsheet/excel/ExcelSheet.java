@@ -14,11 +14,11 @@ import org.eclipse.epsilon.emc.cellsheet.ISheet;
 public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
 	protected ExcelBook book;
-	protected Sheet delegate;
+	protected int index;
 
-	ExcelSheet(ExcelBook book, Sheet sheet) {
+	ExcelSheet(ExcelBook book, int index) {
 		this.book = book;
-		this.delegate = sheet;
+		this.index = index;
 	}
 
 	@Override
@@ -28,17 +28,12 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 
 	@Override
 	public int getIndex() {
-		return delegate.getWorkbook().getSheetIndex(delegate);
+		return index;
 	}
 
 	@Override
 	public String getName() {
-		return delegate.getSheetName();
-	}
-
-	@Override
-	public Sheet getDelegate() {
-		return delegate;
+		return getDelegate().getSheetName();
 	}
 
 	@Override
@@ -46,16 +41,15 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 		if (row < 0) {
 			throw new IndexOutOfBoundsException("index must be positive, was given: " + row);
 		}
-		Row poiRow = delegate.getRow(row);
-		if (poiRow == null) {
-			poiRow = delegate.createRow(row);
+		if (getDelegate().getRow(row) == null) {
+			getDelegate().createRow(row);
 		}
-		return new ExcelRow(this, poiRow);
+		return new ExcelRow(this, row);
 	}
 
 	@Override
 	public Iterator<IRow> iterator() {
-		return new TransformIterator<Row, IRow>(delegate.iterator(), new Transformer<Row, IRow>() {
+		return new TransformIterator<Row, IRow>(getDelegate().iterator(), new Transformer<Row, IRow>() {
 			@Override
 			public IRow transform(Row row) {
 				return ExcelSheet.this.getRow(row.getRowNum());
@@ -69,10 +63,16 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 	}
 
 	@Override
+	public Sheet getDelegate() {
+		return book.getDelegate().getSheetAt(index);
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((delegate == null) ? 0 : delegate.hashCode());
+		result = prime * result + ((book == null) ? 0 : book.hashCode());
+		result = prime * result + index;
 		return result;
 	}
 
@@ -85,10 +85,12 @@ public class ExcelSheet implements ISheet, HasDelegate<Sheet> {
 		if (getClass() != obj.getClass())
 			return false;
 		ExcelSheet other = (ExcelSheet) obj;
-		if (delegate == null) {
-			if (other.delegate != null)
+		if (book == null) {
+			if (other.book != null)
 				return false;
-		} else if (!delegate.equals(other.delegate))
+		} else if (!book.equals(other.book))
+			return false;
+		if (index != other.index)
 			return false;
 		return true;
 	}

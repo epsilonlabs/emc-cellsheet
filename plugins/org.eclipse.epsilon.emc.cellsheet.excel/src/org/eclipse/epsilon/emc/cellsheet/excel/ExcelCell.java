@@ -3,28 +3,25 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.ICellValue;
 
 public class ExcelCell implements ICell, HasDelegate<Cell> {
 
-	protected ExcelBook book;
-	protected ExcelSheet sheet;
 	protected ExcelRow row;
-	protected Cell delegate;
+	protected int col;
 
 	protected ICellValue<?> cellValue = null;
 
-	ExcelCell(ExcelRow row, Cell delegate) {
-		this.book = row.getBook();
-		this.sheet = row.getSheet();
+	ExcelCell(ExcelRow row, int col) {
 		this.row = row;
-		this.delegate = delegate;
+		this.col = col;
 	}
 
 	@Override
 	public int getColIndex() {
-		return this.delegate.getColumnIndex();
+		return col;
 	}
 
 	@Override
@@ -33,19 +30,14 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	}
 
 	@Override
-	public int getRowIndex() {
-		return this.delegate.getRowIndex();
-	}
-
-	@Override
 	public ICellValue<?> getCellValue() {
 		if (cellValue == null) {
-			switch (delegate.getCellTypeEnum()) {
+			switch (getDelegate().getCellTypeEnum()) {
 			case BOOLEAN:
 				cellValue = new ExcelBooleanCellValue(this);
 				break;
 			case NUMERIC:
-				if (DateUtil.isCellDateFormatted(delegate)) {
+				if (DateUtil.isCellDateFormatted(getDelegate())) {
 					cellValue = new ExcelDateCellValue(this);
 				} else {
 					cellValue = new ExcelNumericCellValue(this);
@@ -64,7 +56,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 				cellValue = new ExcelErrorCellValue(this);
 				break;
 			default:
-				throw new IllegalStateException("Cell Value type not supported yet: " + delegate.getCellTypeEnum());
+				throw new IllegalStateException("Cell Value type not supported yet: " + getDelegate().getCellTypeEnum());
 			}
 		}
 		return cellValue;
@@ -72,37 +64,12 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 
 	@Override
 	public boolean isBlank() {
-		return delegate.getCellTypeEnum() == CellType.BLANK;
+		return getDelegate().getCellTypeEnum() == CellType.BLANK;
 	}
 
 	@Override
 	public Cell getDelegate() {
-		return this.delegate;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((delegate == null) ? 0 : delegate.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ExcelCell other = (ExcelCell) obj;
-		if (delegate == null) {
-			if (other.delegate != null)
-				return false;
-		} else if (!delegate.equals(other.delegate))
-			return false;
-		return true;
+		return row.getDelegate().getCell(col, MissingCellPolicy.CREATE_NULL_AS_BLANK);
 	}
 
 	@Override
@@ -115,4 +82,32 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 		return sb.toString();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + col;
+		result = prime * result + ((row == null) ? 0 : row.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ExcelCell other = (ExcelCell) obj;
+		if (col != other.col)
+			return false;
+		if (row == null) {
+			if (other.row != null)
+				return false;
+		} else if (!row.equals(other.row))
+			return false;
+		return true;
+	}
+	
 }

@@ -7,7 +7,7 @@ public class ExcelBooleanCellValue extends AbstractExcelCellValue<Boolean> imple
 
 	ExcelBooleanCellValue(ExcelCell cell) {
 		super(cell);
-		if (cell.delegate.getCellTypeEnum() != CellType.BOOLEAN)
+		if (cell.getDelegate().getCellTypeEnum() != CellType.BOOLEAN)
 			throw new IllegalArgumentException("Delegate cell must have a boolean value");
 	}
 

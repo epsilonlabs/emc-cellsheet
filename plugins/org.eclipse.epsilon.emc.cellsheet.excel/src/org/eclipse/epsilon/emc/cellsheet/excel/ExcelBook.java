@@ -50,10 +50,6 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 
 	WorkbookEvaluator evaluator = null;
 	FormulaParsingWorkbook fpw = null;
-
-	ExcelSheet getSheet(Sheet poiSheet) {
-		return poiSheet == null ? null : new ExcelSheet(this, poiSheet);
-	}
 	
 	@Override
 	public ISheet getSheet(int index) {
@@ -61,12 +57,13 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 			throw new IndexOutOfBoundsException(
 					"index must be positive and within range of number of existing sheets, was given: " + index);
 		}
-		return getSheet(delegate.getSheetAt(index));
+		return new ExcelSheet(this, index);
 	}
 	
 	@Override
 	public ISheet getSheet(String name) {
-		return getSheet(delegate.getSheet(name));
+		int index = delegate.getSheetIndex(name);
+		return index < 0 ? null : getSheet(index);
 	}
 
 	@Override
@@ -74,7 +71,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 		return new TransformIterator<Sheet, ISheet>(delegate.iterator(), new Transformer<Sheet, ISheet>() {
 			@Override
 			public ISheet transform(Sheet input) {
-				return getSheet(input);
+				return getSheet(delegate.getSheetIndex(input));
 			}
 		});
 	}
@@ -170,7 +167,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 			throw new UnsupportedOperationException(
 					"ID not implemented for model type: " + ((HasType) instance).getType());
 		}
-		throw new IllegalArgumentException("No such model element type exists for " + instance.toString());
+		return null;
 	}
 
 	@Override
@@ -185,12 +182,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 
 	@Override
 	public boolean owns(Object instance) {
-		try {
-			String id = getElementId(instance);
-			return getElementById(id) != null;
-		} catch (IllegalArgumentException e) {
-			return false;
-		}
+		return getElementById(getElementId(instance)) != null;
 	}
 
 	@Override

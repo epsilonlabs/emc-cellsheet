@@ -7,7 +7,7 @@ public class ExcelNumericCellValue extends AbstractExcelCellValue<Double> implem
 
 	ExcelNumericCellValue(ExcelCell cell) {
 		super(cell);
-		if (cell.delegate.getCellTypeEnum() != CellType.NUMERIC)
+		if (cell.getDelegate().getCellTypeEnum() != CellType.NUMERIC)
 			throw new IllegalArgumentException("Delegate cell must have a Numeric value");
 	}
 

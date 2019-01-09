@@ -56,13 +56,15 @@ public interface ICell extends HasId, HasA1, Comparable<ICell> {
 	/**
 	 * @return 0-based row index of this Cell
 	 */
-	public int getRowIndex();
+	default int getRowIndex() {
+		return getRow().getIndex();
+	}
 
 	/**
 	 * @return A1 style row index of this Cell (1-based index)
 	 */
 	default int getA1RowIndex() {
-		return getRowIndex() + 1;
+		return getRow().getA1Index();
 	}
 
 	/**

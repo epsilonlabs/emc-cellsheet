@@ -3,8 +3,6 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.formula.FormulaParser;
-import org.apache.poi.ss.formula.FormulaType;
 import org.apache.poi.ss.formula.ptg.Area3DPtg;
 import org.apache.poi.ss.formula.ptg.Area3DPxg;
 import org.apache.poi.ss.formula.ptg.AreaPtg;
@@ -24,12 +22,11 @@ import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
  */
 public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implements IFormulaCellValue {
 
-	protected Ptg[] ptgs;
 	protected ExcelFormulaTree formulaTree = null;
 
 	ExcelFormulaCellValue(ExcelCell cell) {
 		super(cell);
-		if (cell.delegate.getCellTypeEnum() != CellType.FORMULA)
+		if (cell.getDelegate().getCellTypeEnum() != CellType.FORMULA)
 			throw new IllegalArgumentException("Delegate cell must have a Formula/String value");
 	}
 
@@ -44,21 +41,13 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 			return "";
 		}
 	}
-
-	Ptg[] getPtgs() {
-		if (ptgs == null) {
-			ptgs = FormulaParser.parse(getFormula(), ((ExcelBook) cell.getBook()).fpw, FormulaType.CELL,
-					cell.getSheet().getIndex(), cell.getRowIndex());
-		}
-		return ptgs;
-	}
-
+	
 	@Deprecated
 	@Override
 	public List<ICellRegion> getReferencedRegions() {
 		final List<ICellRegion> regions = new ArrayList<ICellRegion>();
 
-		for (Ptg ptg : getPtgs()) {
+		for (Ptg ptg : FormulaUtil.getPtgs(this)) {
 			if (!(ptg instanceof OperandPtg))
 				continue;
 

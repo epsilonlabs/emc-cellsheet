@@ -81,6 +81,10 @@ public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 
 	@Override
 	default Object getElementById(String id) {
+		if (id == null) {
+			return null;
+		}
+		
 		// Sanitise if this is a relative id
 		if (id.startsWith("/")) {
 			id = getName() + id;
