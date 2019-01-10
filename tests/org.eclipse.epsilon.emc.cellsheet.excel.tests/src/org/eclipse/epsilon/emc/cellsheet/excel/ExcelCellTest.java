@@ -23,7 +23,7 @@ public class ExcelCellTest {
 	@Before
 	public void setup() throws Exception {
 		this.book = ExcelTestUtil.getBook("ExcelCellTest.xlsx");
-		this.cell = this.book.getCell("ExcelCellTest", 13, 26);
+		this.cell = book.getSheet("ExcelCellTest").getRow(13).getCell(26);
 	}
 
 	@Test
@@ -48,35 +48,35 @@ public class ExcelCellTest {
 
 	@Test
 	public void getValue_should_return_ExcelBooleanValue() throws Exception {
-		cell = book.getCell("ExcelCellTest", 1, 0);
+		cell = book.getSheet("ExcelCellTest").getRow(1).getCell(0);
 		ICellValue<?> value = cell.getCellValue();
 		assertTrue(value instanceof ExcelBooleanCellValue);
 	}
 
 	@Test
 	public void getValue_should_return_ExcelNumericValue() throws Exception {
-		cell = book.getCell("ExcelCellTest", 2, 0);
+		cell = book.getSheet("ExcelCellTest").getRow(2).getCell(0);
 		ICellValue<?> value = cell.getCellValue();
 		assertTrue(value instanceof ExcelNumericCellValue);
 	}
 
 	@Test
 	public void getValue_should_return_ExcelStringValue() throws Exception {
-		cell = book.getCell("ExcelCellTest", 0, 0);
+		cell = book.getSheet("ExcelCellTest").getRow(0).getCell(0);
 		ICellValue<?> value = cell.getCellValue();
 		assertTrue(value instanceof ExcelStringCellValue);
 	}
 
 	@Test
 	public void getValue_should_return_ExcelFormulaValue() throws Exception {
-		cell = book.getCell("ExcelCellTest", 3, 0);
+		cell = book.getSheet("ExcelCellTest").getRow(3).getCell(0);
 		ICellValue<?> value = cell.getCellValue();
 		assertTrue(value instanceof ExcelFormulaCellValue);
 	}
 
 	@Test
 	public void getValue_should_return_ExcelBlankCellValue() throws Exception {
-		cell = book.getCell("ExcelCellTest", 5769, 543);
+		cell = book.getSheet("ExcelCellTest").getRow(5769).getCell(543);
 		assertTrue(cell.getCellValue() instanceof ExcelBlankCellValue);
 	}
 

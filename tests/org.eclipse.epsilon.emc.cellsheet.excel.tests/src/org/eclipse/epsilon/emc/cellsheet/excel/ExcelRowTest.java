@@ -27,7 +27,7 @@ public class ExcelRowTest {
 	@Before
 	public void setup() throws Exception {
 		this.book = ExcelTestUtil.getBook("ExcelRowTest.xlsx");
-		this.row = this.book.getRow("ExcelRowTest", 3);
+		this.row = this.book.getSheet("ExcelRowTest").getRow(3);
 	}
 
 	@Test

@@ -146,7 +146,7 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 
 			// Evaluate and get cell reference
 			CellReference cr = new CellReference(doEvaluation(newFormula));
-			return getBook().getCell(cr.getSheetName(), cr.getRow(), cr.getCol());
+			return getBook().getSheet(cr.getSheetName()).getRow(cr.getRow()).getCell(cr.getCol());
 		default:
 			throw new UnsupportedOperationException();
 		}

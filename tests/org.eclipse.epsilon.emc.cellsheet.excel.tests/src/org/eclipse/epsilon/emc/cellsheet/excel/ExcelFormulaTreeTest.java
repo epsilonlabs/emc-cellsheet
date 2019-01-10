@@ -20,83 +20,73 @@ public class ExcelFormulaTreeTest {
 
 	@Test
 	public void aiEvaluate_should_return_cell_reference_not_result() throws Exception {
-		final ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 9, 0);
-		final IFormulaTree tree = ((IFormulaCellValue) cell.getCellValue()).getFormulaTree();
+		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(9).getCell(0).getFormulaCellValue().getFormulaTree();
 
 		final String result = tree.evaluate();
 		final ICell aiResult = tree.evaluateCell();
 		assertEquals("C1 Result", result);
-		assertEquals(book.getCell("Lookup", 0, 2), aiResult);
+		assertEquals(book.getSheet("Lookup").getRow(0).getCell(2), aiResult);
 	}
 
 	@Test
 	public void getFormula_should_return_string_when_given_arithmetic_formula_with_no_brackets() {
-		ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 2, 0);
-		IFormulaTree tree = ((IFormulaCellValue) cell.getCellValue()).getFormulaTree();
-
+		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(2).getCell(0).getFormulaCellValue().getFormulaTree();
 		assertEquals("65+20", tree.getFormula());
 		assertEquals(85, Double.parseDouble(tree.evaluate()), 0);
 	}
 
 	@Test
 	public void getFormula_should_return_string_when_given_arithmetic_formula_with_1_set_of_brackets() {
-		ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 3, 0);
-		IFormulaTree tree = ((IFormulaCellValue) cell.getCellValue()).getFormulaTree();
+		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(3).getCell(0).getFormulaCellValue().getFormulaTree();
 		assertEquals("(6*5)+500", tree.getFormula());
 		assertEquals(530, Double.parseDouble(tree.evaluate()), 0);
 	}
 
 	@Test
 	public void getFormula_should_return_string_when_given_arithmetic_formula_with_1_set_of_brackets_in_different_place() {
-		ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 4, 0);
-		IFormulaTree tree = ((IFormulaCellValue) cell.getCellValue()).getFormulaTree();
+		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(4).getCell(0).getFormulaCellValue().getFormulaTree();
 		assertEquals("6*(5+500)", tree.getFormula());
 		assertEquals(3030, Double.parseDouble(tree.evaluate()), 0);
 	}
 
 	@Test
 	public void getFormula_should_return_string_when_given_arithmetic_formula_with_2_set_of_brackets() {
-		ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 5, 0);
-		IFormulaTree tree = ((IFormulaCellValue) cell.getCellValue()).getFormulaTree();
+		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(5).getCell(0).getFormulaCellValue().getFormulaTree();
 		assertEquals("(34*45)+(800/40)", tree.getFormula());
 		assertEquals(1550, Double.parseDouble(tree.evaluate()), 0);
 	}
 
 	@Test
 	public void buildFormulaString_should_return_string_when_given_sum_function_with_multiple_args() throws Exception {
-		ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 1, 0);
-		IFormulaTree tree = ((IFormulaCellValue) cell.getCellValue()).getFormulaTree();
+		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(1).getCell(0).getFormulaCellValue().getFormulaTree();
 		assertEquals("SUM(Data!B1,Data!D5,Data!B5,Data!D2,Data!C2)", tree.getFormula());
 		assertEquals(5, Double.parseDouble(tree.evaluate()), 0);
 	}
 
 	@Test
 	public void buildFormulaString_should_return_string_when_given_sum_function_with_range() throws Exception {
-		ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 0, 0);
-		IFormulaTree tree = ((IFormulaCellValue) cell.getCellValue()).getFormulaTree();
+		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(0).getCell(0).getFormulaCellValue().getFormulaTree();
 		assertEquals("SUM(Data!A1:D5)", tree.getFormula());
 		assertEquals(20, Double.parseDouble(tree.evaluate()), 0);
 	}
 
 	@Test
 	public void buildFormulaString_should_return_string_when_given_unary() throws Exception {
-		ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 6, 0);
-		IFormulaTree tree = ((IFormulaCellValue) cell.getCellValue()).getFormulaTree();
+		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(6).getCell(0).getFormulaCellValue().getFormulaTree();
 		assertEquals("-(8-4)", tree.getFormula());
 		assertEquals(-4, Double.parseDouble(tree.evaluate()), 0);
 	}
 
 	@Test
 	public void buildFormulaString_should_return_string_when_given_percent() throws Exception {
-		ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 7, 0);
-		IFormulaTree tree = ((IFormulaCellValue) cell.getCellValue()).getFormulaTree();
+		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(7).getCell(0).getFormulaCellValue().getFormulaTree();
 		assertEquals("9%", tree.getFormula());
 		assertEquals(0.09, Double.parseDouble(tree.evaluate()), 0);
 	}
 
 	@Test
 	public void evaluate_should_return_partial_result_when_subtree_is_given() throws Exception {
-		final ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 8, 0);
+		final ICell cell = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(8).getCell(0);
 		final IFormulaCellValue value = (IFormulaCellValue) cell.getCellValue();
 		final IFormulaTree tree = ((IFormulaCellValue) cell.getCellValue()).getFormulaTree();
 
@@ -117,9 +107,7 @@ public class ExcelFormulaTreeTest {
 
 	@Test
 	public void getAllChildren_should_return_all_tokens() throws Exception {
-		final ICell cell = book.getCell(ExcelFormulaTreeTest.class.getSimpleName(), 8, 0);
-		final IFormulaCellValue cellValue = cell.getFormulaCellValue();
-		final IFormulaTree tree = cellValue.getFormulaTree();
+		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(8).getCell(0).getFormulaCellValue().getFormulaTree();
 		assertEquals(5, tree.getAllTrees().size());
 	}
 
@@ -136,8 +124,7 @@ public class ExcelFormulaTreeTest {
 	 */
 	@Test
 	public void test_if_funcvar_should_consume_all_tokens_when_building_formula_tree() throws Exception {
-		ICell ifCell = book.getA1Cell(ExcelFormulaTreeTest.class.getSimpleName(), 12, "A");
-		IFormulaTree ifTree = ifCell.getFormulaCellValue().getFormulaTree();
-		assertEquals(8, ifTree.getAllTrees().size());
+		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getA1Row(12).getA1Cell("A").getFormulaCellValue().getFormulaTree();
+		assertEquals(8, tree.getAllTrees().size());
 	}
 }

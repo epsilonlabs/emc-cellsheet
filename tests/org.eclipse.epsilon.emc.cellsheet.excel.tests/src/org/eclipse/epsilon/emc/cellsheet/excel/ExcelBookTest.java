@@ -103,12 +103,12 @@ public class ExcelBookTest {
 
 	@Test
 	public void owns_should_return_true_when_given_Row_same_model() throws Exception {
-		assertTrue(book.owns(book.getRow(0, 0)));
+		assertTrue(book.owns(book.getSheet(0).getRow(0)));
 	}
 
 	@Test
 	public void owns_should_return_true_when_given_Cell_same_model() throws Exception {
-		assertTrue(book.owns(book.getCell(0, 0, 0)));
+		assertTrue(book.owns(book.getSheet(0).getRow(0).getCell(0)));
 	}
 
 	@Test
@@ -128,12 +128,12 @@ public class ExcelBookTest {
 
 	@Test
 	public void owns_should_return_false_when_given_Row_from_other_model() throws Exception {
-		assertFalse(book.owns(other.getRow(0, 0)));
+		assertFalse(book.owns(other.getSheet(0).getRow(0)));
 	}
 
 	@Test
 	public void owns_should_return_false_when_given_Cell_from_other_model() throws Exception {
-		assertFalse(book.owns(other.getCell(0, 0, 0)));
+		assertFalse(book.owns(other.getSheet(0).getRow(0).getCell(0)));
 	}
 
 	@Test
@@ -193,13 +193,13 @@ public class ExcelBookTest {
 
 	@Test
 	public void getElementId_should_return_row_id_when_given_row() throws Exception {
-		final IRow row = book.getRow("Data", 3);
+		final IRow row = book.getSheet("Data").getRow(3);
 		assertEquals("ExcelBookTest.xlsx/Data/3/", book.getElementId(row));
 	}
 
 	@Test
 	public void getElementId_should_return_cell_id_when_given_cell() throws Exception {
-		final ICell cell = book.getCell("Data", 3, 0);
+		final ICell cell = book.getSheet("Data").getRow(3).getCell(0);
 		assertEquals("ExcelBookTest.xlsx/Data/3/0/", book.getElementId(cell));
 	}
 
@@ -236,7 +236,7 @@ public class ExcelBookTest {
 	@Test
 	public void getElementById_should_return_row_when_given_row_id() throws Exception {
 		final String id = "ExcelBookTest.xlsx/Data/59/";
-		final IRow row = book.getRow("Data", 59);
+		final IRow row = book.getSheet("Data").getRow(59);
 		assertEquals(id, row.getId());
 		assertEquals(row, book.getElementById(id));
 	}
@@ -244,7 +244,7 @@ public class ExcelBookTest {
 	@Test
 	public void getElementById_should_return_cell_when_given_cell_id() throws Exception {
 		final String id = "ExcelBookTest.xlsx/Data/3/0/";
-		final ICell cell = book.getCell("Data", 3, 0);
+		final ICell cell = book.getSheet("Data").getRow(3).getCell(0);
 		assertEquals(id, cell.getId());
 		assertEquals(cell, book.getElementById(id));
 	}

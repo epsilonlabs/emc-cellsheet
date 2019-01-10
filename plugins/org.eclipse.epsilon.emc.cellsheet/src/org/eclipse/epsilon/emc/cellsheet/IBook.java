@@ -10,11 +10,8 @@ import org.eclipse.epsilon.eol.models.IModel;
 /**
  * Epsilon Model of a Spreadsheet Workbook.
  * 
- * Book is analogous to a model in the Epsilon architecture. This was chosen to
+ * Book is analogous to a model in the EMC architecture. This was chosen to
  * maintain the overall Spreadsheet methodology.
- * 
- * Element ID's should be implemented as cell references where possible TODO:
- * Determine correct way to ID individual columns and rows
  * 
  * @author Jonathan Co
  *
@@ -31,44 +28,6 @@ public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 
 	public ISheet getSheet(String name);
 
-	/*
-	 * ROWS
-	 */
-	default IRow getRow(int sheet, int row) {
-		return getSheet(sheet).getRow(row);
-	}
-
-	default IRow getRow(String sheet, int row) {
-		return getSheet(sheet).getRow(row);
-	}
-
-	default IRow getA1Row(int sheet, int row) {
-		return getRow(sheet, row - 1);
-	}
-
-	default IRow getA1Row(String sheet, int row) {
-		return getRow(sheet, row - 1);
-	}
-
-	/*
-	 * CELLS
-	 */
-	default ICell getCell(int sheet, int row, int col) {
-		return getSheet(sheet).getRow(row).getCell(col);
-	}
-
-	default ICell getCell(String sheet, int row, int col) {
-		return getSheet(sheet).getRow(row).getCell(col);
-	}
-
-	default ICell getA1Cell(int sheet, int row, String col) {
-		return getSheet(sheet).getA1Row(row).getA1Cell(col);
-	}
-
-	default ICell getA1Cell(String sheet, int row, String col) {
-		return getSheet(sheet).getA1Row(row).getA1Cell(col);
-	}
-
 	public List<? extends ISheet> sheets();
 
 	@Override
@@ -84,7 +43,7 @@ public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 		if (id == null) {
 			return null;
 		}
-		
+
 		// Sanitise if this is a relative id
 		if (id.startsWith("/")) {
 			id = getName() + id;

@@ -75,7 +75,7 @@ public class ExcelCellRegion implements ICellRegion {
 		final List<ICell> cells = new ArrayList<>();
 		for (int r = startRowIdx; r < endRowIdx; r++) {
 			for (int c = startColIdx; c < endColIdx; c++) {
-				cells.add(book.getCell(sheet.getIndex(), r, c));
+				cells.add(sheet.getRow(r).getCell(c));
 			}
 		}
 		return cells;

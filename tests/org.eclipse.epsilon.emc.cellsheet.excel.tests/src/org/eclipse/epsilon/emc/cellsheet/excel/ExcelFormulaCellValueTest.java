@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.ICellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
 import org.junit.Before;
@@ -30,8 +29,7 @@ public class ExcelFormulaCellValueTest {
 
 	@Test
 	public void testGetReferencedCellsEqualLabel() {
-		IFormulaCellValue formulaValue = legacyBook.getA1Cell("Formula", 1, "B").getFormulaCellValue();
-
+		IFormulaCellValue formulaValue = legacyBook.getSheet("Formula").getA1Row(1).getA1Cell("B").getFormulaCellValue();
 		final List<ICell> refCells = formulaValue.getReferencedCells();
 		assertEquals(1, refCells.size());
 
@@ -43,7 +41,7 @@ public class ExcelFormulaCellValueTest {
 
 	@Test
 	public void testGetReferencedCellsEqualLabelLegacy() {
-		IFormulaCellValue formulaValue = legacyBook.getA1Cell("Formula", 2, "B").getFormulaCellValue();
+		IFormulaCellValue formulaValue = legacyBook.getSheet("Formula").getA1Row(2).getA1Cell("B").getFormulaCellValue();
 
 		final List<ICell> refCells = formulaValue.getReferencedCells();
 		assertEquals(1, refCells.size());
@@ -56,8 +54,7 @@ public class ExcelFormulaCellValueTest {
 
 	@Test
 	public void testGetReferencedCellsEqualLabelSameSheet() {
-		IFormulaCellValue formulaValue = legacyBook.getA1Cell("Formula", 3, "B").getFormulaCellValue();
-
+		IFormulaCellValue formulaValue = legacyBook.getSheet("Formula").getA1Row(3).getA1Cell("B").getFormulaCellValue();
 
 		final List<ICell> refCells = formulaValue.getReferencedCells();
 		assertEquals(1, refCells.size());
@@ -70,7 +67,7 @@ public class ExcelFormulaCellValueTest {
 
 	@Test
 	public void testGetReferencedCellsEqualLabelSameSheetLegacy() {
-		IFormulaCellValue formulaValue = legacyBook.getA1Cell("Formula", 4, "B").getFormulaCellValue();
+		IFormulaCellValue formulaValue = legacyBook.getSheet("Formula").getA1Row(4).getA1Cell("B").getFormulaCellValue();
 
 		final List<ICell> refCells = formulaValue.getReferencedCells();
 		assertEquals(1, refCells.size());
@@ -83,33 +80,33 @@ public class ExcelFormulaCellValueTest {
 
 	@Test
 	public void testGetReferencedCellsSumRegion() {
-		IFormulaCellValue formulaValue = legacyBook.getA1Cell("Formula", 5, "B").getFormulaCellValue();
+		IFormulaCellValue formulaValue = legacyBook.getSheet("Formula").getA1Row(5).getA1Cell("B").getFormulaCellValue();
 
 		final List<ICell> refCells = formulaValue.getReferencedCells();
 		assertEquals(20, refCells.size());
 		for (int r = 0; r < 10; r++) {
 			for (int c = 0; c < 2; c++) {
-				assertTrue(refCells.contains(legacyBook.getCell("Data", r, c)));
+				assertTrue(refCells.contains(legacyBook.getSheet("Data").getRow(r).getCell(c)));
 			}
 		}
 	}
 
 	@Test
 	public void testGetReferencedCellsSumRegionSameSheet() {
-		IFormulaCellValue formulaValue = legacyBook.getA1Cell("Formula", 6, "B").getFormulaCellValue();
+		IFormulaCellValue formulaValue = legacyBook.getSheet("Formula").getA1Row(6).getA1Cell("B").getFormulaCellValue();
 
 		final List<ICell> refCells = formulaValue.getReferencedCells();
 		assertEquals(20, refCells.size());
 		for (int r = 0; r < 10; r++) {
 			for (int c = 9; c < 11; c++) {
-				assertTrue(refCells.contains(legacyBook.getCell("Formula", r, c)));
+				assertTrue(refCells.contains(legacyBook.getSheet("Formula").getRow(r).getCell(c)));
 			}
 		}
 	}
 
 	@Test
 	public void getFormulaTree_should_return_tree_with_1_operand_1_operator_when_sum_1_arg() throws Exception {
-		ICell cell = book.getCell("getFormulaTree", 0, 0);
+		ICell cell = book.getSheet("getFormulaTree").getRow(0).getCell(0);
 		IFormulaCellValue value = (IFormulaCellValue) cell.getCellValue();
 
 		IFormulaTree sumTree = value.getFormulaTree();
@@ -123,7 +120,7 @@ public class ExcelFormulaCellValueTest {
 
 	@Test
 	public void getFormulaTree_should_return_tree_with_5_operands_1_operator_when_sum_func_5_args() throws Exception {
-		ICell cell = book.getCell("getFormulaTree", 1, 0);
+		ICell cell = book.getSheet("getFormulaTree").getRow(1).getCell(0);
 		IFormulaCellValue value = (IFormulaCellValue) cell.getCellValue();
 
 		IFormulaTree sumTree = value.getFormulaTree();
