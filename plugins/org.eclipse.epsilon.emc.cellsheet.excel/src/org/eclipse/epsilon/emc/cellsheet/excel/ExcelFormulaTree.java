@@ -1,13 +1,10 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import java.lang.reflect.Method;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.poi.ss.formula.FormulaRenderer;
 import org.apache.poi.ss.formula.FormulaRenderingWorkbook;
@@ -18,7 +15,6 @@ import org.apache.poi.ss.formula.ptg.Area3DPxg;
 import org.apache.poi.ss.formula.ptg.AreaPtgBase;
 import org.apache.poi.ss.formula.ptg.ControlPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
-import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
 import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
@@ -34,25 +30,17 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 
 	protected ExcelFormulaTree parent;
 	protected ExcelFormulaCellValue cellValue;
-	protected Ptg[] ptgs;
 	protected int ptgIndex;
-	protected List<ExcelFormulaTree> children;
+	
+	protected List<ExcelFormulaTree> children = new LinkedList<>();
 
-	protected Type type;
-	protected Set<Type> kinds;
+	protected Type type = Type.UNKNOWN_NODE;
+	protected Type[] kinds = new Type[] {Type.FORMULA_TREE, type};
 
-	public ExcelFormulaTree(ExcelFormulaCellValue cellValue, Ptg[] ptgs, int ptgIndex) {
+	public ExcelFormulaTree(ExcelFormulaCellValue cellValue, ExcelFormulaTree parent, int ptgIndex) {
 		this.cellValue = cellValue;
-		this.ptgs = ptgs;
-		this.ptgIndex = ptgIndex;
-
-		this.children = new ArrayList<>();
-		this.kinds = EnumSet.of(Type.FORMULA_TREE);
-	}
-
-	public ExcelFormulaTree(ExcelFormulaTree parent, int ptgIndex) {
-		this(parent.cellValue, parent.ptgs, ptgIndex);
 		this.parent = parent;
+		this.ptgIndex = ptgIndex;
 	}
 
 	@Override
@@ -69,7 +57,7 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 
 	@Override
 	public Ptg getDelegate() {
-		return ptgs[ptgIndex];
+		return FormulaUtil.getPtgs(cellValue)[ptgIndex];
 	}
 
 	@Override
@@ -165,6 +153,7 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 		// AST does not take into account control characters such as brackets, therefore
 		// they are not children.
 		// Rebuild the PTG stack with these characters
+		Ptg[] ptgs = FormulaUtil.getPtgs(cellValue);
 		Deque<Ptg> stack = new ArrayDeque<>();
 		int current = ptgIndex;
 		int count = countAllChildren() + 1;
@@ -182,82 +171,22 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 
 	@Override
 	public String getToken() {
-		return ptgToStr(getDelegate());
+		return FormulaUtil.ptgToStr(getDelegate());
 	}
 
 	@Override
 	public Type getType() {
-		return type == null ? IFormulaTree.super.getType() : type;
+		return type;
 	}
 
 	public void setType(Type type) {
 		this.type = type;
-		kinds.add(type);
+		kinds[1] = type;
 	}
 
 	@Override
 	public Type[] getKinds() {
-		return kinds.isEmpty() ? IFormulaTree.super.getKinds() : kinds.toArray(new Type[0]);
-	}
-
-	public void addKind(Type type) {
-		kinds.add(type);
-	}
-
-	/**
-	 * Utility method for converting a PTG to String representation
-	 * 
-	 * @param ptg to convert
-	 * @return String representation
-	 * 
-	 * @throws UnsupportedOperationException Encounters a ptg that cannot be
-	 *                                       converted
-	 */
-	static String ptgToStr(Ptg ptg) {
-
-		try {
-			if (ptg instanceof ValueOperatorPtg) {
-				Method method = ValueOperatorPtg.class.getDeclaredMethod("getSid");
-				method.setAccessible(true);
-				switch ((Byte) method.invoke(ptg)) {
-				case 0x03: // Add
-					return "+";
-				case 0x08: // Concat
-					return "&";
-				case 0x06: // Divide
-					return "/";
-				case 0x0b: // Equal
-					return "=";
-				case 0x0c: // GreaterEqual
-					return ">=";
-				case 0x0D: // GreaterThan
-					return ">";
-				case 0x0a: // LessEqual
-					return "<=";
-				case 0x09: // LessThan
-					return "<";
-				case 0x05: // Multiply
-					return "*";
-				case 0x0e: // NotEqual
-					return "<>";
-				case 0x14: // Percent
-					return "%";
-				case 0x07: // Power
-					return "^";
-				case 0x04: // Subtract
-					return "-";
-				case 0x13: // UnaryMinus
-					return "-";
-				case 0x12: // UnaryPlus
-					return "+";
-				default:
-					break;
-				}
-			}
-			return ptg.toFormulaString();
-		} catch (Exception e) {
-			throw new UnsupportedOperationException(e);
-		}
+		return kinds;
 	}
 
 	@Override

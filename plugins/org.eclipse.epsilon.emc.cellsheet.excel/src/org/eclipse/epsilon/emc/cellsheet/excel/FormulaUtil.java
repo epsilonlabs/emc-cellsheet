@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
+import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -22,6 +23,7 @@ import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.RefPtgBase;
 import org.apache.poi.ss.formula.ptg.ScalarConstantPtg;
 import org.apache.poi.ss.formula.ptg.StringPtg;
+import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.Type;
 
@@ -71,7 +73,7 @@ class FormulaUtil {
 
 		for (int i = 0; i < ptgs.length; i++) {
 			Ptg ptg = ptgs[i];
-			ExcelFormulaTree tree = new ExcelFormulaTree(cv, ptgs, i);
+			ExcelFormulaTree tree = new ExcelFormulaTree(cv, null, i);
 
 			if (Boolean.parseBoolean(System.getProperty("debug"))) {
 				System.out.println("* ptg " + i + ": " + ptg + ", operations: {");
@@ -178,7 +180,62 @@ class FormulaUtil {
 		if (stack.size() > 1)
 			throw new AssertionError();
 
-		stack.peek().addKind(Type.ROOT_NODE);
 		return stack.pop();
+	}
+	
+	/**
+	 * Utility method for converting a PTG to String representation
+	 * 
+	 * @param ptg to convert
+	 * @return String representation
+	 * 
+	 * @throws UnsupportedOperationException Encounters a ptg that cannot be
+	 *                                       converted
+	 */
+	public static String ptgToStr(Ptg ptg) {
+
+		try {
+			if (ptg instanceof ValueOperatorPtg) {
+				Method method = ValueOperatorPtg.class.getDeclaredMethod("getSid");
+				method.setAccessible(true);
+				switch ((Byte) method.invoke(ptg)) {
+				case 0x03: // Add
+					return "+";
+				case 0x08: // Concat
+					return "&";
+				case 0x06: // Divide
+					return "/";
+				case 0x0b: // Equal
+					return "=";
+				case 0x0c: // GreaterEqual
+					return ">=";
+				case 0x0D: // GreaterThan
+					return ">";
+				case 0x0a: // LessEqual
+					return "<=";
+				case 0x09: // LessThan
+					return "<";
+				case 0x05: // Multiply
+					return "*";
+				case 0x0e: // NotEqual
+					return "<>";
+				case 0x14: // Percent
+					return "%";
+				case 0x07: // Power
+					return "^";
+				case 0x04: // Subtract
+					return "-";
+				case 0x13: // UnaryMinus
+					return "-";
+				case 0x12: // UnaryPlus
+					return "+";
+				default:
+					break;
+				}
+			}
+			return ptg.toFormulaString();
+		} catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 }
