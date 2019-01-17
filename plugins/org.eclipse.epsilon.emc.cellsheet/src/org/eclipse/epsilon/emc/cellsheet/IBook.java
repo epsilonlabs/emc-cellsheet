@@ -1,6 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -120,6 +121,14 @@ public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 		}
 
 		return toReturn;
+	}
+	
+	default Collection<?> getAllOfType(Type type) throws EolModelElementTypeNotFoundException {
+		return getAllOfType(type.getName());
+	}
+	
+	default Collection<?> getAllOfKind(Type type) throws EolModelElementTypeNotFoundException {
+		return getAllOfKind(type.getName());
 	}
 
 	@Override
