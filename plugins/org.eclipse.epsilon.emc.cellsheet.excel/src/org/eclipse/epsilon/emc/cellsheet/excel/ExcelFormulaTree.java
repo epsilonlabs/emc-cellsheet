@@ -78,11 +78,6 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 	}
 
 	@Override
-	public ExcelFormulaTree getChildAt(int index) {
-		return this.children.get(index);
-	}
-
-	@Override
 	public void addChild(IFormulaTree child) {
 		if (!(child instanceof ExcelFormulaTree))
 			throw new IllegalArgumentException("Parent must be of type ExcelFormulaTree");
@@ -108,7 +103,7 @@ public class ExcelFormulaTree implements IFormulaTree, HasDelegate<Ptg> {
 		switch (function.getName()) {
 		case "VLOOKUP":
 			// Determine new lookup table
-			AreaPtgBase table_array = (AreaPtgBase) getChildAt(1).getDelegate();
+			AreaPtgBase table_array = (AreaPtgBase) ((ExcelFormulaTree) getChildAt(1)).getDelegate();
 			String lookupCol = CellReference.convertNumToColString(table_array.getFirstColumn());
 			int firstRow = table_array.getFirstRow();
 			int lastRow = table_array.getLastRow();

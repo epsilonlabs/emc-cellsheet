@@ -95,7 +95,9 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * @return The position of the child at the sub-tree or {@code null} if they do
 	 *         not exist
 	 */
-	public IFormulaTree getChildAt(int index);
+	default IFormulaTree getChildAt(int index) {
+		return getChildren().get(index);
+	}
 
 	/**
 	 * Add a sub-tree to this {@link IFormulaTree} and assign {@code this} as the
@@ -197,7 +199,7 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * @return this tree formatted as a tree structure diagram
 	 */
 	default String formatAsTree() {
-		return getCell().getA1Ref() + "\n" + getFormula() + "\n" + formatAsTree("", true);
+		return getFormula() + "\n" + formatAsTree("", true);
 	}
 
 	/**
@@ -254,6 +256,16 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	default String getId() {
 		return isRoot() ? getCellValue().getId() + "0/"
 				: getParent().getId() + getParent().getChildren().indexOf(this) + "/";
+	}
+
+	default void accept(Visitor v) {
+		v.visit(this);
+	}
+
+	public static interface Visitor {
+
+		public void visit(IFormulaTree tree);
+
 	}
 
 }

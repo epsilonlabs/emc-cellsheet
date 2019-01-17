@@ -1,7 +1,11 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -112,6 +116,35 @@ public class IFormulaTreeTest {
 	@Test
 	public void isLeaf_should_return_true_when_empty_children() throws Exception {
 		assertTrue(tree.isLeaf());
+	}
+	
+	@Test
+	public void formatAsTree_should_return_correct_string() throws Exception {
+		IFormulaTree arg1 = spy(IFormulaTree.class);
+		IFormulaTree arg2 = spy(IFormulaTree.class);
+		
+		when(arg1.getParent()).thenReturn(tree);
+		when(arg2.getParent()).thenReturn(tree);
+		
+		when(tree.getFormula()).thenReturn("4*5");
+		
+		when(tree.getToken()).thenReturn("*");
+		when(arg1.getToken()).thenReturn("4");
+		when(arg2.getToken()).thenReturn("5");
+		
+		when(tree.getType()).thenReturn(Type.OPERATOR_NODE);
+		when(arg1.getType()).thenReturn(Type.NUMERIC_VALUE_NODE);
+		when(arg2.getType()).thenReturn(Type.NUMERIC_VALUE_NODE);
+		
+		when(tree.getChildren()).thenReturn(Arrays.asList(arg1, arg2));
+		
+		String expected = 
+				"4*5\n"
+				+ "└── * : OperatorNode\n"
+				+ "    ├── 4 : NumericValueNode\n"
+				+ "    └── 5 : NumericValueNode\n";
+				
+		assertEquals(expected, tree.formatAsTree());
 	}
 	
 }
