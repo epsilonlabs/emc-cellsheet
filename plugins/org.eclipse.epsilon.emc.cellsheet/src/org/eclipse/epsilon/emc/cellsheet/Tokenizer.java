@@ -474,7 +474,7 @@ public class Tokenizer {
 			tokens.add(token);
 		}
 
-		return this.tokens;
+		return tokens;
 	}
 
 	private Token dumpToken(StringBuilder sb, TokenType type, TokenSubtype subtype) {
