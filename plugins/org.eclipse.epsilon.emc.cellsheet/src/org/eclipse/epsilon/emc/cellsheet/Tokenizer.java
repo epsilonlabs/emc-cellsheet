@@ -2,7 +2,6 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -418,11 +417,11 @@ public class Tokenizer {
 				continue;
 
 			Token previous = i < 1 ? null : tokens.get(i - 1);
-			if (previous == null || !isTerminal(previous))
+			if (previous == null || !previous.isExprEnd())
 				continue;
 
 			Token next = i >= n - 1 ? null : tokens.get(i + 1);
-			if (next == null || !isTerminal(next))
+			if (next == null || !next.isExprEnd())
 				continue;
 
 			tokensCopy.add(new Token("", TokenType.OPERATOR_INFIX, TokenSubtype.INTERSECTION));
@@ -448,7 +447,7 @@ public class Tokenizer {
 			if (token.getType() == TokenType.OPERATOR_INFIX && token.getValue().equals("-")) {
 				if (i < 1) {
 					token.setType(TokenType.OPERATOR_PREFIX);
-				} else if (isTerminal(previous))
+				} else if (previous.isExprEnd())
 					token.setSubtype(TokenSubtype.MATH);
 				else
 					token.setType(TokenType.OPERATOR_PREFIX);
@@ -460,7 +459,7 @@ public class Tokenizer {
 			if (token.getType() == TokenType.OPERATOR_INFIX && token.getValue().equals("+")) {
 				if (i < 1)
 					continue;
-				else if (isTerminal(previous))
+				else if (previous.isExprEnd())
 					token.setSubtype(TokenSubtype.MATH);
 				else
 					continue;
@@ -520,13 +519,4 @@ public class Tokenizer {
 		return dumpToken(sb, type, null);
 	}
 
-	private boolean isTerminal(Token token) {
-		return
-		// Check if the end of a function/subexp/array/arrayrow
-		(EnumSet.of(TokenType.FUNCTION, TokenType.SUBEXPRESSION).contains(token.getType())
-				&& EnumSet.of(TokenSubtype.STOP, TokenSubtype.ARRAY_STOP, TokenSubtype.ARRAY_ROW_STOP)
-						.contains(token.getSubtype()))
-				// Check if postfix or operand - both terminals
-				|| EnumSet.of(TokenType.OPERATOR_POSTFIX, TokenType.OPERAND).contains(token.getType());
-	}
 }

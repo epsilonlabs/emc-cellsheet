@@ -1,107 +1,122 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.EnumSet;
 import java.util.Objects;
 
 public class Token {
 
-    private String value;
-    private TokenType type;
-    private TokenSubtype subtype;
+	private static final EnumSet<TokenType> EXPR = EnumSet.of(TokenType.FUNCTION, TokenType.SUBEXPRESSION);
+	private static final EnumSet<TokenSubtype> EXPR_START = EnumSet.of(TokenSubtype.START, TokenSubtype.ARRAY_START,
+			TokenSubtype.ARRAY_ROW_START);
+	private static final EnumSet<TokenSubtype> EXPR_STOP = EnumSet.of(TokenSubtype.STOP, TokenSubtype.ARRAY_STOP,
+			TokenSubtype.ARRAY_ROW_STOP);
 
-    /**
-     * Default Constructor
-     */
-    public Token() {
-    }
+	private String value;
+	private TokenType type;
+	private TokenSubtype subtype;
 
-    public Token(String value, TokenType type) {
-        this(value, type, null);
-    }
+	/**
+	 * Default Constructor
+	 */
+	public Token() {
+	}
 
-    public Token(String value, TokenType type, TokenSubtype subtype) {
-        this.value = value;
-        this.type = type;
-        this.subtype = subtype == null ? TokenSubtype.NOTHING : subtype;
-    }
+	public Token(String value, TokenType type) {
+		this(value, type, null);
+	}
 
-    public String getValue() {
-        return value;
-    }
+	public Token(String value, TokenType type, TokenSubtype subtype) {
+		this.value = value;
+		this.type = type;
+		this.subtype = subtype == null ? TokenSubtype.NOTHING : subtype;
+	}
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+	public String getValue() {
+		return value;
+	}
 
-    public TokenType getType() {
-        return type;
-    }
+	public void setValue(String value) {
+		this.value = value;
+	}
 
-    public void setType(TokenType type) {
-        this.type = type;
-    }
+	public TokenType getType() {
+		return type;
+	}
 
-    public TokenSubtype getSubtype() {
-        return subtype;
-    }
+	public void setType(TokenType type) {
+		this.type = type;
+	}
 
-    public void setSubtype(TokenSubtype subtype) {
-        this.subtype = subtype;
-    }
+	public TokenSubtype getSubtype() {
+		return subtype;
+	}
 
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", type, subtype, value);
-    }
+	public void setSubtype(TokenSubtype subtype) {
+		this.subtype = subtype;
+	}
 
+	public boolean isExprStart() {
+		return (EXPR.contains(type) && EXPR_START.contains(subtype)) || type == TokenType.OPERATOR_PREFIX;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Token token = (Token) o;
-        return Objects.equals(value, token.value) &&
-                type == token.type &&
-                subtype == token.subtype;
-    }
+	public boolean isExprEnd() {
+		return (EXPR.contains(type) && EXPR_STOP.contains(subtype)) || type == TokenType.OPERATOR_POSTFIX
+				|| type == TokenType.OPERAND;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(value, type, subtype);
-    }
+	@Override
+	public String toString() {
+		return String.format("%s %s %s", type, subtype, value);
+	}
 
-    public static enum TokenSubtype {
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Token token = (Token) o;
+		return Objects.equals(value, token.value) && type == token.type && subtype == token.subtype;
+	}
 
-        NOTHING,
-        START,
-        ARRAY_START,
-        ARRAY_ROW_START,
-        STOP,
-        ARRAY_STOP,
-        ARRAY_ROW_STOP,
-        TEXT,
-        NUMBER,
-        LOGICAL,
-        ERROR,
-        RANGE,
-        MATH,
-        CONCATENATION,
-        INTERSECTION,
-        UNION;
+	@Override
+	public int hashCode() {
+		return Objects.hash(value, type, subtype);
+	}
 
-    }
+	public static enum TokenSubtype {
 
-    public static enum TokenType {
+		NOTHING,
+		START,
+		ARRAY_START,
+		ARRAY_ROW_START,
+		STOP,
+		ARRAY_STOP,
+		ARRAY_ROW_STOP,
+		TEXT,
+		NUMBER,
+		LOGICAL,
+		ERROR,
+		RANGE,
+		MATH,
+		CONCATENATION,
+		INTERSECTION,
+		UNION;
 
-        NOOP,
-        OPERAND,
-        FUNCTION,
-        SUBEXPRESSION,
-        ARGUMENT,
-        OPERATOR_PREFIX,
-        OPERATOR_INFIX,
-        OPERATOR_POSTFIX,
-        WHITESPACE,
-        UNKNOWN;
+	}
 
-    }
+	public static enum TokenType {
+
+		NOOP,
+		OPERAND,
+		FUNCTION,
+		SUBEXPRESSION,
+		ARGUMENT,
+		OPERATOR_PREFIX,
+		OPERATOR_INFIX,
+		OPERATOR_POSTFIX,
+		WHITESPACE,
+		UNKNOWN;
+
+	}
 }
