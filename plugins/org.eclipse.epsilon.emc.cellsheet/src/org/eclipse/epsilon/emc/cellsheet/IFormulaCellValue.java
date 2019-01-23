@@ -1,6 +1,9 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * <p>
@@ -50,13 +53,48 @@ public interface IFormulaCellValue extends IStringCellValue {
 	public String getFormula();
 
 	/**
+	 * Construct a new instance from the given {@link Token}
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public IFormulaTree fromToken(Token token);
+
+	/**
 	 * <p>
 	 * Get the AST of the Formula String wrapped by this cell value.
 	 * </p>
 	 * 
 	 * @return the AST of the formula
 	 */
-	public IFormulaTree getFormulaTree();
+	default IFormulaTree getFormulaTree() {
+		final List<Token> tokens = Tokenizer.parse(getFormula());
+		final Deque<IFormulaTree> stack = new LinkedList<>();
+
+		final ListIterator<Token> it = tokens.listIterator();
+		IFormulaTree parent = fromToken(it.next());
+		stack.push(parent);
+
+		while (it.hasNext()) {
+			Token token = it.next();
+			IFormulaTree current = fromToken(token);
+
+			parent.addChild(current);
+
+			if (token.isExprStart()) {
+				stack.push(parent);
+				parent = current;
+			}
+
+			if (token.isExprEnd()) {
+				parent = stack.pop();
+			}
+		}
+
+		assert stack.isEmpty();
+
+		return parent;
+	}
 
 	/**
 	 * <p>

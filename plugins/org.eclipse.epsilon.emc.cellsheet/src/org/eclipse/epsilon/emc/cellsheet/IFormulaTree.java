@@ -13,9 +13,6 @@ import java.util.List;
  */
 public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 
-	public static final Type TYPE = Type.UNKNOWN_NODE;
-	public static final Type[] KINDS = new Type[] { TYPE, Type.FORMULA_TREE };
-
 	/**
 	 * @return the original {@link IFormulaCellValue} that is this tree was derived
 	 *         from.
@@ -105,7 +102,10 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * 
 	 * @param child
 	 */
-	public void addChild(IFormulaTree child);
+	default void addChild(IFormulaTree child) {
+		child.setParent(this);
+		getChildren().add(child);
+	}
 
 	/**
 	 * Evaluates and returns the current node in the formula tree using the built-in
@@ -140,6 +140,13 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * @return {@code String} representation of this node's token
 	 */
 	public String getToken();
+
+	/**
+	 * Set the token of this tree
+	 * 
+	 * @param string token
+	 */
+	public void setToken(String token);
 
 	/**
 	 * Returns {@code true} if this node is the root of the tree.
@@ -222,9 +229,7 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 */
 	default String formatAsTree(String prefix, boolean isTail) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(prefix).append(isTail ? "└── " : "├── ").append(getToken());
-		sb.append(" : " + getType());
-		sb.append("\n");
+		sb.append(prefix).append(isTail ? "└── " : "├── ").append(toString()).append("\n");
 
 		for (int i = 0; i < getChildren().size() - 1; i++) {
 			sb.append(getChildAt(i).formatAsTree(prefix + (isTail ? "    " : "│   "), false));
@@ -240,16 +245,6 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	@Override
 	default Iterator<IFormulaTree> iterator() {
 		return getChildren().iterator();
-	}
-
-	@Override
-	default Type getType() {
-		return TYPE;
-	}
-
-	@Override
-	default Type[] getKinds() {
-		return KINDS;
 	}
 
 	@Override
