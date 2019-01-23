@@ -18,6 +18,14 @@ import org.junit.Test;
 public class TokenizerTest {
 
 	@Test
+	public void toString_multi_statement() throws Exception {
+		String formula = "=IF(OR(COUNTBLANK([@[products]])>0,ISNA(VLOOKUP([@[products]],IBANRef!$A:$G,7,FALSE))),VLOOKUP([Level],LevelRef!$A:$B,2,FALSE),VLOOKUP([@[products]],IBANRef!$A:$G,7,FALSE))";
+		List<Token> actual = Tokenizer.parse(formula);
+		String rebuilt = Tokenizer.toString(actual);
+		assertEquals(formula.substring(1), rebuilt);
+	}
+
+	@Test
 	public void parse_IF_statement() {
 		String formula = "=IF(\"a\"={\"a\",\"b\";\"c\",#N/A;-1,TRUE}, \"yes\", \"no\") &   \"  more \"\"test\"\" text\"";
 
@@ -26,26 +34,26 @@ public class TokenizerTest {
 		expected.add(new Token("IF", Token.TokenType.FUNCTION, Token.TokenSubtype.START));
 		expected.add(new Token("a", Token.TokenType.OPERAND, Token.TokenSubtype.TEXT));
 		expected.add(new Token("=", Token.TokenType.OPERATOR_INFIX, Token.TokenSubtype.LOGICAL));
-		expected.add(new Token("ARRAY", Token.TokenType.FUNCTION, Token.TokenSubtype.START));
-		expected.add(new Token("ARRAYROW", Token.TokenType.FUNCTION, Token.TokenSubtype.START));
+		expected.add(new Token("{", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_START));
+		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_ROW_START));
 		expected.add(new Token("a", Token.TokenType.OPERAND, Token.TokenSubtype.TEXT));
 		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
 		expected.add(new Token("b", Token.TokenType.OPERAND, Token.TokenSubtype.TEXT));
-		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.STOP));
-		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
-		expected.add(new Token("ARRAYROW", Token.TokenType.FUNCTION, Token.TokenSubtype.START));
+		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_ROW_STOP));
+		expected.add(new Token(";", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
+		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_ROW_START));
 		expected.add(new Token("c", Token.TokenType.OPERAND, Token.TokenSubtype.TEXT));
 		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
 		expected.add(new Token("#N/A", Token.TokenType.OPERAND, Token.TokenSubtype.ERROR));
-		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.STOP));
-		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
-		expected.add(new Token("ARRAYROW", Token.TokenType.FUNCTION, Token.TokenSubtype.START));
+		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_ROW_STOP));
+		expected.add(new Token(";", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
+		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_ROW_START));
 		expected.add(new Token("-", Token.TokenType.OPERATOR_PREFIX, Token.TokenSubtype.NOTHING));
 		expected.add(new Token("1", Token.TokenType.OPERAND, Token.TokenSubtype.NUMBER));
 		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
 		expected.add(new Token("TRUE", Token.TokenType.OPERAND, Token.TokenSubtype.LOGICAL));
-		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.STOP));
-		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.STOP));
+		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_ROW_STOP));
+		expected.add(new Token("}", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_STOP));
 		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
 		expected.add(new Token("yes", Token.TokenType.OPERAND, Token.TokenSubtype.TEXT));
 		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
@@ -66,26 +74,26 @@ public class TokenizerTest {
 		expected.add(new Token("IF", Token.TokenType.FUNCTION, Token.TokenSubtype.START));
 		expected.add(new Token("a", Token.TokenType.OPERAND, Token.TokenSubtype.TEXT));
 		expected.add(new Token("=", Token.TokenType.OPERATOR_INFIX, Token.TokenSubtype.LOGICAL));
-		expected.add(new Token("ARRAY", Token.TokenType.FUNCTION, Token.TokenSubtype.START));
-		expected.add(new Token("ARRAYROW", Token.TokenType.FUNCTION, Token.TokenSubtype.START));
+		expected.add(new Token("{", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_START));
+		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_ROW_START));
 		expected.add(new Token("a", Token.TokenType.OPERAND, Token.TokenSubtype.TEXT));
 		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
 		expected.add(new Token("b", Token.TokenType.OPERAND, Token.TokenSubtype.TEXT));
-		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.STOP));
-		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
-		expected.add(new Token("ARRAYROW", Token.TokenType.FUNCTION, Token.TokenSubtype.START));
+		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_ROW_STOP));
+		expected.add(new Token(";", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
+		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_ROW_START));
 		expected.add(new Token("c", Token.TokenType.OPERAND, Token.TokenSubtype.TEXT));
 		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
 		expected.add(new Token("#N/A", Token.TokenType.OPERAND, Token.TokenSubtype.ERROR));
-		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.STOP));
-		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
-		expected.add(new Token("ARRAYROW", Token.TokenType.FUNCTION, Token.TokenSubtype.START));
+		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_ROW_STOP));
+		expected.add(new Token(";", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
+		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_ROW_START));
 		expected.add(new Token("-", Token.TokenType.OPERATOR_PREFIX, Token.TokenSubtype.NOTHING));
 		expected.add(new Token("1", Token.TokenType.OPERAND, Token.TokenSubtype.NUMBER));
 		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
 		expected.add(new Token("TRUE", Token.TokenType.OPERAND, Token.TokenSubtype.LOGICAL));
-		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.STOP));
-		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.STOP));
+		expected.add(new Token("", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_ROW_STOP));
+		expected.add(new Token("}", Token.TokenType.FUNCTION, Token.TokenSubtype.ARRAY_STOP));
 		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
 		expected.add(new Token("yes", Token.TokenType.OPERAND, Token.TokenSubtype.TEXT));
 		expected.add(new Token(",", Token.TokenType.ARGUMENT, Token.TokenSubtype.NOTHING));
@@ -113,13 +121,13 @@ public class TokenizerTest {
 		expected.add(new Token("6", TokenType.OPERAND, TokenSubtype.NUMBER));
 		expected.add(new Token("", TokenType.SUBEXPRESSION, TokenSubtype.STOP));
 		expected.add(new Token("=", TokenType.OPERATOR_INFIX, TokenSubtype.LOGICAL));
-		expected.add(new Token("ARRAY", TokenType.FUNCTION, TokenSubtype.START));
-		expected.add(new Token("ARRAYROW", TokenType.FUNCTION, TokenSubtype.START));
+		expected.add(new Token("{", TokenType.FUNCTION, TokenSubtype.ARRAY_START));
+		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.ARRAY_ROW_START));
 		expected.add(new Token("A", TokenType.OPERAND, TokenSubtype.TEXT));
 		expected.add(new Token(",", TokenType.ARGUMENT, TokenSubtype.NOTHING));
 		expected.add(new Token("B", TokenType.OPERAND, TokenSubtype.TEXT));
-		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.STOP));
-		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.STOP));
+		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.ARRAY_ROW_STOP));
+		expected.add(new Token("}", TokenType.FUNCTION, TokenSubtype.ARRAY_STOP));
 		expected.add(new Token("+", TokenType.OPERATOR_INFIX, TokenSubtype.MATH));
 		expected.add(new Token("SUM", TokenType.FUNCTION, TokenSubtype.START));
 		expected.add(new Token("R1C1", TokenType.OPERAND, TokenSubtype.RANGE));
@@ -195,8 +203,8 @@ public class TokenizerTest {
 		String formula = "{=MAX(IF(ISERROR(SEARCH(H5&\"*\",files)),0,ROW(files)-ROW(INDEX(files,1,1))+1))}";
 
 		List<Token> expected = new LinkedList<>();
-		expected.add(new Token("ARRAY", TokenType.FUNCTION, TokenSubtype.START));
-		expected.add(new Token("ARRAYROW", TokenType.FUNCTION, TokenSubtype.START));
+		expected.add(new Token("{", TokenType.FUNCTION, TokenSubtype.ARRAY_START));
+		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.ARRAY_ROW_START));
 		expected.add(new Token("=", TokenType.OPERATOR_INFIX, TokenSubtype.LOGICAL));
 		expected.add(new Token("MAX", TokenType.FUNCTION, TokenSubtype.START));
 		expected.add(new Token("IF", TokenType.FUNCTION, TokenSubtype.START));
@@ -229,8 +237,8 @@ public class TokenizerTest {
 		expected.add(new Token("1", TokenType.OPERAND, TokenSubtype.NUMBER));
 		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.STOP));
 		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.STOP));
-		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.STOP));
-		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.STOP));
+		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.ARRAY_ROW_STOP));
+		expected.add(new Token("}", TokenType.FUNCTION, TokenSubtype.ARRAY_STOP));
 
 		assertEquals(expected, Tokenizer.parse(formula));
 	}
@@ -240,8 +248,8 @@ public class TokenizerTest {
 		String formula = "={=MAX(IF(ISERROR(SEARCH(H5&\"*\",files)),0,ROW(files)-ROW(INDEX(files,1,1))+1))}";
 
 		List<Token> expected = new LinkedList<>();
-		expected.add(new Token("ARRAY", TokenType.FUNCTION, TokenSubtype.START));
-		expected.add(new Token("ARRAYROW", TokenType.FUNCTION, TokenSubtype.START));
+		expected.add(new Token("{", TokenType.FUNCTION, TokenSubtype.ARRAY_START));
+		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.ARRAY_ROW_START));
 		expected.add(new Token("=", TokenType.OPERATOR_INFIX, TokenSubtype.LOGICAL));
 		expected.add(new Token("MAX", TokenType.FUNCTION, TokenSubtype.START));
 		expected.add(new Token("IF", TokenType.FUNCTION, TokenSubtype.START));
@@ -274,8 +282,8 @@ public class TokenizerTest {
 		expected.add(new Token("1", TokenType.OPERAND, TokenSubtype.NUMBER));
 		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.STOP));
 		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.STOP));
-		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.STOP));
-		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.STOP));
+		expected.add(new Token("", TokenType.FUNCTION, TokenSubtype.ARRAY_ROW_STOP));
+		expected.add(new Token("}", TokenType.FUNCTION, TokenSubtype.ARRAY_STOP));
 
 		assertEquals(expected, Tokenizer.parse(formula));
 	}

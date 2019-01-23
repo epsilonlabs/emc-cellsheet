@@ -73,7 +73,11 @@ public class Token {
 
         NOTHING,
         START,
+        ARRAY_START,
+        ARRAY_ROW_START,
         STOP,
+        ARRAY_STOP,
+        ARRAY_ROW_STOP,
         TEXT,
         NUMBER,
         LOGICAL,

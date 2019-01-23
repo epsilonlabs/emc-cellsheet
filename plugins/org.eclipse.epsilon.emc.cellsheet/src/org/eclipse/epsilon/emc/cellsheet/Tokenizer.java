@@ -1,10 +1,15 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.regex.Pattern;
 
-import org.eclipse.epsilon.emc.cellsheet.Token.TokenType;
 import org.eclipse.epsilon.emc.cellsheet.Token.TokenSubtype;
+import org.eclipse.epsilon.emc.cellsheet.Token.TokenType;
 
 /**
  * A Tokenizer for Excel formulae.
@@ -46,6 +51,50 @@ public class Tokenizer {
 	 */
 	public static List<Token> parse(String formula) {
 		return (new Tokenizer(formula)).parse();
+	}
+
+	public static String toString(List<Token> tokens) {
+		if (tokens == null) {
+			throw new IllegalArgumentException();
+		}
+
+		final StringBuilder formula = new StringBuilder();
+		final ListIterator<Token> it = tokens.listIterator();
+		Token current;
+
+		while (it.hasNext()) {
+			current = it.next();
+
+			switch (current.getType()) {
+
+			case FUNCTION:
+				switch (current.getSubtype()) {
+				case START:
+					formula.append(current.getValue()).append(PAREN_OPEN);
+					continue;
+				case STOP:
+					formula.append(PAREN_CLOSE);
+					continue;
+				default:
+					break;
+				}
+
+			case OPERAND:
+				switch (current.getSubtype()) {
+				case TEXT:
+					formula.append('"').append(current.getValue()).append('"');
+					continue;
+				default:
+					break;
+				}
+
+			default: // All other token types
+				formula.append(current.getValue());
+				break;
+			}
+		}
+
+		return formula.toString();
 	}
 
 	private String formula;
@@ -221,8 +270,8 @@ public class Tokenizer {
 					tokens.add(dumpToken(value, TokenType.UNKNOWN));
 				}
 
-				Token arrayStart = new Token("ARRAY", TokenType.FUNCTION, TokenSubtype.START);
-				Token arrayRowStart = new Token("ARRAYROW", TokenType.FUNCTION, TokenSubtype.START);
+				Token arrayStart = new Token(String.valueOf(BRACE_OPEN), TokenType.FUNCTION, TokenSubtype.ARRAY_START);
+				Token arrayRowStart = new Token("", TokenType.FUNCTION, TokenSubtype.ARRAY_ROW_START);
 				tokens.add(arrayStart);
 				tokens.add(arrayRowStart);
 				stack.push(arrayStart);
@@ -236,10 +285,10 @@ public class Tokenizer {
 					tokens.add(dumpToken(value, TokenType.OPERAND));
 				}
 
-				tokens.add(new Token("", stack.pop().getType(), TokenSubtype.STOP)); // tokens.add(stack.pop());
-				tokens.add(new Token(",", TokenType.ARGUMENT));
+				tokens.add(new Token("", stack.pop().getType(), TokenSubtype.ARRAY_ROW_STOP)); // tokens.add(stack.pop());
+				tokens.add(new Token(";", TokenType.ARGUMENT));
 
-				Token arrayRowStart = new Token("ARRAYROW", TokenType.FUNCTION, TokenSubtype.START);
+				Token arrayRowStart = new Token("", TokenType.FUNCTION, TokenSubtype.ARRAY_ROW_START);
 				tokens.add(arrayRowStart);
 				stack.push(arrayRowStart);
 				index++;
@@ -250,8 +299,8 @@ public class Tokenizer {
 				if (value.length() > 0) {
 					tokens.add(dumpToken(value, TokenType.OPERAND));
 				}
-				tokens.add(new Token("", stack.pop().getType(), TokenSubtype.STOP));
-				tokens.add(new Token("", stack.pop().getType(), TokenSubtype.STOP));
+				tokens.add(new Token("", stack.pop().getType(), TokenSubtype.ARRAY_ROW_STOP));
+				tokens.add(new Token("}", stack.pop().getType(), TokenSubtype.ARRAY_STOP));
 				index++;
 				continue;
 			}
@@ -369,19 +418,11 @@ public class Tokenizer {
 				continue;
 
 			Token previous = i < 1 ? null : tokens.get(i - 1);
-			if (previous == null)
-				continue;
-			if (!(((previous.getType() == TokenType.FUNCTION) && (previous.getSubtype() == TokenSubtype.STOP))
-					|| ((previous.getType() == TokenType.SUBEXPRESSION) && (previous.getSubtype() == TokenSubtype.STOP))
-					|| (previous.getType() == TokenType.OPERAND)))
+			if (previous == null || !isTerminal(previous))
 				continue;
 
 			Token next = i >= n - 1 ? null : tokens.get(i + 1);
-			if (next == null)
-				continue;
-			if (!(((next.getType() == TokenType.FUNCTION) && (next.getSubtype() == TokenSubtype.STOP))
-					|| ((next.getType() == TokenType.SUBEXPRESSION) && (next.getSubtype() == TokenSubtype.STOP))
-					|| (next.getType() == TokenType.OPERAND)))
+			if (next == null || !isTerminal(next))
 				continue;
 
 			tokensCopy.add(new Token("", TokenType.OPERATOR_INFIX, TokenSubtype.INTERSECTION));
@@ -407,11 +448,7 @@ public class Tokenizer {
 			if (token.getType() == TokenType.OPERATOR_INFIX && token.getValue().equals("-")) {
 				if (i < 1) {
 					token.setType(TokenType.OPERATOR_PREFIX);
-				} else if (((previous.getType() == TokenType.FUNCTION) && (previous.getSubtype() == TokenSubtype.STOP))
-						|| ((previous.getType() == TokenType.SUBEXPRESSION)
-								&& (previous.getSubtype() == TokenSubtype.STOP))
-						|| (previous.getType() == TokenType.OPERATOR_POSTFIX)
-						|| (previous.getType() == TokenType.OPERAND))
+				} else if (isTerminal(previous))
 					token.setSubtype(TokenSubtype.MATH);
 				else
 					token.setType(TokenType.OPERATOR_PREFIX);
@@ -423,11 +460,7 @@ public class Tokenizer {
 			if (token.getType() == TokenType.OPERATOR_INFIX && token.getValue().equals("+")) {
 				if (i < 1)
 					continue;
-				else if (((previous.getType() == TokenType.FUNCTION) && (previous.getSubtype() == TokenSubtype.STOP))
-						|| ((previous.getType() == TokenType.SUBEXPRESSION)
-								&& (previous.getSubtype() == TokenSubtype.STOP))
-						|| (previous.getType() == TokenType.OPERATOR_POSTFIX)
-						|| (previous.getType() == TokenType.OPERAND))
+				else if (isTerminal(previous))
 					token.setSubtype(TokenSubtype.MATH);
 				else
 					continue;
@@ -487,4 +520,13 @@ public class Tokenizer {
 		return dumpToken(sb, type, null);
 	}
 
+	private boolean isTerminal(Token token) {
+		return
+		// Check if the end of a function/subexp/array/arrayrow
+		(EnumSet.of(TokenType.FUNCTION, TokenType.SUBEXPRESSION).contains(token.getType())
+				&& EnumSet.of(TokenSubtype.STOP, TokenSubtype.ARRAY_STOP, TokenSubtype.ARRAY_ROW_STOP)
+						.contains(token.getSubtype()))
+				// Check if postfix or operand - both terminals
+				|| EnumSet.of(TokenType.OPERATOR_POSTFIX, TokenType.OPERAND).contains(token.getType());
+	}
 }
