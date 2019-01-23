@@ -417,11 +417,11 @@ public class Tokenizer {
 				continue;
 
 			Token previous = i < 1 ? null : tokens.get(i - 1);
-			if (previous == null || !previous.isExprEnd())
+			if (previous == null || !isTerminal(previous))
 				continue;
 
 			Token next = i >= n - 1 ? null : tokens.get(i + 1);
-			if (next == null || !next.isExprEnd())
+			if (next == null || !isTerminal(next))
 				continue;
 
 			tokensCopy.add(new Token("", TokenType.OPERATOR_INFIX, TokenSubtype.INTERSECTION));
@@ -447,7 +447,7 @@ public class Tokenizer {
 			if (token.getType() == TokenType.OPERATOR_INFIX && token.getValue().equals("-")) {
 				if (i < 1) {
 					token.setType(TokenType.OPERATOR_PREFIX);
-				} else if (previous.isExprEnd())
+				} else if (isTerminal(previous))
 					token.setSubtype(TokenSubtype.MATH);
 				else
 					token.setType(TokenType.OPERATOR_PREFIX);
@@ -459,7 +459,7 @@ public class Tokenizer {
 			if (token.getType() == TokenType.OPERATOR_INFIX && token.getValue().equals("+")) {
 				if (i < 1)
 					continue;
-				else if (previous.isExprEnd())
+				else if (isTerminal(previous))
 					token.setSubtype(TokenSubtype.MATH);
 				else
 					continue;
@@ -517,6 +517,11 @@ public class Tokenizer {
 
 	private Token dumpToken(StringBuilder sb, TokenType type) {
 		return dumpToken(sb, type, null);
+	}
+
+	private boolean isTerminal(Token token) {
+		return token.isExprEnd() || token.getType() == TokenType.OPERATOR_POSTFIX
+				|| token.getType() == TokenType.OPERAND;
 	}
 
 }

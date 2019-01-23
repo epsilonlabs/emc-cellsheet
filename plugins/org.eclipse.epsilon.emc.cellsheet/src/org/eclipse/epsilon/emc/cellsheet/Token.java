@@ -56,12 +56,11 @@ public class Token {
 	}
 
 	public boolean isExprStart() {
-		return (EXPR.contains(type) && EXPR_START.contains(subtype)) || type == TokenType.OPERATOR_PREFIX;
+		return (EXPR.contains(type) && EXPR_START.contains(subtype));
 	}
 
 	public boolean isExprEnd() {
-		return (EXPR.contains(type) && EXPR_STOP.contains(subtype)) || type == TokenType.OPERATOR_POSTFIX
-				|| type == TokenType.OPERAND;
+		return (EXPR.contains(type) && EXPR_STOP.contains(subtype)) ;
 	}
 
 	@Override
