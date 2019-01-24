@@ -42,12 +42,12 @@ public class IBookTest {
 
 	@Test
 	public void getTypeNameOf_should_return_Book() throws Exception {
-		assertEquals(Type.BOOK.getName(), book.getTypeNameOf(book));
+		assertEquals(Type.BOOK.getTypename(), book.getTypeNameOf(book));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void getTypeNameOf_should_throw_IllegalArgumentException_when_given_unsupported_object() throws Exception {
-		assertEquals(Type.BOOK.getName(), book.getTypeNameOf(this));
+		assertEquals(Type.BOOK.getTypename(), book.getTypeNameOf(this));
 	}
 
 	@Test

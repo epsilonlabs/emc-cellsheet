@@ -17,7 +17,6 @@ import org.eclipse.epsilon.eol.models.IModel;
  */
 public enum Type {
 
-	// @formatter:off
 	// Core structural types
 	BOOK("Book"),
 	SHEET("Sheet"),
@@ -37,39 +36,83 @@ public enum Type {
 	// Formula and related types
 	FORMULA_TREE("FormulaTree"),
 	// Sub-types for use with sub-trees in formula AST's
+	@Deprecated
 	ROOT_NODE("RootNode"),
+	@Deprecated
 	NUMERIC_VALUE_NODE("NumericValueNode"),
+	@Deprecated
 	INT_VALUE_NODE("IntValueNode"),
+	@Deprecated
 	DOUBLE_VALUE_NODE("DoubleValueNode"),
+	@Deprecated
 	STRING_VALUE_NODE("StringValueNode"),
+	@Deprecated
 	BOOLEAN_VALUE_NODE("BooleanValueNode"),
+	@Deprecated
 	CELL_REF_NODE("CellRefNode"),
+	@Deprecated
 	ARRAY_REF_NODE("ArrayRefNode"),
+	@Deprecated
 	OPERATOR_NODE("OperatorNode"),
+	@Deprecated
 	FUNCTION_NODE("FunctionNode"),
-	UNKNOWN_NODE("UnknownNode");
-	// @formatter:on
+	@Deprecated
+	UNKNOWN_NODE("UnknownNode"),
 
-	private final String name;
+	NOOP("Noop"),
+	OPERAND("Operand"),
+	FUNCTION("Function"),
+	SUBEXPRESSION("Subexpresssion"),
+	ARGUMENT("Argument"),
+	OPERATOR_PREFIX("OperatorPrefix"),
+	OPERATOR_INFIX("OperatorInfix"),
+	OPERATOR_POSTFIX("OperatorPostfix"),
+	WHITESPACE("Whitespace"),
+	UNKNOWN("Unknown"),
+
+	NOTHING("Nothing"),
+	START("Start"),
+	ARRAY_START("ArrayStart"),
+	ARRAY_ROW_START("ArrayRowStart"),
+	STOP("Stop"),
+	TEXT("Text"),
+	ARRAY_STOP("ArrayStop"),
+	ARRAY_ROW_STOP("ArrayRowStop"),
+	NUMBER("Number"),
+	LOGICAL("Logical"),
+	ERROR("Error"),
+	RANGE("Range"),
+	MATH("Math"),
+	CONCATENATION("Concatenation"),
+	INTERSECTION("Intersection"),
+	UNION("Union");
+
+	private final String typename;
 
 	private Type(String typename) {
-		this.name = typename;
+		this.typename = typename;
 	}
 
 	@Override
 	public String toString() {
-		return this.name;
+		return this.typename;
 	}
 
-	public String getName() {
-		return this.name;
+	public String getTypename() {
+		return this.typename;
 	}
 
-	public static Type fromName(String typename) {
-		for (Type ct : Type.values()) {
-			if (ct.name.equals(typename))
-				return ct;
+	/**
+	 * Get a {@link Type} from it's String value
+	 * @param typename
+	 * @return
+	 */
+	public static Type fromTypename(String typename) {
+		for (Type type : Type.values()) {
+			if (type.typename.equals(typename))
+				return type;
 		}
 		return null;
 	}
+	
 }

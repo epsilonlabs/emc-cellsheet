@@ -124,16 +124,16 @@ public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 	}
 	
 	default Collection<?> getAllOfType(Type type) throws EolModelElementTypeNotFoundException {
-		return getAllOfType(type.getName());
+		return getAllOfType(type.getTypename());
 	}
 	
 	default Collection<?> getAllOfKind(Type type) throws EolModelElementTypeNotFoundException {
-		return getAllOfKind(type.getName());
+		return getAllOfKind(type.getTypename());
 	}
 
 	@Override
 	default String getTypeNameOf(Object obj) {
-		return ((Type) getTypeOf(obj)).getName();
+		return ((Type) getTypeOf(obj)).getTypename();
 	}
 
 	@Override
@@ -148,7 +148,7 @@ public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 
 	@Override
 	default boolean hasType(String type) {
-		return Type.fromName(type) != null;
+		return Type.fromTypename(type) != null;
 	}
 
 	@Override
@@ -173,7 +173,7 @@ public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 
 	default boolean isOfTypeOrKind(Object instance, String typename, boolean isKind)
 			throws EolModelElementTypeNotFoundException {
-		Type type = Type.fromName(typename);
+		Type type = Type.fromTypename(typename);
 		if (type == null) {
 			throw new EolModelElementTypeNotFoundException(this.getName(), typename);
 		}

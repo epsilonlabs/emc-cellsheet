@@ -11,9 +11,9 @@ public class Token {
 	private static final EnumSet<TokenSubtype> EXPR_STOP = EnumSet.of(TokenSubtype.STOP, TokenSubtype.ARRAY_STOP,
 			TokenSubtype.ARRAY_ROW_STOP);
 
-	private String value;
-	private TokenType type;
-	private TokenSubtype subtype;
+	private String value = "";
+	private TokenType type = TokenType.UNKNOWN;
+	private TokenSubtype subtype = TokenSubtype.NOTHING;
 
 	/**
 	 * Default Constructor

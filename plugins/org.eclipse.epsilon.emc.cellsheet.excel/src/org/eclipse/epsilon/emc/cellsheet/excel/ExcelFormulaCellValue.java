@@ -22,7 +22,6 @@ import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
  */
 public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implements IFormulaCellValue {
 
-	protected ExcelFormulaTree formulaTree = null;
 
 	ExcelFormulaCellValue(ExcelCell cell) {
 		super(cell);
@@ -41,7 +40,7 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 			return "";
 		}
 	}
-	
+
 	@Deprecated
 	@Override
 	public List<ICellRegion> getReferencedRegions() {
@@ -111,10 +110,7 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 
 	@Override
 	public ExcelFormulaTree getFormulaTree() {
-		if (formulaTree == null) {
-			formulaTree = FormulaUtil.buildFormulaTree(this);
-		}
-		return formulaTree;
+		return ExcelFormulaTree.fromString(getFormula());
 	}
 
 	@Override

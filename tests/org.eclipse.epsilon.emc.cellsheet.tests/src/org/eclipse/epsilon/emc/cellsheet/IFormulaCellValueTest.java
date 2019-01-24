@@ -3,15 +3,12 @@ package org.eclipse.epsilon.emc.cellsheet;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -31,13 +28,12 @@ public class IFormulaCellValueTest {
 
 	@Spy
 	IFormulaCellValue value;
-	
-	@Mock
-	IFormulaTree tree;
-	
+
+	String formula = "=IF(OR(COUNTBLANK([@[products]])>0,ISNA(VLOOKUP([@[products]],IBANRef!$A:$G,7,FALSE))),VLOOKUP([Level],LevelRef!$A:$B,2,FALSE),VLOOKUP([@[products]],IBANRef!$A:$G,7,FALSE))";
+
 	@Before
 	public void setup() {
-		when(value.getFormulaTree()).thenReturn(tree);
+
 	}
 
 	@Test
@@ -49,11 +45,11 @@ public class IFormulaCellValueTest {
 	public void getKinds_should_contain_FORMULA_CELL_VALUE_enum() throws Exception {
 		assertThat(Arrays.asList(value.getKinds()), hasItem(Type.FORMULA_CELL_VALUE));
 	}
-	
-	@Test
-	public void formatAsTree_should_delegate_to_formulaTree() throws Exception {
-		value.formatAsTree();
-		verify(tree).formatAsTree();
-	}
+
+//	@Test
+//	public void formatAsTree_should_delegate_to_formulaTree() throws Exception {
+//		value.formatAsTree();
+//		verify(tree).formatAsTree();
+//	}
 
 }

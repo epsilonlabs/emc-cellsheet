@@ -138,39 +138,39 @@ public class ExcelBookTest {
 
 	@Test
 	public void getAllOfType_should_return_Book_when_given_TypeBook() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.BOOK.getName());
+		Collection<?> all = book.getAllOfType(Type.BOOK.getTypename());
 		assertEquals(1, all.size());
 		assertEquals(book, all.iterator().next());
 	}
 
 	@Test
 	public void getAllOfType_should_return_Sheet_when_given_TypeSheet() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.SHEET.getName());
+		Collection<?> all = book.getAllOfType(Type.SHEET.getTypename());
 		assertEquals(2, all.size());
 	}
 
 	@Test
 	public void getAllOfType_should_return_Row_when_given_TypeRow() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.ROW.getName());
+		Collection<?> all = book.getAllOfType(Type.ROW.getTypename());
 		assertEquals(9, all.size());
 	}
 
 	@Test
 	public void getAllOfType_should_return_Cell_when_given_TypeCell() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.CELL.getName());
+		Collection<?> all = book.getAllOfType(Type.CELL.getTypename());
 		assertEquals(25, all.size());
 	}
 	
 	@Test
 	public void getAllOfType_should_return_Cell_when_given_TypeFORMULACELLVALUE() throws Exception {
-		Collection<?> all = book.getAllOfType(Type.FORMULA_CELL_VALUE.getName());
+		Collection<?> all = book.getAllOfType(Type.FORMULA_CELL_VALUE.getTypename());
 		assertEquals(1, all.size());
 	}
 	
 	@Test
 	public void getAllOfKind_should_return_all_CellValue_when_given_TypeCellValue() throws Exception {		
-		Collection<?> allCells = book.getAllOfType(Type.CELL.getName());
-		Collection<?> allCellValues = book.getAllOfKind(Type.CELL_VALUE.getName());
+		Collection<?> allCells = book.getAllOfType(Type.CELL.getTypename());
+		Collection<?> allCellValues = book.getAllOfKind(Type.CELL_VALUE.getTypename());
 		assertEquals(allCells.size(), allCellValues.size());
 	}
 
@@ -256,7 +256,7 @@ public class ExcelBookTest {
 
 	@Test
 	public void testGetAllOfKind() throws Exception {
-		assertEquals(2, book.getAllOfKind(Type.SHEET.getName()).size());
+		assertEquals(2, book.getAllOfKind(Type.SHEET.getTypename()).size());
 	}
 
 	@Test

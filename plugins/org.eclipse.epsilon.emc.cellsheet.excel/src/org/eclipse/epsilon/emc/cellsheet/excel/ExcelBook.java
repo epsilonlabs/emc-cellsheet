@@ -132,14 +132,14 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	@Override
 	protected Collection<String> getAllTypeNamesOf(Object instance) {
 		if (instance instanceof HasType) {
-			return Arrays.stream(((HasType) instance).getKinds()).map(k -> k.getName()).collect(Collectors.toSet());
+			return Arrays.stream(((HasType) instance).getKinds()).map(k -> k.getTypename()).collect(Collectors.toSet());
 		}
 		throw new IllegalArgumentException();
 	}
 
 	@Override
 	protected Object getCacheKeyForType(String typename) throws EolModelElementTypeNotFoundException {
-		Type type = Type.fromName(typename);
+		Type type = Type.fromTypename(typename);
 		if (type == null) {
 			throw new EolModelElementTypeNotFoundException(name, typename);
 		}
@@ -201,7 +201,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 			throw new EolModelElementTypeNotFoundException(name, type);
 		}
 
-		return allContents().stream().filter(e -> Arrays.stream(e.getKinds()).anyMatch(Type.fromName(type)::equals))
+		return allContents().stream().filter(e -> Arrays.stream(e.getKinds()).anyMatch(Type.fromTypename(type)::equals))
 				.collect(Collectors.toList());
 	}
 
@@ -211,7 +211,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 			throw new EolModelElementTypeNotFoundException(name, typename);
 		}
 
-		return allContents().stream().filter(e -> e.getType() == Type.fromName(typename)).collect(Collectors.toList());
+		return allContents().stream().filter(e -> e.getType() == Type.fromTypename(typename)).collect(Collectors.toList());
 	}
 
 	@Override

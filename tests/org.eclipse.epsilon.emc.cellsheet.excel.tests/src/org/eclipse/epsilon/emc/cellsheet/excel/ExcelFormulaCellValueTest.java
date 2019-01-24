@@ -110,11 +110,11 @@ public class ExcelFormulaCellValueTest {
 		IFormulaCellValue value = (IFormulaCellValue) cell.getCellValue();
 
 		IFormulaTree sumTree = value.getFormulaTree();
-		assertEquals("SUM", sumTree.getToken());
+		assertEquals("SUM", sumTree.getValue());
 		assertEquals(1, sumTree.getChildren().size());
 
 		IFormulaTree areaTree = sumTree.getChildren().get(0);
-		assertEquals("Data!A1:D5", areaTree.getToken());
+		assertEquals("Data!A1:D5", areaTree.getValue());
 		assertEquals(sumTree, areaTree.getParent());
 	}
 
@@ -124,15 +124,15 @@ public class ExcelFormulaCellValueTest {
 		IFormulaCellValue value = (IFormulaCellValue) cell.getCellValue();
 
 		IFormulaTree sumTree = value.getFormulaTree();
-		assertEquals("SUM", sumTree.getToken());
+		assertEquals("SUM", sumTree.getValue());
 		assertEquals(5, sumTree.getChildren().size());
 
 		final Set<String> expected = new HashSet<>(
 				Arrays.asList("Data!B1", "Data!D5", "Data!B5", "Data!D2", "Data!C2"));
 		for (IFormulaTree child : sumTree.getChildren()) {
-			assertThat(expected, hasItem(child.getToken()));
+			assertThat(expected, hasItem(child.getValue()));
 			assertEquals(sumTree, child.getParent());
-			expected.remove(child.getToken());
+			expected.remove(child.getValue());
 		}
 		assertEquals(0, expected.size());
 	}

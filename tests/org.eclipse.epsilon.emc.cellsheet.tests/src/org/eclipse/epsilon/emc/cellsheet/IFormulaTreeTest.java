@@ -1,17 +1,17 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import static org.hamcrest.CoreMatchers.hasItem;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.eclipse.epsilon.emc.cellsheet.Token.TokenSubtype;
+import org.eclipse.epsilon.emc.cellsheet.Token.TokenType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -30,121 +30,123 @@ import org.mockito.junit.MockitoRule;
 public class IFormulaTreeTest {
 
 	@Rule
-	public MockitoRule mockito = MockitoJUnit.rule().silent();
+	public MockitoRule mockito = MockitoJUnit.rule();
 
 	@Spy
 	IFormulaTree tree;
 
-	@Spy
-	IFormulaCellValue value;
-
-	@Spy
-	ICell cell;
-
-	@Spy
-	IRow row;
-
-	@Spy
-	ISheet sheet;
-
-	@Spy
-	IBook book;
-
-	@Before
-	public void setup() {
-		when(tree.getChildren()).then(Mockito.RETURNS_SMART_NULLS);
-		when(tree.getCellValue()).thenReturn(value);
-
-		when(value.getCell()).thenReturn(cell);
-
-		when(cell.getRow()).thenReturn(row);
-		when(cell.compareTo(cell)).thenReturn(0);
-
-		when(row.getSheet()).thenReturn(sheet);
-		when(row.compareTo(row)).thenReturn(0);
-
-		when(sheet.getName()).thenReturn("Sheet");
-		when(sheet.getBook()).thenReturn(book);
-		when(sheet.compareTo(sheet)).thenReturn(0);
-
-		when(book.getName()).thenReturn("Book.xlsx");
-	}
-
 	@Test
-	public void getType_should_return_TypeFromulaTree() throws Exception {
-		assertEquals(Type.UNKNOWN_NODE, tree.getType());
-	}
-
-	@Test
-	public void getKinds_should_contain_TypeFormulaTree() throws Exception {
-		List<Type> kinds = Arrays.asList(tree.getKinds());
-		assertThat(kinds, hasItem(Type.UNKNOWN_NODE));		
-		assertThat(kinds, hasItem(Type.FORMULA_TREE));
+	public void getValue_should_return_test_string() throws Exception {
+		when(tree.getToken()).thenReturn(new Token("test", TokenType.OPERAND, TokenSubtype.TEXT));
+		assertEquals("test", tree.getValue());
 	}
 	
 	@Test
-	public void getCell_should_return_parent() throws Exception {
-		assertEquals(cell, tree.getCell());
+	public void setValue_should_set_token_value() throws Exception {
+		Token token = new Token("test", TokenType.OPERAND, TokenSubtype.TEXT);
+		when(tree.getToken()).thenReturn(token);
+		assertEquals("test", token.getValue());
+		
+		tree.setValue("changed");
+		assertEquals("changed", token.getValue());
 	}
 
 	@Test
-	public void getRow_should_return_parent() throws Exception {
-		assertEquals(row, tree.getRow());
+	public void getType_should_return_Type_OPERAND_when_token_has_OPERAND_type() throws Exception {
+		when(tree.getToken()).thenReturn(new Token("+", TokenType.OPERAND, TokenSubtype.MATH));
+		assertEquals(Type.OPERAND, tree.getType());
 	}
 
 	@Test
-	public void getSheet_should_return_parent() throws Exception {
-		assertEquals(sheet, tree.getSheet());
+	public void getSubtype_should_return_Type_START_when_token_has_START_subtype() throws Exception {
+		when(tree.getToken()).thenReturn(new Token("IF", TokenType.FUNCTION, TokenSubtype.START));
+		assertEquals(Type.START, tree.getSubtype());
 	}
 
 	@Test
-	public void getBook_should_return_parent() throws Exception {
-		assertEquals(book, tree.getBook());
+	public void fromType_should_return_Type_OPERAND_when_given_TokenType_OPERAND() throws Exception {
+		assertEquals(Type.OPERAND, IFormulaTree.fromTokenType(TokenType.OPERAND));
+	}
+	
+	@Test
+	public void setType_should_set_token_type() throws Exception {
+		Token token = new Token("test", TokenType.OPERAND, TokenSubtype.TEXT);
+		when(tree.getToken()).thenReturn(token);
+		assertEquals(TokenType.OPERAND, token.getType());
+		
+		tree.setType(Type.FUNCTION);
+		assertEquals(TokenType.FUNCTION, token.getType());
 	}
 
 	@Test
-	public void isRoot_should_return_true_by_default() throws Exception {
+	public void fromType_should_return_Type_START_when_given_TokenSubtype_START() throws Exception {
+		assertEquals(Type.START, IFormulaTree.fromTokenSubtype(TokenSubtype.START));
+	}
+
+	@Test
+	public void toTokenType_should_return_TokenType_OPERAND_when_given_Type_OPERAND() throws Exception {
+		assertEquals(TokenType.OPERAND, IFormulaTree.toTokenType(Type.OPERAND));
+	}
+
+	@Test
+	public void toTokenSubtype_should_return_TokenSubtype_START_when_given_Type_START() throws Exception {
+		assertEquals(TokenSubtype.START, IFormulaTree.toTokenSubtype(Type.START));
+	}
+	
+	@Test
+	public void setSubtype_should_set_token_subtype() throws Exception {
+		Token token = new Token("test", TokenType.OPERAND, TokenSubtype.TEXT);
+		when(tree.getToken()).thenReturn(token);
+		assertEquals(TokenSubtype.TEXT, token.getSubtype());
+		
+		tree.setSubtype(Type.LOGICAL);
+		assertEquals(TokenSubtype.LOGICAL, token.getSubtype());
+	}
+
+	@Test
+	public void getKinds_should_return_UNKNOWN_NOTHING_FORMULA_TREE_types() throws Exception {
+		when(tree.getToken()).thenReturn(new Token());
+		assertArrayEquals(new Type[] { Type.UNKNOWN, Type.NOTHING, Type.FORMULA_TREE }, tree.getKinds());
+	}
+
+	@Test
+	public void isRoot_should_return_true_when_parent_is_null() throws Exception {
 		assertTrue(tree.isRoot());
 	}
-	
+
 	@Test
-	public void isRoot_should_return_false_when_has_a_parent() throws Exception {
+	public void isRoot_should_return_false_when_parent_is_not_null() throws Exception {
 		when(tree.getParent()).thenAnswer(Mockito.RETURNS_MOCKS);
 		assertFalse(tree.isRoot());
 	}
-	
+
 	@Test
-	public void isLeaf_should_return_true_when_empty_children() throws Exception {
+	public void isLeaf_should_return_true_when_children_is_null() throws Exception {
+		when(tree.getChildren()).thenReturn(null);
 		assertTrue(tree.isLeaf());
+	}
+
+	@Test
+	public void isLeaf_should_return_true_when_children_is_empty() throws Exception {
+		when(tree.getChildren()).then(Mockito.RETURNS_DEFAULTS);
+		assertTrue(tree.isLeaf());
+	}
+
+	@Test
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void isLeaf_should_return_false_when_children_is_not_empty() throws Exception {
+		List children = mock(List.class);
+		when(children.isEmpty()).thenReturn(false);
+		when(tree.getChildren()).thenReturn(children);
+		assertFalse(tree.isLeaf());
 	}
 	
 	@Test
-	public void formatAsTree_should_return_correct_string() throws Exception {
-		IFormulaTree arg1 = spy(IFormulaTree.class);
-		IFormulaTree arg2 = spy(IFormulaTree.class);
+	public void addChild_should_add_child_to_parent_and_set_parent() throws Exception {
+		IFormulaTree child = mock(IFormulaTree.class);
+		tree.addChild(child);
 		
-		when(arg1.getParent()).thenReturn(tree);
-		when(arg2.getParent()).thenReturn(tree);
-		
-		when(tree.getFormula()).thenReturn("4*5");
-		
-		when(tree.getToken()).thenReturn("*");
-		when(arg1.getToken()).thenReturn("4");
-		when(arg2.getToken()).thenReturn("5");
-		
-		when(tree.getType()).thenReturn(Type.OPERATOR_NODE);
-		when(arg1.getType()).thenReturn(Type.NUMERIC_VALUE_NODE);
-		when(arg2.getType()).thenReturn(Type.NUMERIC_VALUE_NODE);
-		
-		when(tree.getChildren()).thenReturn(Arrays.asList(arg1, arg2));
-		
-		String expected = 
-				"4*5\n"
-				+ "└── * : OperatorNode\n"
-				+ "    ├── 4 : NumericValueNode\n"
-				+ "    └── 5 : NumericValueNode\n";
-				
-		assertEquals(expected, tree.formatAsTree());
+		verify(child).setParent(tree);
 	}
 	
 }
