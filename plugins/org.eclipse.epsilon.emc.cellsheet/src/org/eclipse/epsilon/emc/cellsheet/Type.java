@@ -82,8 +82,28 @@ public enum Type {
 	LOGICAL("Logical"),
 	ERROR("Error"),
 	RANGE("Range"),
+	
+	@Deprecated
 	MATH("Math"),
+	
+	// New operators
+	NEGATION("Negation"),
+	PERCENT("Percent"),
+	EXPONENTION("Exponenetion"),
+	MULTIPLICATION("Multiplication"),
+	DIVISION("Divsion"),
+	ADDITION("Addition"),
+	SUBTRACTION("Subtraction"),
+	
 	CONCATENATION("Concatenation"),
+	
+	EQ("EQ"),
+	LT("LT"),
+	GT("GT"),
+	LTE("LTE"),
+	GTE("GTE"),
+	NEQ("NEQ"),
+	
 	INTERSECTION("Intersection"),
 	UNION("Union");
 

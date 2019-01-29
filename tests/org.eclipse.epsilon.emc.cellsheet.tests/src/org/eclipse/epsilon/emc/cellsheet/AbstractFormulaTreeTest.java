@@ -1,16 +1,17 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.spy;
 
 import java.util.LinkedList;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Answers;
-import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -19,7 +20,7 @@ public class AbstractFormulaTreeTest {
 	@Rule
 	public MockitoRule mockito = MockitoJUnit.rule();
 
-	@Mock(answer = Answers.CALLS_REAL_METHODS)
+	@Spy()
 	AbstractFormulaTree tree;
 	
 	@Test
@@ -33,9 +34,10 @@ public class AbstractFormulaTreeTest {
 	@Test
 	public void getCellValue_should_get_assigned_when_child() throws Exception {
 		final IFormulaCellValue cellValue = mock(IFormulaCellValue.class);
-		final AbstractFormulaTree parent = mock(AbstractFormulaTree.class, CALLS_REAL_METHODS);
+		final AbstractFormulaTree parent = spy(AbstractFormulaTree.class);
 		parent.cellValue = cellValue;
-		tree.parent = parent;
+		
+		parent.addChild(tree);
 		assertFalse(tree.isRoot());
 		assertEquals(cellValue, tree.getCellValue());
 	}

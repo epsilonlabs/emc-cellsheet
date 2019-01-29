@@ -53,7 +53,7 @@ public class IFormulaTreeTest {
 
 	@Test
 	public void getType_should_return_Type_OPERAND_when_token_has_OPERAND_type() throws Exception {
-		when(tree.getToken()).thenReturn(new Token("+", TokenType.OPERAND, TokenSubtype.MATH));
+		when(tree.getToken()).thenReturn(new Token("+", TokenType.OPERAND, TokenSubtype.ADDITION));
 		assertEquals(Type.OPERAND, tree.getType());
 	}
 

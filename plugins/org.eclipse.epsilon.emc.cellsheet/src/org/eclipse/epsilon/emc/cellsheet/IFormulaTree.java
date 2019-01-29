@@ -1,7 +1,5 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -136,18 +134,21 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	}
 
 	/**
-	 * @return this tree and all descendant trees
+	 * @return this tree and all it's descendant trees. Order is based on left
+	 *         traversal
 	 */
 	default public List<IFormulaTree> getAllTrees() {
-		List<IFormulaTree> children = new ArrayList<>(Arrays.asList(this));
-		if (isLeaf()) {
-			return children;
-		}
-
-		for (IFormulaTree child : getChildren()) {
-			children.addAll(child.getAllTrees());
-		}
-		return children;
+		List<IFormulaTree> list = new LinkedList<>();
+		accept(new Visitor() {
+			@Override
+			public void visit(IFormulaTree tree) {
+				for (IFormulaTree child : tree.getChildren()) {
+					child.accept(this);
+				}
+				list.add(tree);
+			}
+		});
+		return list;
 	}
 
 	/**
@@ -170,6 +171,11 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 		getChildren().add(child);
 	}
 
+	default void addChild(int index, IFormulaTree child) {
+		child.setParent(child);
+		getChildren().add(index, child);
+	}
+
 	/**
 	 * Returns a formula string built at this tree. Will only elements that are
 	 * children of this tree.
@@ -184,10 +190,14 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 				Token token = tree.getToken();
 				switch (token.getType()) {
 				case OPERATOR_INFIX:
-					assert tree.getChildren().size() == 2;
-					tree.getChildAt(0).accept(this);
-					tokens.add(token);
-					tree.getChildAt(1).accept(this);
+					if (tree.getChildren().isEmpty()) {
+						tokens.add(token);
+					} else {
+						assert tree.getChildren().size() == 2;
+						tree.getChildAt(0).accept(this);
+						tokens.add(token);
+						tree.getChildAt(1).accept(this);
+					}
 					break;
 
 				case OPERATOR_PREFIX:
@@ -240,15 +250,7 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * @return count of all sub-nodes starting from this node.
 	 */
 	default int countAllChildren() {
-		if (isLeaf()) {
-			return 0;
-		}
-
-		int count = getChildren().size();
-		for (IFormulaTree tree : getChildren()) {
-			count += tree.countAllChildren();
-		}
-		return count;
+		return getAllTrees().size() - 1;
 	}
 
 	/**

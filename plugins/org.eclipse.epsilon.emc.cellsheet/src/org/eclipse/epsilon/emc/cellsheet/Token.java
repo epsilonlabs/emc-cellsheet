@@ -5,10 +5,10 @@ import java.util.Objects;
 
 public class Token {
 
-	private static final EnumSet<TokenType> EXPR = EnumSet.of(TokenType.FUNCTION, TokenType.SUBEXPRESSION);
-	private static final EnumSet<TokenSubtype> EXPR_START = EnumSet.of(TokenSubtype.START, TokenSubtype.ARRAY_START,
+	public static final EnumSet<TokenType> EXPR = EnumSet.of(TokenType.FUNCTION, TokenType.SUBEXPRESSION);
+	public static final EnumSet<TokenSubtype> EXPR_START = EnumSet.of(TokenSubtype.START, TokenSubtype.ARRAY_START,
 			TokenSubtype.ARRAY_ROW_START);
-	private static final EnumSet<TokenSubtype> EXPR_STOP = EnumSet.of(TokenSubtype.STOP, TokenSubtype.ARRAY_STOP,
+	public static final EnumSet<TokenSubtype> EXPR_STOP = EnumSet.of(TokenSubtype.STOP, TokenSubtype.ARRAY_STOP,
 			TokenSubtype.ARRAY_ROW_STOP);
 
 	private String value = "";
@@ -55,12 +55,16 @@ public class Token {
 		this.subtype = subtype;
 	}
 
+	public boolean isExpr() {
+		return EXPR.contains(type);
+	}
+	
 	public boolean isExprStart() {
 		return (EXPR.contains(type) && EXPR_START.contains(subtype));
 	}
 
 	public boolean isExprEnd() {
-		return (EXPR.contains(type) && EXPR_STOP.contains(subtype)) ;
+		return (EXPR.contains(type) && EXPR_STOP.contains(subtype));
 	}
 
 	@Override
@@ -77,18 +81,26 @@ public class Token {
 		Token token = (Token) o;
 		return Objects.equals(value, token.value) && type == token.type && subtype == token.subtype;
 	}
+	
+	public boolean equals(TokenType type, TokenSubtype subtype) {
+		return this.type == type && this.subtype == subtype;
+	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(value, type, subtype);
 	}
 
+	public Integer getPrecedence() {
+		return subtype.getPrecedence();
+	}
+	
 	public static enum TokenSubtype {
 
 		NOTHING,
-		START,
-		ARRAY_START,
-		ARRAY_ROW_START,
+		START(-2),
+		ARRAY_START(-2),
+		ARRAY_ROW_START(-2),
 		STOP,
 		ARRAY_STOP,
 		ARRAY_ROW_STOP,
@@ -96,12 +108,50 @@ public class Token {
 		NUMBER,
 		LOGICAL,
 		ERROR,
-		RANGE,
-		MATH,
-		CONCATENATION,
-		INTERSECTION,
-		UNION;
 
+		INTERSECTION(7),
+		UNION(7),
+		RANGE(7),
+
+		// New operators
+		NEGATION(6),
+		
+		PERCENT(5),
+		
+		EXPONENTION(4),
+		
+		MULTIPLICATION(3),
+		DIVISION(3),
+		
+		ADDITION(2),
+		SUBTRACTION(2),
+
+		CONCATENATION(1),
+
+		EQ(0),
+		LT(0),
+		GT(0),
+		LTE(0),
+		GTE(0),
+		NEQ(0);
+
+		private final int precedence;
+
+		private TokenSubtype() {
+			this.precedence = -1;
+		}
+
+		private TokenSubtype(int precdence) {
+			this.precedence = precdence;
+		}
+
+		public int getPrecedence() {
+			return precedence;
+		}
+		
+		public int compare(TokenSubtype other) {
+			return Integer.compare(precedence, other.precedence);
+		}
 	}
 
 	public static enum TokenType {

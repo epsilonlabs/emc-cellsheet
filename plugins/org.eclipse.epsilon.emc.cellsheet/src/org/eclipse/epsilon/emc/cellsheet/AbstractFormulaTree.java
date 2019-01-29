@@ -2,6 +2,7 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class AbstractFormulaTree implements IFormulaTree {
 
@@ -62,6 +63,40 @@ public abstract class AbstractFormulaTree implements IFormulaTree {
 	@Override
 	public String toString() {
 		return token.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(cellValue, children, parent, token);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AbstractFormulaTree other = (AbstractFormulaTree) obj;
+
+		if (!(Objects.equals(cellValue, other.cellValue) || Objects.equals(parent, other.parent)
+				|| Objects.equals(token, other.token))) {
+			return false;
+		}
+		
+		// Check the children
+		if (children.size() != other.children.size()) {
+			return false;
+		}
+
+		for (int i = 0; i < children.size(); i++) {
+			if (!children.get(i).equals(other.children.get(i))) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 }

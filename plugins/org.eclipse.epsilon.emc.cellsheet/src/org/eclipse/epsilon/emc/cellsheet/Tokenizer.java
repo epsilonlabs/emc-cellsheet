@@ -323,8 +323,22 @@ public class Tokenizer {
 					if (value.length() > 0) {
 						tokens.add(dumpToken(value, TokenType.OPERAND));
 					}
-					tokens.add(new Token(formula.substring(index, index + 2), TokenType.OPERATOR_INFIX,
-							TokenSubtype.LOGICAL));
+					Token comparator = new Token(formula.substring(index, index + 2), TokenType.OPERATOR_INFIX);
+					switch (comparator.getValue()) {
+					case "<=":
+						comparator.setSubtype(TokenSubtype.LTE);
+						break;
+					case ">=":
+						comparator.setSubtype(TokenSubtype.GTE);
+						break;
+					default:
+						comparator.setSubtype(TokenSubtype.NEQ);
+						break;
+
+					}
+
+					tokens.add(comparator);
+
 					index += 2;
 					continue;
 				}
@@ -345,7 +359,8 @@ public class Tokenizer {
 				if (value.length() > 0) {
 					tokens.add(dumpToken(value, TokenType.OPERAND));
 				}
-				tokens.add(new Token(String.valueOf(formula.charAt(index)), TokenType.OPERATOR_POSTFIX));
+				tokens.add(new Token(String.valueOf(formula.charAt(index)), TokenType.OPERATOR_POSTFIX,
+						TokenSubtype.PERCENT));
 				index++;
 				continue;
 			}
@@ -447,11 +462,13 @@ public class Tokenizer {
 			if (token.getType() == TokenType.OPERATOR_INFIX && token.getValue().equals("-")) {
 				if (i < 1) {
 					token.setType(TokenType.OPERATOR_PREFIX);
-				} else if (isTerminal(previous))
-					token.setSubtype(TokenSubtype.MATH);
-				else
+					token.setSubtype(TokenSubtype.NEGATION);
+				} else if (isTerminal(previous)) {
+					token.setSubtype(TokenSubtype.SUBTRACTION);
+				} else {
 					token.setType(TokenType.OPERATOR_PREFIX);
-
+					token.setSubtype(TokenSubtype.NEGATION);
+				}
 				tokens.add(token);
 				continue;
 			}
@@ -460,7 +477,7 @@ public class Tokenizer {
 				if (i < 1)
 					continue;
 				else if (isTerminal(previous))
-					token.setSubtype(TokenSubtype.MATH);
+					token.setSubtype(TokenSubtype.ADDITION);
 				else
 					continue;
 
@@ -469,12 +486,37 @@ public class Tokenizer {
 			}
 
 			if (token.getType() == TokenType.OPERATOR_INFIX && token.getSubtype() == TokenSubtype.NOTHING) {
-				if ("<>=".indexOf(token.getValue().charAt(0)) != -1)
-					token.setSubtype(TokenSubtype.LOGICAL);
+				// Multiplication
+				if (token.getValue().equals("*"))
+					token.setSubtype(TokenSubtype.MULTIPLICATION);
+
+				// Division
+				else if (token.getValue().equals("/"))
+					token.setSubtype(TokenSubtype.DIVISION);
+
+				// Exponention
+				else if (token.getValue().equals("^"))
+					token.setSubtype(TokenSubtype.EXPONENTION);
+
+				// Concatenation
 				else if (token.getValue().equals("&"))
 					token.setSubtype(TokenSubtype.CONCATENATION);
-				else
-					token.setSubtype(TokenSubtype.MATH);
+
+				if ("<>=".indexOf(token.getValue().charAt(0)) != -1) {
+					switch (token.getValue()) {
+					case "=":
+						token.setSubtype(TokenSubtype.EQ);
+						break;
+					case "<":
+						token.setSubtype(TokenSubtype.LT);
+						break;
+					case ">":
+						token.setSubtype(TokenSubtype.GT);
+						break;
+					default:
+						break;
+					}
+				}
 
 				tokens.add(token);
 				continue;
