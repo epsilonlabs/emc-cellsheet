@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.eclipse.epsilon.emc.cellsheet.Token.TokenSubtype;
 import org.eclipse.epsilon.emc.cellsheet.Token.TokenType;
@@ -52,48 +53,34 @@ public class Tokenizer {
 		return (new Tokenizer(formula)).parse();
 	}
 
+	/**
+	 * 
+	 * @param tokens
+	 * @return
+	 */
 	public static String toString(List<Token> tokens) {
 		if (tokens == null) {
 			throw new IllegalArgumentException();
 		}
 
-		final StringBuilder formula = new StringBuilder();
+		// Re-add missing Function start open parens
 		final ListIterator<Token> it = tokens.listIterator();
-		Token current;
-
+		Token token;
 		while (it.hasNext()) {
-			current = it.next();
-
-			switch (current.getType()) {
-
-			case FUNCTION:
-				switch (current.getSubtype()) {
-				case START:
-					formula.append(current.getValue()).append(PAREN_OPEN);
-					continue;
-				case STOP:
-					formula.append(PAREN_CLOSE);
-					continue;
-				default:
-					break;
-				}
-
-			case OPERAND:
-				switch (current.getSubtype()) {
-				case TEXT:
-					formula.append('"').append(current.getValue()).append('"');
-					continue;
-				default:
-					break;
-				}
-
-			default: // All other token types
-				formula.append(current.getValue());
-				break;
+			token = it.next();
+			
+			if (token.getType() == TokenType.FUNCTION && token.getSubtype() == TokenSubtype.START) {
+				it.add(new Token(PAREN_OPEN, TokenType.FUNCTION, TokenSubtype.START));
+				continue;
+			}
+			
+			if (token.getSubtype() == TokenSubtype.TEXT) {
+				token.setValue(String.format("\"%s\"", token.getValue()));
+				continue;
 			}
 		}
-
-		return formula.toString();
+		
+		return tokens.stream().map(Token::getValue).collect(Collectors.joining());
 	}
 
 	private String formula;
@@ -371,7 +358,7 @@ public class Tokenizer {
 				if (value.length() > 0) {
 					start = dumpToken(value, TokenType.FUNCTION, TokenSubtype.START);
 				} else {
-					start = new Token("", TokenType.SUBEXPRESSION, TokenSubtype.START);
+					start = new Token(PAREN_OPEN, TokenType.SUBEXPRESSION, TokenSubtype.START);
 				}
 				tokens.add(start);
 				stack.push(start);
@@ -398,7 +385,7 @@ public class Tokenizer {
 				if (value.length() > 0) {
 					tokens.add(dumpToken(value, TokenType.OPERAND));
 				}
-				tokens.add(new Token("", stack.pop().getType(), TokenSubtype.STOP));
+				tokens.add(new Token(PAREN_CLOSE, stack.pop().getType(), TokenSubtype.STOP));
 				index++;
 				continue;
 			}

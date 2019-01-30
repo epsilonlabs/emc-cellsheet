@@ -12,19 +12,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
-import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.formula.FormulaParsingWorkbook;
-import org.apache.poi.ss.formula.WorkbookEvaluator;
-import org.apache.poi.ss.formula.WorkbookEvaluatorProvider;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.emc.cellsheet.HasId;
 import org.eclipse.epsilon.emc.cellsheet.HasType;
@@ -47,15 +38,20 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	// Lower level access fields
 	protected Workbook delegate = null;
 	protected File excelFile = null;
-
-	WorkbookEvaluator evaluator = null;
-	FormulaParsingWorkbook fpw = null;
+	
+	public ExcelBook() {
+		
+	}
+	
+	public ExcelBook(Workbook delegate) {
+		this.delegate = delegate;
+	}
 	
 	@Override
 	public ISheet getSheet(int index) {
 		if (index < 0 || index >= delegate.getNumberOfSheets()) {
 			throw new IndexOutOfBoundsException(
-					"index must be positive and within range of number of existing sheets, was given: " + index);
+					"index must be p∂ositive and within range of number of existing sheets, was given: " + index);
 		}
 		return new ExcelSheet(this, index);
 	}
@@ -84,10 +80,6 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	@Override
 	public Workbook getDelegate() {
 		return delegate;
-	}
-
-	public WorkbookEvaluator getEvaluator() {
-		return evaluator;
 	}
 
 	@Override
@@ -225,25 +217,8 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	@Override
 	public void loadModel() throws EolModelLoadingException {
 		try {
-			fpw = null;
 			delegate = WorkbookFactory.create(excelFile, null, true);
 			delegate.setMissingCellPolicy(MissingCellPolicy.CREATE_NULL_AS_BLANK);
-
-			if (delegate instanceof HSSFWorkbook) {
-				fpw = HSSFEvaluationWorkbook.create((HSSFWorkbook) delegate);
-			}
-			if (delegate instanceof XSSFWorkbook) {
-				fpw = XSSFEvaluationWorkbook.create((XSSFWorkbook) delegate);
-			}
-			if (delegate instanceof SXSSFWorkbook) {
-				fpw = SXSSFEvaluationWorkbook.create((SXSSFWorkbook) delegate);
-			}
-			if (fpw == null) {
-				throw new AssertionError("Workbook technology not supported");
-			}
-
-			evaluator = ((WorkbookEvaluatorProvider) delegate.getCreationHelper().createFormulaEvaluator())
-					._getWorkbookEvaluator();
 		} catch (Exception e) {
 			throw new EolModelLoadingException(e, this);
 		}

@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,17 +59,6 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * @return the result of evaluating the current node
 	 */
 	public String evaluate();
-
-	/**
-	 * Return the Cell element that the evaluation result is held in.
-	 * 
-	 * For reference functions such as LOOKUPS this will be where the cell value is
-	 * located. For all other functions (such as stat operations) the value is
-	 * contained within the cell where the formula is located.
-	 * 
-	 * @return
-	 */
-	public ICell evaluateCell();
 
 	/**
 	 * Get the token associated with this node in the tree
@@ -183,42 +173,63 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * @return a formula string representation of this tree
 	 */
 	default public String getFormula() {
-		List<Token> tokens = new LinkedList<>();
+		final List<Token> list = new LinkedList<>();
+
+		Deque<Boolean> inFunction = new LinkedList<>();
 		accept(new Visitor() {
 			@Override
 			public void visit(IFormulaTree tree) {
-				Token token = tree.getToken();
-				switch (token.getType()) {
-				case OPERATOR_INFIX:
-					if (tree.getChildren().isEmpty()) {
-						tokens.add(token);
-					} else {
-						assert tree.getChildren().size() == 2;
-						tree.getChildAt(0).accept(this);
-						tokens.add(token);
-						tree.getChildAt(1).accept(this);
-					}
-					break;
+				final Token token = tree.getToken();
 
-				case OPERATOR_PREFIX:
-					tokens.add(token);
-					tree.getChildren().forEach(c -> c.accept(this));
-					break;
-
-				case OPERATOR_POSTFIX:
-					tree.getChildren().forEach(c -> c.accept(this));
-					tokens.add(token);
-					break;
-
-				default:
-					tokens.add(tree.getToken());
-					if (!isLeaf())
-						tree.getChildren().forEach(c -> c.accept(this));
-					break;
+				if (tree.isLeaf()) {
+					list.add(token);
+					return;
 				}
+
+				if (token.getType() == TokenType.OPERATOR_INFIX) {
+					list.add(Token.SUBEXPRESSION_START);
+					tree.getChildAt(0).accept(this);
+					list.add(token);
+					tree.getChildAt(1).accept(this);
+					list.add(Token.SUBEXPRESSION_STOP);
+					return;
+				}
+
+				if (token.getType() == TokenType.OPERATOR_PREFIX) {
+					list.add(token);
+					list.add(Token.SUBEXPRESSION_START);
+					tree.getChildAt(0).accept(this);
+					list.add(Token.SUBEXPRESSION_STOP);
+					return;
+				}
+
+				if (token.getType() == TokenType.OPERATOR_POSTFIX) {
+					list.add(Token.SUBEXPRESSION_START);
+					tree.getChildAt(0).accept(this);
+					list.add(Token.SUBEXPRESSION_STOP);
+					list.add(token);
+					return;
+				}
+
+				inFunction.push(token.getType() == TokenType.FUNCTION);
+
+				if (!inFunction.peek()) {
+					list.add(Token.SUBEXPRESSION_START);
+				}
+				list.add(token);
+
+				final Iterator<IFormulaTree> childIt = tree.getChildren().iterator();
+				while (childIt.hasNext()) {
+					childIt.next().accept(this);
+					if (inFunction.peek() && childIt.hasNext()) {
+						list.add(Token.ARGUMENT);
+					}
+				}
+
+				list.add(inFunction.pop() ? Token.FUNCTION_STOP : Token.SUBEXPRESSION_STOP);
 			}
 		});
-		return Tokenizer.toString(tokens);
+		return Tokenizer.toString(list);
 	}
 
 	/**

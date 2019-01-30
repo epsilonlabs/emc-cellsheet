@@ -46,7 +46,7 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 	public List<ICellRegion> getReferencedRegions() {
 		final List<ICellRegion> regions = new ArrayList<ICellRegion>();
 
-		for (Ptg ptg : FormulaUtil.getPtgs(this)) {
+		for (Ptg ptg : EvaluationHelper.getPtgs(this.getFormula(), this.cell)) {
 			if (!(ptg instanceof OperandPtg))
 				continue;
 
@@ -110,7 +110,9 @@ public class ExcelFormulaCellValue extends AbstractExcelCellValue<String> implem
 
 	@Override
 	public ExcelFormulaTree getFormulaTree() {
-		return ExcelFormulaTree.fromString(getFormula());
+		final ExcelFormulaTree tree = ExcelFormulaTree.fromString(getFormula());
+		tree.setCellValue(this);
+		return tree;
 	}
 
 	@Override

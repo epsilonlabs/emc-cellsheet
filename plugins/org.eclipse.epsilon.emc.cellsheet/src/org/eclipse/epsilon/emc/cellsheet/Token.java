@@ -4,7 +4,12 @@ import java.util.EnumSet;
 import java.util.Objects;
 
 public class Token {
-
+	
+	public static final Token FUNCTION_STOP = new Token(")", TokenType.FUNCTION, TokenSubtype.STOP);
+	public static final Token SUBEXPRESSION_START = new Token("(", TokenType.SUBEXPRESSION, TokenSubtype.START);
+	public static final Token SUBEXPRESSION_STOP = new Token(")", TokenType.SUBEXPRESSION, TokenSubtype.STOP);
+	public static final Token ARGUMENT = new Token(",", TokenType.ARGUMENT);
+	
 	public static final EnumSet<TokenType> EXPR = EnumSet.of(TokenType.FUNCTION, TokenType.SUBEXPRESSION);
 	public static final EnumSet<TokenSubtype> EXPR_START = EnumSet.of(TokenSubtype.START, TokenSubtype.ARRAY_START,
 			TokenSubtype.ARRAY_ROW_START);
@@ -29,6 +34,10 @@ public class Token {
 		this.value = value;
 		this.type = type;
 		this.subtype = subtype == null ? TokenSubtype.NOTHING : subtype;
+	}
+	
+	public Token(char value, TokenType type, TokenSubtype subtype) {
+		this(String.valueOf(value), type, subtype);
 	}
 
 	public String getValue() {
