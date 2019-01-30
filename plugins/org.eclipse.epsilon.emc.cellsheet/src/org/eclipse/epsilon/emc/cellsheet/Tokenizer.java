@@ -68,19 +68,42 @@ public class Tokenizer {
 		Token token;
 		while (it.hasNext()) {
 			token = it.next();
-			
+
 			if (token.getType() == TokenType.FUNCTION && token.getSubtype() == TokenSubtype.START) {
 				it.add(new Token(PAREN_OPEN, TokenType.FUNCTION, TokenSubtype.START));
 				continue;
 			}
-			
+
 			if (token.getSubtype() == TokenSubtype.TEXT) {
 				token.setValue(String.format("\"%s\"", token.getValue()));
 				continue;
 			}
 		}
-		
-		return tokens.stream().map(Token::getValue).collect(Collectors.joining());
+
+		String formula = tokens.stream().map(Token::getValue).collect(Collectors.joining());
+
+		// Remove unnecessary start and end parens
+		// TODO: remove from within formula as well
+		if (formula.charAt(0) == PAREN_OPEN) {
+			final Deque<Integer> opens = new LinkedList<>();
+			for (int i = 0, n = formula.length(); i < n; i++) {
+				char c = formula.charAt(i);
+
+				if (c == PAREN_OPEN) {
+					opens.push(i);
+					continue;
+				}
+
+				if (c == PAREN_CLOSE) {
+					if (opens.pop() == 0 && i == n - 1) {
+						formula = formula.substring(1, n - 1);
+					}
+					continue;
+				}
+			}
+		}
+
+		return formula;
 	}
 
 	private String formula;
