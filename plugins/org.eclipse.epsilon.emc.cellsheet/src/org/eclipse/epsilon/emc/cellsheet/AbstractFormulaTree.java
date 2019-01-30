@@ -27,7 +27,7 @@ public abstract class AbstractFormulaTree implements IFormulaTree {
 
 	@Override
 	public IFormulaCellValue getCellValue() {
-		return cellValue == null ? parent.getCellValue() : cellValue;
+		return isRoot() ? cellValue : parent.getCellValue();
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public abstract class AbstractFormulaTree implements IFormulaTree {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(cellValue, children, parent, token);
+		return Objects.hash(cellValue, parent, token);
 	}
 
 	@Override
@@ -78,24 +78,29 @@ public abstract class AbstractFormulaTree implements IFormulaTree {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractFormulaTree other = (AbstractFormulaTree) obj;
+		AbstractFormulaTree o = (AbstractFormulaTree) obj;
 
-		if (!(Objects.equals(cellValue, other.cellValue) || Objects.equals(parent, other.parent)
-				|| Objects.equals(token, other.token))) {
+		if (!Objects.equals(cellValue, o.cellValue) || !Objects.equals(token, o.token))
 			return false;
-		}
-		
-		// Check the children
-		if (children.size() != other.children.size()) {
-			return false;
-		}
 
-		for (int i = 0; i < children.size(); i++) {
-			if (!children.get(i).equals(other.children.get(i))) {
+		// Check parent without recursion errors, we can only check the cellvalue and
+		// token
+		if (parent != null && parent != o.parent) {
+			if (o.parent == null)
 				return false;
-			}
+			if (!Objects.equals(parent.getCellValue(), o.parent.getCellValue())
+					|| !Objects.equals(parent.getToken(), o.parent.getToken()))
+				return false;
 		}
-		
+
+		for (int i = 0, n = children.size(); i < n; i++) {
+			if (children.size() != o.children.size())
+				return false;
+			
+			if (!children.get(i).equals(o.children.get(i)))
+				return false;
+		}
+
 		return true;
 	}
 

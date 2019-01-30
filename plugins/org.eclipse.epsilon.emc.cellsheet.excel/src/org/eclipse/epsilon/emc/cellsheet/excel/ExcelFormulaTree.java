@@ -1,22 +1,26 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.poi.ss.formula.FormulaParser;
-import org.apache.poi.ss.formula.FormulaType;
+import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.formula.BaseFormulaEvaluator;
+import org.apache.poi.ss.formula.FormulaParsingWorkbook;
+import org.apache.poi.ss.formula.WorkbookEvaluator;
 import org.apache.poi.ss.formula.eval.OperandResolver;
 import org.apache.poi.ss.formula.eval.ValueEval;
-import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.emc.cellsheet.AbstractFormulaTree;
+import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
@@ -43,14 +47,14 @@ public class ExcelFormulaTree extends AbstractFormulaTree implements IFormulaTre
 
 	@Override
 	public void setCellValue(IFormulaCellValue cellValue) {
-		if (!(cellValue instanceof ExcelFormulaCellValue))
+		if (parent != null && !(cellValue instanceof ExcelFormulaCellValue))
 			throw new IllegalArgumentException("Parent must be of type ExcelFormulaCellValue");
 		super.setCellValue(cellValue);
 	}
 
 	@Override
 	public void setParent(IFormulaTree parent) {
-		if (!(parent instanceof ExcelFormulaTree))
+		if (parent != null && !(parent instanceof ExcelFormulaTree))
 			throw new IllegalArgumentException("Parent must be of type ExcelFormulaTree");
 		super.setParent(parent);
 	}
@@ -64,11 +68,13 @@ public class ExcelFormulaTree extends AbstractFormulaTree implements IFormulaTre
 
 	@Override
 	public String evaluate() {
-		return doEvaluation(getFormula());
+		return EvaluatorHelper.evaluate(getFormula(), this);
 	}
 
 	@Override
 	public ICell evaluateCell() {
+		
+		// do stuff before then evaluate
 		throw new UnsupportedOperationException();
 
 	}
@@ -84,11 +90,11 @@ public class ExcelFormulaTree extends AbstractFormulaTree implements IFormulaTre
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
-		
+
 		sb.append("(id: ");
 		try {
 			sb.append(getId());
-		} catch(Exception e) {
+		} catch (Exception e) {
 			sb.append("null");
 		}
 
@@ -102,10 +108,10 @@ public class ExcelFormulaTree extends AbstractFormulaTree implements IFormulaTre
 		if (isLeaf()) {
 			sb.append(" , isLeaf: true");
 		}
-		
+
 		try {
 			sb.append('\n').append(toTreeString());
-		} catch(Exception e) {
+		} catch (Exception e) {
 			sb.append("ERROR");
 		}
 
@@ -122,6 +128,76 @@ public class ExcelFormulaTree extends AbstractFormulaTree implements IFormulaTre
 		return (new TreeBuilder(formula)).parse();
 	}
 
+	/**
+	 * Helper class for evaluating AST/Formula
+	 * 
+	 * @author Jonathan Co
+	 *
+	 */
+	static enum EvaluatorHelper {
+		INSTANCE;
+
+		static Map<ExcelBook, FormulaParsingWorkbook> fpwMap = new HashMap<>();
+		static Map<ExcelBook, WorkbookEvaluator> evalMap = new HashMap<>();
+
+		static WorkbookEvaluator getEvaluator(IBook book) {
+			return getEvaluator((ExcelBook) book);
+		}
+
+		// Is the FPW needed?
+		static FormulaParsingWorkbook getFpw(ExcelBook book) {
+			return fpwMap.computeIfAbsent(book, b ->
+				{
+					if (b.delegate instanceof HSSFWorkbook)
+						return HSSFEvaluationWorkbook.create((HSSFWorkbook) b.delegate);
+					if (b.delegate instanceof XSSFWorkbook)
+						return XSSFEvaluationWorkbook.create((XSSFWorkbook) b.delegate);
+					if (b.delegate instanceof SXSSFWorkbook)
+						return SXSSFEvaluationWorkbook.create((SXSSFWorkbook) b.delegate);
+					throw new AssertionError("Workbook evaluator not found for workbook format");
+				});
+		}
+
+		static WorkbookEvaluator getEvaluator(ExcelBook book) {
+			return evalMap.computeIfAbsent(book,
+					b -> ((BaseFormulaEvaluator) b.delegate.getCreationHelper().createFormulaEvaluator())
+							._getWorkbookEvaluator());
+		}
+
+		static String evaluate(String formula, ExcelFormulaTree tree) {
+			final ValueEval result = getEvaluator(tree.getBook()).evaluate(formula, getCellRef(tree));
+			return OperandResolver.coerceValueToString(result);
+		}
+
+		static CellReference getCellRef(ExcelFormulaTree tree) {
+			return new CellReference(tree.getSheet().getName(), // Sheet name
+					tree.getCell().getRowIndex(), // Cell row
+					tree.getCell().getColIndex(), // Cell col
+					true, // Is abs row
+					true // Is abs col
+			);
+		}
+//		
+//		private static Ptg[] getPtgs(String formula, ExcelCell cell) {
+//			return FormulaParser.parse(formula, // Formula String
+//					((ExcelBook) cell.getBook()).fpw, // FormulaParsingWorkbook
+//					FormulaType.CELL, // Formula Type
+//					cell.getSheet().getIndex(), // Absolute Sheet index
+//					cell.getRowIndex()); // Absolute Row index
+//		}
+//
+
+	}
+
+	/**
+	 * Helper class for building Formula AST.
+	 * 
+	 * TODO: Should be moved to more generic location, need to find way of creating
+	 * new instances of IFormulaTree from generic method
+	 * 
+	 * @author Jonathan Co
+	 *
+	 */
 	static class TreeBuilder {
 		final Deque<ExcelFormulaTree> operands = new LinkedList<>();
 		final Deque<ExcelFormulaTree> operators = new LinkedList<>();
@@ -132,7 +208,7 @@ public class ExcelFormulaTree extends AbstractFormulaTree implements IFormulaTre
 		TreeBuilder(String formula) {
 			this.formula = formula;
 		}
-		
+
 		ExcelFormulaTree parse() {
 			final List<Token> tokens = Tokenizer.parse(formula);
 
@@ -205,7 +281,8 @@ public class ExcelFormulaTree extends AbstractFormulaTree implements IFormulaTre
 						}
 						continue;
 					}
-					throw new IllegalArgumentException(String.format("Bad token given; Token: [%s], index: %d", current, i));
+					throw new IllegalArgumentException(
+							String.format("Bad token given; Token: [%s], index: %d", current, i));
 				}
 
 				// Functions
@@ -220,7 +297,8 @@ public class ExcelFormulaTree extends AbstractFormulaTree implements IFormulaTre
 						popOperator();
 						continue;
 					}
-					throw new IllegalArgumentException(String.format("Bad token given; Token: [%s], index: %d", current, i));
+					throw new IllegalArgumentException(
+							String.format("Bad token given; Token: [%s], index: %d", current, i));
 				}
 
 				// Function Arguments
@@ -293,33 +371,6 @@ public class ExcelFormulaTree extends AbstractFormulaTree implements IFormulaTre
 			return operators.isEmpty() ? null : operators.peek().getToken().getSubtype();
 		}
 
-		void debug() {
-			XSSFWorkbook book = new XSSFWorkbook();
-			XSSFSheet sheet = book.createSheet();
-			XSSFRow row = sheet.createRow(0);
-			XSSFCell cell = row.createCell(0);
-			XSSFEvaluationWorkbook fpw = XSSFEvaluationWorkbook.create(book);
-			Ptg[] parse = FormulaParser.parse(formula, // Formula String
-					fpw, // FormulaParsingWorkbook
-					FormulaType.CELL, // Formula Type
-					0, // Absolute Sheet index
-					0); // Absolute Row index
-
-			for (Ptg p : parse) {
-				System.out.println(p);
-			}
-			System.out.println();
-
-		}
-
-	}
-
-	private static Ptg[] getPtgs(String formula, ExcelCell cell) {
-		return FormulaParser.parse(formula, // Formula String
-				((ExcelBook) cell.getBook()).fpw, // FormulaParsingWorkbook
-				FormulaType.CELL, // Formula Type
-				cell.getSheet().getIndex(), // Absolute Sheet index
-				cell.getRowIndex()); // Absolute Row index
 	}
 
 }

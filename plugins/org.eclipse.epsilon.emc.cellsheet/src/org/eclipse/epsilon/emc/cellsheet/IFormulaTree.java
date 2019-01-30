@@ -172,7 +172,7 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	}
 
 	default void addChild(int index, IFormulaTree child) {
-		child.setParent(child);
+		child.setParent(this);
 		getChildren().add(index, child);
 	}
 

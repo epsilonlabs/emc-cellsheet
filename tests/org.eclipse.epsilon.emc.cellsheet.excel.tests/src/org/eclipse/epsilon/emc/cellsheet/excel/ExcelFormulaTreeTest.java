@@ -1,12 +1,14 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaType;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
 import org.eclipse.epsilon.emc.cellsheet.Token;
 import org.eclipse.epsilon.emc.cellsheet.Token.TokenSubtype;
@@ -43,24 +45,24 @@ public class ExcelFormulaTreeTest {
 	
 	@Test
 	public void fromString_should_return_correct_tree_when_given_function() throws Exception {
-		final String formula = "IF(true, \"Yes\", \"No\")";
+		final String formula = "IF(TRUE, \"Yes\", \"No\")";
 		final IFormulaTree expected = fromToken("IF", TokenType.FUNCTION, TokenSubtype.START);
-		expected.addChild(fromToken("true", TokenType.OPERAND, TokenSubtype.LOGICAL));
-		expected.addChild(fromToken("\"Yes\"", TokenType.OPERAND, TokenSubtype.TEXT));
-		expected.addChild(fromToken("\"No\"", TokenType.OPERAND, TokenSubtype.TEXT));
+		expected.addChild(fromToken("TRUE", TokenType.OPERAND, TokenSubtype.LOGICAL));
+		expected.addChild(fromToken("Yes", TokenType.OPERAND, TokenSubtype.TEXT));
+		expected.addChild(fromToken("No", TokenType.OPERAND, TokenSubtype.TEXT));
 		assertEquals(expected, ExcelFormulaTree.fromString(formula));
 	}
 	
 	@Test
 	public void fromString_should_return_correct_tree_when_given_function_within_function() throws Exception {
-		final String formula = "IF(IF(true, \"Yes\", \"No\"), \"Yes\", \"No\")";
+		final String formula = "IF(IF(TRUE, \"Yes\", \"No\"), \"Yes\", \"No\")";
 		final IFormulaTree expected = fromToken("IF", TokenType.FUNCTION, TokenSubtype.START);
 		expected.addChild(fromToken("IF", TokenType.FUNCTION, TokenSubtype.START));
-		expected.getChildAt(0).addChild(fromToken("true", TokenType.OPERAND, TokenSubtype.LOGICAL));
-		expected.getChildAt(0).addChild(fromToken("\"Yes\"", TokenType.OPERAND, TokenSubtype.TEXT));
-		expected.getChildAt(0).addChild(fromToken("\"No\"", TokenType.OPERAND, TokenSubtype.TEXT));
-		expected.addChild(fromToken("\"Yes\"", TokenType.OPERAND, TokenSubtype.TEXT));
-		expected.addChild(fromToken("\"No\"", TokenType.OPERAND, TokenSubtype.TEXT));
+		expected.getChildAt(0).addChild(fromToken("TRUE", TokenType.OPERAND, TokenSubtype.LOGICAL));
+		expected.getChildAt(0).addChild(fromToken("Yes", TokenType.OPERAND, TokenSubtype.TEXT));
+		expected.getChildAt(0).addChild(fromToken("No", TokenType.OPERAND, TokenSubtype.TEXT));
+		expected.addChild(fromToken("Yes", TokenType.OPERAND, TokenSubtype.TEXT));
+		expected.addChild(fromToken("No", TokenType.OPERAND, TokenSubtype.TEXT));
 		assertEquals(expected, ExcelFormulaTree.fromString(formula));
 	}
 
@@ -158,124 +160,100 @@ public class ExcelFormulaTreeTest {
 	}
 
 	@Test
-	public void equals() throws Exception {
-
+	public void equals_should_return_true_when_the_same_instance() throws Exception {
+		final IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		expected.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
+		expected.getChildAt(0).addChild(fromToken("/", TokenType.OPERATOR_INFIX, TokenSubtype.DIVISION));
+		expected.getChildAt(0).getChildAt(0).addChild(fromToken("8", TokenType.OPERAND, TokenSubtype.NUMBER));
+		expected.getChildAt(0).getChildAt(0).addChild(fromToken("2", TokenType.OPERAND, TokenSubtype.NUMBER));
+		assertTrue(expected.equals(expected));
+	}
+	
+	@Test
+	public void equals_should_return_true_when_the_same_structure() throws Exception {
+		final IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		expected.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
+		expected.getChildAt(0).addChild(fromToken("/", TokenType.OPERATOR_INFIX, TokenSubtype.DIVISION));
+		expected.getChildAt(0).getChildAt(0).addChild(fromToken("8", TokenType.OPERAND, TokenSubtype.NUMBER));
+		expected.getChildAt(0).getChildAt(0).addChild(fromToken("2", TokenType.OPERAND, TokenSubtype.NUMBER));
+		
+		final IFormulaTree actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		actual.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
+		actual.getChildAt(0).addChild(fromToken("/", TokenType.OPERATOR_INFIX, TokenSubtype.DIVISION));
+		actual.getChildAt(0).getChildAt(0).addChild(fromToken("8", TokenType.OPERAND, TokenSubtype.NUMBER));
+		actual.getChildAt(0).getChildAt(0).addChild(fromToken("2", TokenType.OPERAND, TokenSubtype.NUMBER));
+		assertTrue(expected.equals(actual));
+		assertTrue(actual.equals(expected));
+	}
+	
+	@Test
+	public void equals_should_return_true_when_cellvalue_both_same() throws Exception {
+		IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IFormulaTree actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		
+		IFormulaCellValue cellValue = mock(IFormulaCellValue.class);
+		expected.setCellValue(cellValue);
+		actual.setCellValue(cellValue);
+		
+		assertEquals(expected.getCellValue(), actual.getCellValue());
+		assertTrue(expected.equals(actual));
+		assertTrue(actual.equals(expected));
+	}
+	
+	@Test
+	public void equals_should_return_true_when_cellvalue_both_null() throws Exception {
+		IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IFormulaTree actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+	
+		expected.setCellValue(null);
+		actual.setCellValue(null);
+		
+		assertNull(expected.getCellValue());
+		assertNull(actual.getCellValue());
+		assertTrue(expected.equals(actual));
+		assertTrue(actual.equals(expected));
+	}
+	
+	@Test
+	public void equals_should_return_false_when_cellvalue_is_different() throws Exception {
+		IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IFormulaTree actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+	
+		IFormulaCellValue cellValue = mock(IFormulaCellValue.class);
+		expected.setCellValue(cellValue);
+		
+		assertEquals(cellValue, expected.getCellValue());
+		assertNull(actual.getCellValue());
+		assertFalse(expected.equals(actual));
+		assertFalse(actual.equals(expected));
+	}
+	
+	@Test
+	public void equals_should_return_true_when_token_both_same() throws Exception {
+		IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IFormulaTree actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		assertTrue(expected.equals(actual));
+		assertTrue(actual.equals(expected));
+	}
+	
+	@Test
+	public void equals_should_return_false_when_token_not_same() throws Exception {
+		IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IFormulaTree actual = fromToken("-", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		assertFalse(expected.equals(actual));
+		assertFalse(actual.equals(expected));
+	}
+	
+	@Test
+	public void equals_should_return_false_when_other_is_null() throws Exception {
+		IFormulaTree tree = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		assertFalse(tree.equals(null));
+	}
+	
+	@Test
+	public void equals_should_return_false_when_other_is_not_same_class() throws Exception {
+		IFormulaTree tree = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		assertFalse(tree.equals(this));
 	}
 
-//	ExcelBook book;
-//
-//	@Before
-//	public void setup() throws Exception {
-//		book = ExcelTestUtil.getBook(ExcelFormulaTreeTest.class);
-//	}
-//
-//	@Test
-//	public void aiEvaluate_should_return_cell_reference_not_result() throws Exception {
-//		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(9).getCell(0).getFormulaCellValue().getFormulaTree();
-//
-//		final String result = tree.evaluate();
-//		final ICell aiResult = tree.evaluateCell();
-//		assertEquals("C1 Result", result);
-//		assertEquals(book.getSheet("Lookup").getRow(0).getCell(2), aiResult);
-//	}
-//
-//	@Test
-//	public void getFormula_should_return_string_when_given_arithmetic_formula_with_no_brackets() {
-//		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(2).getCell(0).getFormulaCellValue().getFormulaTree();
-//		assertEquals("65+20", tree.getFormula());
-//		assertEquals(85, Double.parseDouble(tree.evaluate()), 0);
-//	}
-//
-//	@Test
-//	public void getFormula_should_return_string_when_given_arithmetic_formula_with_1_set_of_brackets() {
-//		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(3).getCell(0).getFormulaCellValue().getFormulaTree();
-//		assertEquals("(6*5)+500", tree.getFormula());
-//		assertEquals(530, Double.parseDouble(tree.evaluate()), 0);
-//	}
-//
-//	@Test
-//	public void getFormula_should_return_string_when_given_arithmetic_formula_with_1_set_of_brackets_in_different_place() {
-//		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(4).getCell(0).getFormulaCellValue().getFormulaTree();
-//		assertEquals("6*(5+500)", tree.getFormula());
-//		assertEquals(3030, Double.parseDouble(tree.evaluate()), 0);
-//	}
-//
-//	@Test
-//	public void getFormula_should_return_string_when_given_arithmetic_formula_with_2_set_of_brackets() {
-//		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(5).getCell(0).getFormulaCellValue().getFormulaTree();
-//		assertEquals("(34*45)+(800/40)", tree.getFormula());
-//		assertEquals(1550, Double.parseDouble(tree.evaluate()), 0);
-//	}
-//
-//	@Test
-//	public void buildFormulaString_should_return_string_when_given_sum_function_with_multiple_args() throws Exception {
-//		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(1).getCell(0).getFormulaCellValue().getFormulaTree();
-//		assertEquals("SUM(Data!B1,Data!D5,Data!B5,Data!D2,Data!C2)", tree.getFormula());
-//		assertEquals(5, Double.parseDouble(tree.evaluate()), 0);
-//	}
-//
-//	@Test
-//	public void buildFormulaString_should_return_string_when_given_sum_function_with_range() throws Exception {
-//		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(0).getCell(0).getFormulaCellValue().getFormulaTree();
-//		assertEquals("SUM(Data!A1:D5)", tree.getFormula());
-//		assertEquals(20, Double.parseDouble(tree.evaluate()), 0);
-//	}
-//
-//	@Test
-//	public void buildFormulaString_should_return_string_when_given_unary() throws Exception {
-//		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(6).getCell(0).getFormulaCellValue().getFormulaTree();
-//		assertEquals("-(8-4)", tree.getFormula());
-//		assertEquals(-4, Double.parseDouble(tree.evaluate()), 0);
-//	}
-//
-//	@Test
-//	public void buildFormulaString_should_return_string_when_given_percent() throws Exception {
-//		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(7).getCell(0).getFormulaCellValue().getFormulaTree();
-//		assertEquals("9%", tree.getFormula());
-//		assertEquals(0.09, Double.parseDouble(tree.evaluate()), 0);
-//	}
-//
-//	@Test
-//	public void evaluate_should_return_partial_result_when_subtree_is_given() throws Exception {
-//		final ICell cell = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(8).getCell(0);
-//		final IFormulaCellValue value = (IFormulaCellValue) cell.getCellValue();
-//		final IFormulaTree tree = ((IFormulaCellValue) cell.getCellValue()).getFormulaTree();
-//
-//		assertEquals(35, Double.parseDouble(value.getValue()), 0);
-//		assertEquals(35, Double.parseDouble(tree.evaluate()), 0);
-//
-//		final IFormulaTree root = value.getFormulaTree();
-//		assertEquals(2, root.getChildren().size());
-//
-//		final IFormulaTree left = root.getChildAt(0);
-//		assertEquals("SUM(Data!A1:D5)", left.getFormula());
-//		assertEquals(20, Double.parseDouble(left.evaluate()), 0);
-//
-//		final IFormulaTree right = root.getChildAt(1);
-//		assertEquals("SUM(Data!B1:D5)", right.getFormula());
-//		assertEquals(15, Double.parseDouble(right.evaluate()), 0);
-//	}
-//
-//	@Test
-//	public void getAllChildren_should_return_all_tokens() throws Exception {
-//		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getRow(8).getCell(0).getFormulaCellValue().getFormulaTree();
-//		assertEquals(5, tree.getAllTrees().size());
-//	}
-//
-//	/**
-//	 * Regression test to check that all tokens are consumed when constructing the
-//	 * FormulaTree for a formula with a {@code IF()} function.
-//	 * 
-//	 * {@code IF()} functions introduce special unseen tokens during the
-//	 * tokenisation process that optimise how the formula should be evaluated.
-//	 * Specifically these are {@link AttrPtg} with the {@code AttrPtg#isSkip()} set
-//	 * to {@code true}.
-//	 * 
-//	 * @throws Exception
-//	 */
-//	@Test
-//	public void test_if_funcvar_should_consume_all_tokens_when_building_formula_tree() throws Exception {
-//		IFormulaTree tree = book.getSheet(ExcelFormulaTreeTest.class.getSimpleName()).getA1Row(12).getA1Cell("A").getFormulaCellValue().getFormulaTree();
-//		assertEquals(8, tree.getAllTrees().size());
-//	}
 }
