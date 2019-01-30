@@ -91,5 +91,9 @@ public enum EvaluationHelper {
 				cell.getSheet().getIndex(), // Absolute Sheet index
 				cell.getRowIndex()); // Absolute Row index
 	}
+	
+	public static Ptg[] getPtgs(ExcelFormulaTree tree) {
+		return getPtgs(tree.getFormula(), (ExcelCell) tree.getCell());
+	}
 
 }
