@@ -53,12 +53,7 @@ public class Tokenizer {
 		return (new Tokenizer(formula)).parse();
 	}
 
-	/**
-	 * 
-	 * @param tokens
-	 * @return
-	 */
-	public static String toString(List<Token> tokens) {
+	public static void recompose(List<Token> tokens) {
 		if (tokens == null) {
 			throw new IllegalArgumentException();
 		}
@@ -80,30 +75,36 @@ public class Tokenizer {
 			}
 		}
 
-		String formula = tokens.stream().map(Token::getValue).collect(Collectors.joining());
-
-		// Remove unnecessary start and end parens
-		// TODO: remove from within formula as well
-		if (formula.charAt(0) == PAREN_OPEN) {
+		// Remove unnecessary open and close parens from start and end
+		if (String.valueOf(PAREN_OPEN).equals(tokens.get(0).getValue())) {
 			final Deque<Integer> opens = new LinkedList<>();
-			for (int i = 0, n = formula.length(); i < n; i++) {
-				char c = formula.charAt(i);
+			for (int i = 0, n = tokens.size(); i < n; i++) {
+				String value = tokens.get(i).getValue();
 
-				if (c == PAREN_OPEN) {
+				if (String.valueOf(PAREN_OPEN).equals(value)) {
 					opens.push(i);
 					continue;
 				}
 
-				if (c == PAREN_CLOSE) {
+				if (String.valueOf(PAREN_CLOSE).equals(value)) {
 					if (opens.pop() == 0 && i == n - 1) {
-						formula = formula.substring(1, n - 1);
+						tokens.remove(0);
+						tokens.remove(tokens.size() - 1);
 					}
 					continue;
 				}
 			}
 		}
+	}
 
-		return formula;
+	/**
+	 * 
+	 * @param tokens
+	 * @return
+	 */
+	public static String toString(List<Token> tokens) {
+		recompose(tokens);
+		return tokens.stream().map(Token::getValue).collect(Collectors.joining());
 	}
 
 	private String formula;
@@ -193,6 +194,8 @@ public class Tokenizer {
 						index++;
 					} else {
 						inPath = false;
+						value.insert(0, QUOTE_SINGLE);
+						value.append(QUOTE_SINGLE);
 					}
 				} else {
 					value.append(formula.charAt(index));
