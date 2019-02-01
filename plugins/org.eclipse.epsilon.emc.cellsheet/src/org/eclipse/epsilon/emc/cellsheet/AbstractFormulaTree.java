@@ -4,6 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.epsilon.emc.cellsheet.Token.TokenSubtype;
+import org.eclipse.epsilon.emc.cellsheet.Token.TokenType;
+
 public abstract class AbstractFormulaTree implements IFormulaTree {
 
 	protected IFormulaCellValue cellValue;
@@ -18,6 +21,14 @@ public abstract class AbstractFormulaTree implements IFormulaTree {
 
 	protected AbstractFormulaTree(String value, Type type, Type subtype) {
 		this(new Token(value, IFormulaTree.toTokenType(type), IFormulaTree.toTokenSubtype(subtype)));
+	}
+
+	protected AbstractFormulaTree(String value, TokenType type, TokenSubtype subtype) {
+		this(new Token(value, type, subtype));
+	}
+
+	protected AbstractFormulaTree(IFormulaTree original) {
+		this(original.getValue(), original.getType(), original.getSubtype());
 	}
 
 	protected AbstractFormulaTree(Token token) {
@@ -96,7 +107,7 @@ public abstract class AbstractFormulaTree implements IFormulaTree {
 		for (int i = 0, n = children.size(); i < n; i++) {
 			if (children.size() != o.children.size())
 				return false;
-			
+
 			if (!children.get(i).equals(o.children.get(i)))
 				return false;
 		}

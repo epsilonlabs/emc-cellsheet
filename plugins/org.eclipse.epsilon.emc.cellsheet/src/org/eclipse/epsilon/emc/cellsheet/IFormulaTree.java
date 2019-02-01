@@ -149,6 +149,10 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	default IFormulaTree getChildAt(int index) {
 		return getChildren().get(index);
 	}
+	
+	default void removeChildAt(int index) {
+		getChildren().remove(index);
+	}
 
 	/**
 	 * Add a sub-tree to this {@link IFormulaTree} and assign {@code this} as the

@@ -12,6 +12,7 @@ import org.eclipse.epsilon.emc.cellsheet.Token;
 import org.eclipse.epsilon.emc.cellsheet.Token.TokenSubtype;
 import org.eclipse.epsilon.emc.cellsheet.Token.TokenType;
 import org.eclipse.epsilon.emc.cellsheet.Tokenizer;
+import org.eclipse.epsilon.emc.cellsheet.Type;
 
 /**
  * 
@@ -20,11 +21,22 @@ import org.eclipse.epsilon.emc.cellsheet.Tokenizer;
  */
 public class ExcelFormulaTree extends AbstractFormulaTree implements IFormulaTree, HasDelegate<Token> {
 
-	/**
-	 * @param cellValue
-	 * @param parent
-	 * @param token
-	 */
+	public ExcelFormulaTree() {
+		super();
+	}
+
+	public ExcelFormulaTree(IFormulaTree original) {
+		super(original);
+	}
+
+	public ExcelFormulaTree(String value, TokenType type, TokenSubtype subtype) {
+		super(value, type, subtype);
+	}
+
+	public ExcelFormulaTree(String value, Type type, Type subtype) {
+		super(value, type, subtype);
+	}
+
 	public ExcelFormulaTree(Token token) {
 		super(token);
 	}
@@ -52,7 +64,7 @@ public class ExcelFormulaTree extends AbstractFormulaTree implements IFormulaTre
 
 	@Override
 	public String evaluate() {
-		return EvaluationHelper.evaluate(getFormula(), this);
+		return EvaluationHelper.evaluate(this);
 	}
 
 	@Override
@@ -118,111 +130,126 @@ public class ExcelFormulaTree extends AbstractFormulaTree implements IFormulaTre
 		}
 
 		ExcelFormulaTree parse() {
-			final List<Token> tokens = Tokenizer.parse(formula);
+			try {
+				final List<Token> tokens = Tokenizer.parse(formula);
 
-			Token current;
-			ExcelFormulaTree tree;
-			for (int i = 0; i < tokens.size(); i++) {
-				current = tokens.get(i);
-				tree = new ExcelFormulaTree(current);
+				Token current;
+				ExcelFormulaTree tree;
+				for (int i = 0; i < tokens.size(); i++) {
+					current = tokens.get(i);
+					tree = new ExcelFormulaTree(current);
 
-				// Operands
-				if (current.getType() == TokenType.OPERAND) {
-					operands.push(tree);
-					continue;
-				}
-
-				// Binary Infix
-				if (current.getType() == TokenType.OPERATOR_INFIX) {
-					while (!operators.isEmpty() && nextOpsSubtype().compare(current.getSubtype()) > 0) {
-						popOperator();
-					}
-					operators.push(tree);
-					continue;
-				}
-
-				// Unary Prefix
-				if (current.getType() == TokenType.OPERATOR_PREFIX) {
-					while (!operators.isEmpty() && !operands.isEmpty()
-							&& nextOpsSubtype().compare(current.getSubtype()) > 0
-							&& (nextOpsType() == TokenType.OPERATOR_PREFIX
-									|| nextOpsType() == TokenType.OPERATOR_POSTFIX)) {
-						popOperator();
-					}
-					operators.push(tree);
-					continue;
-				}
-
-				// Unary Postfix
-				if (current.getType() == TokenType.OPERATOR_POSTFIX) {
-					while (!operators.isEmpty() && !operands.isEmpty()
-							&& nextOpsSubtype().compare(current.getSubtype()) > 0
-							&& (nextOpsType() == TokenType.OPERATOR_PREFIX
-									|| nextOpsType() == TokenType.OPERATOR_POSTFIX)) {
-						popOperator();
-					}
-					operators.push(tree);
-				}
-
-				// Expressions/Parens
-				if (current.getType() == TokenType.SUBEXPRESSION) {
-					// Start
-					if (current.getSubtype() == TokenSubtype.START) {
-						operators.push(tree);
+					// Operands
+					if (current.getType() == TokenType.OPERAND) {
+						operands.push(tree);
 						continue;
 					}
 
-					// End
-					if (current.getSubtype() == TokenSubtype.STOP) {
-						ExcelFormulaTree top = popOperator();
-						boolean reachedStart = top.getToken().getSubtype() == TokenSubtype.START;
-						while (top != null && !reachedStart) {
-							top = popOperator();
-							reachedStart = top.getToken().getSubtype() == TokenSubtype.START;
-						}
-						if (!reachedStart) {
-							throw new IllegalArgumentException("No matching start bracket for end bracket at " + i);
-						}
-						// Process any unary operators after
-						while (nextOpsType() == TokenType.OPERATOR_PREFIX) {
+					// Binary Infix
+					if (current.getType() == TokenType.OPERATOR_INFIX) {
+						while (!operators.isEmpty() && nextOpsSubtype().compare(current.getSubtype()) > 0) {
 							popOperator();
 						}
-						continue;
-					}
-					throw new IllegalArgumentException(
-							String.format("Bad token given; Token: [%s], index: %d", current, i));
-				}
-
-				// Functions
-				if (current.getType() == TokenType.FUNCTION) {
-					if (current.getSubtype() == TokenSubtype.START) {
-						arity.push(new AtomicInteger(1));
 						operators.push(tree);
 						continue;
 					}
 
-					if (current.getSubtype() == TokenSubtype.STOP) {
-						popOperator();
+					// Unary Prefix
+					if (current.getType() == TokenType.OPERATOR_PREFIX) {
+						while (!operators.isEmpty() && !operands.isEmpty()
+								&& nextOpsSubtype().compare(current.getSubtype()) > 0
+								&& (nextOpsType() == TokenType.OPERATOR_PREFIX
+										|| nextOpsType() == TokenType.OPERATOR_POSTFIX)) {
+							popOperator();
+						}
+						operators.push(tree);
 						continue;
 					}
-					throw new IllegalArgumentException(
-							String.format("Bad token given; Token: [%s], index: %d", current, i));
+
+					// Unary Postfix
+					if (current.getType() == TokenType.OPERATOR_POSTFIX) {
+						while (!operators.isEmpty() && !operands.isEmpty()
+								&& nextOpsSubtype().compare(current.getSubtype()) > 0
+								&& (nextOpsType() == TokenType.OPERATOR_PREFIX
+										|| nextOpsType() == TokenType.OPERATOR_POSTFIX)) {
+							popOperator();
+						}
+						operators.push(tree);
+					}
+
+					// Expressions/Parens
+					if (current.getType() == TokenType.SUBEXPRESSION) {
+						// Start
+						if (current.getSubtype() == TokenSubtype.START) {
+							operators.push(tree);
+							continue;
+						}
+
+						// End
+						if (current.getSubtype() == TokenSubtype.STOP) {
+							ExcelFormulaTree top = popOperator();
+							boolean reachedStart = top.getToken().getSubtype() == TokenSubtype.START;
+							while (top != null && !reachedStart) {
+								top = popOperator();
+								reachedStart = top.getToken().getSubtype() == TokenSubtype.START;
+							}
+							if (!reachedStart) {
+								throw new IllegalArgumentException("No matching start bracket for end bracket at " + i);
+							}
+							// Process any unary operators after
+							while (nextOpsType() == TokenType.OPERATOR_PREFIX) {
+								popOperator();
+							}
+							continue;
+						}
+						throw new IllegalArgumentException(
+								String.format("Bad token given; Token: [%s], index: %d", current, i));
+					}
+
+					// Functions
+					if (current.getType() == TokenType.FUNCTION) {
+						if (current.getSubtype() == TokenSubtype.START) {
+							int arityInit = 1;
+							if ((i + 1 < tokens.size()) && tokens.get(i + 1).getSubtype() == TokenSubtype.STOP) {
+								arityInit = 0;
+							}
+							arity.push(new AtomicInteger(arityInit));
+							operators.push(tree);
+							continue;
+						}
+
+						if (current.getSubtype() == TokenSubtype.STOP) {
+							// Case of no arg methods
+							if (tokens.get(i - 1).getSubtype() == TokenSubtype.START) {
+								arity.peek().set(0);
+							}
+							popOperator();
+							continue;
+						}
+						throw new IllegalArgumentException(
+								String.format("Bad token given; Token: [%s], index: %d", current, i));
+					}
+
+					// Function Arguments
+					if (current.getType() == TokenType.ARGUMENT) {
+						arity.peek().getAndIncrement();
+						continue;
+					}
 				}
 
-				// Function Arguments
-				if (current.getType() == TokenType.ARGUMENT) {
-					arity.peek().getAndIncrement();
-					continue;
+				while (!operators.isEmpty()) {
+					popOperator();
 				}
+
+				assert operands.size() == 1;
+
+				return operands.pop();
+			} 
+			
+			// Return Error Tree - bad formula given
+			catch (Exception e) {
+				return ExcelFormulaTree.fromString("#REF!");
 			}
-
-			while (!operators.isEmpty()) {
-				popOperator();
-			}
-
-			assert operands.size() == 1;
-
-			return operands.pop();
 		}
 
 		/**
