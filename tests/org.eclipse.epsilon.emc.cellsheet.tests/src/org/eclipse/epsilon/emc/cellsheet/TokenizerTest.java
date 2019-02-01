@@ -1,6 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +23,14 @@ public class TokenizerTest {
 		List<Token> actual = Tokenizer.parse(formula);
 		String rebuilt = Tokenizer.toString(actual);
 		assertEquals(formula.substring(1), rebuilt);
+	}
+	
+	@Test
+	public void parse_should_return_token_when_given_structured_reference_with_table_specifier() throws Exception {
+		String formula = "data[[#This Row],[some-column]]";
+		List<Token> actual = Tokenizer.parse(formula);
+		assertEquals(1, actual.size());
+		assertEquals(new Token("data[[#This Row],[some-column]]", TokenType.OPERAND, TokenSubtype.RANGE), actual.get(0)); 
 	}
 
 	@Test

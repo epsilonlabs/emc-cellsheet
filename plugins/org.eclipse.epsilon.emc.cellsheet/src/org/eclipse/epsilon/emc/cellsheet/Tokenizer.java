@@ -151,7 +151,7 @@ public class Tokenizer {
 
 		boolean inString = false;
 		boolean inPath = false;
-		boolean inRange = false;
+		int inRange = 0;
 		boolean inError = false;
 
 		StringBuilder value = new StringBuilder();
@@ -170,7 +170,7 @@ public class Tokenizer {
 						index++;
 					} else {
 						inString = false;
-						value.insert(0,  QUOTE_DOUBLE);
+						value.insert(0, QUOTE_DOUBLE);
 						value.append(QUOTE_DOUBLE);
 						tokens.add(dumpToken(value, TokenType.OPERAND, TokenSubtype.TEXT));
 					}
@@ -204,13 +204,15 @@ public class Tokenizer {
 			// bracketed strings (R1C1 range index or linked workbook name)
 			// no embeds (changed to "()" by Excel)
 			// end does not mark a token
-			if (inRange) {
+			if (inRange > 0) {
 				if (formula.charAt(index) == BRACKET_CLOSE) {
-					inRange = false;
+					inRange--;
 				}
-				value.append(formula.charAt(index));
-				index++;
-				continue;
+				if (formula.charAt(index) != BRACKET_OPEN) {
+					value.append(formula.charAt(index));
+					index++;
+					continue;
+				}
 			}
 
 			// error values
@@ -257,7 +259,7 @@ public class Tokenizer {
 			}
 
 			if (formula.charAt(index) == BRACKET_OPEN) {
-				inRange = true;
+				inRange++;
 				value.append(BRACKET_OPEN);
 				index++;
 				continue;
@@ -391,6 +393,11 @@ public class Tokenizer {
 
 			// function, subexpression, or array parameters, or operand unions
 			if (formula.charAt(index) == COMMA) {
+				if (inRange > 0) {
+					value.append(COMMA);
+					index++;
+					continue;
+				}
 				if (value.length() > 0) {
 					tokens.add(dumpToken(value, TokenType.OPERAND));
 				}
