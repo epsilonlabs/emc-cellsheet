@@ -1,8 +1,12 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -11,9 +15,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
-import org.eclipse.epsilon.emc.cellsheet.Token;
 import org.eclipse.epsilon.emc.cellsheet.Token.TokenSubtype;
 import org.eclipse.epsilon.emc.cellsheet.Token.TokenType;
+import org.eclipse.epsilon.emc.cellsheet.TokenPool;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,11 +56,13 @@ public class ExcelFormulaTreeTest {
 	}
 
 	public static ExcelFormulaTree fromToken(String value, TokenType type, TokenSubtype subtype) {
-		return new ExcelFormulaTree(new Token(value, type, subtype));
+		return new ExcelFormulaTree(TokenPool.getInstance(value, type, subtype));
 	}
 
 	public static ExcelFormulaTree fromToken(String value, TokenType type) {
-		return new ExcelFormulaTree(new Token(value, type));
+		return new ExcelFormulaTree(TokenPool.getInstance(value, type));
+	}
+	
 	}
 
 	@Test
@@ -72,8 +78,8 @@ public class ExcelFormulaTreeTest {
 		final String formula = "IF(TRUE, \"Yes\", \"No\")";
 		final IFormulaTree expected = fromToken("IF", TokenType.FUNCTION, TokenSubtype.START);
 		expected.addChild(fromToken("TRUE", TokenType.OPERAND, TokenSubtype.LOGICAL));
-		expected.addChild(fromToken("Yes", TokenType.OPERAND, TokenSubtype.TEXT));
-		expected.addChild(fromToken("No", TokenType.OPERAND, TokenSubtype.TEXT));
+		expected.addChild(fromToken("\"Yes\"", TokenType.OPERAND, TokenSubtype.TEXT));
+		expected.addChild(fromToken("\"No\"", TokenType.OPERAND, TokenSubtype.TEXT));
 		assertEquals(expected, ExcelFormulaTree.fromString(formula));
 	}
 
@@ -83,10 +89,10 @@ public class ExcelFormulaTreeTest {
 		final IFormulaTree expected = fromToken("IF", TokenType.FUNCTION, TokenSubtype.START);
 		expected.addChild(fromToken("IF", TokenType.FUNCTION, TokenSubtype.START));
 		expected.getChildAt(0).addChild(fromToken("TRUE", TokenType.OPERAND, TokenSubtype.LOGICAL));
-		expected.getChildAt(0).addChild(fromToken("Yes", TokenType.OPERAND, TokenSubtype.TEXT));
-		expected.getChildAt(0).addChild(fromToken("No", TokenType.OPERAND, TokenSubtype.TEXT));
-		expected.addChild(fromToken("Yes", TokenType.OPERAND, TokenSubtype.TEXT));
-		expected.addChild(fromToken("No", TokenType.OPERAND, TokenSubtype.TEXT));
+		expected.getChildAt(0).addChild(fromToken("\"Yes\"", TokenType.OPERAND, TokenSubtype.TEXT));
+		expected.getChildAt(0).addChild(fromToken("\"No\"", TokenType.OPERAND, TokenSubtype.TEXT));
+		expected.addChild(fromToken("\"Yes\"", TokenType.OPERAND, TokenSubtype.TEXT));
+		expected.addChild(fromToken("\"No\"", TokenType.OPERAND, TokenSubtype.TEXT));
 		assertEquals(expected, ExcelFormulaTree.fromString(formula));
 	}
 
@@ -299,7 +305,7 @@ public class ExcelFormulaTreeTest {
 		poiFormulaCell.setCellFormula(formula);
 		final ICell cell = book.getSheet(SHEET_NAME).getRow(FORMULA_ROW).getCell(FORMULA_COLUMN);
 
-		final String expected = poiBook.getCreationHelper().createFormulaEvaluator().evaluate(poiFormulaCell).formatAsString();		
+		final String expected = poiBook.getCreationHelper().createFormulaEvaluator().evaluate(poiFormulaCell).getStringValue();		
 		final String actual = cell.getFormulaCellValue().getFormulaTree().evaluate();
 		assertEquals(expected, actual);
 	}

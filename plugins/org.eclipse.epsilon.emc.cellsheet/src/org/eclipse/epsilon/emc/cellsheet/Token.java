@@ -4,12 +4,12 @@ import java.util.EnumSet;
 import java.util.Objects;
 
 public class Token {
-	
+
 	public static final Token FUNCTION_STOP = new Token(")", TokenType.FUNCTION, TokenSubtype.STOP);
 	public static final Token SUBEXPRESSION_START = new Token("(", TokenType.SUBEXPRESSION, TokenSubtype.START);
 	public static final Token SUBEXPRESSION_STOP = new Token(")", TokenType.SUBEXPRESSION, TokenSubtype.STOP);
 	public static final Token ARGUMENT = new Token(",", TokenType.ARGUMENT);
-	
+
 	public static final EnumSet<TokenType> EXPR = EnumSet.of(TokenType.FUNCTION, TokenType.SUBEXPRESSION);
 	public static final EnumSet<TokenSubtype> EXPR_START = EnumSet.of(TokenSubtype.START, TokenSubtype.ARRAY_START,
 			TokenSubtype.ARRAY_ROW_START);
@@ -35,7 +35,7 @@ public class Token {
 		this.type = type;
 		this.subtype = subtype == null ? TokenSubtype.NOTHING : subtype;
 	}
-	
+
 	public Token(char value, TokenType type, TokenSubtype subtype) {
 		this(String.valueOf(value), type, subtype);
 	}
@@ -67,7 +67,7 @@ public class Token {
 	public boolean isExpr() {
 		return EXPR.contains(type);
 	}
-	
+
 	public boolean isExprStart() {
 		return (EXPR.contains(type) && EXPR_START.contains(subtype));
 	}
@@ -90,7 +90,7 @@ public class Token {
 		Token token = (Token) o;
 		return Objects.equals(value, token.value) && type == token.type && subtype == token.subtype;
 	}
-	
+
 	public boolean equals(TokenType type, TokenSubtype subtype) {
 		return this.type == type && this.subtype == subtype;
 	}
@@ -103,7 +103,7 @@ public class Token {
 	public Integer getPrecedence() {
 		return subtype.getPrecedence();
 	}
-	
+
 	public static enum TokenSubtype {
 
 		NOTHING,
@@ -124,14 +124,14 @@ public class Token {
 
 		// New operators
 		NEGATION(6),
-		
+
 		PERCENT(5),
-		
+
 		EXPONENTION(4),
-		
+
 		MULTIPLICATION(3),
 		DIVISION(3),
-		
+
 		ADDITION(2),
 		SUBTRACTION(2),
 
@@ -157,7 +157,7 @@ public class Token {
 		public int getPrecedence() {
 			return precedence;
 		}
-		
+
 		public int compare(TokenSubtype other) {
 			return Integer.compare(precedence, other.precedence);
 		}

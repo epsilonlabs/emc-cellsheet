@@ -68,11 +68,6 @@ public class Tokenizer {
 				it.add(new Token(PAREN_OPEN, TokenType.FUNCTION, TokenSubtype.START));
 				continue;
 			}
-
-			if (token.getSubtype() == TokenSubtype.TEXT) {
-				token.setValue(String.format("\"%s\"", token.getValue()));
-				continue;
-			}
 		}
 
 		// Remove unnecessary open and close parens from start and end
@@ -175,6 +170,8 @@ public class Tokenizer {
 						index++;
 					} else {
 						inString = false;
+						value.insert(0,  QUOTE_DOUBLE);
+						value.append(QUOTE_DOUBLE);
 						tokens.add(dumpToken(value, TokenType.OPERAND, TokenSubtype.TEXT));
 					}
 				} else {
