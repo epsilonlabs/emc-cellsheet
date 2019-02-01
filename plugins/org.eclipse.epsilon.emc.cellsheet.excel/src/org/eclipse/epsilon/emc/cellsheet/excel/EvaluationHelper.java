@@ -21,6 +21,9 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
+import org.eclipse.epsilon.emc.cellsheet.ICell;
+import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
+import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
 
 /**
  * Helper class for evaluating AST/Formula
@@ -61,27 +64,54 @@ public enum EvaluationHelper {
 						._getWorkbookEvaluator());
 	}
 
-	public static String evaluate(String formula, ExcelFormulaTree tree) {
-		final ValueEval result = getEvaluator(tree.getBook()).evaluate(formula, getCellRef(tree));
-
+	public static String evaluate(String formula, ExcelCell cell) {
+		final ValueEval result = getEvaluator(cell.getBook()).evaluate(formula, getCellRef(cell));
 		try {
 			if (result instanceof NumberEval)
 				return Double.toString(OperandResolver.coerceValueToDouble(result));
 			if (result instanceof StringEval)
-				return String.format("\"%s\"", OperandResolver.coerceValueToString(result));
+				return OperandResolver.coerceValueToString(result);
 		} catch (Exception e) {
 			throw new AssertionError("Should never get here, already checked for cast");
 		}
 		return OperandResolver.coerceValueToString(result);
 	}
 
-	public static CellReference getCellRef(ExcelFormulaTree tree) {
-		return new CellReference(tree.getSheet().getName(), // Sheet name
-				tree.getCell().getRowIndex(), // Cell row
-				tree.getCell().getColIndex(), // Cell col
+	public static String evaluate(String formula, ICell cell) {
+		return evaluate(formula, (ExcelCell) cell);
+	}
+
+	public static String evaluate(ExcelFormulaCellValue cellValue) {
+		return evaluate(cellValue.getFormula(), cellValue.getCell());
+	}
+
+	public static String evaluate(IFormulaCellValue cellValue) {
+		return evaluate((ExcelFormulaCellValue) cellValue);
+	}
+
+	public static String evaluate(ExcelFormulaTree tree) {
+		return evaluate(tree.getFormula(), (ExcelCell) tree.getCell());
+	}
+
+	public static String evaluate(IFormulaTree tree) {
+		return evaluate((ExcelFormulaTree) tree);
+	}
+
+	public static CellReference getCellRef(ICell cell) {
+		return new CellReference(cell.getSheet().getName(), // Sheet name
+				cell.getRowIndex(), // Row
+				cell.getColIndex(), // Col
 				true, // Is abs row
 				true // Is abs col
 		);
+	}
+
+	public static CellReference getCellRef(IFormulaCellValue cellValue) {
+		return getCellRef(cellValue.getCell());
+	}
+
+	public static CellReference getCellRef(IFormulaTree tree) {
+		return getCellRef(tree.getCell());
 	}
 
 	public static Ptg[] getPtgs(String formula, ExcelCell cell) {
@@ -91,7 +121,12 @@ public enum EvaluationHelper {
 				cell.getSheet().getIndex(), // Absolute Sheet index
 				cell.getRowIndex()); // Absolute Row index
 	}
-	
+
+	/**
+	 * 
+	 * @param tree
+	 * @return
+	 */
 	public static Ptg[] getPtgs(ExcelFormulaTree tree) {
 		return getPtgs(tree.getFormula(), (ExcelCell) tree.getCell());
 	}
