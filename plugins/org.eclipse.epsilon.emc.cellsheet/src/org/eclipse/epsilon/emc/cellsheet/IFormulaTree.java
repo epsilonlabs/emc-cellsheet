@@ -147,7 +147,7 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 *         not exist
 	 */
 	default IFormulaTree getChildAt(int index) {
-		return getChildren().get(index);
+		return index < getChildren().size() ? getChildren().get(index) : null;
 	}
 	
 	default void removeChildAt(int index) {
@@ -168,6 +168,11 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	default void addChild(int index, IFormulaTree child) {
 		child.setParent(this);
 		getChildren().add(index, child);
+	}
+	
+	default void setChild(int index, IFormulaTree child) {
+		child.setParent(this);
+		getChildren().set(index, child);
 	}
 
 	/**

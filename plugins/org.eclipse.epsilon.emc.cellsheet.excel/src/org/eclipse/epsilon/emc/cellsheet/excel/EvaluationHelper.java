@@ -10,6 +10,7 @@ import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
 import org.apache.poi.ss.formula.FormulaType;
 import org.apache.poi.ss.formula.WorkbookEvaluator;
+import org.apache.poi.ss.formula.eval.ErrorEval;
 import org.apache.poi.ss.formula.eval.NumberEval;
 import org.apache.poi.ss.formula.eval.OperandResolver;
 import org.apache.poi.ss.formula.eval.StringEval;
@@ -69,8 +70,10 @@ public enum EvaluationHelper {
 		try {
 			if (result instanceof NumberEval)
 				return Double.toString(OperandResolver.coerceValueToDouble(result));
-			if (result instanceof StringEval)
-				return OperandResolver.coerceValueToString(result);
+			
+			if (result instanceof ErrorEval) 
+				return ((ErrorEval) result).getErrorString();
+			
 		} catch (Exception e) {
 			throw new AssertionError("Should never get here, already checked for cast");
 		}
@@ -129,6 +132,10 @@ public enum EvaluationHelper {
 	 */
 	public static Ptg[] getPtgs(ExcelFormulaTree tree) {
 		return getPtgs(tree.getFormula(), (ExcelCell) tree.getCell());
+	}
+	
+	public static Ptg[] getPtgs(IFormulaTree tree) {
+		return getPtgs((ExcelFormulaTree) tree);
 	}
 
 }
