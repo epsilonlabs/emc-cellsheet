@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -15,9 +14,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
+import org.eclipse.epsilon.emc.cellsheet.Token;
 import org.eclipse.epsilon.emc.cellsheet.Token.TokenSubtype;
 import org.eclipse.epsilon.emc.cellsheet.Token.TokenType;
-import org.eclipse.epsilon.emc.cellsheet.TokenPool;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,13 +55,11 @@ public class ExcelFormulaTreeTest {
 	}
 
 	public static ExcelFormulaTree fromToken(String value, TokenType type, TokenSubtype subtype) {
-		return new ExcelFormulaTree(TokenPool.getInstance(value, type, subtype));
+		return new ExcelFormulaTree(new Token(value, type, subtype));
 	}
 
 	public static ExcelFormulaTree fromToken(String value, TokenType type) {
-		return new ExcelFormulaTree(TokenPool.getInstance(value, type));
-	}
-	
+		return new ExcelFormulaTree(new Token(value, type));
 	}
 
 	@Test
