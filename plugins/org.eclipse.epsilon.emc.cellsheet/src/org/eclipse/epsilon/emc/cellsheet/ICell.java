@@ -103,7 +103,7 @@ public interface ICell extends HasId, HasA1, Comparable<ICell> {
 	default IStringCellValue getStringCellValue() {
 		ICellValue<?> value = getCellValue();
 		if (!(value instanceof IStringCellValue)) {
-			throw new IllegalArgumentException(toString() + " - Does not contain a Formula value");
+			throw new IllegalArgumentException(toString() + " - Does not contain a String value");
 		}
 		return (IStringCellValue) value;
 	}
@@ -115,7 +115,7 @@ public interface ICell extends HasId, HasA1, Comparable<ICell> {
 	default INumericCellValue getNumericCellValue() {
 		ICellValue<?> value = getCellValue();
 		if (!(value instanceof INumericCellValue)) {
-			throw new IllegalArgumentException(toString() + " - Does not contain a Formula value");
+			throw new IllegalArgumentException(toString() + " - Does not contain a Numeric value");
 		}
 		return (INumericCellValue) value;
 	}
