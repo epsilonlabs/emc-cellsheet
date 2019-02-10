@@ -12,7 +12,7 @@ import java.util.Set;
 
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
-import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
+import org.eclipse.epsilon.emc.cellsheet.IAst;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -112,11 +112,11 @@ public class ExcelFormulaCellValueTest {
 		ICell cell = book.getSheet("getFormulaTree").getRow(0).getCell(0);
 		IFormulaCellValue value = (IFormulaCellValue) cell.getCellValue();
 
-		IFormulaTree sumTree = value.getFormulaTree();
+		IAst sumTree = value.getFormulaTree();
 		assertEquals("SUM", sumTree.getValue());
 		assertEquals(1, sumTree.getChildren().size());
 
-		IFormulaTree areaTree = sumTree.getChildren().get(0);
+		IAst areaTree = sumTree.getChildren().get(0);
 		assertEquals("Data!A1:D5", areaTree.getValue());
 		assertEquals(sumTree, areaTree.getParent());
 	}
@@ -128,13 +128,13 @@ public class ExcelFormulaCellValueTest {
 		ICell cell = book.getSheet("getFormulaTree").getRow(1).getCell(0);
 		IFormulaCellValue value = (IFormulaCellValue) cell.getCellValue();
 
-		IFormulaTree sumTree = value.getFormulaTree();
+		IAst sumTree = value.getFormulaTree();
 		assertEquals("SUM", sumTree.getValue());
 		assertEquals(5, sumTree.getChildren().size());
 
 		final Set<String> expected = new HashSet<>(
 				Arrays.asList("Data!B1", "Data!D5", "Data!B5", "Data!D2", "Data!C2"));
-		for (IFormulaTree child : sumTree.getChildren()) {
+		for (IAst child : sumTree.getChildren()) {
 			assertThat(expected, hasItem(child.getValue()));
 			assertEquals(sumTree, child.getParent());
 			expected.remove(child.getValue());

@@ -30,20 +30,6 @@ public interface IRow extends HasId, HasA1, Comparable<IRow>, Iterable<ICell> {
 
 	/**
 	 * <p>
-	 * Model element type: {@link Type#ROW}
-	 * </p>
-	 */
-	public static final Type TYPE = Type.ROW;
-
-	/**
-	 * <p>
-	 * Model element kinds: [{@link Type#ROW}]
-	 * </p>
-	 */
-	public static final Type[] KINDS = { TYPE };
-
-	/**
-	 * <p>
 	 * Get the 0-based index of this row as defined by it's parent sheet
 	 * </p>
 	 * 
@@ -134,13 +120,13 @@ public interface IRow extends HasId, HasA1, Comparable<IRow>, Iterable<ICell> {
 	}
 
 	@Override
-	default Type getType() {
-		return IRow.TYPE;
+	default ElementType getType() {
+		return CoreType.ROW;
 	}
 
 	@Override
-	default Type[] getKinds() {
-		return IRow.KINDS;
+	default ElementType[] getKinds() {
+		return new ElementType[] { getType() };
 	}
 
 	@Override

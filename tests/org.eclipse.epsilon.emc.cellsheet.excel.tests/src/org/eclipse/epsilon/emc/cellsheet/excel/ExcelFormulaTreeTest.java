@@ -13,7 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.IFormulaCellValue;
-import org.eclipse.epsilon.emc.cellsheet.IFormulaTree;
+import org.eclipse.epsilon.emc.cellsheet.IAst;
 import org.eclipse.epsilon.emc.cellsheet.Token;
 import org.eclipse.epsilon.emc.cellsheet.Token.TokenSubtype;
 import org.eclipse.epsilon.emc.cellsheet.Token.TokenType;
@@ -54,78 +54,78 @@ public class ExcelFormulaTreeTest {
 		book = new ExcelBook(poiBook);
 	}
 
-	public static ExcelFormulaTree fromToken(String value, TokenType type, TokenSubtype subtype) {
-		return new ExcelFormulaTree(new Token(value, type, subtype));
+	public static ExcelAst fromToken(String value, TokenType type, TokenSubtype subtype) {
+		return new ExcelAst(new Token(value, type, subtype));
 	}
 
-	public static ExcelFormulaTree fromToken(String value, TokenType type) {
-		return new ExcelFormulaTree(new Token(value, type));
+	public static ExcelAst fromToken(String value, TokenType type) {
+		return new ExcelAst(new Token(value, type));
 	}
 
 	@Test
 	public void fromString_should_return_correct_tree_when_given_single_arg_function() throws Exception {
 		final String formula = "SUM(A1:A5)";
-		final IFormulaTree expected = fromToken("SUM", TokenType.FUNCTION, TokenSubtype.START);
+		final IAst expected = fromToken("SUM", TokenType.FUNCTION, TokenSubtype.START);
 		expected.addChild(fromToken("A1:A5", TokenType.OPERAND, TokenSubtype.RANGE));
-		assertEquals(expected, ExcelFormulaTree.fromString(formula));
+		assertEquals(expected, ExcelAst.fromString(formula));
 	}
 
 	@Test
 	public void fromString_should_return_correct_tree_when_given_function() throws Exception {
 		final String formula = "IF(TRUE, \"Yes\", \"No\")";
-		final IFormulaTree expected = fromToken("IF", TokenType.FUNCTION, TokenSubtype.START);
+		final IAst expected = fromToken("IF", TokenType.FUNCTION, TokenSubtype.START);
 		expected.addChild(fromToken("TRUE", TokenType.OPERAND, TokenSubtype.LOGICAL));
 		expected.addChild(fromToken("\"Yes\"", TokenType.OPERAND, TokenSubtype.TEXT));
 		expected.addChild(fromToken("\"No\"", TokenType.OPERAND, TokenSubtype.TEXT));
-		assertEquals(expected, ExcelFormulaTree.fromString(formula));
+		assertEquals(expected, ExcelAst.fromString(formula));
 	}
 
 	@Test
 	public void fromString_should_return_correct_tree_when_given_function_within_function() throws Exception {
 		final String formula = "IF(IF(TRUE, \"Yes\", \"No\"), \"Yes\", \"No\")";
-		final IFormulaTree expected = fromToken("IF", TokenType.FUNCTION, TokenSubtype.START);
+		final IAst expected = fromToken("IF", TokenType.FUNCTION, TokenSubtype.START);
 		expected.addChild(fromToken("IF", TokenType.FUNCTION, TokenSubtype.START));
 		expected.getChildAt(0).addChild(fromToken("TRUE", TokenType.OPERAND, TokenSubtype.LOGICAL));
 		expected.getChildAt(0).addChild(fromToken("\"Yes\"", TokenType.OPERAND, TokenSubtype.TEXT));
 		expected.getChildAt(0).addChild(fromToken("\"No\"", TokenType.OPERAND, TokenSubtype.TEXT));
 		expected.addChild(fromToken("\"Yes\"", TokenType.OPERAND, TokenSubtype.TEXT));
 		expected.addChild(fromToken("\"No\"", TokenType.OPERAND, TokenSubtype.TEXT));
-		assertEquals(expected, ExcelFormulaTree.fromString(formula));
+		assertEquals(expected, ExcelAst.fromString(formula));
 	}
 
 	@Test
 	public void fromString_should_return_correct_tree_when_given_pre_and_postfix_unary_operators() throws Exception {
 		final String formula = "-1%";
-		final IFormulaTree expected = fromToken("%", TokenType.OPERATOR_POSTFIX, TokenSubtype.PERCENT);
+		final IAst expected = fromToken("%", TokenType.OPERATOR_POSTFIX, TokenSubtype.PERCENT);
 		expected.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
 		expected.getChildAt(0).addChild(fromToken("1", TokenType.OPERAND, TokenSubtype.NUMBER));
-		assertEquals(expected, ExcelFormulaTree.fromString(formula));
+		assertEquals(expected, ExcelAst.fromString(formula));
 	}
 
 	@Test
 	public void fromString_should_return_correct_tree_when_given_pre_and_postfix_unary_operators_with_parens_for_prefix()
 			throws Exception {
 		final String formula = "-(1%)";
-		final IFormulaTree expected = fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION);
+		final IAst expected = fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION);
 		expected.addChild(fromToken("%", TokenType.OPERATOR_POSTFIX, TokenSubtype.PERCENT));
 		expected.getChildAt(0).addChild(fromToken("1", TokenType.OPERAND, TokenSubtype.NUMBER));
-		assertEquals(expected, ExcelFormulaTree.fromString(formula));
+		assertEquals(expected, ExcelAst.fromString(formula));
 	}
 
 	@Test
 	public void fromString_should_return_correct_tree_when_given_pre_and_postfix_unary_operators_with_parens_for_postfix()
 			throws Exception {
 		final String formula = "(-1)%";
-		final IFormulaTree expected = fromToken("%", TokenType.OPERATOR_POSTFIX, TokenSubtype.PERCENT);
+		final IAst expected = fromToken("%", TokenType.OPERATOR_POSTFIX, TokenSubtype.PERCENT);
 		expected.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
 		expected.getChildAt(0).addChild(fromToken("1", TokenType.OPERAND, TokenSubtype.NUMBER));
-		assertEquals(expected, ExcelFormulaTree.fromString(formula));
+		assertEquals(expected, ExcelAst.fromString(formula));
 	}
 
 	@Test
 	public void fromString_should_return_correct_tree_when_given_multiple_prefix_ops_with_parens() throws Exception {
 		final String formula = "-(-(-(-(-(1)))))";
-		final IFormulaTree expected = fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION);
+		final IAst expected = fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION);
 		expected.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
 		expected.getChildAt(0).addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
 		expected.getChildAt(0).getChildAt(0).addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
@@ -133,13 +133,13 @@ public class ExcelFormulaTreeTest {
 				.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
 		expected.getChildAt(0).getChildAt(0).getChildAt(0).getChildAt(0)
 				.addChild(fromToken("1", TokenType.OPERAND, TokenSubtype.NUMBER));
-		assertEquals(expected, ExcelFormulaTree.fromString(formula));
+		assertEquals(expected, ExcelAst.fromString(formula));
 	}
 
 	@Test
 	public void fromString_should_return_correct_tree_when_given_multiple_prefix_ops() throws Exception {
 		final String formula = "-----1";
-		final IFormulaTree expected = fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION);
+		final IAst expected = fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION);
 		expected.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
 		expected.getChildAt(0).addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
 		expected.getChildAt(0).getChildAt(0).addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
@@ -147,13 +147,13 @@ public class ExcelFormulaTreeTest {
 				.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
 		expected.getChildAt(0).getChildAt(0).getChildAt(0).getChildAt(0)
 				.addChild(fromToken("1", TokenType.OPERAND, TokenSubtype.NUMBER));
-		assertEquals(expected, ExcelFormulaTree.fromString(formula));
+		assertEquals(expected, ExcelAst.fromString(formula));
 	}
 
 	@Test
 	public void fromString_should_return_correct_tree_when_given_prefixed_unary_whole_expression() {
 		final String formula = "-(8/2+2/1)";
-		final IFormulaTree expected = fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION);
+		final IAst expected = fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION);
 		expected.addChild(fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION));
 
 		// LHS
@@ -166,13 +166,13 @@ public class ExcelFormulaTreeTest {
 		expected.getChildAt(0).getChildAt(1).addChild(fromToken("2", TokenType.OPERAND, TokenSubtype.NUMBER));
 		expected.getChildAt(0).getChildAt(1).addChild(fromToken("1", TokenType.OPERAND, TokenSubtype.NUMBER));
 
-		assertEquals(expected, ExcelFormulaTree.fromString(formula));
+		assertEquals(expected, ExcelAst.fromString(formula));
 	}
 
 	@Test
 	public void fromString_should_return_correct_tree_when_given_prefixed_unary_subexpression() {
 		final String formula = "-(8/2)+(2/1)";
-		final IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		final IAst expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
 
 		// LHS
 		expected.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
@@ -185,12 +185,12 @@ public class ExcelFormulaTreeTest {
 		expected.getChildAt(1).addChild(fromToken("2", TokenType.OPERAND, TokenSubtype.NUMBER));
 		expected.getChildAt(1).addChild(fromToken("1", TokenType.OPERAND, TokenSubtype.NUMBER));
 
-		assertEquals(expected, ExcelFormulaTree.fromString(formula));
+		assertEquals(expected, ExcelAst.fromString(formula));
 	}
 
 	@Test
 	public void equals_should_return_true_when_the_same_instance() throws Exception {
-		final IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		final IAst expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
 		expected.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
 		expected.getChildAt(0).addChild(fromToken("/", TokenType.OPERATOR_INFIX, TokenSubtype.DIVISION));
 		expected.getChildAt(0).getChildAt(0).addChild(fromToken("8", TokenType.OPERAND, TokenSubtype.NUMBER));
@@ -200,13 +200,13 @@ public class ExcelFormulaTreeTest {
 
 	@Test
 	public void equals_should_return_true_when_the_same_structure() throws Exception {
-		final IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		final IAst expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
 		expected.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
 		expected.getChildAt(0).addChild(fromToken("/", TokenType.OPERATOR_INFIX, TokenSubtype.DIVISION));
 		expected.getChildAt(0).getChildAt(0).addChild(fromToken("8", TokenType.OPERAND, TokenSubtype.NUMBER));
 		expected.getChildAt(0).getChildAt(0).addChild(fromToken("2", TokenType.OPERAND, TokenSubtype.NUMBER));
 
-		final IFormulaTree actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		final IAst actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
 		actual.addChild(fromToken("-", TokenType.OPERATOR_PREFIX, TokenSubtype.NEGATION));
 		actual.getChildAt(0).addChild(fromToken("/", TokenType.OPERATOR_INFIX, TokenSubtype.DIVISION));
 		actual.getChildAt(0).getChildAt(0).addChild(fromToken("8", TokenType.OPERAND, TokenSubtype.NUMBER));
@@ -217,8 +217,8 @@ public class ExcelFormulaTreeTest {
 
 	@Test
 	public void equals_should_return_true_when_cellvalue_both_same() throws Exception {
-		IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
-		IFormulaTree actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IAst expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IAst actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
 
 		IFormulaCellValue cellValue = mock(IFormulaCellValue.class);
 		expected.setCellValue(cellValue);
@@ -231,8 +231,8 @@ public class ExcelFormulaTreeTest {
 
 	@Test
 	public void equals_should_return_true_when_cellvalue_both_null() throws Exception {
-		IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
-		IFormulaTree actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IAst expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IAst actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
 
 		expected.setCellValue(null);
 		actual.setCellValue(null);
@@ -245,8 +245,8 @@ public class ExcelFormulaTreeTest {
 
 	@Test
 	public void equals_should_return_false_when_cellvalue_is_different() throws Exception {
-		IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
-		IFormulaTree actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IAst expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IAst actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
 
 		IFormulaCellValue cellValue = mock(IFormulaCellValue.class);
 		expected.setCellValue(cellValue);
@@ -259,29 +259,29 @@ public class ExcelFormulaTreeTest {
 
 	@Test
 	public void equals_should_return_true_when_token_both_same() throws Exception {
-		IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
-		IFormulaTree actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IAst expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IAst actual = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
 		assertTrue(expected.equals(actual));
 		assertTrue(actual.equals(expected));
 	}
 
 	@Test
 	public void equals_should_return_false_when_token_not_same() throws Exception {
-		IFormulaTree expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
-		IFormulaTree actual = fromToken("-", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IAst expected = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IAst actual = fromToken("-", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
 		assertFalse(expected.equals(actual));
 		assertFalse(actual.equals(expected));
 	}
 
 	@Test
 	public void equals_should_return_false_when_other_is_null() throws Exception {
-		IFormulaTree tree = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IAst tree = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
 		assertFalse(tree.equals(null));
 	}
 
 	@Test
 	public void equals_should_return_false_when_other_is_not_same_class() throws Exception {
-		IFormulaTree tree = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
+		IAst tree = fromToken("+", TokenType.OPERATOR_INFIX, TokenSubtype.ADDITION);
 		assertFalse(tree.equals(this));
 	}
 

@@ -21,7 +21,7 @@ public class AbstractFormulaTreeTest {
 	public MockitoRule mockito = MockitoJUnit.rule();
 
 	@Spy()
-	AbstractFormulaTree tree;
+	AbstractAst tree;
 	
 	@Test
 	public void getCellValue_should_get_assigned_when_root() throws Exception {
@@ -34,7 +34,7 @@ public class AbstractFormulaTreeTest {
 	@Test
 	public void getCellValue_should_get_assigned_when_child() throws Exception {
 		final IFormulaCellValue cellValue = mock(IFormulaCellValue.class);
-		final AbstractFormulaTree parent = spy(AbstractFormulaTree.class);
+		final AbstractAst parent = spy(AbstractAst.class);
 		parent.cellValue = cellValue;
 		
 		parent.addChild(tree);
@@ -52,14 +52,14 @@ public class AbstractFormulaTreeTest {
 
 	@Test
 	public void getParent_should_return_assigned_parent() throws Exception {
-		final IFormulaTree parent = mock(IFormulaTree.class);
+		final IAst parent = mock(IAst.class);
 		tree.parent = parent;
 		assertEquals(parent, tree.getParent());
 	}
 	
 	@Test
 	public void setParent() throws Exception {
-		final IFormulaTree parent = mock(IFormulaTree.class);
+		final IAst parent = mock(IAst.class);
 		assertNotSame(parent, tree.parent);
 		tree.setParent(parent);
 		assertEquals(parent, tree.parent);
@@ -82,7 +82,7 @@ public class AbstractFormulaTreeTest {
 
 	@Test
 	public void getChildren_should_return_assigned_list() throws Exception {
-		LinkedList<IFormulaTree> list = new LinkedList<>();
+		LinkedList<IAst> list = new LinkedList<>();
 		tree.children = list;
 		assertEquals(list, tree.getChildren());
 	}

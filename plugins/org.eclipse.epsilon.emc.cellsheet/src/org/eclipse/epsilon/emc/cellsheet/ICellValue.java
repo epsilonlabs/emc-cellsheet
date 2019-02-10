@@ -1,28 +1,31 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.Date;
+
 /**
  * <p>
  * CellValue is an abstract model element that defines the contents of a Cell.
  * <p>
  * 
- * <p>
- * Concrete model element types will primarily be wrappers for Java
- * primitives/boxed values. These include: {@link IBlankCellValue},
- * {@link IErrorCellValue}, {@link IBooleanCellValue},
- * {@link INumericCellValue}, {@link IDateCellValue}, {@link IStringCellValue}.
- * <p>
- * 
- * <p>
- * {@link IFormulaCellValue} is a special case that creates an AST of a cell
- * formula in addition to holding the raw formula and the evaluation result of
- * the formula.
- * </p>
- * 
  * @author Jonathan Co
  *
  * @param <T> Primitive type that the Cell Value wraps
  */
-public interface ICellValue<T> extends HasId, Comparable<ICellValue<?>> {
+public interface ICellValue extends HasId, Comparable<ICellValue> {
+
+	public boolean getBoolean();
+
+	public double getNumber();
+	
+	public Date getDate();
+
+	public String getString();
+	
+	public String getFormula();
+
+	public String getError();
+
+	public IAst getAst();
 
 	/**
 	 * Get the parent containing cell of this cell value
@@ -30,13 +33,6 @@ public interface ICellValue<T> extends HasId, Comparable<ICellValue<?>> {
 	 * @return the parent cell
 	 */
 	public ICell getCell();
-
-	/**
-	 * Retrieve the wrapped value of this cell value
-	 * 
-	 * @return the value of this cell value
-	 */
-	public T getValue();
 
 	/**
 	 * @return the Row this CellValue belongs to
@@ -65,8 +61,13 @@ public interface ICellValue<T> extends HasId, Comparable<ICellValue<?>> {
 	}
 
 	@Override
-	default int compareTo(ICellValue<?> o) {
+	default int compareTo(ICellValue o) {
 		return getCell().compareTo(o.getCell());
+	}
+
+	@Override
+	default ElementType[] getKinds() {
+		return new ElementType[] { getType(), CellValueType.SUPER };
 	}
 
 }

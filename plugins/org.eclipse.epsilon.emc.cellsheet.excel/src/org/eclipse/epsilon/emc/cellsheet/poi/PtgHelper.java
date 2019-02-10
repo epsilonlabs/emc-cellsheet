@@ -1,42 +1,27 @@
 package org.eclipse.epsilon.emc.cellsheet.poi;
 
 import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
-import org.apache.poi.ss.formula.FormulaParsingWorkbook;
-import org.apache.poi.ss.formula.FormulaType;
+import org.apache.poi.ss.formula.ptg.AttrPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
 
-public class FormulaHelper {
+/**
+ * Helper class for interacting with {@link Ptg} instances
+ * 
+ * @author Jonathan Co
+ *
+ */
+public class PtgHelper {
 
-	private TokenMappingFormulaParser fp;
-
-	public FormulaHelper(String formula, FormulaParsingWorkbook workbook, int sheetIndex, int rowIndex) {
-		this.fp = new TokenMappingFormulaParser(formula, workbook, sheetIndex, rowIndex);
-		this.fp.parse();
-	}
-
-	public ParseNode getRoot() {
-		return fp._rootNode;
-	}
-
-	public Ptg[] getPtgs() {
-		return fp.getRPNPtg(FormulaType.CELL);
-	}
-
-	public Map<Ptg, String> getTokenMap() {
-		Map<Ptg, String> map = new LinkedHashMap<>();
-		for (Ptg ptg : getPtgs()) {
-			if (fp.ptgTokens.containsKey(ptg)) {
-				map.put(ptg, fp.ptgTokens.get(ptg));
-				continue;
-			}
-			map.put(ptg, toString(ptg));
-		}
-
-		return map;
+	/**
+	 * Check if ptg given is an optimised SUM ptg
+	 * 
+	 * @param ptg
+	 * @return
+	 */
+	public static boolean isSumPtg(Ptg ptg) {
+		return ptg instanceof AttrPtg && ((AttrPtg) ptg).isSum();
 	}
 
 	/**
@@ -88,6 +73,7 @@ public class FormulaHelper {
 					break;
 				}
 			}
+
 			return ptg.toFormulaString();
 		} catch (Exception e) {
 			throw new UnsupportedOperationException(e);

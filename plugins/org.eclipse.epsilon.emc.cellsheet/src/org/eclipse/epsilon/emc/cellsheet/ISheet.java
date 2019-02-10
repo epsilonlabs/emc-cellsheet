@@ -29,20 +29,6 @@ public interface ISheet extends HasId, HasA1, Comparable<ISheet>, Iterable<IRow>
 
 	/**
 	 * <p>
-	 * Model element type: {@link Type#SHEET}
-	 * </p>
-	 */
-	public static final Type TYPE = Type.SHEET;
-
-	/**
-	 * <p>
-	 * Model element kinds: [{@link Type#SHEET}]
-	 * </p>
-	 */
-	public static final Type[] KIND = { TYPE };
-
-	/**
-	 * <p>
 	 * Get the 0-based index of this sheet as defined by it's parent workbook
 	 * </p>
 	 * 
@@ -119,13 +105,13 @@ public interface ISheet extends HasId, HasA1, Comparable<ISheet>, Iterable<IRow>
 	}
 
 	@Override
-	default Type getType() {
-		return ISheet.TYPE;
+	default ElementType getType() {
+		return CoreType.SHEET;
 	}
 
 	@Override
-	default Type[] getKinds() {
-		return ISheet.KIND;
+	default ElementType[] getKinds() {
+		return new ElementType[] { getType() };
 	}
 
 	@Override

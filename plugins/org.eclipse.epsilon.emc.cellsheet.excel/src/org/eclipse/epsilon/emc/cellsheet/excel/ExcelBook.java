@@ -17,11 +17,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.common.util.StringProperties;
+import org.eclipse.epsilon.emc.cellsheet.ElementType;
 import org.eclipse.epsilon.emc.cellsheet.HasId;
 import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
-import org.eclipse.epsilon.emc.cellsheet.Type;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
@@ -38,26 +38,26 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	// Lower level access fields
 	protected Workbook delegate = null;
 	protected File excelFile = null;
-	
+
 	public ExcelBook() {
-		
+		;
 	}
-	
+
 	public ExcelBook(Workbook delegate) {
 		this.delegate = delegate;
 	}
-	
+
 	@Override
-	public ISheet getSheet(int index) {
+	public ExcelSheet getSheet(int index) {
 		if (index < 0 || index >= delegate.getNumberOfSheets()) {
 			throw new IndexOutOfBoundsException(
 					"index must be p∂ositive and within range of number of existing sheets, was given: " + index);
 		}
 		return new ExcelSheet(this, index);
 	}
-	
+
 	@Override
-	public ISheet getSheet(String name) {
+	public ExcelSheet getSheet(String name) {
 		int index = delegate.getSheetIndex(name);
 		return index < 0 ? null : getSheet(index);
 	}
@@ -85,23 +85,23 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	@Override
 	protected Collection<HasId> allContentsFromModel() {
 		Collection<HasId> allContents = new ArrayList<>();
-		allContents.add(this);
-		forEach(sheet ->
-			{
-				allContents.add(sheet);
-				sheet.forEach(row ->
-					{
-						allContents.add(row);
-						row.forEach(cell ->
-							{
-								allContents.add(cell);
-								allContents.add(cell.getCellValue());
-								if (cell.getCellValue().getType() == Type.FORMULA_CELL_VALUE) {
-									allContents.addAll(cell.getFormulaCellValue().getFormulaTree().getAllTrees());
-								}
-							});
-					});
-			});
+//		allContents.add(this);
+//		forEach(sheet ->
+//			{
+//				allContents.add(sheet);
+//				sheet.forEach(row ->
+//					{
+//						allContents.add(row);
+//						row.forEach(cell ->
+//							{
+//								allContents.add(cell);
+//								allContents.add(cell.getCellValue());
+//								if (cell.getCellValue().getType() == Type.FORMULA_CELL_VALUE) {
+//									allContents.addAll(cell.getFormulaCellValue().getFormulaTree().getAllTrees());
+//								}
+//							});
+//					});
+//			});
 
 		return allContents;
 	}
@@ -131,7 +131,7 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 
 	@Override
 	protected Object getCacheKeyForType(String typename) throws EolModelElementTypeNotFoundException {
-		Type type = Type.fromTypename(typename);
+		ElementType type = getType(typename);
 		if (type == null) {
 			throw new EolModelElementTypeNotFoundException(name, typename);
 		}
@@ -188,22 +188,22 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	}
 
 	@Override
-	public Collection<HasId> getAllOfKindFromModel(String type) throws EolModelElementTypeNotFoundException {
-		if (!hasType(type)) {
-			throw new EolModelElementTypeNotFoundException(name, type);
+	public Collection<HasId> getAllOfKindFromModel(String typename) throws EolModelElementTypeNotFoundException {
+		ElementType type = getType(typename);
+		if (type == null) {
+			throw new EolModelElementTypeNotFoundException(name, typename);
 		}
-
-		return allContents().stream().filter(e -> Arrays.stream(e.getKinds()).anyMatch(Type.fromTypename(type)::equals))
+		return allContents().stream().filter(e -> Arrays.stream(e.getKinds()).anyMatch(k -> type == k))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Collection<HasId> getAllOfTypeFromModel(String typename) throws EolModelElementTypeNotFoundException {
-		if (!hasType(typename)) {
+		ElementType type = getType(typename);
+		if (type == null) {
 			throw new EolModelElementTypeNotFoundException(name, typename);
 		}
-
-		return allContents().stream().filter(e -> e.getType() == Type.fromTypename(typename)).collect(Collectors.toList());
+		return allContents().stream().filter(e -> e.getType() == type).collect(Collectors.toList());
 	}
 
 	@Override
@@ -239,7 +239,6 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 		try {
 			delegate.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

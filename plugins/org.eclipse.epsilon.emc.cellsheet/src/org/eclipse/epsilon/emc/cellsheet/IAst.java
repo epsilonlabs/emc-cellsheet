@@ -1,13 +1,9 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-
-import org.eclipse.epsilon.emc.cellsheet.Token.TokenSubtype;
-import org.eclipse.epsilon.emc.cellsheet.Token.TokenType;
 
 /**
  * Model Element representing a Formula Parse tree
@@ -15,42 +11,37 @@ import org.eclipse.epsilon.emc.cellsheet.Token.TokenType;
  * @author Jonathan Co
  *
  */
-public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
+public interface IAst extends HasId, Iterable<IAst> {
 
 	/**
 	 * @return the original {@link IFormulaCellValue} that is this tree was derived
 	 *         from.
 	 */
-	public IFormulaCellValue getCellValue();
+	public ICellValue getCellValue();
 
 	/**
 	 * Set the parent {@link IFormulaCellValue}
 	 * 
 	 * @param cellValue
 	 */
-	public void setCellValue(IFormulaCellValue cellValue);
+	public void setCellValue(ICellValue cellValue);
 
 	/**
-	 * @return the parent of this {@link IFormulaTree} or {@code null} if no parent
-	 *         exists
+	 * @return the parent of this {@link IAst} or {@code null} if no parent exists
 	 */
-	public IFormulaTree getParent();
+	public IAst getParent();
 
 	/**
-	 * Set the parent of this {@link IFormulaTree}
+	 * Set the parent of this {@link IAst}
 	 * 
 	 * @param parent
 	 */
-	public void setParent(IFormulaTree parent);
-
-	public Token getToken();
-
-	public void setToken(Token token);
+	public void setParent(IAst parent);
 
 	/**
 	 * @return the direct child trees this Formula Tree may have.
 	 */
-	public List<IFormulaTree> getChildren();
+	public List<IAst> getChildren();
 
 	/**
 	 * Evaluates and returns the current node in the formula tree using the built-in
@@ -60,39 +51,20 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 */
 	public String evaluate();
 
-	/**
-	 * Get the token associated with this node in the tree
-	 * 
-	 * @return {@code String} representation of this node's token
-	 */
-	default String getValue() {
-		return getToken().getValue();
-	}
+	public String getToken();
 
-	/**
-	 * Set the value of this tree
-	 * 
-	 * @param string value
-	 */
-	default void setValue(String value) {
-		getToken().setValue(value);
-	}
+	public void setToken(String token);
 
-	@Override
-	default Type getType() {
-		return fromTokenType(getToken().getType());
-	}
+	public AstType getType();
 
-	default void setType(Type type) {
-		getToken().setType(toTokenType(type));
-	}
+	public void setType(AstType type);
 
-	default Type getSubtype() {
-		return fromTokenSubtype(getToken().getSubtype());
-	}
+	public AstSubtype getSubtype();
 
-	default void setSubtype(Type type) {
-		getToken().setSubtype(toTokenSubtype(type));
+	public void setSubtype(AstSubtype subtype);
+
+	default public IAst getRoot() {
+		return isRoot() ? this : getParent().getRoot();
 	}
 
 	/**
@@ -127,12 +99,12 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * @return this tree and all it's descendant trees. Order is based on left
 	 *         traversal
 	 */
-	default public List<IFormulaTree> getAllTrees() {
-		List<IFormulaTree> list = new LinkedList<>();
+	default public List<IAst> getAllTrees() {
+		List<IAst> list = new LinkedList<>();
 		accept(new Visitor() {
 			@Override
-			public void visit(IFormulaTree tree) {
-				for (IFormulaTree child : tree.getChildren()) {
+			public void visit(IAst tree) {
+				for (IAst child : tree.getChildren()) {
 					child.accept(this);
 				}
 				list.add(tree);
@@ -146,33 +118,51 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * @return The position of the child at the sub-tree or {@code null} if they do
 	 *         not exist
 	 */
-	default IFormulaTree getChildAt(int index) {
+	default IAst getChildAt(int index) {
 		return index < getChildren().size() ? getChildren().get(index) : null;
 	}
-	
+
 	default void removeChildAt(int index) {
 		getChildren().remove(index);
 	}
 
 	/**
-	 * Add a sub-tree to this {@link IFormulaTree} and assign {@code this} as the
-	 * parent. If the sub-tree already has a parent this will be re-assigned.
+	 * Add a sub-tree to this {@link IAst} and assign {@code this} as the parent. If
+	 * the sub-tree already has a parent this will be re-assigned.
 	 * 
 	 * @param child
 	 */
-	default void addChild(IFormulaTree child) {
+	default void addChild(IAst child) {
 		child.setParent(this);
 		getChildren().add(child);
 	}
 
-	default void addChild(int index, IFormulaTree child) {
+	default void addChild(int index, IAst child) {
 		child.setParent(this);
 		getChildren().add(index, child);
 	}
-	
-	default void setChild(int index, IFormulaTree child) {
+
+	default void setChild(int index, IAst child) {
 		child.setParent(this);
 		getChildren().set(index, child);
+	}
+
+	/**
+	 * Convenience method to retrieve the first sub-tree
+	 * 
+	 * @return the first sub-tree or {@code null}
+	 */
+	default IAst getFirst() {
+		return getChildAt(0);
+	}
+
+	/**
+	 * Convenience method to retrieve the second sub-tree
+	 * 
+	 * @return the second sub-tree or {@code null}
+	 */
+	default IAst getSecond() {
+		return getChildAt(1);
 	}
 
 	/**
@@ -182,63 +172,66 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 * @return a formula string representation of this tree
 	 */
 	default public String getFormula() {
-		final List<Token> list = new LinkedList<>();
-
-		Deque<Boolean> inFunction = new LinkedList<>();
+		final StringBuilder sb = new StringBuilder();
 		accept(new Visitor() {
+
 			@Override
-			public void visit(IFormulaTree tree) {
-				final Token token = tree.getToken();
-
+			public void visit(IAst tree) {
+				// No children, straight append and return
 				if (tree.isLeaf()) {
-					list.add(token);
+					sb.append(tree.getToken());
 					return;
 				}
 
-				if (token.getType() == TokenType.OPERATOR_INFIX) {
-					list.add(Token.SUBEXPRESSION_START);
-					tree.getChildAt(0).accept(this);
-					list.add(token);
-					tree.getChildAt(1).accept(this);
-					list.add(Token.SUBEXPRESSION_STOP);
+				switch (tree.getType()) {
+				case OPERATOR_INFIX:
+					sb.append('(');
+					tree.getFirst().accept(this);
+					sb.append(tree.getToken());
+					tree.getSecond().accept(this);
+					sb.append(')');
 					return;
-				}
 
-				if (token.getType() == TokenType.OPERATOR_PREFIX) {
-					list.add(token);
-					list.add(Token.SUBEXPRESSION_START);
-					tree.getChildAt(0).accept(this);
-					list.add(Token.SUBEXPRESSION_STOP);
-					return;
-				}
-
-				if (token.getType() == TokenType.OPERATOR_POSTFIX) {
-					list.add(Token.SUBEXPRESSION_START);
-					tree.getChildAt(0).accept(this);
-					list.add(Token.SUBEXPRESSION_STOP);
-					list.add(token);
-					return;
-				}
-
-				inFunction.push(token.getType() == TokenType.FUNCTION);
-
-				if (!inFunction.peek()) {
-					list.add(Token.SUBEXPRESSION_START);
-				}
-				list.add(token);
-
-				final Iterator<IFormulaTree> childIt = tree.getChildren().iterator();
-				while (childIt.hasNext()) {
-					childIt.next().accept(this);
-					if (inFunction.peek() && childIt.hasNext()) {
-						list.add(Token.ARGUMENT);
+				case OPERATOR_PREFIX:
+					sb.append(tree.getToken());
+					if (tree.getFirst().isLeaf()) {
+						tree.getFirst().accept(this);
+					} else {
+						sb.append('(');
+						tree.getFirst().accept(this);
+						sb.append(')');
 					}
-				}
+					return;
 
-				list.add(inFunction.pop() ? Token.FUNCTION_STOP : Token.SUBEXPRESSION_STOP);
+				case OPERATOR_POSTFIX:
+					if (tree.getFirst().isLeaf()) {
+						tree.getFirst().accept(this);
+					} else {
+						sb.append('(');
+						tree.getFirst().accept(this);
+						sb.append(')');
+					}
+					sb.append(tree.getToken());
+					return;
+
+				default:
+					sb.append(tree.getToken());
+					sb.append('(');
+
+					final Iterator<IAst> it = tree.getChildren().iterator();
+					while (it.hasNext()) {
+						it.next().accept(this);
+						if (it.hasNext()) {
+							sb.append(',');
+						}
+					}
+
+					sb.append(')');
+				}
 			}
 		});
-		return Tokenizer.toString(list);
+
+		return sb.toString();
 	}
 
 	/**
@@ -314,10 +307,10 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	 */
 	default String toTreeString(String prefix, boolean isTail) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(prefix).append(isTail ? "└── " : "├── ").append(getToken()).append("\n");
-		ListIterator<IFormulaTree> it = getChildren().listIterator();
+		sb.append(prefix).append(isTail ? "└── " : "├── ").append(toString()).append("\n");
+		ListIterator<IAst> it = getChildren().listIterator();
 		while (it.hasNext()) {
-			IFormulaTree child = it.next();
+			IAst child = it.next();
 
 			if (it.hasNext())
 				sb.append(child.toTreeString(prefix + (isTail ? "    " : "│   "), false));
@@ -328,7 +321,7 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	}
 
 	@Override
-	default Iterator<IFormulaTree> iterator() {
+	default Iterator<IAst> iterator() {
 		return getChildren().listIterator();
 	}
 
@@ -339,33 +332,17 @@ public interface IFormulaTree extends HasId, Iterable<IFormulaTree> {
 	}
 
 	@Override
-	default Type[] getKinds() {
-		return new Type[] { getType(), getSubtype(), Type.FORMULA_TREE };
+	default ElementType[] getKinds() {
+		return new ElementType[] { getType(), getSubtype(), AstType.SUPER };
 	}
 
-	default void accept(Visitor v) {
-		v.visit(this);
-	}
-
-	public static Type fromTokenType(TokenType type) {
-		return Type.valueOf(type.name());
-	}
-
-	public static Type fromTokenSubtype(TokenSubtype subtype) {
-		return Type.valueOf(subtype.name());
-	}
-
-	public static TokenType toTokenType(Type type) {
-		return TokenType.valueOf(type.name());
-	}
-
-	public static TokenSubtype toTokenSubtype(Type type) {
-		return TokenSubtype.valueOf(type.name());
+	default void accept(Visitor visitor) {
+		visitor.visit(this);
 	}
 
 	public static interface Visitor {
 
-		public void visit(IFormulaTree tree);
+		public void visit(IAst tree);
 
 	}
 

@@ -2,7 +2,8 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 /**
  * <p>
- * Cell are core structural model elements representing discrete cells within a workbook.
+ * Cell are core structural model elements representing discrete cells within a
+ * workbook.
  * </p>
  * 
  * <p>
@@ -26,20 +27,6 @@ package org.eclipse.epsilon.emc.cellsheet;
  *
  */
 public interface ICell extends HasId, HasA1, Comparable<ICell> {
-
-	/**
-	 * <p>
-	 * Model element type: {@link Type#CELL}
-	 * </p>
-	 */
-	public static final Type TYPE = Type.CELL;
-
-	/**
-	 * <p>
-	 * Model element kinds: [{@link Type#CELL}]
-	 * </p>
-	 */
-	public static final Type[] KINDS = { TYPE };
 
 	/**
 	 * @return 0-based column index of this Cell
@@ -66,59 +53,8 @@ public interface ICell extends HasId, HasA1, Comparable<ICell> {
 	default int getA1RowIndex() {
 		return getRow().getA1Index();
 	}
-
-	/**
-	 * @return the value element of this Cell
-	 */
-	public ICellValue<?> getCellValue();
-
-	/**
-	 * @return the value of this cell as a boolean
-	 * @throws IllegalArgumentException if the cell value is not a boolean
-	 */
-	default IBooleanCellValue getBooleanCellValue() {
-		ICellValue<?> value = getCellValue();
-		if (!(value instanceof IBooleanCellValue)) {
-			throw new IllegalArgumentException(toString() + " - Does not contain a Boolean value");
-		}
-		return (IBooleanCellValue) value;
-	}
-
-	/**
-	 * @return the value of this cell as a formula
-	 * @throws IllegalArgumentException if the cell value is not a formula
-	 */
-	default IFormulaCellValue getFormulaCellValue() {
-		ICellValue<?> value = getCellValue();
-		if (!(value instanceof IFormulaCellValue)) {
-			throw new IllegalArgumentException(toString() + " - Does not contain a Formula value");
-		}
-		return (IFormulaCellValue) value;
-	}
-
-	/**
-	 * @return the value of this cell as a String
-	 * @throws IllegalArgumentException if the cell value is not a String
-	 */
-	default IStringCellValue getStringCellValue() {
-		ICellValue<?> value = getCellValue();
-		if (!(value instanceof IStringCellValue)) {
-			throw new IllegalArgumentException(toString() + " - Does not contain a String value");
-		}
-		return (IStringCellValue) value;
-	}
-
-	/**
-	 * @return the value of this cell as a number
-	 * @throws IllegalArgumentException if the cell value is not a number
-	 */
-	default INumericCellValue getNumericCellValue() {
-		ICellValue<?> value = getCellValue();
-		if (!(value instanceof INumericCellValue)) {
-			throw new IllegalArgumentException(toString() + " - Does not contain a Numeric value");
-		}
-		return (INumericCellValue) value;
-	}
+	
+	public ICellValue getCellValue();
 
 	/**
 	 * @return {@code true} if the cell contains no value, {@code false} otherwise
@@ -156,13 +92,13 @@ public interface ICell extends HasId, HasA1, Comparable<ICell> {
 	}
 
 	@Override
-	default Type getType() {
-		return ICell.TYPE;
+	default ElementType getType() {
+		return CoreType.CELL;
 	}
 
 	@Override
-	default Type[] getKinds() {
-		return ICell.KINDS;
+	default ElementType[] getKinds() {
+		return new ElementType[] { getType() };
 	}
 
 	@Override

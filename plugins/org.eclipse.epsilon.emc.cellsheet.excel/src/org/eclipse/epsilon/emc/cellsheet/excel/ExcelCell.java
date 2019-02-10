@@ -4,19 +4,32 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.eclipse.epsilon.emc.cellsheet.CellValueType;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.ICellValue;
 
 public class ExcelCell implements ICell, HasDelegate<Cell> {
 
 	protected ExcelRow row;
 	protected int col;
 
-	protected ICellValue<?> cellValue = null;
-
 	ExcelCell(ExcelRow row, int col) {
 		this.row = row;
 		this.col = col;
+	}
+
+	@Override
+	public ExcelCellValue getCellValue() {
+		final CellValueType type;
+		final CellType delegateType = getDelegate().getCellTypeEnum();
+		switch (delegateType) {
+		case NUMERIC:
+			type = DateUtil.isCellDateFormatted(getDelegate()) ? CellValueType.DATE : CellValueType.NUMERIC;
+			break;
+		default:
+			type = CellValueType.valueOf(delegateType.name());
+			break;
+		}
+		return new ExcelCellValue(this, type);
 	}
 
 	@Override
@@ -27,39 +40,6 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	@Override
 	public ExcelRow getRow() {
 		return row;
-	}
-
-	@Override
-	public ICellValue<?> getCellValue() {
-		if (cellValue == null) {
-			switch (getDelegate().getCellTypeEnum()) {
-			case BOOLEAN:
-				cellValue = new ExcelBooleanCellValue(this);
-				break;
-			case NUMERIC:
-				if (DateUtil.isCellDateFormatted(getDelegate())) {
-					cellValue = new ExcelDateCellValue(this);
-				} else {
-					cellValue = new ExcelNumericCellValue(this);
-				}
-				break;
-			case STRING:
-				cellValue = new ExcelStringCellValue(this);
-				break;
-			case FORMULA:
-				cellValue = new ExcelFormulaCellValue(this);
-				break;
-			case BLANK:
-				cellValue = new ExcelBlankCellValue(this);
-				break;
-			case ERROR:
-				cellValue = new ExcelErrorCellValue(this);
-				break;
-			default:
-				throw new IllegalStateException("Cell Value type not supported yet: " + getDelegate().getCellTypeEnum());
-			}
-		}
-		return cellValue;
 	}
 
 	@Override
@@ -109,5 +89,5 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 			return false;
 		return true;
 	}
-	
+
 }

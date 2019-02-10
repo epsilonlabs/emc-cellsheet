@@ -21,7 +21,7 @@ import org.mockito.junit.MockitoRule;
 
 /**
  * <p>
- * Unit tests for default method implementations in {@link IFormulaTree}
+ * Unit tests for default method implementations in {@link IAst}
  * </p>
  * 
  * @author Jonathan Co
@@ -33,7 +33,7 @@ public class IFormulaTreeTest {
 	public MockitoRule mockito = MockitoJUnit.rule();
 
 	@Spy
-	IFormulaTree tree;
+	IAst tree;
 
 	@Test
 	public void getValue_should_return_test_string() throws Exception {
@@ -65,7 +65,7 @@ public class IFormulaTreeTest {
 
 	@Test
 	public void fromType_should_return_Type_OPERAND_when_given_TokenType_OPERAND() throws Exception {
-		assertEquals(Type.OPERAND, IFormulaTree.fromTokenType(TokenType.OPERAND));
+		assertEquals(Type.OPERAND, IAst.fromTokenType(TokenType.OPERAND));
 	}
 	
 	@Test
@@ -80,17 +80,17 @@ public class IFormulaTreeTest {
 
 	@Test
 	public void fromType_should_return_Type_START_when_given_TokenSubtype_START() throws Exception {
-		assertEquals(Type.START, IFormulaTree.fromTokenSubtype(TokenSubtype.START));
+		assertEquals(Type.START, IAst.fromTokenSubtype(TokenSubtype.START));
 	}
 
 	@Test
 	public void toTokenType_should_return_TokenType_OPERAND_when_given_Type_OPERAND() throws Exception {
-		assertEquals(TokenType.OPERAND, IFormulaTree.toTokenType(Type.OPERAND));
+		assertEquals(TokenType.OPERAND, IAst.toTokenType(Type.OPERAND));
 	}
 
 	@Test
 	public void toTokenSubtype_should_return_TokenSubtype_START_when_given_Type_START() throws Exception {
-		assertEquals(TokenSubtype.START, IFormulaTree.toTokenSubtype(Type.START));
+		assertEquals(TokenSubtype.START, IAst.toTokenSubtype(Type.START));
 	}
 	
 	@Test
@@ -143,7 +143,7 @@ public class IFormulaTreeTest {
 	
 	@Test
 	public void addChild_should_add_child_to_parent_and_set_parent() throws Exception {
-		IFormulaTree child = mock(IFormulaTree.class);
+		IAst child = mock(IAst.class);
 		tree.addChild(child);
 		
 		verify(child).setParent(tree);
