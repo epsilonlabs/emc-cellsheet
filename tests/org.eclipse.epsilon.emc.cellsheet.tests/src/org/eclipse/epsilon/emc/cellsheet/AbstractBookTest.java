@@ -32,6 +32,23 @@ public class AbstractBookTest {
 	}
 
 	@Test
+	public void getType_should_return_BOOK() throws Exception {
+		assertEquals(CoreType.BOOK, book.getType());
+	}
+
+	@Test
+	public void getKind_should_return_set_with_BOOK() throws Exception {
+		final Set<ElementType> kinds = book.getKinds();
+		assertEquals(1, kinds.size());
+		assertEquals(CoreType.BOOK, kinds.iterator().next());
+	}
+
+	@Test
+	public void getBook_should_return_self() throws Exception {
+		assertEquals(book, book.getBook());
+	}
+
+	@Test
 	public void hasType_should_return_true_when_given_valid_typename() throws Exception {
 		assertTrue(book.hasType(CoreType.BOOK.getTypename()));
 	}
@@ -124,7 +141,7 @@ public class AbstractBookTest {
 	}
 
 	@Test
-	public void getA1Ref_should_return_A1_string() throws Exception {
+	public void getA1_should_return_A1_string() throws Exception {
 		assertEquals("[" + NAME + "]", book.getA1());
 	}
 
