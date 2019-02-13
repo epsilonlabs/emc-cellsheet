@@ -20,6 +20,7 @@ public enum AstType implements ElementType {
 
 	private AstType(String typename) {
 		this.typename = typename;
+		ElementType.addToMap(typename, this);
 	}
 
 	@Override
@@ -39,10 +40,6 @@ public enum AstType implements ElementType {
 	 * @return
 	 */
 	public static AstType fromTypename(String typename) {
-		for (AstType type : AstType.values()) {
-			if (type.typename.equals(typename))
-				return type;
-		}
-		return null;
+		return (AstType) ElementType.fromTypename(typename);
 	}
 }

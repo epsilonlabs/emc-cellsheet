@@ -2,24 +2,26 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 public enum AstSubtype implements ElementType {
 
+	// Default
 	NOTHING("Nothing"),
+	
+	// Structural
 	START("Start"),
 	ARRAY_START("ArrayStart"),
 	ARRAY_ROW_START("ArrayRowStart"),
 	STOP("Stop"),
-	TEXT("Text"),
 	ARRAY_STOP("ArrayStop"),
 	ARRAY_ROW_STOP("ArrayRowStop"),
+	
+	// Operands
+	TEXT("Text"),
 	NUMBER("Number"),
 	LOGICAL("Logical"),
 	ERROR("Error"),
 	RANGE("Range"),
 	REF("Ref"),
 
-	@Deprecated
-	MATH("Math"),
-
-	// New operators
+	// Operators
 	PLUS("Plus"),
 	NEGATION("Negation"),
 	PERCENT("Percent"),
@@ -45,6 +47,7 @@ public enum AstSubtype implements ElementType {
 
 	private AstSubtype(String typename) {
 		this.typename = typename;
+		ElementType.addToMap(typename, this);
 	}
 
 	@Override
@@ -64,10 +67,6 @@ public enum AstSubtype implements ElementType {
 	 * @return
 	 */
 	public static AstSubtype fromTypename(String typename) {
-		for (AstSubtype type : AstSubtype.values()) {
-			if (type.typename.equals(typename))
-				return type;
-		}
-		return null;
+		return (AstSubtype) ElementType.fromTypename(typename);
 	}
 }
