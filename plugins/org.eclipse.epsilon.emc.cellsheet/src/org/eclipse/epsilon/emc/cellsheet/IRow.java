@@ -1,6 +1,9 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -26,7 +29,20 @@ import java.util.List;
  * @author Jonathan Co
  *
  */
-public interface IRow extends HasId, HasA1, Comparable<IRow>, Iterable<ICell> {
+public interface IRow extends HasId, HasA1, HasSheet, Comparable<IRow>, Iterable<ICell> {
+
+	public static final ElementType TYPE = CoreType.ROW;
+	public static final Set<ElementType> KINDS = new HashSet<>(Arrays.asList(TYPE));
+
+	@Override
+	default public ElementType getType() {
+		return TYPE;
+	}
+
+	@Override
+	default public Set<ElementType> getKinds() {
+		return KINDS;
+	}
 
 	/**
 	 * <p>
@@ -44,9 +60,7 @@ public interface IRow extends HasId, HasA1, Comparable<IRow>, Iterable<ICell> {
 	 * 
 	 * @return the 1-based/A1 style index of this row
 	 */
-	default int getA1Index() {
-		return getIndex() + 1;
-	}
+	public int getA1Index();
 
 	/**
 	 * <p>
@@ -77,9 +91,7 @@ public interface IRow extends HasId, HasA1, Comparable<IRow>, Iterable<ICell> {
 	 * @param col Alpha-based/A1 style column of the cell to retrieve.
 	 * @return cell corresponding to the given column index.
 	 */
-	default ICell getA1Cell(String column) {
-		return getCell(ReferenceUtil.a1ToIndex(column));
-	}
+	public ICell getA1Cell(String column);
 
 	/**
 	 * <p>
@@ -90,52 +102,4 @@ public interface IRow extends HasId, HasA1, Comparable<IRow>, Iterable<ICell> {
 	 */
 	public List<? extends ICell> cells();
 
-	/**
-	 * <p>
-	 * Get the {@link ISheet} that this row is contained within.
-	 * 
-	 * @return the parent sheet of this row
-	 */
-	public ISheet getSheet();
-
-	/**
-	 * <p>
-	 * Get the {@link IBook} that this row is contained within.
-	 * 
-	 * @return the parent book of this row
-	 */
-	default IBook getBook() {
-		return getSheet().getBook();
-	}
-
-	@Override
-	default int compareTo(IRow o) {
-		if (null == o)
-			return 1;
-		if (this == o)
-			return 0;
-
-		int parent = this.getSheet().compareTo(o.getSheet());
-		return parent == 0 ? Integer.compare(this.getIndex(), o.getIndex()) : parent;
-	}
-
-	@Override
-	default ElementType getType() {
-		return CoreType.ROW;
-	}
-
-	@Override
-	default ElementType[] getKinds() {
-		return new ElementType[] { getType() };
-	}
-
-	@Override
-	default String getId() {
-		return getSheet().getId() + getIndex() + "/";
-	}
-
-	@Override
-	default String getA1Ref() {
-		return getSheet().getA1Ref() + "!A$" + (getIndex() + 1);
-	}
 }

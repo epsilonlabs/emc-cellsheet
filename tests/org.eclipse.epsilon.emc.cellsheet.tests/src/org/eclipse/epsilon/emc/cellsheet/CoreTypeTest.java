@@ -16,7 +16,8 @@ import org.junit.runners.Parameterized.Parameters;
 public class CoreTypeTest {
 	@Parameters
 	public static Collection<Object[]> data() {
-		return Arrays.asList(new Object[][] { { "Book", BOOK }, { "Sheet", SHEET }, { "Row", ROW }, { "Cell", CELL } });
+		return Arrays.asList(new Object[][] { { "Book", BOOK }, { "Sheet", SHEET }, { "Row", ROW }, { "Cell", CELL },
+				{ "CellValue", CELL_VALUE }, { "AST", AST } });
 	}
 
 	@Parameter(0)

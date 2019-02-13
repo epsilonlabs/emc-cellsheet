@@ -9,7 +9,12 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundExce
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.CachedModel;
 
-public abstract class AbstractBook extends CachedModel<HasId> implements IBook<HasId> {
+public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
+
+	@Override
+	public IBook getBook() {
+		return this;
+	}
 
 	/*
 	 * MODEL UPDATE
@@ -104,7 +109,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook<H
 	}
 
 	@Override
-	public String getA1Ref() {
+	public String getA1() {
 		return String.format("[%s]", name);
 	}
 

@@ -107,49 +107,6 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	}
 
 	@Override
-	public Object getTypeOf(Object instance) {
-		return IBook.super.getTypeOf(instance);
-	}
-
-	@Override
-	public String getTypeNameOf(Object instance) {
-		return IBook.super.getTypeNameOf(instance);
-	}
-
-	@Override
-	public boolean isOfType(Object instance, String metaClass) throws EolModelElementTypeNotFoundException { // stub
-		return IBook.super.isOfType(instance, metaClass);
-	}
-
-	@Override
-	protected Collection<String> getAllTypeNamesOf(Object instance) {
-		if (instance instanceof HasType) {
-			return Arrays.stream(((HasType) instance).getKinds()).map(k -> k.getTypename()).collect(Collectors.toSet());
-		}
-		throw new IllegalArgumentException();
-	}
-
-	@Override
-	protected Object getCacheKeyForType(String typename) throws EolModelElementTypeNotFoundException {
-		ElementType type = getType(typename);
-		if (type == null) {
-			throw new EolModelElementTypeNotFoundException(name, typename);
-		}
-		return type;
-	}
-
-	@Override
-	protected HasId createInstanceInModel(String type)
-			throws EolModelElementTypeNotFoundException, EolNotInstantiableModelElementTypeException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected boolean deleteElementInModel(Object instance) throws EolRuntimeException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public String getElementId(Object instance) {
 		if (instance instanceof HasId) {
 			return ((HasId) instance).getId();
@@ -162,29 +119,11 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 		return null;
 	}
 
-	@Override
-	public void setElementId(Object instance, String newId) {
-		throw new UnsupportedOperationException();
-	}
 
-	@Override
-	public boolean isInstantiable(String type) {
-		throw new UnsupportedOperationException();
-	}
 
 	@Override
 	public boolean owns(Object instance) {
 		return getElementById(getElementId(instance)) != null;
-	}
-
-	@Override
-	public Object getEnumerationValue(String enumeration, String label) throws EolEnumerationValueNotFoundException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean isOfKind(Object instance, String metaClass) throws EolModelElementTypeNotFoundException {
-		return IBook.super.isOfKind(instance, metaClass);
 	}
 
 	@Override
@@ -291,12 +230,9 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 		StringBuilder sb = new StringBuilder();
 		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
 		sb.append("(id: ").append(getId());
-		sb.append(", excelRef: ").append(getA1Ref());
+		sb.append(", excelRef: ").append(getA1());
 		sb.append(")");
 		return sb.toString();
 	}
 
-	public boolean isLoaded() {
-		return allContentsAreCached;
-	}
 }

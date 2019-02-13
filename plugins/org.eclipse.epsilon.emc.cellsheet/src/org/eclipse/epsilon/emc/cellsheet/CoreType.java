@@ -6,7 +6,9 @@ public enum CoreType implements ElementType {
 	BOOK("Book"),
 	SHEET("Sheet"),
 	ROW("Row"),
-	CELL("Cell");
+	CELL("Cell"),
+	CELL_VALUE("CellValue"),
+	AST("AST");
 
 	private final String typename;
 

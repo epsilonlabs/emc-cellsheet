@@ -2,9 +2,6 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 public enum AstType implements ElementType {
 
-	// Formula and related types
-	SUPER("FormulaTree"),
-
 	NOOP("Noop"),
 	OPERAND("Operand"),
 	FUNCTION("Function"),

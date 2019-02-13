@@ -33,7 +33,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	}
 
 	@Override
-	public int getColIndex() {
+	public int getCol() {
 		return col;
 	}
 
@@ -57,7 +57,7 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
 		sb.append("(id: ").append(getId());
-		sb.append(", excelRef: ").append(getA1Ref());
+		sb.append(", excelRef: ").append(getA1());
 		sb.append(")");
 		return sb.toString();
 	}

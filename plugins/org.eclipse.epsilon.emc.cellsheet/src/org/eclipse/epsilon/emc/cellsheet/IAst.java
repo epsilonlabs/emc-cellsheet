@@ -1,9 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Model Element representing a Formula Parse tree
@@ -11,13 +8,7 @@ import java.util.ListIterator;
  * @author Jonathan Co
  *
  */
-public interface IAst extends HasId, Iterable<IAst> {
-
-	/**
-	 * @return the original {@link IFormulaCellValue} that is this tree was derived
-	 *         from.
-	 */
-	public ICellValue getCellValue();
+public interface IAst extends HasId, HasCellValue {
 
 	/**
 	 * Set the parent {@link IFormulaCellValue}
@@ -63,68 +54,22 @@ public interface IAst extends HasId, Iterable<IAst> {
 
 	public void setSubtype(AstSubtype subtype);
 
-	default public IAst getRoot() {
-		return isRoot() ? this : getParent().getRoot();
-	}
-
-	/**
-	 * @return the Cell this FormulaTree belongs to
-	 */
-	default public ICell getCell() {
-		return getCellValue().getCell();
-	}
-
-	/**
-	 * @return the Row this FormulaTree belongs to
-	 */
-	default public IRow getRow() {
-		return getCellValue().getRow();
-	}
-
-	/**
-	 * @return the Sheet this FormulaTree belongs to
-	 */
-	default public ISheet getSheet() {
-		return getCellValue().getSheet();
-	}
-
-	/**
-	 * @return the Book this FormulaTree belongs to
-	 */
-	default public IBook getBook() {
-		return getCellValue().getBook();
-	}
+	public IAst getRoot();
 
 	/**
 	 * @return this tree and all it's descendant trees. Order is based on left
 	 *         traversal
 	 */
-	default public List<IAst> getAllTrees() {
-		List<IAst> list = new LinkedList<>();
-		accept(new Visitor() {
-			@Override
-			public void visit(IAst tree) {
-				for (IAst child : tree.getChildren()) {
-					child.accept(this);
-				}
-				list.add(tree);
-			}
-		});
-		return list;
-	}
+	public List<IAst> getAllChildren();
 
 	/**
 	 * @param index the position of the child sub-tree
 	 * @return The position of the child at the sub-tree or {@code null} if they do
 	 *         not exist
 	 */
-	default IAst getChildAt(int index) {
-		return index < getChildren().size() ? getChildren().get(index) : null;
-	}
+	public IAst getChildAt(int index);
 
-	default void removeChildAt(int index) {
-		getChildren().remove(index);
-	}
+	public void removeChildAt(int index);
 
 	/**
 	 * Add a sub-tree to this {@link IAst} and assign {@code this} as the parent. If
@@ -132,38 +77,25 @@ public interface IAst extends HasId, Iterable<IAst> {
 	 * 
 	 * @param child
 	 */
-	default void addChild(IAst child) {
-		child.setParent(this);
-		getChildren().add(child);
-	}
+	public void addChild(IAst child);
 
-	default void addChild(int index, IAst child) {
-		child.setParent(this);
-		getChildren().add(index, child);
-	}
+	public void addChild(int index, IAst child);
 
-	default void setChild(int index, IAst child) {
-		child.setParent(this);
-		getChildren().set(index, child);
-	}
+	public void setChild(int index, IAst child);
 
 	/**
 	 * Convenience method to retrieve the first sub-tree
 	 * 
 	 * @return the first sub-tree or {@code null}
 	 */
-	default IAst getFirst() {
-		return getChildAt(0);
-	}
+	public IAst getFirst();
 
 	/**
 	 * Convenience method to retrieve the second sub-tree
 	 * 
 	 * @return the second sub-tree or {@code null}
 	 */
-	default IAst getSecond() {
-		return getChildAt(1);
-	}
+	public IAst getSecond();
 
 	/**
 	 * Returns a formula string built at this tree. Will only elements that are
@@ -171,77 +103,14 @@ public interface IAst extends HasId, Iterable<IAst> {
 	 * 
 	 * @return a formula string representation of this tree
 	 */
-	default public String getFormula() {
-		final StringBuilder sb = new StringBuilder();
-		accept(new Visitor() {
-
-			@Override
-			public void visit(IAst tree) {
-				// No children, straight append and return
-				if (tree.isLeaf()) {
-					sb.append(tree.getToken());
-					return;
-				}
-
-				switch (tree.getType()) {
-				case OPERATOR_INFIX:
-					sb.append('(');
-					tree.getFirst().accept(this);
-					sb.append(tree.getToken());
-					tree.getSecond().accept(this);
-					sb.append(')');
-					return;
-
-				case OPERATOR_PREFIX:
-					sb.append(tree.getToken());
-					if (tree.getFirst().isLeaf()) {
-						tree.getFirst().accept(this);
-					} else {
-						sb.append('(');
-						tree.getFirst().accept(this);
-						sb.append(')');
-					}
-					return;
-
-				case OPERATOR_POSTFIX:
-					if (tree.getFirst().isLeaf()) {
-						tree.getFirst().accept(this);
-					} else {
-						sb.append('(');
-						tree.getFirst().accept(this);
-						sb.append(')');
-					}
-					sb.append(tree.getToken());
-					return;
-
-				default:
-					sb.append(tree.getToken());
-					sb.append('(');
-
-					final Iterator<IAst> it = tree.getChildren().iterator();
-					while (it.hasNext()) {
-						it.next().accept(this);
-						if (it.hasNext()) {
-							sb.append(',');
-						}
-					}
-
-					sb.append(')');
-				}
-			}
-		});
-
-		return sb.toString();
-	}
+	public String getFormula();
 
 	/**
 	 * Returns {@code true} if this node is the root of the tree.
 	 * 
 	 * @return {@code true} if this is the root of the tree, {@code false} otherwise
 	 */
-	default boolean isRoot() {
-		return getParent() == null;
-	}
+	public boolean isRoot();
 
 	/**
 	 * Returns {@code true} if this node a leaf element of the tree (has no
@@ -250,9 +119,7 @@ public interface IAst extends HasId, Iterable<IAst> {
 	 * @return {@code true} if this is a leaf element of the tree, {@code false}
 	 *         otherwise
 	 */
-	default boolean isLeaf() {
-		return getChildren() == null ? true : getChildren().isEmpty();
-	}
+	public boolean isLeaf();
 
 	/**
 	 * Count all children associated with this node - this includes all subtrees of
@@ -262,9 +129,7 @@ public interface IAst extends HasId, Iterable<IAst> {
 	 * 
 	 * @return count of all sub-nodes starting from this node.
 	 */
-	default int countAllChildren() {
-		return getAllTrees().size() - 1;
-	}
+	public int getChildCount();
 
 	/**
 	 * Return this tree as a tree structure diagram
@@ -283,62 +148,11 @@ public interface IAst extends HasId, Iterable<IAst> {
 	 * 
 	 * @return this tree formatted as a tree structure diagram
 	 */
-	default String toTreeString() {
-		return getFormula() + "\n" + toTreeString("", true);
-	}
+	public String toStringTree();
 
-	/**
-	 * Return this tree as a tree structure diagram
-	 * 
-	 * <pre>
-	 * {@code
-	 * └── *
-	 *     ├── C4
-	 *     └── VLOOKUP
-	 *         ├── $A5
-	 *         ├── Assumptions!$B$4:$N$6
-	 *         └── C$2
-	 * }
-	 * </pre>
-	 * 
-	 * @param prefix to append onto start of this line
-	 * @param isTail is this a tail element
-	 * @return this tree formatted as a tree structure diagram
-	 */
-	default String toTreeString(String prefix, boolean isTail) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(prefix).append(isTail ? "└── " : "├── ").append(toString()).append("\n");
-		ListIterator<IAst> it = getChildren().listIterator();
-		while (it.hasNext()) {
-			IAst child = it.next();
+	public int getIndex();
 
-			if (it.hasNext())
-				sb.append(child.toTreeString(prefix + (isTail ? "    " : "│   "), false));
-			else
-				sb.append(child.toTreeString(prefix + (isTail ? "    " : "│   "), true));
-		}
-		return sb.toString();
-	}
-
-	@Override
-	default Iterator<IAst> iterator() {
-		return getChildren().listIterator();
-	}
-
-	@Override
-	default String getId() {
-		return isRoot() ? getCellValue().getId() + "0/"
-				: getParent().getId() + getParent().getChildren().indexOf(this) + "/";
-	}
-
-	@Override
-	default ElementType[] getKinds() {
-		return new ElementType[] { getType(), getSubtype(), AstType.SUPER };
-	}
-
-	default void accept(Visitor visitor) {
-		visitor.visit(this);
-	}
+	public void accept(Visitor visitor);
 
 	public static interface Visitor {
 

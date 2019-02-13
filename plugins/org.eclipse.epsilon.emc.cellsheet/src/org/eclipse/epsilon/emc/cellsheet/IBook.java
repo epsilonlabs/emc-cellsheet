@@ -18,10 +18,10 @@ import org.eclipse.epsilon.eol.models.IModel;
  * @author Jonathan Co
  *
  */
-public interface IBook<ModelElementType> extends HasId, IModel, Iterable<ISheet>, HasA1 {
+public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 
 	public static final ElementType TYPE = CoreType.BOOK;
-	public static final Set<ElementType> KINDS = new HashSet<>(Arrays.asList(CoreType.BOOK));
+	public static final Set<ElementType> KINDS = new HashSet<>(Arrays.asList(TYPE));
 
 	@Override
 	default public ElementType getType() {
@@ -46,8 +46,8 @@ public interface IBook<ModelElementType> extends HasId, IModel, Iterable<ISheet>
 
 	public boolean isOfKind(Object instance, ElementType kind) throws EolModelElementTypeNotFoundException;
 
-	public Collection<ModelElementType> getAllOfType(ElementType type) throws EolModelElementTypeNotFoundException;
+	public Collection<HasId> getAllOfType(ElementType type) throws EolModelElementTypeNotFoundException;
 
-	public Collection<ModelElementType> getAllOfKind(ElementType type) throws EolModelElementTypeNotFoundException;
+	public Collection<HasId> getAllOfKind(ElementType type) throws EolModelElementTypeNotFoundException;
 
 }

@@ -168,7 +168,7 @@ public enum EvaluationHelper {
 	public static CellReference getCellRef(ICell cell) {
 		return new CellReference(cell.getSheet().getName(), // Sheet name
 				cell.getRowIndex(), // Row
-				cell.getColIndex(), // Col
+				cell.getCol(), // Col
 				true, // Is abs row
 				true // Is abs col
 		);

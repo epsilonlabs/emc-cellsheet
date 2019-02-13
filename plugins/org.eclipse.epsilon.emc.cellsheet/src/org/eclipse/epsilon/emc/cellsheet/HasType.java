@@ -10,7 +10,7 @@ import java.util.Set;
  * @author Jonathan Co
  *
  */
-public interface HasType {
+public interface HasType extends HasBook {
 
 	/**
 	 * @return the concrete type associated with the model element.

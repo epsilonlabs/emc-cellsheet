@@ -1,5 +1,9 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * <p>
  * Cell are core structural model elements representing discrete cells within a
@@ -26,34 +30,36 @@ package org.eclipse.epsilon.emc.cellsheet;
  * @author Jonathan Co
  *
  */
-public interface ICell extends HasId, HasA1, Comparable<ICell> {
+public interface ICell extends HasId, HasA1, HasRow, Comparable<ICell> {
+
+	public static final ElementType TYPE = CoreType.CELL;
+	public static final Set<ElementType> KINDS = new HashSet<>(Arrays.asList(TYPE));
+
+	@Override
+	default public ElementType getType() {
+		return TYPE;
+	}
+
+	@Override
+	default public Set<ElementType> getKinds() {
+		return KINDS;
+	}
 
 	/**
 	 * @return 0-based column index of this Cell
 	 */
-	public int getColIndex();
+	public int getCol();
 
 	/**
 	 * @return Alpha-based column reference of this Cell
 	 */
-	default String getA1Col() {
-		return ReferenceUtil.indexToA1(getColIndex());
-	}
-
-	/**
-	 * @return 0-based row index of this Cell
-	 */
-	default int getRowIndex() {
-		return getRow().getIndex();
-	}
+	public String getA1Col();
 
 	/**
 	 * @return A1 style row index of this Cell (1-based index)
 	 */
-	default int getA1RowIndex() {
-		return getRow().getA1Index();
-	}
-	
+	public int getA1Row();
+
 	public ICellValue getCellValue();
 
 	/**
@@ -61,58 +67,10 @@ public interface ICell extends HasId, HasA1, Comparable<ICell> {
 	 */
 	public boolean isBlank();
 
-	/**
-	 * @return the Row this Cell belongs to
-	 */
-	public IRow getRow();
+	public int compareTo(ICell o);
 
-	/**
-	 * @return the Sheet this Cell belongs to
-	 */
-	default ISheet getSheet() {
-		return getRow().getSheet();
-	}
+	public String getId();
 
-	/**
-	 * @return the Book this Cell belongs to
-	 */
-	default IBook getBook() {
-		return getSheet().getBook();
-	}
-
-	@Override
-	default int compareTo(ICell o) {
-		if (null == o)
-			return 1;
-		if (this == o)
-			return 0;
-
-		int parent = this.getRow().compareTo(o.getRow());
-		return parent == 0 ? Integer.compare(this.getColIndex(), o.getColIndex()) : parent;
-	}
-
-	@Override
-	default ElementType getType() {
-		return CoreType.CELL;
-	}
-
-	@Override
-	default ElementType[] getKinds() {
-		return new ElementType[] { getType() };
-	}
-
-	@Override
-	default String getId() {
-		return getRow().getId() + getColIndex() + "/";
-	}
-
-	@Override
-	default String getA1Ref() {
-		StringBuilder sb = new StringBuilder(getSheet().getA1Ref());
-		sb.append("!");
-		sb.append(getA1Col());
-		sb.append(getRowIndex() + 1);
-		return sb.toString();
-	}
+	public String getA1();
 
 }

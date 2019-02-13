@@ -49,7 +49,7 @@ public class ExcelRowTest {
 			cell = it.next();
 			assertEquals(row, cell.getRow());
 			assertEquals(3, cell.getRowIndex());
-			assertTrue(expected.contains(cell.getColIndex()));
+			assertTrue(expected.contains(cell.getCol()));
 		}
 	}
 
@@ -59,13 +59,13 @@ public class ExcelRowTest {
 		for (ICell cell : row.cells()) {
 			assertEquals(row, cell.getRow());
 			assertEquals(3, cell.getRowIndex());
-			assertTrue(expected.contains(cell.getColIndex()));
+			assertTrue(expected.contains(cell.getCol()));
 		}
 	}
 
 	@Test
 	public void getCell_should_return_cell_when_given_index() throws Exception {
 		assertEquals(3, row.getCell(2).getRowIndex());
-		assertEquals(2, row.getCell(2).getColIndex());
+		assertEquals(2, row.getCell(2).getCol());
 	}
 }

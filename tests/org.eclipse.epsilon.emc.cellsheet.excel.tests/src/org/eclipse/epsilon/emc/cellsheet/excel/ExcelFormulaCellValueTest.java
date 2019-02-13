@@ -37,7 +37,7 @@ public class ExcelFormulaCellValueTest {
 		final ICell ref = refCells.get(0);
 		assertEquals(legacyBook.getSheet("Labels"), ref.getSheet());
 		assertEquals(0, ref.getRowIndex());
-		assertEquals(0, ref.getColIndex());
+		assertEquals(0, ref.getCol());
 	}
 
 	@Test
@@ -50,7 +50,7 @@ public class ExcelFormulaCellValueTest {
 		final ICell ref = refCells.get(0);
 		assertEquals(legacyBook.getSheet("Labels"), ref.getSheet());
 		assertEquals(0, ref.getRowIndex());
-		assertEquals(0, ref.getColIndex());
+		assertEquals(0, ref.getCol());
 	}
 
 	@Test
@@ -63,7 +63,7 @@ public class ExcelFormulaCellValueTest {
 		final ICell ref = refCells.get(0);
 		assertEquals(legacyBook.getSheet("Formula"), ref.getSheet());
 		assertEquals(2, ref.getRowIndex());
-		assertEquals(0, ref.getColIndex());
+		assertEquals(0, ref.getCol());
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class ExcelFormulaCellValueTest {
 		final ICell ref = refCells.get(0);
 		assertEquals(legacyBook.getSheet("Formula"), ref.getSheet());
 		assertEquals(3, ref.getRowIndex());
-		assertEquals(0, ref.getColIndex());
+		assertEquals(0, ref.getCol());
 	}
 
 	@Test

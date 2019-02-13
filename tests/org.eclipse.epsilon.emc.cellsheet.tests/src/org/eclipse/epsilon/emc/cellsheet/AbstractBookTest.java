@@ -125,7 +125,7 @@ public class AbstractBookTest {
 
 	@Test
 	public void getA1Ref_should_return_A1_string() throws Exception {
-		assertEquals("[" + NAME + "]", book.getA1Ref());
+		assertEquals("[" + NAME + "]", book.getA1());
 	}
 
 	@Test

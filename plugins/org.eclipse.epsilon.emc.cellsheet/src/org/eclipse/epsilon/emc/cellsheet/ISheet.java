@@ -1,6 +1,9 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -26,6 +29,19 @@ import java.util.List;
  *
  */
 public interface ISheet extends HasId, HasA1, Comparable<ISheet>, Iterable<IRow> {
+
+	public static final ElementType TYPE = CoreType.SHEET;
+	public static final Set<ElementType> KINDS = new HashSet<>(Arrays.asList(TYPE));
+
+	@Override
+	default public ElementType getType() {
+		return TYPE;
+	}
+
+	@Override
+	default public Set<ElementType> getKinds() {
+		return KINDS;
+	}
 
 	/**
 	 * <p>
@@ -74,9 +90,7 @@ public interface ISheet extends HasId, HasA1, Comparable<ISheet>, Iterable<IRow>
 	 * @param row 1-based/A1 style index of the row to retrieve
 	 * @return row corresponding to the given index
 	 */
-	default IRow getA1Row(int row) {
-		return getRow(row - 1);
-	}
+	public IRow getA1Row(int row);
 
 	/**
 	 * <p>
@@ -87,40 +101,4 @@ public interface ISheet extends HasId, HasA1, Comparable<ISheet>, Iterable<IRow>
 	 */
 	public List<IRow> rows();
 
-	/**
-	 * <p>
-	 * Get the {@link IBook} that this sheet is contained within.
-	 * 
-	 * @return the parent book of this sheet
-	 */
-	public IBook getBook();
-
-	@Override
-	default int compareTo(ISheet o) {
-		if (null == o)
-			return 1;
-		if (this == o)
-			return 0;
-		return Integer.compare(this.getIndex(), o.getIndex());
-	}
-
-	@Override
-	default ElementType getType() {
-		return CoreType.SHEET;
-	}
-
-	@Override
-	default ElementType[] getKinds() {
-		return new ElementType[] { getType() };
-	}
-
-	@Override
-	default String getId() {
-		return getBook().getId() + getName() + "/";
-	}
-
-	@Override
-	default String getA1Ref() {
-		return getBook().getA1Ref() + "'" + getName() + "'";
-	}
 }

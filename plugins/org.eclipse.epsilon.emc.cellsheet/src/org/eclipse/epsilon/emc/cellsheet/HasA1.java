@@ -18,6 +18,6 @@ public interface HasA1 {
 	 * 
 	 * @return the A1 style reference of this model element
 	 */
-	public String getA1Ref();
+	public String getA1();
 	
 }
