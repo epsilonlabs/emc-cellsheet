@@ -2,8 +2,9 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.models.IModel;
@@ -17,7 +18,20 @@ import org.eclipse.epsilon.eol.models.IModel;
  * @author Jonathan Co
  *
  */
-public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
+public interface IBook<ModelElementType> extends HasId, IModel, Iterable<ISheet>, HasA1 {
+
+	public static final ElementType TYPE = CoreType.BOOK;
+	public static final Set<ElementType> KINDS = new HashSet<>(Arrays.asList(CoreType.BOOK));
+
+	@Override
+	default public ElementType getType() {
+		return TYPE;
+	}
+
+	@Override
+	default public Set<ElementType> getKinds() {
+		return KINDS;
+	}
 
 	/*
 	 * SHEETS
@@ -28,169 +42,12 @@ public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 
 	public List<? extends ISheet> sheets();
 
-	@Override
-	default Object getTypeOf(Object obj) {
-		ElementType type = obj instanceof HasType ? ((HasType) obj).getType() : null;
-		if (type == null)
-			throw new IllegalArgumentException("Object not a model element");
-		return type;
-	}
+	public boolean isOfType(Object instance, ElementType type) throws EolModelElementTypeNotFoundException;
 
-	@Override
-	default Object getElementById(String id) {
-		if (id == null) {
-			return null;
-		}
+	public boolean isOfKind(Object instance, ElementType kind) throws EolModelElementTypeNotFoundException;
 
-		// Sanitise if this is a relative id
-		if (id.startsWith("/")) {
-			id = getName() + id;
-		}
+	public Collection<ModelElementType> getAllOfType(ElementType type) throws EolModelElementTypeNotFoundException;
 
-		Iterator<String> parts = Arrays.stream(id.split("/")).iterator();
+	public Collection<ModelElementType> getAllOfKind(ElementType type) throws EolModelElementTypeNotFoundException;
 
-		IBook book;
-		if (parts.hasNext() && getName().equals(parts.next())) {
-			book = this;
-		} else {
-			return null;
-		}
-
-		ISheet sheet;
-		if (parts.hasNext()) {
-			sheet = book.getSheet(parts.next());
-		} else {
-			return book;
-		}
-
-		IRow row;
-		if (parts.hasNext()) {
-			row = sheet.getRow(Integer.parseInt(parts.next()));
-		} else {
-			return sheet;
-		}
-
-		ICell cell;
-		if (parts.hasNext()) {
-			cell = row.getCell(Integer.parseInt(parts.next()));
-		} else {
-			return row;
-		}
-
-		if (!parts.hasNext()) {
-			return cell;
-		}
-
-		Object toReturn = null;
-		switch (parts.next()) {
-		case "value":
-			throw new UnsupportedOperationException();
-//			if (cell.getCellValue().getType() != CoreType.FORMULA_CELL_VALUE) {
-//				toReturn = cell.getCellValue();
-//				break;
-//			}
-//
-//			// No more parts, only interested in the formula cell value element
-//			if (!parts.hasNext()) {
-//				toReturn = cell.getFormulaCellValue();
-//				break;
-//			}
-//
-//			// Get the first tree element
-//			IFormulaTree tree = cell.getFormulaCellValue().getFormulaTree();
-//			toReturn = tree;
-//			if (Integer.parseInt(parts.next()) != 0) {
-//				throw new IllegalArgumentException("Given root node that is not 0");
-//			}
-//
-//			// Continue walking the tree
-//			while (parts.hasNext()) {
-//				tree = tree.getChildAt(Integer.parseInt(parts.next()));
-//				toReturn = tree;
-//			}
-//
-//			break;
-		default:
-			throw new IllegalArgumentException("Unknown type given");
-		}
-
-//		if (parts.hasNext()) {
-//			throw new IllegalArgumentException("Unconsumed parts in ID");
-//		}
-
-//		return toReturn;
-	}
-
-	default Collection<?> getAllOfType(ElementType type) throws EolModelElementTypeNotFoundException {
-		return getAllOfType(type.getTypename());
-	}
-
-	default Collection<?> getAllOfKind(ElementType type) throws EolModelElementTypeNotFoundException {
-		return getAllOfKind(type.getTypename());
-	}
-
-	@Override
-	default String getTypeNameOf(Object obj) {
-		return ((ElementType) getTypeOf(obj)).getTypename();
-	}
-
-	@Override
-	default boolean isOfType(Object instance, String typename) throws EolModelElementTypeNotFoundException {
-		return isOfTypeOrKind(instance, typename, false);
-	}
-
-	@Override
-	default boolean isOfKind(Object instance, String typename) throws EolModelElementTypeNotFoundException {
-		return isOfTypeOrKind(instance, typename, true);
-	}
-
-	@Override
-	default boolean hasType(String typename) {
-		return getType(typename) != null;
-	}
-
-	@Override
-	default ElementType getType() {
-		return CoreType.BOOK;
-	}
-
-	@Override
-	default ElementType[] getKinds() {
-		return new ElementType[] { getType() };
-	}
-
-	@Override
-	default String getId() {
-		return getName() + "/";
-	}
-
-	@Override
-	default String getA1Ref() {
-		return "[" + getName() + "]";
-	}
-
-	default boolean isOfTypeOrKind(Object instance, String typename, boolean isKind)
-			throws EolModelElementTypeNotFoundException {
-
-		// Check if the instance has type
-		if (!(instance instanceof HasType)) {
-			throw new IllegalArgumentException("Element is not typed: " + instance);
-		}
-
-		// Check for the type
-		final ElementType type = getType(typename);
-		if (type == null) {
-			throw new EolModelElementTypeNotFoundException(this.getName(), typename);
-		}
-
-		if (isKind) {
-			return Arrays.stream(((HasType) instance).getKinds()).anyMatch(type::equals);
-		} else {
-			return ((HasType) instance).getType() == type;
-		}
-	}
-
-	default ElementType getType(String typename) {
-		return ElementType.fromTypename(typename);
-	}
 }

@@ -1,5 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.Set;
+
 /**
  * Tag interface for Model Elements
  * 
@@ -20,8 +22,6 @@ public interface HasType {
 	 *         in this system so types may be sub/super-types. Will include the
 	 *         concrete type as retrieved from {@link #getType()}
 	 */
-	default ElementType[] getKinds() {
-		return new ElementType[] { getType() };
-	}
+	public Set<ElementType> getKinds();
 
 }
