@@ -1,13 +1,13 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class ElementTypeTest {
 
