@@ -2,7 +2,6 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -78,32 +77,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	}
 
 	@Override
-	protected Collection<HasId> allContentsFromModel() {
-		Collection<HasId> allContents = new ArrayList<>();
-//		allContents.add(this);
-//		forEach(sheet ->
-//			{
-//				allContents.add(sheet);
-//				sheet.forEach(row ->
-//					{
-//						allContents.add(row);
-//						row.forEach(cell ->
-//							{
-//								allContents.add(cell);
-//								allContents.add(cell.getCellValue());
-//								if (cell.getCellValue().getType() == Type.FORMULA_CELL_VALUE) {
-//									allContents.addAll(cell.getFormulaCellValue().getFormulaTree().getAllTrees());
-//								}
-//							});
-//					});
-//			});
-
-		return allContents;
-	}
-
-	@Override
 	public Collection<HasId> getAllOfKindFromModel(String typename) throws EolModelElementTypeNotFoundException {
-		// TODO: Lazy collections - Guava or backed by an Iterator 
 		final ElementType type = getElementTypeOrThrow(typename);
 		return allContents().stream().filter(e -> e.getKinds().contains(type)).collect(Collectors.toList());
 	}
@@ -203,5 +177,4 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		sb.append(")");
 		return sb.toString();
 	}
-
 }

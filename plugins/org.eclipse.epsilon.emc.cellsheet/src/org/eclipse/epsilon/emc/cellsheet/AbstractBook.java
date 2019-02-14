@@ -1,8 +1,13 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.AbstractCollection;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
@@ -92,6 +97,11 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	@Override
 	public boolean owns(Object instance) {
 		return getHasTypeOrThrow(instance).getBook() == this;
+	}
+
+	@Override
+	protected Collection<HasId> allContentsFromModel() {
+		return new AllContentsCollection();
 	}
 
 	/*
@@ -263,4 +273,75 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 		return isKind ? hasType.getKinds().contains(type) : hasType.getType() == type;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected class AllContentsCollection extends AbstractCollection<HasId> {
+
+		@Override
+		public Iterator<HasId> iterator() {
+			return new AllContentsIterator(Collections.singleton(AbstractBook.this).iterator());
+		}
+
+		@Override
+		public int size() {
+			int count = 0;
+			final Iterator it = iterator();
+			while (it.hasNext()) {
+				count++;
+				it.next();
+			}
+			return count;
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes" })
+	protected class AllContentsIterator implements Iterator {
+
+		private Deque<Iterator> stack = new LinkedList<>();
+		private Iterator<?> iterator;
+		private HasId current = null;
+
+		public AllContentsIterator(Iterator<?> start) {
+			this.iterator = start;
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (iterator == null) {
+				return false;
+			}
+
+			if (iterator.hasNext()) {
+				return true;
+			}
+
+			if (stack.isEmpty()) {
+				return false;
+			}
+
+			iterator = stack.pop();
+			return hasNext();
+		}
+
+		@Override
+		public HasId next() {
+			if (iterator == null) {
+				throw new NoSuchElementException();
+			}
+
+			if (iterator.hasNext()) {
+				current = (HasId) iterator.next();
+			} else {
+				iterator = stack.pop();
+				return next();
+			}
+
+			if (current instanceof Iterable) {
+				stack.push(iterator);
+				iterator = ((Iterable<?>) current).iterator();
+			}
+
+			return current;
+		}
+
+	}
 }
