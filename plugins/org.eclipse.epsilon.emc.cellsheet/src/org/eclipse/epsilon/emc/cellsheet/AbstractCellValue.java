@@ -1,6 +1,21 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
 public abstract class AbstractCellValue implements ICellValue {
+	
+	protected CellValueType type;
+	
+	protected AbstractCellValue() {
+		this(CellValueType.NONE);
+	}
+	
+	protected AbstractCellValue(CellValueType type) {
+		this.type = type;
+	}
+	
+	@Override
+	public CellValueType getType() {
+		return type;
+	}
 
 	@Override
 	public IRow getRow() {
@@ -20,6 +35,11 @@ public abstract class AbstractCellValue implements ICellValue {
 	@Override
 	public String getId() {
 		return String.format("%svalue/", getCell().getId());
+	}
+
+	@Override
+	public int compareTo(ICellValue o) {
+		return getCell().compareTo(o.getCell());
 	}
 
 }

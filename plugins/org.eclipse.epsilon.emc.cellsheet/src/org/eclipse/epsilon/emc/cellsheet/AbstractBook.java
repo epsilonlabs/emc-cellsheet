@@ -1,6 +1,8 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
@@ -16,9 +18,86 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 		return this;
 	}
 
+	@Override
+	public String getElementId(Object instance) {
+		return getHasIdOrThrow(instance).getId();
+	}
+
+	@Override
+	public Object getElementById(String id) {
+
+		// Sanitise if relative ID
+		id = id.charAt(0) == '/' ? getName() + id : id;
+
+		final Iterator<String> parts = Arrays.stream(id.split("/")).iterator();
+
+		HasId result = null;
+
+		try {
+			// Resolve book
+			if (parts.hasNext() && getName().equals(parts.next()))
+				result = this;
+			else
+				return null;
+
+			// Resolve sheet
+			if (parts.hasNext())
+				result = ((IBook) result).getSheet(parts.next());
+			else
+				return result;
+
+			// Resolve row
+			if (parts.hasNext())
+				result = ((ISheet) result).getRow(Integer.parseInt(parts.next()));
+			else
+				return result;
+
+			// Resolve cell
+			if (parts.hasNext())
+				result = ((IRow) result).getCell(Integer.parseInt(parts.next()));
+			else
+				return result;
+
+			// Resolve cellValue
+			if (parts.hasNext()) {
+				if (!parts.next().equals("value")) {
+					throw new IllegalArgumentException("Bad ID Given: " + id);
+				}
+				result = ((ICell) result).getCellValue();
+			} else {
+				return result;
+			}
+
+			// Resolve AST
+			if (parts.hasNext()) {
+				Integer.parseInt(parts.next());
+				result = ((ICellValue) result).getAst();
+			} else {
+				return result;
+			}
+
+			while (parts.hasNext()) {
+				result = ((IAst) result).getChildAt(Integer.parseInt(parts.next()));
+			}
+
+			return result;
+
+		} catch (NumberFormatException e) {
+			// Skip to throw IAE
+		}
+
+		throw new IllegalArgumentException("Bad ID Given: " + id);
+	}
+
+	@Override
+	public boolean owns(Object instance) {
+		return getHasTypeOrThrow(instance).getBook() == this;
+	}
+
 	/*
 	 * MODEL UPDATE
 	 */
+
 	@Override
 	public void setElementId(Object instance, String newId) {
 		throw new UnsupportedOperationException();
@@ -124,6 +203,20 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 	public boolean isLoaded() {
 		return allContentsAreCached;
+	}
+
+	/**
+	 * If {@link #isModelElement(Object)} returns false throw exception
+	 * 
+	 * @param instance
+	 * @throws IllegalArgumentException
+	 */
+	protected HasId getHasIdOrThrow(Object instance) {
+		if (!(instance instanceof HasId)) {
+			throw new IllegalArgumentException("Not a valid Cellsheet model element with ID: " + instance + " ( "
+					+ instance.getClass().getCanonicalName() + ")");
+		}
+		return (HasId) instance;
 	}
 
 	/**

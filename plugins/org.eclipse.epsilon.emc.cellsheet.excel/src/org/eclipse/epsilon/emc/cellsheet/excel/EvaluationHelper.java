@@ -144,20 +144,20 @@ public enum EvaluationHelper {
 
 	/**
 	 * 
-	 * @param tree
+	 * @param ast
 	 * @return
 	 */
-	public static String evaluate(ExcelAst tree) {
-		return evaluate(tree.getFormula(), (ExcelCell) tree.getCell());
+	public static String evaluate(ExcelAst ast) {
+		return evaluate(ast.getFormula(), (ExcelCell) ast.getCell());
 	}
 
 	/**
 	 * 
-	 * @param tree
+	 * @param ast
 	 * @return
 	 */
-	public static String evaluate(IAst tree) {
-		return evaluate((ExcelAst) tree);
+	public static String evaluate(IAst ast) {
+		return evaluate((ExcelAst) ast);
 	}
 
 	/**
@@ -168,7 +168,7 @@ public enum EvaluationHelper {
 	public static CellReference getCellRef(ICell cell) {
 		return new CellReference(cell.getSheet().getName(), // Sheet name
 				cell.getRowIndex(), // Row
-				cell.getCol(), // Col
+				cell.getColIndex(), // Col
 				true, // Is abs row
 				true // Is abs col
 		);
@@ -185,11 +185,11 @@ public enum EvaluationHelper {
 
 	/**
 	 * 
-	 * @param tree
+	 * @param ast
 	 * @return
 	 */
-	public static CellReference getCellRef(IAst tree) {
-		return getCellRef(tree.getCell());
+	public static CellReference getCellRef(IAst ast) {
+		return getCellRef(ast.getCell());
 	}
 
 	/**
@@ -209,19 +209,19 @@ public enum EvaluationHelper {
 
 	/**
 	 * 
-	 * @param tree
+	 * @param ast
 	 * @return
 	 */
-	public static TokenMappings getPtgs(ExcelAst tree) {
-		return getPtgs(tree.getFormula(), (ExcelCell) tree.getCell());
+	public static TokenMappings getPtgs(ExcelAst ast) {
+		return getPtgs(ast.getFormula(), (ExcelCell) ast.getCell());
 	}
 
 	/**
 	 * 
-	 * @param tree
+	 * @param ast
 	 * @return
 	 */
-	public static TokenMappings getPtgs(IAst tree) {
-		return getPtgs((ExcelAst) tree);
+	public static TokenMappings getPtgs(IAst ast) {
+		return getPtgs((ExcelAst) ast);
 	}
 }

@@ -44,11 +44,16 @@ public interface ICell extends HasId, HasA1, HasRow, Comparable<ICell> {
 	default public Set<ElementType> getKinds() {
 		return KINDS;
 	}
+	
+	/**
+	 * @return 0-based row index of this Cell
+	 */
+	public int getRowIndex();
 
 	/**
 	 * @return 0-based column index of this Cell
 	 */
-	public int getCol();
+	public int getColIndex();
 
 	/**
 	 * @return Alpha-based column reference of this Cell

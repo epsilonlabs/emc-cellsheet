@@ -4,10 +4,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.eclipse.epsilon.emc.cellsheet.AbstractCell;
 import org.eclipse.epsilon.emc.cellsheet.CellValueType;
-import org.eclipse.epsilon.emc.cellsheet.ICell;
 
-public class ExcelCell implements ICell, HasDelegate<Cell> {
+public class ExcelCell extends AbstractCell implements HasDelegate<Cell> {
 
 	protected ExcelRow row;
 	protected int col;
@@ -33,7 +33,12 @@ public class ExcelCell implements ICell, HasDelegate<Cell> {
 	}
 
 	@Override
-	public int getCol() {
+	public int getRowIndex() {
+		return row.getIndex();
+	}
+
+	@Override
+	public int getColIndex() {
 		return col;
 	}
 

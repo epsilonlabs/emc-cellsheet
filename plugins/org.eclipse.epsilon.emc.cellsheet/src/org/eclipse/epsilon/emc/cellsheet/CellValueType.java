@@ -2,7 +2,6 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 public enum CellValueType implements ElementType {
 
-	SUPER("CellValue"),
 	NONE("NoneCellValue"),
 	NUMERIC("NumericCellValue"),
 	STRING("StringCellValue"),
@@ -16,6 +15,7 @@ public enum CellValueType implements ElementType {
 
 	private CellValueType(String typename) {
 		this.typename = typename;
+		ElementType.addToMap(typename, this);
 	}
 
 	@Override
@@ -35,10 +35,6 @@ public enum CellValueType implements ElementType {
 	 * @return
 	 */
 	public static CellValueType fromTypename(String typename) {
-		for (CellValueType type : CellValueType.values()) {
-			if (type.typename.equals(typename))
-				return type;
-		}
-		return null;
+		return (CellValueType) ElementType.fromTypename(typename);
 	}
 }

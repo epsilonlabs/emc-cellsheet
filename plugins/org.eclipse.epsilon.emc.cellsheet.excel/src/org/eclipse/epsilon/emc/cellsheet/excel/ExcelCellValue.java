@@ -3,19 +3,26 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import java.util.Date;
 
 import org.apache.poi.ss.usermodel.FormulaError;
+import org.eclipse.epsilon.emc.cellsheet.AbstractCellValue;
 import org.eclipse.epsilon.emc.cellsheet.CellValueType;
-import org.eclipse.epsilon.emc.cellsheet.ElementType;
 import org.eclipse.epsilon.emc.cellsheet.IAst;
-import org.eclipse.epsilon.emc.cellsheet.ICellValue;
 
-public class ExcelCellValue implements ICellValue {
+public class ExcelCellValue extends AbstractCellValue {
 
 	protected ExcelCell cell;
-	protected CellValueType type;
 
-	ExcelCellValue(ExcelCell cell, CellValueType type) {
+	public ExcelCellValue() {
+		super();
+		this.cell = null;
+	}
+
+	public ExcelCellValue(CellValueType type) {
+		super(type);
+	}
+
+	public ExcelCellValue(ExcelCell cell, CellValueType type) {
+		super(type);
 		this.cell = cell;
-		this.type = type;
 	}
 
 	@Override
@@ -23,9 +30,8 @@ public class ExcelCellValue implements ICellValue {
 		return this.cell;
 	}
 
-	@Override
-	public ElementType getType() {
-		return type;
+	public void setCell(ExcelCell cell) {
+		this.cell = cell;
 	}
 
 	@Override
@@ -54,6 +60,10 @@ public class ExcelCellValue implements ICellValue {
 
 	@Override
 	public String getString() {
+		if (cell == null) {
+			return "";
+		}
+
 		switch (type) {
 		case BOOLEAN:
 			return Boolean.toString(getBoolean());

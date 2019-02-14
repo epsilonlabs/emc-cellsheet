@@ -19,7 +19,7 @@ public abstract class AbstractCell implements ICell {
 
 	@Override
 	public String getA1Col() {
-		return ReferenceUtil.indexToA1(getCol());
+		return ReferenceUtil.indexToA1(getColIndex());
 	}
 
 	@Override
@@ -30,12 +30,12 @@ public abstract class AbstractCell implements ICell {
 			return 0;
 
 		int parent = this.getRow().compareTo(o.getRow());
-		return parent == 0 ? Integer.compare(this.getCol(), o.getCol()) : parent;
+		return parent == 0 ? Integer.compare(this.getColIndex(), o.getColIndex()) : parent;
 	}
 
 	@Override
 	public String getId() {
-		return String.format("%s%s/", getRow().getId(), getCol());
+		return String.format("%s%s/", getRow().getId(), getColIndex());
 	}
 
 	@Override

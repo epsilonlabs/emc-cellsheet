@@ -1,9 +1,9 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -16,18 +16,14 @@ import java.util.Set;
  */
 public interface ICellValue extends HasId, HasCell, Comparable<ICellValue> {
 
-	public static final ElementType TYPE = CoreType.CELL_VALUE;
-	public static final Set<ElementType> KINDS = new HashSet<>(Arrays.asList(TYPE));
-
-	@Override
-	default public ElementType getType() {
-		return TYPE;
-	}
+	public static final ElementType SUBTYPE = CoreType.CELL_VALUE;
 
 	@Override
 	default public Set<ElementType> getKinds() {
-		return KINDS;
+		return Stream.of(getType(), SUBTYPE).collect(Collectors.toSet());
 	}
+	
+	public CellValueType getType();
 
 	public boolean getBoolean();
 

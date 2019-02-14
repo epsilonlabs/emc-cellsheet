@@ -3,7 +3,6 @@ package org.eclipse.epsilon.emc.cellsheet.excel;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -17,20 +16,16 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.common.util.StringProperties;
+import org.eclipse.epsilon.emc.cellsheet.AbstractBook;
 import org.eclipse.epsilon.emc.cellsheet.ElementType;
 import org.eclipse.epsilon.emc.cellsheet.HasId;
-import org.eclipse.epsilon.emc.cellsheet.HasType;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ISheet;
-import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
-import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
-import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
-import org.eclipse.epsilon.eol.models.CachedModel;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 
-public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<Workbook> {
+public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbook> {
 
 	public static final String PROPERTY_NAME_DEFAULT = "Excel";
 	public static final String PROPERTY_FILE = "file";
@@ -107,41 +102,15 @@ public class ExcelBook extends CachedModel<HasId> implements IBook, HasDelegate<
 	}
 
 	@Override
-	public String getElementId(Object instance) {
-		if (instance instanceof HasId) {
-			return ((HasId) instance).getId();
-		}
-
-		if (instance instanceof HasType) {
-			throw new UnsupportedOperationException(
-					"ID not implemented for model type: " + ((HasType) instance).getType());
-		}
-		return null;
-	}
-
-
-
-	@Override
-	public boolean owns(Object instance) {
-		return getElementById(getElementId(instance)) != null;
-	}
-
-	@Override
 	public Collection<HasId> getAllOfKindFromModel(String typename) throws EolModelElementTypeNotFoundException {
-		ElementType type = getType(typename);
-		if (type == null) {
-			throw new EolModelElementTypeNotFoundException(name, typename);
-		}
-		return allContents().stream().filter(e -> Arrays.stream(e.getKinds()).anyMatch(k -> type == k))
-				.collect(Collectors.toList());
+		// TODO: Lazy collections - Guava or backed by an Iterator 
+		final ElementType type = getElementTypeOrThrow(typename);
+		return allContents().stream().filter(e -> e.getKinds().contains(type)).collect(Collectors.toList());
 	}
 
 	@Override
 	public Collection<HasId> getAllOfTypeFromModel(String typename) throws EolModelElementTypeNotFoundException {
-		ElementType type = getType(typename);
-		if (type == null) {
-			throw new EolModelElementTypeNotFoundException(name, typename);
-		}
+		final ElementType type = getElementTypeOrThrow(typename);
 		return allContents().stream().filter(e -> e.getType() == type).collect(Collectors.toList());
 	}
 

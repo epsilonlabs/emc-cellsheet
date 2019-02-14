@@ -8,10 +8,10 @@ import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.eclipse.epsilon.emc.cellsheet.AbstractRow;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
-import org.eclipse.epsilon.emc.cellsheet.IRow;
 
-public class ExcelRow implements IRow, HasDelegate<Row> {
+public class ExcelRow extends AbstractRow implements HasDelegate<Row> {
 
 	protected ExcelSheet sheet;
 	protected int index;

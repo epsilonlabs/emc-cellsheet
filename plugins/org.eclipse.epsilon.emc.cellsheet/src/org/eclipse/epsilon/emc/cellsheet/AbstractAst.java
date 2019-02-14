@@ -110,8 +110,24 @@ public abstract class AbstractAst implements IAst {
 
 	@Override
 	public void addChild(int index, IAst child) {
+		if (index > children.size()) {
+			while (index >= children.size()) {
+				children.add(null);
+			}
+		}
 		child.setParent(this);
 		getChildren().add(index, child);
+	}
+	
+	@Override
+	public void setChild(int index, IAst child) {
+		if (index > children.size()) {
+			while (index >= children.size()) {
+				children.add(null);
+			}
+		}
+		child.setParent(this);
+		children.set(index, child);
 	}
 
 	@Override
