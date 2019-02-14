@@ -1,5 +1,8 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 public abstract class AbstractCell implements ICell {
 
 	@Override
@@ -41,5 +44,10 @@ public abstract class AbstractCell implements ICell {
 	@Override
 	public String getA1() {
 		return String.format("%s!%s%d", getSheet().getA1(), getA1Col(), getA1Row());
+	}
+
+	@Override
+	public Iterator<ICellValue> iterator() {
+		return Collections.singleton(getCellValue()).iterator();
 	}
 }

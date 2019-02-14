@@ -13,6 +13,7 @@ public abstract class AbstractAst implements IAst {
 	protected ICellValue cellValue;
 	protected IAst parent;
 
+	protected String token = null;
 	protected AstType type = AstType.UNKNOWN;
 	protected AstSubtype subtype = AstSubtype.NOTHING;
 
@@ -60,6 +61,16 @@ public abstract class AbstractAst implements IAst {
 	@Override
 	public void setParent(IAst parent) {
 		this.parent = parent;
+	}
+
+	@Override
+	public String getToken() {
+		return token;
+	}
+
+	@Override
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	@Override
@@ -118,7 +129,7 @@ public abstract class AbstractAst implements IAst {
 		child.setParent(this);
 		getChildren().add(index, child);
 	}
-	
+
 	@Override
 	public void setChild(int index, IAst child) {
 		if (index > children.size()) {
@@ -248,6 +259,11 @@ public abstract class AbstractAst implements IAst {
 	@Override
 	public String getId() {
 		return String.format("%s%d/", getCellValue().getId(), getIndex());
+	}
+
+	@Override
+	public Iterator<IAst> iterator() {
+		return children.iterator();
 	}
 
 	@Override

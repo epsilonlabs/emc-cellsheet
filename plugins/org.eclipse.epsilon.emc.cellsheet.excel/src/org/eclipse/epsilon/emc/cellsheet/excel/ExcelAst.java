@@ -12,8 +12,6 @@ import org.eclipse.epsilon.emc.cellsheet.ICellValue;
  */
 public class ExcelAst extends AbstractAst implements IAst {
 
-	private String token;
-
 	@Override
 	public void setCellValue(ICellValue cellValue) {
 		if (parent != null && !(cellValue instanceof ExcelCellValue))
@@ -33,16 +31,6 @@ public class ExcelAst extends AbstractAst implements IAst {
 		if (!(child instanceof ExcelAst))
 			throw new IllegalArgumentException("Parent must be of type ExcelFormulaTree");
 		super.addChild(child);
-	}
-
-	@Override
-	public String getToken() {
-		return token;
-	}
-
-	@Override
-	public void setToken(String token) {
-		this.token = token;
 	}
 
 	@Override

@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  *
  * @param <T> Primitive type that the Cell Value wraps
  */
-public interface ICellValue extends HasId, HasCell, Comparable<ICellValue> {
+public interface ICellValue extends HasId, HasCell, Comparable<ICellValue>, Iterable<IAst> {
 
 	public static final ElementType SUBTYPE = CoreType.CELL_VALUE;
 
@@ -22,7 +22,7 @@ public interface ICellValue extends HasId, HasCell, Comparable<ICellValue> {
 	default public Set<ElementType> getKinds() {
 		return Stream.of(getType(), SUBTYPE).collect(Collectors.toSet());
 	}
-	
+
 	public CellValueType getType();
 
 	public boolean getBoolean();

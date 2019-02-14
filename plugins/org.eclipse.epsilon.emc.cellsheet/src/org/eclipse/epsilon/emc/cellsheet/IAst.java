@@ -8,7 +8,7 @@ import java.util.List;
  * @author Jonathan Co
  *
  */
-public interface IAst extends HasId, HasCellValue {
+public interface IAst extends HasId, HasCellValue, Iterable<IAst> {
 
 	/**
 	 * Set the parent {@link IFormulaCellValue}

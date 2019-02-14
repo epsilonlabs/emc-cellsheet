@@ -30,7 +30,7 @@ import java.util.Set;
  * @author Jonathan Co
  *
  */
-public interface ICell extends HasId, HasA1, HasRow, Comparable<ICell> {
+public interface ICell extends HasId, HasA1, HasRow, Comparable<ICell>, Iterable<ICellValue> {
 
 	public static final ElementType TYPE = CoreType.CELL;
 	public static final Set<ElementType> KINDS = new HashSet<>(Arrays.asList(TYPE));
