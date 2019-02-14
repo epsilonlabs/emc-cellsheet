@@ -14,6 +14,7 @@ import org.apache.poi.ss.formula.ptg.AreaI;
 import org.apache.poi.ss.formula.ptg.AttrPtg;
 import org.apache.poi.ss.formula.ptg.BoolPtg;
 import org.apache.poi.ss.formula.ptg.ControlPtg;
+import org.apache.poi.ss.formula.ptg.FuncVarPtg;
 import org.apache.poi.ss.formula.ptg.IntPtg;
 import org.apache.poi.ss.formula.ptg.IntersectionPtg;
 import org.apache.poi.ss.formula.ptg.MemAreaPtg;
@@ -79,7 +80,14 @@ public class TokenMappingFormulaParser extends FormulaParser {
 			parse();
 		}
 
-		final TokenMappings mappings = new TokenMappings(getRPNPtg(FormulaType.CELL));
+		final Ptg[] ptgs = getRPNPtg(FormulaType.CELL);
+		for (int i = 0; i < ptgs.length; i++) {
+			if (PtgHelper.isSumPtg(ptgs[i])) {
+				ptgs[i] = FuncVarPtg.SUM;
+			}
+		}
+
+		final TokenMappings mappings = new TokenMappings(ptgs);
 		for (Entry<Ptg, String> e : ptgTokens.entrySet()) {
 			mappings.setToken(e.getKey(), e.getValue());
 		}
@@ -104,9 +112,6 @@ public class TokenMappingFormulaParser extends FormulaParser {
 		}
 
 		public void setToken(Ptg ptg, String token) {
-			if (ptg instanceof AbstractFunctionPtg) {
-				System.err.println();
-			}
 			tokenMap.put(ptg, token);
 		}
 
