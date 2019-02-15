@@ -1,7 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Set;
@@ -27,10 +26,10 @@ public class AbstractSheetTest {
 	}
 
 	@Test
-	public void getA1Row_should_delegate() throws Exception {
-		when(sheet.getRow(anyInt())).thenAnswer(RETURNS_MOCKS);
-		sheet.getA1Row(1);
-		verify(sheet, times(1)).getRow(0);
+	public void getKind_should_return_set_with_SHEET() throws Exception {
+		final Set<ElementType> kinds = sheet.getKinds();
+		assertEquals(1, kinds.size());
+		assertEquals(CoreType.SHEET, kinds.iterator().next());
 	}
 
 	@Test
@@ -45,23 +44,14 @@ public class AbstractSheetTest {
 
 	@Test
 	public void compareTo_should_return_1_when_given_previous_sheet() throws Exception {
-		final ISheet other = mock(ISheet.class);
-		when(other.getIndex()).thenReturn(-1);
+		final ISheet other = when(mock(ISheet.class).getIndex()).thenReturn(-1).getMock();
 		assertEquals(1, sheet.compareTo(other));
 	}
 
 	@Test
 	public void compareTo_should_return_neg1_when_given_next_sheet() throws Exception {
-		final ISheet other = mock(ISheet.class);
-		when(other.getIndex()).thenReturn(1);
+		final ISheet other = when(mock(ISheet.class).getIndex()).thenReturn(1).getMock();
 		assertEquals(-1, sheet.compareTo(other));
-	}
-
-	@Test
-	public void getKind_should_return_set_with_SHEET() throws Exception {
-		final Set<ElementType> kinds = sheet.getKinds();
-		assertEquals(1, kinds.size());
-		assertEquals(CoreType.SHEET, kinds.iterator().next());
 	}
 
 	@Test
