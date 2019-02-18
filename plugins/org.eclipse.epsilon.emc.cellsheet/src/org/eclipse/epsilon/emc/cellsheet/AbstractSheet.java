@@ -9,7 +9,11 @@ public abstract class AbstractSheet implements ISheet {
 
 	@Override
 	public int compareTo(ISheet o) {
-		return null == o ? 1 : Integer.compare(getIndex(), o.getIndex());
+		if (null == o)
+			return 1;
+		if (this == o)
+			return 0;
+		return Integer.compare(getIndex(), o.getIndex());
 	}
 
 	@Override
