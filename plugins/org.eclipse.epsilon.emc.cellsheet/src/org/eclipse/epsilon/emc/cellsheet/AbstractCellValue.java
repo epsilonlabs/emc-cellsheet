@@ -19,6 +19,11 @@ public abstract class AbstractCellValue implements ICellValue {
 	public CellValueType getType() {
 		return type;
 	}
+	
+	@Override
+	public void setType(CellValueType type) {
+		this.type = type;
+	}
 
 	@Override
 	public IRow getRow() {

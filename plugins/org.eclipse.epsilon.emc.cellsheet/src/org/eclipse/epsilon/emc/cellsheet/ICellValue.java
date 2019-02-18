@@ -24,6 +24,8 @@ public interface ICellValue extends HasId, HasCell, Comparable<ICellValue>, Iter
 	}
 
 	public CellValueType getType();
+	
+	public void setType(CellValueType type);
 
 	public boolean getBoolean();
 
