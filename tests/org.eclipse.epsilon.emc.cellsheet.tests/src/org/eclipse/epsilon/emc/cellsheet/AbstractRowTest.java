@@ -60,6 +60,15 @@ public class AbstractRowTest {
 		when(row.compareTo(nullable(IRow.class))).thenCallRealMethod();
 		assertEquals(-1, row.compareTo(other));
 	}
+	
+	@Test
+	public void compareTo_should_delegate_to_parent_when_parents_different() throws Exception {
+		final ISheet sheet = when(mock(ISheet.class).compareTo(nullable(ISheet.class))).thenReturn(1).getMock();
+		final IRow other = when(mock(IRow.class).getSheet()).thenReturn(sheet).getMock();
+		when(row.getSheet()).thenReturn(sheet);
+		assertEquals(1, row.compareTo(other));
+		verify(sheet).compareTo(nullable(ISheet.class));
+	}
 
 	@Test
 	public void getId_should_return_ID_string() throws Exception {
@@ -75,6 +84,21 @@ public class AbstractRowTest {
 		when(row.getSheet()).thenReturn(sheet);
 		assertEquals("[Book1]'Sheet1'!A$1", row.getA1());
 		verify(sheet).getA1();
+	}
+	
+	@Test
+	public void getA1Cell_should_delegate_to_getCell() throws Exception {
+		when(row.getCell(1)).thenAnswer(RETURNS_DEFAULTS);
+		row.getA1Cell("B");
+		verify(row).getA1Cell("B");
+		verify(row).getCell(1);
+	}
+	
+	@Test
+	public void getBook_should_delegate_to_getSheet() throws Exception {
+		when(row.getSheet()).thenAnswer(RETURNS_MOCKS);
+		assertNotNull(row.getBook());
+		verify(row).getSheet();
 	}
 
 }

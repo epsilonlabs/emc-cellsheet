@@ -71,4 +71,12 @@ public class AbstractSheetTest {
 		when(sheet.getName()).thenReturn("Sheet1");
 		assertEquals("[Book1]'Sheet1'", sheet.getA1());
 	}
+	
+	@Test
+	public void getA1Row_should_delegate_to_getRow() throws Exception {
+		when(sheet.getRow(33)).thenAnswer(RETURNS_DEFAULTS);
+		sheet.getA1Row(34);
+		verify(sheet).getA1Row(34);
+		verify(sheet).getRow(33);
+	}
 }
