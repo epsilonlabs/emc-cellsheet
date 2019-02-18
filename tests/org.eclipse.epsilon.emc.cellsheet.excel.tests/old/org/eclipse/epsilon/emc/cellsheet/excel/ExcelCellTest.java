@@ -28,7 +28,7 @@ public class ExcelCellTest {
 
 	@Test
 	public void getColIndex_should_return_integer() throws Exception {
-		assertEquals(26, cell.getCol());
+		assertEquals(26, cell.getColIndex());
 	}
 
 	@Test
