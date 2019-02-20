@@ -18,9 +18,8 @@ public class AstTypeTest {
 	@Parameters
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[][] { { "Noop", NOOP }, { "Operand", OPERAND }, { "Function", FUNCTION },
-				{ "Subexpresssion", SUBEXPRESSION }, { "Argument", ARGUMENT }, { "OperatorPrefix", OPERATOR_PREFIX },
-				{ "OperatorInfix", OPERATOR_INFIX }, { "OperatorPostfix", OPERATOR_POSTFIX },
-				{ "Whitespace", WHITESPACE }, { "Unknown", UNKNOWN } });
+				{ "OperatorPrefix", OPERATOR_PREFIX }, { "OperatorInfix", OPERATOR_INFIX },
+				{ "OperatorPostfix", OPERATOR_POSTFIX }, { "Whitespace", WHITESPACE }, { "Unknown", UNKNOWN } });
 	}
 
 	@Parameter(0)

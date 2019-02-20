@@ -101,15 +101,15 @@ public class AbstractBookTest {
 	public void getAllTypeNamesOf_should_return_all_kinds_when_given_HasType_with_multiple_types() throws Exception {
 		final Set<ElementType> kinds = new HashSet<>();
 		kinds.add(CoreType.BOOK);
-		kinds.add(AstType.ARGUMENT);
+		kinds.add(AstType.OPERATOR_INFIX);
 		kinds.add(AstSubtype.ADDITION);
 
-		final HasType hasType = mock(HasType.class);
+		final HasId hasType = mock(HasId.class);
 		when(hasType.getKinds()).thenReturn(kinds);
 
 		Collection<String> typenames = book.getAllTypeNamesOf(hasType);
 		assertTrue(typenames.contains(CoreType.BOOK.getTypename()));
-		assertTrue(typenames.contains(AstType.ARGUMENT.getTypename()));
+		assertTrue(typenames.contains(AstType.OPERATOR_INFIX.getTypename()));
 		assertTrue(typenames.contains(AstSubtype.ADDITION.getTypename()));
 	}
 

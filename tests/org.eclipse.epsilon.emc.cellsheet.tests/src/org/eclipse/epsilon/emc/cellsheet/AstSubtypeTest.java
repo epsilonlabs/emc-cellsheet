@@ -16,14 +16,13 @@ import org.junit.runners.Parameterized.Parameters;
 public class AstSubtypeTest {
 	@Parameters
 	public static Collection<Object[]> data() {
-		return Arrays.asList(new Object[][] { { "Nothing", NOTHING }, { "Start", START }, { "ArrayStart", ARRAY_START },
-				{ "ArrayRowStart", ARRAY_ROW_START }, { "Stop", STOP }, { "ArrayStop", ARRAY_STOP },
-				{ "ArrayRowStop", ARRAY_ROW_STOP }, { "Text", TEXT }, { "Number", NUMBER }, { "Logical", LOGICAL },
-				{ "Error", ERROR }, { "Range", RANGE }, { "Ref", REF }, { "Plus", PLUS }, { "Negation", NEGATION },
-				{ "Percent", PERCENT }, { "Exponenetion", EXPONENTION }, { "Multiplication", MULTIPLICATION },
-				{ "Divsion", DIVISION }, { "Addition", ADDITION }, { "Subtraction", SUBTRACTION },
-				{ "Concatenation", CONCATENATION }, { "EQ", EQ }, { "LT", LT }, { "GT", GT }, { "LTE", LTE },
-				{ "GTE", GTE }, { "NEQ", NEQ }, { "Intersection", INTERSECTION }, { "Union", UNION } });
+		return Arrays.asList(new Object[][] { { "Nothing", NOTHING }, { "Text", TEXT }, { "Number", NUMBER },
+				{ "Logical", LOGICAL }, { "Error", ERROR }, { "Range", RANGE }, { "Ref", REF }, { "Plus", PLUS },
+				{ "Negation", NEGATION }, { "Percent", PERCENT }, { "Exponenetion", EXPONENTION },
+				{ "Multiplication", MULTIPLICATION }, { "Divsion", DIVISION }, { "Addition", ADDITION },
+				{ "Subtraction", SUBTRACTION }, { "Concatenation", CONCATENATION }, { "EQ", EQ }, { "LT", LT },
+				{ "GT", GT }, { "LTE", LTE }, { "GTE", GTE }, { "NEQ", NEQ }, { "Intersection", INTERSECTION },
+				{ "Union", UNION } });
 	}
 
 	@Parameter(0)
