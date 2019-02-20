@@ -8,9 +8,9 @@ public enum CoreType implements ElementType {
 	ROW("Row"),
 	CELL("Cell"),
 	CELL_VALUE("CellValue"),
-	AST("AST");
+	AST("Ast");
 
-	private final String typename;
+	protected final String typename;
 
 	private CoreType(String typename) {
 		this.typename = typename;
