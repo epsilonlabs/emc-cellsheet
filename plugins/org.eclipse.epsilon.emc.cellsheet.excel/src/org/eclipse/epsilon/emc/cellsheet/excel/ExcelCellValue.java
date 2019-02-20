@@ -35,7 +35,7 @@ public class ExcelCellValue extends AbstractCellValue {
 	}
 
 	@Override
-	public boolean getBoolean() {
+	public boolean getBooleanValue() {
 		if (type == CellValueType.BOOLEAN) {
 			return cell.getDelegate().getBooleanCellValue();
 		}
@@ -43,7 +43,7 @@ public class ExcelCellValue extends AbstractCellValue {
 	}
 
 	@Override
-	public double getNumber() {
+	public double getNumericValue() {
 		if (type == CellValueType.NUMERIC) {
 			return cell.getDelegate().getNumericCellValue();
 		}
@@ -51,7 +51,7 @@ public class ExcelCellValue extends AbstractCellValue {
 	}
 
 	@Override
-	public Date getDate() {
+	public Date getDateValue() {
 		if (type == CellValueType.DATE) {
 			return cell.getDelegate().getDateCellValue();
 		}
@@ -59,22 +59,22 @@ public class ExcelCellValue extends AbstractCellValue {
 	}
 
 	@Override
-	public String getString() {
+	public String getStringValue() {
 		if (cell == null) {
 			return "";
 		}
 
 		switch (type) {
 		case BOOLEAN:
-			return Boolean.toString(getBoolean());
+			return Boolean.toString(getBooleanValue());
 		case NUMERIC:
-			return Double.toString(getNumber());
+			return Double.toString(getNumericValue());
 		case DATE:
-			return getDate().toString();
+			return getDateValue().toString();
 		case FORMULA:
 			return getFormula();
 		case ERROR:
-			return getError();
+			return getErrorValue();
 		default:
 			return cell.getDelegate().getStringCellValue();
 		}
@@ -85,11 +85,11 @@ public class ExcelCellValue extends AbstractCellValue {
 		if (type == CellValueType.FORMULA) {
 			return cell.getDelegate().getCellFormula();
 		}
-		return getString();
+		return getStringValue();
 	}
 
 	@Override
-	public String getError() {
+	public String getErrorValue() {
 		if (type == CellValueType.ERROR) {
 			return FormulaError.forInt(cell.getDelegate().getErrorCellValue()).name();
 		}

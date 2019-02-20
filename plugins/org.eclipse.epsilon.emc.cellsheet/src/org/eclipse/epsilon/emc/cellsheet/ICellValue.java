@@ -27,17 +27,17 @@ public interface ICellValue extends HasId, HasCell, Comparable<ICellValue>, Iter
 	
 	public void setType(CellValueType type);
 
-	public boolean getBoolean();
+	public boolean getBooleanValue();
 
-	public double getNumber();
+	public double getNumericValue();
 
-	public Date getDate();
+	public Date getDateValue();
 
-	public String getString();
+	public String getStringValue();
 
 	public String getFormula();
 
-	public String getError();
+	public String getErrorValue();
 
 	public IAst getAst();
 
