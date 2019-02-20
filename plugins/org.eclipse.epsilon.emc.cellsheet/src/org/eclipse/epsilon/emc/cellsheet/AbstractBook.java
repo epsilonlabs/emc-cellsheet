@@ -235,12 +235,12 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	 * @param instance
 	 * @throws IllegalArgumentException
 	 */
-	protected HasType getHasTypeOrThrow(Object instance) {
-		if (!(instance instanceof HasType)) {
+	protected HasId getHasTypeOrThrow(Object instance) {
+		if (!(instance instanceof HasId)) {
 			throw new IllegalArgumentException("Not a valid Cellsheet model element: " + instance + " ( "
 					+ instance.getClass().getCanonicalName() + ")");
 		}
-		return (HasType) instance;
+		return (HasId) instance;
 	}
 
 	/**
@@ -269,8 +269,8 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	protected boolean isOfKindOrType(Object instance, String typename, boolean isKind)
 			throws EolModelElementTypeNotFoundException {
 		final ElementType type = getElementTypeOrThrow(typename);
-		final HasType hasType = getHasTypeOrThrow(instance);
-		return isKind ? hasType.getKinds().contains(type) : hasType.getType() == type;
+		final HasId hasId = getHasTypeOrThrow(instance);
+		return isKind ? hasId.getKinds().contains(type) : hasId.getType() == type;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
