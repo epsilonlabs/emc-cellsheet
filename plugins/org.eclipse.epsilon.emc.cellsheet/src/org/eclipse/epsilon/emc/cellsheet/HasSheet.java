@@ -1,6 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-public interface HasSheet extends HasBook {
+public interface HasSheet {
 
 	/**
 	 * @return the sheet this element belongs to

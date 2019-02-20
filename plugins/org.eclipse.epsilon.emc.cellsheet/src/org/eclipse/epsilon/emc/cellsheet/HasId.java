@@ -15,7 +15,7 @@ import java.util.Set;
  * @author Jonathan Co
  *
  */
-public interface HasId extends HasBook {
+public interface HasId {
 
 	/**
 	 * @return the concrete type associated with the model element.
@@ -37,5 +37,7 @@ public interface HasId extends HasBook {
 	 * @return the Unique ID
 	 */
 	public String getId();
+	
+	public IBook getBook();
 
 }
