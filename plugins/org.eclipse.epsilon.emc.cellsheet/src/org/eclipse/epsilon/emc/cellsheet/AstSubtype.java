@@ -5,14 +5,6 @@ public enum AstSubtype implements ElementType {
 	// Default
 	NOTHING("Nothing"),
 	
-	// Structural
-	START("Start"),
-	ARRAY_START("ArrayStart"),
-	ARRAY_ROW_START("ArrayRowStart"),
-	STOP("Stop"),
-	ARRAY_STOP("ArrayStop"),
-	ARRAY_ROW_STOP("ArrayRowStop"),
-	
 	// Operands
 	TEXT("Text"),
 	NUMBER("Number"),

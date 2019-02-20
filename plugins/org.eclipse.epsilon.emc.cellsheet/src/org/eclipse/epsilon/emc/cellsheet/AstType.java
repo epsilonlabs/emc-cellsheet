@@ -5,8 +5,6 @@ public enum AstType implements ElementType {
 	NOOP("Noop"),
 	OPERAND("Operand"),
 	FUNCTION("Function"),
-	SUBEXPRESSION("Subexpresssion"),
-	ARGUMENT("Argument"),
 	OPERATOR_PREFIX("OperatorPrefix"),
 	OPERATOR_INFIX("OperatorInfix"),
 	OPERATOR_POSTFIX("OperatorPostfix"),
