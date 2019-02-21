@@ -60,7 +60,7 @@ public interface IAst extends HasId, HasCellValue, Iterable<IAst> {
 	 * @return this tree and all it's descendant trees. Order is based on left
 	 *         traversal
 	 */
-	public List<IAst> getAllChildren();
+	public List<IAst> getAll();
 
 	/**
 	 * @param index the position of the child sub-tree

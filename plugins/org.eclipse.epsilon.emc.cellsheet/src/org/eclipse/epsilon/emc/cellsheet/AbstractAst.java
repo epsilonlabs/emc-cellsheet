@@ -1,9 +1,13 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -153,7 +157,7 @@ public abstract class AbstractAst implements IAst {
 
 	@Override
 	public int getChildCount() {
-		return isLeaf() ? 0 : getAllChildren().size() - 1;
+		return isLeaf() ? 0 : getAll().size() - 1;
 	}
 
 	@Override
@@ -172,7 +176,7 @@ public abstract class AbstractAst implements IAst {
 	}
 
 	@Override
-	public List<IAst> getAllChildren() {
+	public List<IAst> getAll() {
 		final List<IAst> list = new LinkedList<>();
 		accept(new Visitor() {
 
@@ -315,27 +319,69 @@ public abstract class AbstractAst implements IAst {
 		return sb.toString();
 	}
 
-//	@Override
-//	public int hashCode() {
-//		// TODO: Testing required
-//		return Objects.hash(token, type, subtype, getKinds(), getChildren());
-//	}
-//
-//	@Override
-//	public boolean equals(Object obj) {
-//		// TODO: Not a true equals as it does not compare the parent or the cellvalue
-//		if (this == obj)
-//			return true;
-//		if (obj == null)
-//			return false;
-//		if (getClass() != obj.getClass())
-//			return false;
-//		AbstractAst other = (AbstractAst) obj;
-//		return Objects.equals(token, other.token) // Token
-//				&& Objects.equals(type, other.type) // Type
-//				&& Objects.equals(subtype, other.subtype) // Subtypes
-//				&& Objects.equals(getKinds(), other.getKinds()) // Kinds
-//				&& Objects.equals(getChildren(), other.getChildren()); // Children
-//	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(token, getKinds(), cellValue, getChildren());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AbstractAst other = (AbstractAst) obj;
+
+		// We are going to compare the roots as equality depends on position within a
+		// tree
+		if (!isRoot() || !other.isRoot()) {
+			return getRoot().equals(other.getRoot());
+		}
+
+		// Get all elements of both trees, should return same list as traversal strategy
+		// is the same
+		final List<IAst> all = getAll();
+		final List<IAst> otherAll = getAll();
+		if (all.size() != otherAll.size())
+			return false;
+
+		final Map<IAst, IAst> equivs = new IdentityHashMap<>();
+		final Map<IAst, Boolean> visited = new IdentityHashMap<>();
+
+		for (int i = 0, n = all.size(); i < n; i++) {
+			equivs.put(all.get(i), otherAll.get(i));
+			visited.put(all.get(i), false);
+		}
+
+		for (Entry<IAst, IAst> e : equivs.entrySet()) {
+			final AbstractAst a = (AbstractAst) e.getKey();
+			final AbstractAst b = (AbstractAst) e.getValue();
+
+			// Compare fields and primitive types
+			if (a.cellValue != b.cellValue)
+				return false;
+			if (!a.token.equals(b.token))
+				return false;
+			if (!a.getKinds().equals(b.getKinds()))
+				return false;
+
+			// Compare both parents for structure
+			if (equivs.get(a.parent) != b.parent)
+				return false;
+
+			// Compare both child lists for structure
+			if (a.children.size() != b.children.size())
+				return false;
+			for (int i = 0, n = a.getChildren().size(); i < n; i++) {
+				if (equivs.get(a.children.get(i)) != b.children.get(i)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
 
 }
