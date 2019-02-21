@@ -30,7 +30,15 @@ package org.eclipse.epsilon.emc.cellsheet.poi;
  */
 public final class FormulaParseException extends RuntimeException {
 
-	FormulaParseException(String msg) {
+	public FormulaParseException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public FormulaParseException(Throwable cause) {
+		super(cause);
+	}
+
+	public FormulaParseException(String msg) {
 		super(msg);
 	}
 }

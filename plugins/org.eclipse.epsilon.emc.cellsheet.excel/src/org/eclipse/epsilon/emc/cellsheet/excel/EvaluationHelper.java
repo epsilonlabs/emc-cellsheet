@@ -22,6 +22,7 @@ import org.eclipse.epsilon.emc.cellsheet.IAst;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.ICellValue;
+import org.eclipse.epsilon.emc.cellsheet.poi.FormulaParseException;
 import org.eclipse.epsilon.emc.cellsheet.poi.TokenMappingFormulaParser;
 import org.eclipse.epsilon.emc.cellsheet.poi.TokenMappingFormulaParser.TokenMappings;
 
@@ -199,12 +200,16 @@ public enum EvaluationHelper {
 	 * @return
 	 */
 	public static TokenMappings getPtgs(String formula, ExcelCell cell) {
-		final TokenMappingFormulaParser parser = new TokenMappingFormulaParser( // mapping parser
-				formula, // formula string
-				getFpw(cell.getBook()), // delegate workbook
-				cell.getSheet().getIndex(), // absolute sheet index
-				cell.getRowIndex()); // absolute row index
-		return parser.getTokenMappings();
+		try {
+			final TokenMappingFormulaParser parser = new TokenMappingFormulaParser( // mapping parser
+					formula, // formula string
+					getFpw(cell.getBook()), // delegate workbook
+					cell.getSheet().getIndex(), // absolute sheet index
+					cell.getRowIndex()); // absolute row index
+			return parser.getTokenMappings();
+		} catch (Exception e) {
+			throw new FormulaParseException(cell.getId(), e);
+		}
 	}
 
 	/**
