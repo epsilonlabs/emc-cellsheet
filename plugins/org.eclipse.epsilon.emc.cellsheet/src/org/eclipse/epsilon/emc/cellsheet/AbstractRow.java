@@ -37,5 +37,10 @@ public abstract class AbstractRow implements IRow {
 	public String getA1() {
 		return String.format("%s!A$%d", getSheet().getA1(), getA1Index());
 	}
+	
+	@Override
+	public String toString() {
+		return buildToString();
+	}
 
 }

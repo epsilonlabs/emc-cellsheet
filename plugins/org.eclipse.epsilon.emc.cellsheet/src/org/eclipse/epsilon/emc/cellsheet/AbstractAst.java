@@ -279,7 +279,7 @@ public abstract class AbstractAst implements IAst {
 
 	@Override
 	public String toString() {
-		return String.format("%s <%s , %s>", getToken(), type, subtype);
+		return String.format("%s [%s]", buildToString(), token);
 	}
 
 	/**

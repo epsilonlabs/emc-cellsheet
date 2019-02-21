@@ -25,5 +25,10 @@ public abstract class AbstractSheet implements ISheet {
 	public String getA1() {
 		return String.format("%s'%s'", getBook().getA1(), getName());
 	}
+	
+	@Override
+	public String toString() {
+		return buildToString();
+	}
 
 }

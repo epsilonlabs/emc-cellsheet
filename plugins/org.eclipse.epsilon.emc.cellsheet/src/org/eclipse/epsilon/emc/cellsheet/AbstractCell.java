@@ -50,4 +50,8 @@ public abstract class AbstractCell implements ICell {
 	public Iterator<ICellValue> iterator() {
 		return Collections.singleton(getCellValue()).iterator();
 	}
+	@Override
+	public String toString() {
+		return buildToString();
+	}
 }

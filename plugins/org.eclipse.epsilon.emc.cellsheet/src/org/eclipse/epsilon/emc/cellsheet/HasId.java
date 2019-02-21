@@ -1,6 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -40,4 +41,10 @@ public interface HasId {
 	
 	public IBook getBook();
 
+	default public String buildToString() {
+		return String.format("<%s> <%s> %s", 
+				getType().getTypename(), // Typename
+				getKinds().stream().map(ElementType::getTypename).collect(Collectors.joining(",")), // Kinds
+				getId()); // ID
+	}
 }

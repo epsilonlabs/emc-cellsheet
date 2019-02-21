@@ -19,7 +19,7 @@ public abstract class AbstractCellValue implements ICellValue {
 	public CellValueType getType() {
 		return type;
 	}
-	
+
 	@Override
 	public void setType(CellValueType type) {
 		this.type = type;
@@ -55,4 +55,8 @@ public abstract class AbstractCellValue implements ICellValue {
 		return Collections.singleton(getAst()).iterator();
 	}
 
+	@Override
+	public String toString() {
+		return buildToString();
+	}
 }

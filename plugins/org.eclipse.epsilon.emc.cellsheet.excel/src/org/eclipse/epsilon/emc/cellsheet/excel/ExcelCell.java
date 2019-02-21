@@ -58,16 +58,6 @@ public class ExcelCell extends AbstractCell implements HasDelegate<Cell> {
 	}
 
 	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("[").append(getClass().getSimpleName()).append("@").append(hashCode()).append("]");
-		sb.append("(id: ").append(getId());
-		sb.append(", excelRef: ").append(getA1());
-		sb.append(")");
-		return sb.toString();
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

@@ -355,4 +355,9 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 		AstSubtype.values();
 		super.load();
 	}
+	
+	@Override
+	public String toString() {
+		return buildToString();
+	}
 }
