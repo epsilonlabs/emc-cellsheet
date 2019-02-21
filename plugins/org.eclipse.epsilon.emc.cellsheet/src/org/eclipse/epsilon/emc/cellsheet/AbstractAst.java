@@ -258,7 +258,8 @@ public abstract class AbstractAst implements IAst {
 
 	@Override
 	public String getId() {
-		return String.format("%s%d/", getCellValue().getId(), getIndex());
+		final String prev = isRoot() ? getCellValue().getId() : parent.getId();
+		return String.format("%s%d/", prev, getIndex());
 	}
 
 	@Override
