@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
+import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.CachedModel;
 
@@ -343,5 +344,15 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 			return current;
 		}
 
+	}
+	
+	@Override
+	public void load() throws EolModelLoadingException {
+		// Force load of all type classes
+		CoreType.values();
+		CellValueType.values();
+		AstType.values();
+		AstSubtype.values();
+		super.load();
 	}
 }
