@@ -96,7 +96,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 	@Override
 	public boolean owns(Object instance) {
-		return getHasTypeOrThrow(instance).getBook() == this;
+		return instance instanceof HasId ? getHasTypeOrThrow(instance).getBook() == this : false;
 	}
 
 	@Override
