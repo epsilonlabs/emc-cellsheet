@@ -2,6 +2,7 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
 public abstract class AbstractCell implements ICell {
 
@@ -50,8 +51,28 @@ public abstract class AbstractCell implements ICell {
 	public Iterator<ICellValue> iterator() {
 		return Collections.singleton(getCellValue()).iterator();
 	}
+
 	@Override
 	public String toString() {
 		return buildToString();
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getColIndex(), getRow());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AbstractCell other = (AbstractCell) obj;
+		return getColIndex() == other.getColIndex() // Column index
+				&& Objects.equals(getRow(), other.getRow()); // Parents
+	}
+
 }

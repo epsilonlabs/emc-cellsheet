@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.IteratorUtils;
@@ -134,38 +135,23 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof ExcelBook)) {
-			return false;
-		}
-		ExcelBook other = (ExcelBook) obj;
-		if (excelFile == null) {
-			if (other.excelFile != null)
-				return false;
-		} else if (!excelFile.equals(other.excelFile)) {
-			return false;
-		}
-		if (delegate == null && other.delegate != null) {
-			return false;
-		} else if (!delegate.equals(other.delegate)) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((excelFile == null) ? 0 : excelFile.hashCode());
-		result = prime * result + ((delegate == null) ? 0 : delegate.hashCode());
-		return result;
+		return Objects.hash(name, excelFile, delegate);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ExcelBook other = (ExcelBook) obj;
+		return Objects.equals(name, other.name) // Book name
+				&& Objects.equals(excelFile, other.excelFile) // Backing File
+				&& Objects.equals(delegate, other.delegate) // POI Delegate
+				&& super.equals(obj); // Delegate back to super
 	}
 
 }

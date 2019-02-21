@@ -316,37 +316,26 @@ public abstract class AbstractAst implements IAst {
 	}
 
 //	@Override
+//	public int hashCode() {
+//		// TODO: Testing required
+//		return Objects.hash(token, type, subtype, getKinds(), getChildren());
+//	}
+//
+//	@Override
 //	public boolean equals(Object obj) {
+//		// TODO: Not a true equals as it does not compare the parent or the cellvalue
 //		if (this == obj)
 //			return true;
 //		if (obj == null)
 //			return false;
 //		if (getClass() != obj.getClass())
 //			return false;
-//		AbstractAstTree o = (AbstractAstTree) obj;
-//
-//		if (!Objects.equals(cellValue, o.cellValue) || !Objects.equals(token, o.token))
-//			return false;
-//
-//		// Check parent without recursion errors, we can only check the cellvalue and
-//		// token
-//		if (parent != null && parent != o.parent) {
-//			if (o.parent == null)
-//				return false;
-//			if (!Objects.equals(parent.getCellValue(), o.parent.getCellValue())
-//					|| !Objects.equals(parent.getToken(), o.parent.getToken()))
-//				return false;
-//		}
-//
-//		for (int i = 0, n = children.size(); i < n; i++) {
-//			if (children.size() != o.children.size())
-//				return false;
-//
-//			if (!children.get(i).equals(o.children.get(i)))
-//				return false;
-//		}
-//
-//		return true;
+//		AbstractAst other = (AbstractAst) obj;
+//		return Objects.equals(token, other.token) // Token
+//				&& Objects.equals(type, other.type) // Type
+//				&& Objects.equals(subtype, other.subtype) // Subtypes
+//				&& Objects.equals(getKinds(), other.getKinds()) // Kinds
+//				&& Objects.equals(getChildren(), other.getChildren()); // Children
 //	}
 
 }

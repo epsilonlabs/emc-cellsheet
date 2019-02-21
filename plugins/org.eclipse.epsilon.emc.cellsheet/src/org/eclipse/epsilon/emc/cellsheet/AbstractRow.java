@@ -1,5 +1,7 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import java.util.Objects;
+
 public abstract class AbstractRow implements IRow {
 
 	@Override
@@ -42,5 +44,23 @@ public abstract class AbstractRow implements IRow {
 	public String toString() {
 		return buildToString();
 	}
+	
+	@Override
+	public int hashCode() {	
+		return Objects.hash(getIndex(), getSheet());
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AbstractRow other = (AbstractRow) obj;
+		return getIndex() == other.getIndex() // Row index
+				&& Objects.equals(getSheet(), other.getSheet()); // Parents
+	}
+	
 }
