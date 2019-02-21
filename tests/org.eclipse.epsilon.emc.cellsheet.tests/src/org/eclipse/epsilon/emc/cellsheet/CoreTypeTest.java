@@ -17,7 +17,7 @@ public class CoreTypeTest {
 	@Parameters
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[][] { { "Book", BOOK }, { "Sheet", SHEET }, { "Row", ROW }, { "Cell", CELL },
-				{ "CellValue", CELL_VALUE }, { "AST", AST } });
+				{ "CellValue", CELL_VALUE }, { "Ast", AST } });
 	}
 
 	@Parameter(0)
