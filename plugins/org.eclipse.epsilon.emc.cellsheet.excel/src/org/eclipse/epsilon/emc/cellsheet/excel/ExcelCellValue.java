@@ -85,7 +85,7 @@ public class ExcelCellValue extends AbstractCellValue {
 		if (type == CellValueType.FORMULA) {
 			return cell.getDelegate().getCellFormula();
 		}
-		return getStringValue();
+		return String.format("\"%s\"", getStringValue());
 	}
 
 	@Override
