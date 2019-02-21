@@ -319,10 +319,11 @@ public abstract class AbstractAst implements IAst {
 		return sb.toString();
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(token, getKinds(), cellValue, getChildren());
-	}
+//	@Override
+//	public int hashCode() {
+//		// TODO: improve collisions
+//		return Objects.hash(token, getKinds(), cellValue);
+//	}
 
 	@Override
 	public boolean equals(Object obj) {
