@@ -319,70 +319,29 @@ public abstract class AbstractAst implements IAst {
 		return sb.toString();
 	}
 
-//	@Override
-//	public int hashCode() {
-//		// TODO: improve collisions
-//		return Objects.hash(token, getKinds(), cellValue);
-//	}
+	@Override
+	public final int hashCode() {
+		return Objects.hash(token, getKinds(), children);
+	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public final boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		AbstractAst other = (AbstractAst) obj;
-
-		// We are going to compare the roots as equality depends on position within a
-		// tree
-		if (!isRoot() || !other.isRoot()) {
-			return getRoot().equals(other.getRoot());
-		}
-
-		// Get all elements of both trees, should return same list as traversal strategy
-		// is the same
-		final List<IAst> all = getAll();
-		final List<IAst> otherAll = getAll();
-		if (all.size() != otherAll.size())
+		if (!(obj instanceof AbstractAst))
 			return false;
 
-		final Map<IAst, IAst> equivs = new IdentityHashMap<>();
-		final Map<IAst, Boolean> visited = new IdentityHashMap<>();
+		final AbstractAst other = (AbstractAst) obj;
+		if (!Objects.equals(token, other.token))
+			return false;
+		if (!Objects.equals(getKinds(), other.getKinds()))
+			return false;
 
-		for (int i = 0, n = all.size(); i < n; i++) {
-			equivs.put(all.get(i), otherAll.get(i));
-			visited.put(all.get(i), false);
-		}
-
-		for (Entry<IAst, IAst> e : equivs.entrySet()) {
-			final AbstractAst a = (AbstractAst) e.getKey();
-			final AbstractAst b = (AbstractAst) e.getValue();
-
-			// Compare fields and primitive types
-			if (a.cellValue != b.cellValue)
-				return false;
-			if (!a.token.equals(b.token))
-				return false;
-			if (!a.getKinds().equals(b.getKinds()))
-				return false;
-
-			// Compare both parents for structure
-			if (equivs.get(a.parent) != b.parent)
-				return false;
-
-			// Compare both child lists for structure
-			if (a.children.size() != b.children.size())
-				return false;
-			for (int i = 0, n = a.getChildren().size(); i < n; i++) {
-				if (equivs.get(a.children.get(i)) != b.children.get(i)) {
-					return false;
-				}
-			}
-		}
-
-		return true;
+		// compare children
+		return Objects.equals(token, other.token) && Objects.equals(getKinds(), other.getKinds())
+				&& Objects.equals(children, other.children);
 	}
 
 }
