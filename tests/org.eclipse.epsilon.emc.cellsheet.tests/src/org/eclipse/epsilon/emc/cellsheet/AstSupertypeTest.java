@@ -19,7 +19,7 @@ public class AstSupertypeTest {
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[][] { { "Noop", NOOP }, { "Operand", OPERAND }, { "Operation", OPERATION },
 				{ "OperatorPrefix", OPERATOR_PREFIX }, { "OperatorInfix", OPERATOR_INFIX },
-				{ "OperatorPostfix", OPERATOR_POSTFIX }, { "Whitespace", WHITESPACE }, { "Unknown", UNKNOWN } });
+				{ "OperatorPostfix", OPERATOR_POSTFIX }, { "Unknown", UNKNOWN } });
 	}
 
 	@Parameter(0)
@@ -48,4 +48,8 @@ public class AstSupertypeTest {
 		assertNull(AstSupertype.fromTypename("Bad typename"));
 	}
 
+	@Test
+	public void check_all_variables_included() {
+		assertEquals(AstSupertype.values().length, data().size());
+	}
 }

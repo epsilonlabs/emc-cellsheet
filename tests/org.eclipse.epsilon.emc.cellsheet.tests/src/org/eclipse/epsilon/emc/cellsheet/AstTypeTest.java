@@ -16,13 +16,13 @@ import org.junit.runners.Parameterized.Parameters;
 public class AstTypeTest {
 	@Parameters
 	public static Collection<Object[]> data() {
-		return Arrays.asList(new Object[][] { { "Nothing", NOTHING }, { "Function", FUNCTION }, { "Text", TEXT },
-				{ "Number", NUMBER }, { "Logical", LOGICAL }, { "Error", ERROR }, { "Range", RANGE }, { "Ref", REF },
-				{ "Plus", PLUS }, { "Negation", NEGATION }, { "Percent", PERCENT }, { "Exponention", EXPONENTION },
-				{ "Multiplication", MULTIPLICATION }, { "Division", DIVISION }, { "Addition", ADDITION },
-				{ "Subtraction", SUBTRACTION }, { "Concatenation", CONCATENATION }, { "EQ", EQ }, { "LT", LT },
-				{ "GT", GT }, { "LTE", LTE }, { "GTE", GTE }, { "NEQ", NEQ }, { "Intersection", INTERSECTION },
-				{ "Union", UNION } });
+		return Arrays.asList(new Object[][] { { "Nothing", NOTHING }, { "Whitespace", WHITESPACE },
+				{ "Function", FUNCTION }, { "Text", TEXT }, { "Number", NUMBER }, { "Logical", LOGICAL },
+				{ "Error", ERROR }, { "Range", RANGE }, { "Ref", REF }, { "Plus", PLUS }, { "Negation", NEGATION },
+				{ "Percent", PERCENT }, { "Exponention", EXPONENTION }, { "Multiplication", MULTIPLICATION },
+				{ "Division", DIVISION }, { "Addition", ADDITION }, { "Subtraction", SUBTRACTION },
+				{ "Concatenation", CONCATENATION }, { "EQ", EQ }, { "LT", LT }, { "GT", GT }, { "LTE", LTE },
+				{ "GTE", GTE }, { "NEQ", NEQ }, { "Intersection", INTERSECTION }, { "Union", UNION } });
 	}
 
 	@Parameter(0)
@@ -49,6 +49,11 @@ public class AstTypeTest {
 	@Test
 	public void static_fromTypename_should_return_null_when_given_bad_typename() throws Exception {
 		assertNull(AstType.fromTypename("Bad typename"));
+	}
+
+	@Test
+	public void check_all_variables_included() {
+		assertEquals(AstType.values().length, data().size());
 	}
 
 }
