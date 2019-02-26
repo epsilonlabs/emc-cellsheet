@@ -5,7 +5,7 @@ import java.util.Deque;
 
 import org.apache.poi.ss.formula.ptg.OperationPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
-import org.eclipse.epsilon.emc.cellsheet.AstType;
+import org.eclipse.epsilon.emc.cellsheet.AstSupertype;
 import org.eclipse.epsilon.emc.cellsheet.poi.TokenMappingFormulaParser.TokenMappings;
 
 /**
@@ -25,13 +25,11 @@ public class ExcelAstFactory {
 		final Deque<ExcelAst> stack = new ArrayDeque<>();
 		for (Ptg ptg : tokenMap) {
 			// Skip No-Ops
-			if (tokenMap.getType(ptg) == AstType.NOOP)
+			if (tokenMap.getSupertype(ptg) == AstSupertype.NOOP)
 				continue;
 
-			final ExcelAst current = new ExcelAst();
-			current.setToken(tokenMap.getToken(ptg));
-			current.setType(tokenMap.getType(ptg));
-			current.setSubtype(tokenMap.getSubtype(ptg));
+			final ExcelAst current = new ExcelAst(tokenMap.getToken(ptg), tokenMap.getSupertype(ptg),
+					tokenMap.getType(ptg));
 
 			if (ptg instanceof OperationPtg) {
 				final OperationPtg cast = (OperationPtg) ptg;

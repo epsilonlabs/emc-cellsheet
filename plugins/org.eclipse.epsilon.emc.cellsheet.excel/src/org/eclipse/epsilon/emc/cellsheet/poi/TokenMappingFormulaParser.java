@@ -31,7 +31,7 @@ import org.apache.poi.ss.formula.ptg.UnaryMinusPtg;
 import org.apache.poi.ss.formula.ptg.UnaryPlusPtg;
 import org.apache.poi.ss.formula.ptg.UnionPtg;
 import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
-import org.eclipse.epsilon.emc.cellsheet.AstSubtype;
+import org.eclipse.epsilon.emc.cellsheet.AstSupertype;
 import org.eclipse.epsilon.emc.cellsheet.AstType;
 
 /**
@@ -96,76 +96,79 @@ public class TokenMappingFormulaParser extends FormulaParser {
 
 	@SuppressWarnings("serial")
 	public class TokenMappings extends LinkedList<Ptg> {
-		private Map<Ptg, AstType> typeMap;
-		private Map<Ptg, AstSubtype> subtypeMap;
-		private Map<Ptg, String> tokenMap;
+		private Map<Ptg, AstType> types;
+		private Map<Ptg, AstSupertype> supertypes;
+		private Map<Ptg, String> tokens;
 
 		public TokenMappings(Ptg... ptgs) {
 			super(Arrays.asList(ptgs));
-			this.typeMap = new IdentityHashMap<>(ptgs.length);
-			this.subtypeMap = new IdentityHashMap<>(ptgs.length);
-			this.tokenMap = new IdentityHashMap<>(ptgs.length);
+			this.types = new IdentityHashMap<>(ptgs.length);
+			this.supertypes = new IdentityHashMap<>(ptgs.length);
+			this.tokens = new IdentityHashMap<>(ptgs.length);
 		}
 
 		public String getToken(Ptg ptg) {
-			return tokenMap.getOrDefault(ptg, PtgHelper.toString(ptg));
+			return tokens.getOrDefault(ptg, PtgHelper.toString(ptg));
 		}
 
 		public void setToken(Ptg ptg, String token) {
-			tokenMap.put(ptg, token);
+			tokens.put(ptg, token);
 		}
 
-		public AstType getType(Ptg ptg) {
-			return typeMap.computeIfAbsent(ptg, k ->
+		public AstSupertype getSupertype(Ptg ptg) {
+			return supertypes.computeIfAbsent(ptg, k ->
 				{
 					// OPERANDS
 					if (k instanceof OperandPtg || k instanceof ScalarConstantPtg)
-						return AstType.OPERAND;
+						return AstSupertype.OPERAND;
 
 					// FUNCTIONS/OPERATORS
 					if (k instanceof OperationPtg) {
 						if (k instanceof AbstractFunctionPtg)
-							return AstType.FUNCTION;
+							return AstSupertype.OPERATION;
 						if (k instanceof PercentPtg)
-							return AstType.OPERATOR_POSTFIX;
+							return AstSupertype.OPERATOR_POSTFIX;
 						if (k instanceof UnaryMinusPtg || k instanceof UnaryPlusPtg)
-							return AstType.OPERATOR_PREFIX;
-						return AstType.OPERATOR_INFIX;
+							return AstSupertype.OPERATOR_PREFIX;
+						return AstSupertype.OPERATOR_INFIX;
 					}
 
 					// SUM - Special Case
 					if (PtgHelper.isSumPtg(k))
-						return AstType.FUNCTION;
+						return AstSupertype.OPERATION;
 
 					// NO-OPS
 					if (k instanceof AttrPtg || k instanceof ControlPtg || k instanceof MemAreaPtg
 							|| k instanceof MemErrPtg || k instanceof MemFuncPtg)
-						return AstType.NOOP;
+						return AstSupertype.NOOP;
 
 					// TODO: Handle Arrays
 
 					// UNKNOWN
-					return AstType.UNKNOWN;
+					return AstSupertype.UNKNOWN;
 				});
 		}
 
-		public AstSubtype getSubtype(Ptg ptg) {
-			return subtypeMap.computeIfAbsent(ptg, k ->
+		public AstType getType(Ptg ptg) {
+			return types.computeIfAbsent(ptg, k ->
 				{
-					switch (getType(k)) {
+					switch (getSupertype(k)) {
 
 					// OPERANDS
 					case OPERAND:
 						if (k instanceof IntPtg || k instanceof NumberPtg)
-							return AstSubtype.NUMBER;
+							return AstType.NUMBER;
 						if (ptg instanceof BoolPtg)
-							return AstSubtype.LOGICAL;
+							return AstType.LOGICAL;
 						if (ptg instanceof AreaI)
-							return AstSubtype.RANGE;
+							return AstType.RANGE;
 						if (ptg instanceof RefPtgBase)
-							return AstSubtype.RANGE; // TODO: Change to ref?
+							return AstType.RANGE; // TODO: Change to ref?
 
-						// OPERATORS
+					case OPERATION:
+						return AstType.FUNCTION;
+						
+					// OPERATORS
 					case OPERATOR_PREFIX:
 					case OPERATOR_POSTFIX:
 					case OPERATOR_INFIX:
@@ -175,48 +178,48 @@ public class TokenMappingFormulaParser extends FormulaParser {
 								method.setAccessible(true);
 								switch ((Byte) method.invoke(k)) {
 								case 0x03: // Add
-									return AstSubtype.ADDITION;
+									return AstType.ADDITION;
 								case 0x08: // Concat
-									return AstSubtype.CONCATENATION;
+									return AstType.CONCATENATION;
 								case 0x06: // Divide
-									return AstSubtype.DIVISION;
+									return AstType.DIVISION;
 								case 0x0b: // Equal
-									return AstSubtype.EQ;
+									return AstType.EQ;
 								case 0x0c: // GreaterEqual
-									return AstSubtype.GTE;
+									return AstType.GTE;
 								case 0x0D: // GreaterThan
-									return AstSubtype.GT;
+									return AstType.GT;
 								case 0x0a: // LessEqual
-									return AstSubtype.LTE;
+									return AstType.LTE;
 								case 0x09: // LessThan
-									return AstSubtype.LT;
+									return AstType.LT;
 								case 0x05: // Multiply
-									return AstSubtype.MULTIPLICATION;
+									return AstType.MULTIPLICATION;
 								case 0x0e: // NotEqual
-									return AstSubtype.NEQ;
+									return AstType.NEQ;
 								case 0x14: // Percent
-									return AstSubtype.PERCENT;
+									return AstType.PERCENT;
 								case 0x07: // Power
-									return AstSubtype.EXPONENTION;
+									return AstType.EXPONENTION;
 								case 0x04: // Subtract
-									return AstSubtype.SUBTRACTION;
+									return AstType.SUBTRACTION;
 								case 0x13: // UnaryMinus
-									return AstSubtype.NEGATION;
+									return AstType.NEGATION;
 								case 0x12: // UnaryPlus
-									return AstSubtype.PLUS;
+									return AstType.PLUS;
 								}
 							} catch (Exception e) {
 								throw new IllegalArgumentException(e);
 							}
 						}
 						if (k instanceof UnionPtg)
-							return AstSubtype.UNION;
+							return AstType.UNION;
 						if (k instanceof IntersectionPtg)
-							return AstSubtype.INTERSECTION;
+							return AstType.INTERSECTION;
 
 						// Default to nothing
 					default:
-						return AstSubtype.NOTHING;
+						return AstType.NOTHING;
 					}
 				});
 		}

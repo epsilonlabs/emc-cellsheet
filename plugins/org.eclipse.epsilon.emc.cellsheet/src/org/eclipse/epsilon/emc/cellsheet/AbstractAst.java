@@ -1,13 +1,9 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,14 +13,16 @@ public abstract class AbstractAst implements IAst {
 	protected ICellValue cellValue;
 	protected IAst parent;
 
-	protected String token = null;
-	protected AstType type = AstType.UNKNOWN;
-	protected AstSubtype subtype = AstSubtype.NOTHING;
+	protected final String token;
+	protected final AstSupertype supertype;
+	protected final AstType type;
 
-	protected List<IAst> children;
+	protected List<IAst> children = new LinkedList<>();
 
-	protected AbstractAst() {
-		this.children = new LinkedList<>();
+	protected AbstractAst(String token, AstSupertype supertype, AstType type) {
+		this.token = token;
+		this.supertype = supertype;
+		this.type = type;
 	}
 
 	@Override
@@ -73,8 +71,8 @@ public abstract class AbstractAst implements IAst {
 	}
 
 	@Override
-	public void setToken(String token) {
-		this.token = token;
+	public AstSupertype getSupertype() {
+		return supertype;
 	}
 
 	@Override
@@ -83,23 +81,8 @@ public abstract class AbstractAst implements IAst {
 	}
 
 	@Override
-	public void setType(AstType type) {
-		this.type = type;
-	}
-
-	@Override
-	public AstSubtype getSubtype() {
-		return subtype;
-	}
-
-	@Override
-	public void setSubtype(AstSubtype subtype) {
-		this.subtype = subtype;
-	}
-
-	@Override
 	public Set<ElementType> getKinds() {
-		return Stream.of(CoreType.AST, getType(), getSubtype()).collect(Collectors.toSet());
+		return Stream.of(CoreType.AST, getSupertype(), getType()).collect(Collectors.toSet());
 	}
 
 	@Override
@@ -204,7 +187,7 @@ public abstract class AbstractAst implements IAst {
 					return;
 				}
 
-				switch (tree.getType()) {
+				switch (tree.getSupertype()) {
 				case OPERATOR_INFIX:
 					sb.append('(');
 					tree.getFirst().accept(this);

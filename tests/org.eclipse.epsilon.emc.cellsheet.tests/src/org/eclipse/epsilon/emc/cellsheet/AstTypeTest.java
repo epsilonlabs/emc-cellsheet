@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet;
 
+import static org.eclipse.epsilon.emc.cellsheet.AstType.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
@@ -11,15 +12,17 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import static org.eclipse.epsilon.emc.cellsheet.AstType.*;
-
 @RunWith(Parameterized.class)
 public class AstTypeTest {
 	@Parameters
 	public static Collection<Object[]> data() {
-		return Arrays.asList(new Object[][] { { "Noop", NOOP }, { "Operand", OPERAND }, { "Function", FUNCTION },
-				{ "OperatorPrefix", OPERATOR_PREFIX }, { "OperatorInfix", OPERATOR_INFIX },
-				{ "OperatorPostfix", OPERATOR_POSTFIX }, { "Whitespace", WHITESPACE }, { "Unknown", UNKNOWN } });
+		return Arrays.asList(new Object[][] { { "Nothing", NOTHING }, { "Function", FUNCTION }, { "Text", TEXT },
+				{ "Number", NUMBER }, { "Logical", LOGICAL }, { "Error", ERROR }, { "Range", RANGE }, { "Ref", REF },
+				{ "Plus", PLUS }, { "Negation", NEGATION }, { "Percent", PERCENT }, { "Exponention", EXPONENTION },
+				{ "Multiplication", MULTIPLICATION }, { "Division", DIVISION }, { "Addition", ADDITION },
+				{ "Subtraction", SUBTRACTION }, { "Concatenation", CONCATENATION }, { "EQ", EQ }, { "LT", LT },
+				{ "GT", GT }, { "LTE", LTE }, { "GTE", GTE }, { "NEQ", NEQ }, { "Intersection", INTERSECTION },
+				{ "Union", UNION } });
 	}
 
 	@Parameter(0)
@@ -39,7 +42,7 @@ public class AstTypeTest {
 	}
 
 	@Test
-	public void static_fromTypename_should_return_AstType_when_given_typename() throws Exception {
+	public void static_fromTypename_should_return_AstSubtype_when_given_typename() throws Exception {
 		assertEquals(type, AstType.fromTypename(typename));
 	}
 

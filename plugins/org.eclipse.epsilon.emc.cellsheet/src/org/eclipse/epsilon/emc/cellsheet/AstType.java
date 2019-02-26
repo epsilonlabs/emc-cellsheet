@@ -2,14 +2,42 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 public enum AstType implements ElementType {
 
-	NOOP("Noop"),
-	OPERAND("Operand"),
-	FUNCTION("Function"),
-	OPERATOR_PREFIX("OperatorPrefix"),
-	OPERATOR_INFIX("OperatorInfix"),
-	OPERATOR_POSTFIX("OperatorPostfix"),
+	// Default
+	NOTHING("Nothing"),
 	WHITESPACE("Whitespace"),
-	UNKNOWN("Unknown");
+	
+	// Operands
+	TEXT("Text"),
+	NUMBER("Number"),
+	LOGICAL("Logical"),
+	ERROR("Error"),
+	RANGE("Range"),
+	REF("Ref"),
+	
+	// Functions
+	FUNCTION("Function"),
+
+	// Operators
+	PLUS("Plus"),
+	NEGATION("Negation"),
+	PERCENT("Percent"),
+	EXPONENTION("Exponention"),
+	MULTIPLICATION("Multiplication"),
+	DIVISION("Division"),
+	ADDITION("Addition"),
+	SUBTRACTION("Subtraction"),
+
+	CONCATENATION("Concatenation"),
+
+	EQ("EQ"),
+	LT("LT"),
+	GT("GT"),
+	LTE("LTE"),
+	GTE("GTE"),
+	NEQ("NEQ"),
+
+	INTERSECTION("Intersection"),
+	UNION("Union");
 
 	private final String typename;
 

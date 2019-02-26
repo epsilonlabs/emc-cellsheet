@@ -351,8 +351,8 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 		// Force load of all type classes
 		CoreType.values();
 		CellValueType.values();
+		AstSupertype.values();
 		AstType.values();
-		AstSubtype.values();
 		super.load();
 	}
 	

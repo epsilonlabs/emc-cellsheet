@@ -1,6 +1,10 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
+import java.util.Objects;
+
 import org.eclipse.epsilon.emc.cellsheet.AbstractAst;
+import org.eclipse.epsilon.emc.cellsheet.AstType;
+import org.eclipse.epsilon.emc.cellsheet.AstSupertype;
 import org.eclipse.epsilon.emc.cellsheet.IAst;
 import org.eclipse.epsilon.emc.cellsheet.ICellValue;
 
@@ -11,6 +15,10 @@ import org.eclipse.epsilon.emc.cellsheet.ICellValue;
  *
  */
 public class ExcelAst extends AbstractAst implements IAst {
+
+	public ExcelAst(String token, AstSupertype type, AstType subtype) {
+		super(token, type, subtype);
+	}
 
 	@Override
 	public void setCellValue(ICellValue cellValue) {

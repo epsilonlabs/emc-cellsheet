@@ -15,8 +15,8 @@ public class ElementTypeTest {
 	public void getTypeMap_should_return_map() throws Exception {
 		final List<ElementType> expected = new ArrayList<>();
 		Collections.addAll(expected, CoreType.values());
+		Collections.addAll(expected, AstSupertype.values());
 		Collections.addAll(expected, AstType.values());
-		Collections.addAll(expected, AstSubtype.values());
 
 		final Map<String, ElementType> map = ElementType.getTypeMap();
 		for (ElementType e : expected) {
