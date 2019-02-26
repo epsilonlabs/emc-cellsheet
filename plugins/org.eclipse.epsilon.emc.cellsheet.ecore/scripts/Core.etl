@@ -1,0 +1,49 @@
+rule Book2Book
+	transform s : Excel!Book
+	to t : Emf!Book {
+
+	t.uri := s.id;
+	t.a1 := s.a1;
+	
+	t.name := s.name;
+	if (s.hasProperty("filename")) {
+		t.filename := s.filename;
+	} else {
+		t.filename := s.name;
+	}
+}
+
+rule Sheet2Sheet
+	transform s : Excel!Sheet
+	to t : Emf!Sheet {
+	
+	t.uri := s.id;
+	t.a1 := s.a1;
+	t.book ::= s.book;
+	
+	t.name := s.name;
+	t.index := s.index;
+}
+
+rule Row2Row
+	transform s : Excel!Row
+	to t : Emf!Row {
+	
+	t.uri := s.id;
+	t.a1 := s.a1;
+	t.sheet ::= s.sheet;
+	
+	t.index := s.index;
+}
+
+rule Cell2Cell
+	transform s : Excel!Cell
+	to t : Emf!Cell {
+	
+	t.uri := s.id;
+	t.a1 := s.a1;
+	t.row ::= s.row;
+	
+	t.index := s.colIndex;
+	t.a1Index := s.a1Col;
+}

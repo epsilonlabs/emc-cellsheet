@@ -1,0 +1,67 @@
+@abstract
+rule Abstract2CellValue
+	transform s : Excel!CellValue
+	to t : Emf!CellValue {
+
+	t.uri := s.id;
+	t.formula := s.formula;
+	t.stringValue := s.stringValue;
+	
+	t.cell ::= s.cell;
+}
+
+rule CellValue2NoneCellValue 
+	transform s : Excel!NoneCellValue
+	to t : Emf!NoneCellValue 
+	extends Abstract2CellValue {
+}
+
+rule CellValue2NumericCellValue 
+	transform s : Excel!NumericCellValue
+	to t : Emf!NumericCellValue 
+	extends Abstract2CellValue {
+	
+	t.numericValue := s.numericValue;
+}
+
+rule CellValue2StringCellValue 
+	transform s : Excel!StringCellValue
+	to t : Emf!StringCellValue 
+	extends Abstract2CellValue {	
+}
+
+rule CellValue2FormulaCellValue 
+	transform s : Excel!FormulaCellValue
+	to t : Emf!FormulaCellValue 
+	extends Abstract2CellValue {
+}
+
+rule CellValue2BooleanCellValue 
+	transform s : Excel!BooleanCellValue
+	to t : Emf!BooleanCellValue 
+	extends Abstract2CellValue {
+	
+	t.booleanValue := s.booleanValue;
+}
+
+rule CellValue2BlankCellValue 
+	transform s : Excel!BlankCellValue
+	to t : Emf!BlankCellValue 
+	extends Abstract2CellValue {
+}
+
+rule CellValue2ErrorCellValue 
+	transform s : Excel!ErrorCellValue
+	to t : Emf!ErrorCellValue 
+	extends Abstract2CellValue {
+	
+	t.errorValue := s.errorValue;
+}
+
+rule CellValue2DateCellValue 
+	transform s : Excel!DateCellValue
+	to t : Emf!DateCellValue 
+	extends Abstract2CellValue {
+	
+	t.dateValue := s.dateValue;
+}
