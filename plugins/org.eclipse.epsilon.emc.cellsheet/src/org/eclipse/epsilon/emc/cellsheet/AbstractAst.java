@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -239,14 +240,27 @@ public abstract class AbstractAst implements IAst {
 	}
 
 	@Override
-	public int getIndex() {
-		return isRoot() ? 0 : parent.getChildren().indexOf(this);
+	public int getPosition() {
+		if (isRoot()) {
+			return 0;
+		}
+		if (parent != null) {
+			int count = 0;
+			final Iterator<IAst> it = parent.getChildren().iterator();
+			while (it.hasNext()) {
+				if (it.next() == this) {
+					return count;
+				}
+				count++;
+			}
+		}
+		return -1;
 	}
 
 	@Override
 	public String getId() {
 		final String prev = isRoot() ? getCellValue().getId() : parent.getId();
-		return String.format("%s%d/", prev, getIndex());
+		return String.format("%s%d/", prev, getPosition());
 	}
 
 	@Override
@@ -303,28 +317,23 @@ public abstract class AbstractAst implements IAst {
 	}
 
 	@Override
-	public final int hashCode() {
-		return Objects.hash(token, getKinds(), children);
+	public int hashCode() {
+		return Objects.hash(getId(), supertype, token, type);
 	}
 
 	@Override
-	public final boolean equals(Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof AbstractAst))
+		if (getClass() != obj.getClass())
 			return false;
-
-		final AbstractAst other = (AbstractAst) obj;
-		if (!Objects.equals(token, other.token))
-			return false;
-		if (!Objects.equals(getKinds(), other.getKinds()))
-			return false;
-
-		// compare children
-		return Objects.equals(token, other.token) && Objects.equals(getKinds(), other.getKinds())
-				&& Objects.equals(children, other.children);
+		AbstractAst other = (AbstractAst) obj;
+		return Objects.equals(getId(), other.getId()) 
+				&& supertype == other.supertype
+				&& Objects.equals(token, other.token) 
+				&& type == other.type;
 	}
 
 }

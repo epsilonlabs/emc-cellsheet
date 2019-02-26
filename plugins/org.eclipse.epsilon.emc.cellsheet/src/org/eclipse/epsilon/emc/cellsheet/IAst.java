@@ -144,7 +144,7 @@ public interface IAst extends HasId, HasCellValue, Iterable<IAst> {
 	 */
 	public String toStringTree();
 
-	public int getIndex();
+	public int getPosition();
 
 	public void accept(Visitor visitor);
 

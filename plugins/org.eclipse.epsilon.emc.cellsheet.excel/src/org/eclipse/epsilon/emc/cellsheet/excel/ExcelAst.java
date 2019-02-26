@@ -1,10 +1,8 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
-import java.util.Objects;
-
 import org.eclipse.epsilon.emc.cellsheet.AbstractAst;
-import org.eclipse.epsilon.emc.cellsheet.AstType;
 import org.eclipse.epsilon.emc.cellsheet.AstSupertype;
+import org.eclipse.epsilon.emc.cellsheet.AstType;
 import org.eclipse.epsilon.emc.cellsheet.IAst;
 import org.eclipse.epsilon.emc.cellsheet.ICellValue;
 
