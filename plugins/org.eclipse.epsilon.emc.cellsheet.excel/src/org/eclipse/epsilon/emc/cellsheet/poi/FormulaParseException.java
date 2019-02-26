@@ -28,6 +28,7 @@ package org.eclipse.epsilon.emc.cellsheet.poi;
  *
  * @author Josh Micich
  */
+@SuppressWarnings("serial")
 public final class FormulaParseException extends RuntimeException {
 
 	public FormulaParseException(String message, Throwable cause) {
