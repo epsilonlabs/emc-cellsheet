@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
@@ -18,9 +17,7 @@ import org.eclipse.epsilon.emc.cellsheet.excel.ExcelBook;
 import org.eclipse.epsilon.emc.emf.EmfModel;
 import org.eclipse.epsilon.emc.emf.EmfUtil;
 import org.eclipse.epsilon.emc.emf.InMemoryEmfModel;
-import org.eclipse.epsilon.eol.EolModule;
 import org.eclipse.epsilon.etl.EtlModule;
-import org.eclipse.epsilon.etl.trace.TransformationTrace;
 
 public class CellsheetToEmf {
 
