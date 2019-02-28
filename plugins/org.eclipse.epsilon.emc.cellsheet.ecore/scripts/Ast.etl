@@ -9,13 +9,6 @@ rule Abstract2Ast
 	t.uri := s.id;
 	t.token := s.token;
 	
-	if (t.cellValue.isDefined()) {
-		"wtf".println();
-	}
-	if(t.parent.isDefined()) {
-		"eh".println();
-	}
-	
 	if (s.isRoot()) {
 		t.cellValue ::= s.cellValue;
 	} else {
@@ -41,7 +34,6 @@ rule Ast2OperandNumber
 	transform s : Excel!Number
 	to t : Emf!Number 
 	extends Ast2Operand {
-	s.println();
 }
 
 rule Ast2OperandLogical
