@@ -6,11 +6,11 @@ package cellsheet;
 // =================
 // Common Interfaces
 // =================
-abstract interface HasA1 {
+abstract class HasA1 {
 	attr String a1;
 }
 
-abstract interface HasId {
+abstract class HasId {
 	id attr String uri;
 }
 
