@@ -31,42 +31,37 @@ rule Ast2Operand
 	extends Abstract2Ast {
 }
 
-// @primary
 rule Ast2OperandText
 	transform s : Excel!Text
 	to t : Emf!Text 
 	extends Ast2Operand {
 }
 
-@primary
 rule Ast2OperandNumber
 	transform s : Excel!Number
 	to t : Emf!Number 
 	extends Ast2Operand {
+	s.println();
 }
 
-// @primary
 rule Ast2OperandLogical
 	transform s : Excel!Logical
 	to t : Emf!Logical 
 	extends Ast2Operand {
 }
 
-// @primary
 rule Ast2OperandError
 	transform s : Excel!Error
 	to t : Emf!Error 
 	extends Ast2Operand {
 }
 
-// @primary
 rule Ast2OperandRange
 	transform s : Excel!Range
 	to t : Emf!Range 
 	extends Ast2Operand {
 }
 
-// @primary
 rule Ast2OperandRef
 	transform s : Excel!Ref
 	to t : Emf!Ref 
@@ -74,7 +69,6 @@ rule Ast2OperandRef
 }
 
 /* FUNCTIONS */
-// @primary
 rule Ast2Function 
 	transform s : Excel!Function 
 	to t : Emf!Function
@@ -89,98 +83,84 @@ rule Ast2OperatorInfix
 	extends Abstract2Ast {
 }
 
-// @primary
 rule Ast2Exponention
 	transform s : Excel!Exponention
 	to t : Emf!Exponention
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2Multiplication
 	transform s : Excel!Multiplication
 	to t : Emf!Multiplication
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2Division
 	transform s : Excel!Division
 	to t : Emf!Division
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2Addition
 	transform s : Excel!Addition
 	to t : Emf!Addition
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2Subtraction
 	transform s : Excel!Subtraction
 	to t : Emf!Subtraction
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2Concatenation
 	transform s : Excel!Concatenation
 	to t : Emf!Concatenation
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2EQ
 	transform s : Excel!EQ
 	to t : Emf!EQ
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2LT
 	transform s : Excel!LT
 	to t : Emf!LT
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2GT
 	transform s : Excel!GT
 	to t : Emf!GT
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2LTE
 	transform s : Excel!LTE
 	to t : Emf!LTE
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2GTE
 	transform s : Excel!GTE
 	to t : Emf!GTE
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2NEQ
 	transform s : Excel!NEQ
 	to t : Emf!NEQ
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2Intersection
 	transform s : Excel!Intersection
 	to t : Emf!Intersection
 	extends Ast2OperatorInfix {
 }
 
-// @primary
 rule Ast2Union
 	transform s : Excel!Union
 	to t : Emf!Union
@@ -195,14 +175,12 @@ rule Ast2OperatorPrefix
 	extends Abstract2Ast {
 }
 
-// @primary
 rule Ast2Plus
 	transform s : Excel!Plus 
 	to t : Emf!Plus 
 	extends Ast2OperatorPrefix {
 }
 
-// @primary
 rule Ast2Negation
 	transform s : Excel!Negation 
 	to t : Emf!Negation 
@@ -217,7 +195,6 @@ rule Ast2OperatorPostfix
 	extends Abstract2Ast {
 }
 
-// @primary
 rule Ast2Percent
 	transform s : Excel!Percent 
 	to t : Emf!Percent
