@@ -208,7 +208,7 @@ public enum EvaluationHelper {
 					cell.getRowIndex()); // absolute row index
 			return parser.getTokenMappings();
 		} catch (Exception e) {
-			throw new FormulaParseException(cell.getId(), e);
+			throw new FormulaParseException(cell.getId() + ", formula: " + formula, e);
 		}
 	}
 

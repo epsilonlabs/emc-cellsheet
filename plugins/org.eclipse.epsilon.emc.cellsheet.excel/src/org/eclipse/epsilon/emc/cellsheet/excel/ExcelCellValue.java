@@ -82,10 +82,14 @@ public class ExcelCellValue extends AbstractCellValue {
 
 	@Override
 	public String getFormula() {
-		if (type == CellValueType.FORMULA) {
+		switch (type) {
+		case FORMULA:
 			return cell.getDelegate().getCellFormula();
+		case STRING:
+			return String.format("\"%s\"", getStringValue());
+		default:
+			return getStringValue();
 		}
-		return String.format("\"%s\"", getStringValue());
 	}
 
 	@Override
@@ -98,6 +102,8 @@ public class ExcelCellValue extends AbstractCellValue {
 
 	@Override
 	public IAst getAst() {
+		if (type == CellValueType.NONE || type == CellValueType.BLANK)
+			return null;
 		return ExcelAstFactory.newInstance(this);
 	}
 

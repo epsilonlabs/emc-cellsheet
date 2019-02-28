@@ -27,6 +27,7 @@ import org.apache.poi.ss.formula.ptg.PercentPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.RefPtgBase;
 import org.apache.poi.ss.formula.ptg.ScalarConstantPtg;
+import org.apache.poi.ss.formula.ptg.StringPtg;
 import org.apache.poi.ss.formula.ptg.UnaryMinusPtg;
 import org.apache.poi.ss.formula.ptg.UnaryPlusPtg;
 import org.apache.poi.ss.formula.ptg.UnionPtg;
@@ -158,16 +159,18 @@ public class TokenMappingFormulaParser extends FormulaParser {
 					case OPERAND:
 						if (k instanceof IntPtg || k instanceof NumberPtg)
 							return AstType.NUMBER;
+						if (ptg instanceof StringPtg)
+							return AstType.TEXT;
 						if (ptg instanceof BoolPtg)
 							return AstType.LOGICAL;
 						if (ptg instanceof AreaI)
 							return AstType.RANGE;
 						if (ptg instanceof RefPtgBase)
-							return AstType.RANGE; // TODO: Change to ref?
+							return AstType.REF; // TODO: Change to ref?
 
 					case OPERATION:
 						return AstType.FUNCTION;
-						
+
 					// OPERATORS
 					case OPERATOR_PREFIX:
 					case OPERATOR_POSTFIX:

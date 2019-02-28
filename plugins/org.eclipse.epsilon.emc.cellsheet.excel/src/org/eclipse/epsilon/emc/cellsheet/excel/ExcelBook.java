@@ -86,7 +86,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	@Override
 	public Collection<HasId> getAllOfTypeFromModel(String typename) throws EolModelElementTypeNotFoundException {
 		final ElementType type = getElementTypeOrThrow(typename);
-		return allContents().stream().filter(e -> e.getType() == type).collect(Collectors.toList());
+		return allContents().stream().filter(Objects::nonNull).filter(e -> e.getType() == type).collect(Collectors.toList());
 	}
 
 	@Override
