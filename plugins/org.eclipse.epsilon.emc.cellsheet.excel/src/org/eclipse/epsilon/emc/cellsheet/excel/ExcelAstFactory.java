@@ -28,8 +28,11 @@ public class ExcelAstFactory {
 			if (tokenMap.getSupertype(ptg) == AstSupertype.NOOP)
 				continue;
 
-			final ExcelAst current = new ExcelAst(tokenMap.getToken(ptg), tokenMap.getSupertype(ptg),
-					tokenMap.getType(ptg));
+			final ExcelAst current = new ExcelAst.Builder()
+					.withToken(tokenMap.getToken(ptg))
+					.withSupertype(tokenMap.getSupertype(ptg))
+					.withType(tokenMap.getType(ptg))
+					.build();
 
 			if (ptg instanceof OperationPtg) {
 				final OperationPtg cast = (OperationPtg) ptg;
@@ -53,4 +56,5 @@ public class ExcelAstFactory {
 	public static ExcelAst newInstance(ExcelCellValue cellValue) {
 		return newInstance(cellValue.getFormula(), cellValue.getCell());
 	}
+
 }

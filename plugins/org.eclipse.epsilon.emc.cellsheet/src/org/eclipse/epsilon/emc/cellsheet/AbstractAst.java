@@ -14,16 +14,19 @@ public abstract class AbstractAst implements IAst {
 	protected ICellValue cellValue;
 	protected IAst parent;
 
-	protected final String token;
-	protected final AstSupertype supertype;
-	protected final AstType type;
+	protected String token;
+	protected AstSupertype supertype;
+	protected AstType type;
 
 	protected List<IAst> children = new LinkedList<>();
 
-	protected AbstractAst(String token, AstSupertype supertype, AstType type) {
-		this.token = token;
-		this.supertype = supertype;
-		this.type = type;
+	protected AbstractAst(Builder<?, ?> b) {
+		this.token = b.token;
+		this.supertype = b.supertype;
+		this.type = b.type;
+
+		this.cellValue = b.cellValue;
+		this.parent = b.parent;
 	}
 
 	@Override
@@ -330,10 +333,53 @@ public abstract class AbstractAst implements IAst {
 		if (getClass() != obj.getClass())
 			return false;
 		AbstractAst other = (AbstractAst) obj;
-		return Objects.equals(getId(), other.getId()) 
-				&& supertype == other.supertype
-				&& Objects.equals(token, other.token) 
-				&& type == other.type;
+		return Objects.equals(getId(), other.getId()) && supertype == other.supertype
+				&& Objects.equals(token, other.token) && type == other.type;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static abstract class Builder<A extends AbstractAst, B extends Builder<A, B>> {
+		private ICellValue cellValue;
+		private IAst parent;
+
+		private String token;
+		private AstType type;
+		private AstSupertype supertype;
+
+		public Builder() {
+		}
+
+		public Builder(IAst ast) {
+			this.token = ast.getToken();
+			this.type = ast.getType();
+			this.supertype = ast.getSupertype();
+		}
+
+		public B withToken(String token) {
+			this.token = token;
+			return (B) this;
+		}
+
+		public B withType(AstType type) {
+			this.type = type;
+			return (B) this;
+		}
+
+		public B withSupertype(AstSupertype supertype) {
+			this.supertype = supertype;
+			return (B) this;
+		}
+
+		public B withCellValue(ICellValue cellValue) {
+			this.cellValue = cellValue;
+			return (B) this;
+		}
+
+		public B withParent(IAst parent) {
+			this.parent = parent;
+			return (B) this;
+		}
+
+		public abstract A build();
+	}
 }

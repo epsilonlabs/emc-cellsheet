@@ -4,8 +4,9 @@ import java.util.Date;
 
 import org.apache.poi.ss.usermodel.FormulaError;
 import org.eclipse.epsilon.emc.cellsheet.AbstractCellValue;
+import org.eclipse.epsilon.emc.cellsheet.AstSupertype;
+import org.eclipse.epsilon.emc.cellsheet.AstType;
 import org.eclipse.epsilon.emc.cellsheet.CellValueType;
-import org.eclipse.epsilon.emc.cellsheet.IAst;
 
 public class ExcelCellValue extends AbstractCellValue {
 
@@ -65,6 +66,9 @@ public class ExcelCellValue extends AbstractCellValue {
 		}
 
 		switch (type) {
+		case BLANK:
+		case NONE:
+			return "";
 		case BOOLEAN:
 			return Boolean.toString(getBooleanValue());
 		case NUMERIC:
@@ -85,6 +89,7 @@ public class ExcelCellValue extends AbstractCellValue {
 		switch (type) {
 		case FORMULA:
 			return cell.getDelegate().getCellFormula();
+		case DATE:
 		case STRING:
 			return String.format("\"%s\"", getStringValue());
 		default:
@@ -101,10 +106,34 @@ public class ExcelCellValue extends AbstractCellValue {
 	}
 
 	@Override
-	public IAst getAst() {
-		if (type == CellValueType.NONE || type == CellValueType.BLANK)
-			return null;
-		return ExcelAstFactory.newInstance(this);
+	public ExcelAst getAst() {
+		if (type == CellValueType.FORMULA)
+			return ExcelAstFactory.newInstance(this);
+
+		final ExcelAst.Builder b = new ExcelAst.Builder().withToken(getStringValue())
+				.withSupertype(AstSupertype.OPERAND).withCellValue(this);
+		switch (type) {
+		case BOOLEAN:
+			b.withType(AstType.LOGICAL);
+			break;
+		case NUMERIC:
+			b.withType(AstType.NUMBER);
+			break;
+		case ERROR:
+			b.withType(AstType.ERROR);
+			break;
+		case DATE:
+		case STRING:
+			b.withType(AstType.TEXT);
+			break;
+		case BLANK:
+		case NONE:
+			b.withSupertype(AstSupertype.NOOP).withType(AstType.NOTHING);
+			break;
+		default:
+			throw new IllegalArgumentException();
+		}
+		return b.build();
 	}
 
 }
