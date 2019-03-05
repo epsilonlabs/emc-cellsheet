@@ -63,7 +63,7 @@ public abstract class AbstractCellValue implements ICellValue {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(type, getKinds(), getCell());
+		return Objects.hash(type, getCell());
 	}
 
 	@Override
@@ -76,7 +76,6 @@ public abstract class AbstractCellValue implements ICellValue {
 			return false;
 		AbstractCellValue other = (AbstractCellValue) obj;
 		return type == other.type // Quick check if super type same
-				&& Objects.equals(getKinds(), other.getKinds()) // Make sure all kinds are same
 				&& Objects.equals(getCell(), other.getCell()); // Parents
 	}
 
