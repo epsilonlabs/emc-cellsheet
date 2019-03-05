@@ -46,6 +46,7 @@ rule HasCell
 	t.cell ::= s.cell;
 }
 
+/*
 @abstract
 rule HasCellValue
 	transform s : Any
@@ -53,3 +54,4 @@ rule HasCellValue
 	extends HasCell {
 	t.cellValue ::= s.cellValue;
 }
+*/

@@ -4,13 +4,13 @@ import "Common.etl";
 rule Abstract2Ast
 	transform s : Excel!Ast
 	to t : Emf!Ast
-	extends HasCellValue {
+	extends HasCell {
 
 	t.token := s.token;
 	t.parent ::= s.parent;
 	
 	if (s.isRoot()) {
-		t.cellValue.root := t;
+		t.cellValue ::= s.cellValue;
 	}
 }
 

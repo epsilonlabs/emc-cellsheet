@@ -57,7 +57,7 @@ class Cell extends HasId, HasA1 {
 // ===========
 abstract class CellValue extends HasId {
 	ref Cell#cellValue cell;
-	val Ast root;
+	val Ast#cellValue ast;
 	
 	ref Book book;
 	ref Sheet sheet;
@@ -97,14 +97,14 @@ class DateCellValue extends CellValue {
 // Ast
 // ===
 abstract class Ast extends HasId {
-	val Ast[*]#parent children;
+	val Ast[*]#parent children;	
 	ref Ast#children parent;
+	ref CellValue#ast cellValue;
 	
 	ref Book book;
 	ref Sheet sheet;
 	ref Row row;
 	ref Cell cell;
-	ref CellValue cellValue;
 	
 	attr String token;
 }
