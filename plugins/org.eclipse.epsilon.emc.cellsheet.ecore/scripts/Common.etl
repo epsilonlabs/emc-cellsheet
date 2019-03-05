@@ -9,8 +9,9 @@ rule HasA1
 rule HasId
 	transform s : Any
 	to t : Any {
-	t.uri := s.id;
-	s.println();
+	t.id := s.id;
+	
+	(s.id + " => " + t.eClass.name).println();
 }
 
 @abstract

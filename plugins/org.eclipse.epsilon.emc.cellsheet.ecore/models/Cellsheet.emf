@@ -11,7 +11,7 @@ abstract class HasA1 {
 }
 
 abstract class HasId {
-	id attr String uri;
+	id attr String ~id;
 }
 
 // ==========
