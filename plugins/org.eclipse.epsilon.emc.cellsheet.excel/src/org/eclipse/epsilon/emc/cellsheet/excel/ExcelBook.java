@@ -140,7 +140,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(name, excelFile, delegate);
+		return Objects.hash(name, delegate);
 	}
 	
 	@Override
@@ -153,9 +153,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 			return false;
 		ExcelBook other = (ExcelBook) obj;
 		return Objects.equals(name, other.name) // Book name
-				&& Objects.equals(excelFile, other.excelFile) // Backing File
-				&& Objects.equals(delegate, other.delegate) // POI Delegate
-				&& super.equals(obj); // Delegate back to super
+				&& Objects.equals(delegate, other.delegate); // POI Delegate
 	}
 
 }
