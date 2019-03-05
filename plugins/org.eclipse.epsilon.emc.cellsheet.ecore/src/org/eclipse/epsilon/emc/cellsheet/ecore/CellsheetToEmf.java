@@ -59,7 +59,7 @@ public class CellsheetToEmf {
 		metamodel.load(null);
 		final EPackage ePackage = (EPackage) metamodel.getContents().get(0);
 
-		final Resource resource = EmfUtil.createResource(URI.createFileURI(output));
+		final Resource resource = EmfUtil.createResource(URI.createFileURI(output.replaceAll("\\s+", "_")));
 		final InMemoryEmfModel model = new InMemoryEmfModel("Emf", resource, Collections.singleton(ePackage));
 		model.setConcurrent(true);
 		model.setCachingEnabled(true);
