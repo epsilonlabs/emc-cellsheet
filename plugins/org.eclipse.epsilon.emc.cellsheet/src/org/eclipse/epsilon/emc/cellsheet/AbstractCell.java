@@ -39,7 +39,7 @@ public abstract class AbstractCell implements ICell {
 
 	@Override
 	public String getId() {
-		return String.format("%s%s/", getRow().getId(), getColIndex());
+		return String.format("%s%s/", getRow().getId(), getColIndex()).replaceAll("\\s+", "_");
 	}
 
 	@Override

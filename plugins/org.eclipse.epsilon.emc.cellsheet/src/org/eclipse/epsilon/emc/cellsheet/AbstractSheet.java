@@ -20,7 +20,7 @@ public abstract class AbstractSheet implements ISheet {
 
 	@Override
 	public String getId() {
-		return String.format("%s%s/", getBook().getId(), getName());
+		return String.format("%s%s/", getBook().getId(), getName()).replaceAll("\\s+", "_");
 	}
 
 	@Override

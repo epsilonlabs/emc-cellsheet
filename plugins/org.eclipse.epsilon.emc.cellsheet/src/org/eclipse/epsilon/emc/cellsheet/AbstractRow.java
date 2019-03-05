@@ -32,7 +32,7 @@ public abstract class AbstractRow implements IRow {
 
 	@Override
 	public String getId() {
-		return String.format("%s%s/", getSheet().getId(), getIndex());
+		return String.format("%s%s/", getSheet().getId(), getIndex()).replaceAll("\\s+", "_");
 	}
 
 	@Override

@@ -19,6 +19,8 @@ public abstract class AbstractAst implements IAst {
 	protected AstType type;
 
 	protected List<IAst> children = new LinkedList<>();
+	
+	protected String id = null;
 
 	protected AbstractAst(Builder<?, ?> b) {
 		this.token = b.token;
@@ -57,6 +59,7 @@ public abstract class AbstractAst implements IAst {
 	@Override
 	public void setCellValue(ICellValue cellValue) {
 		this.cellValue = cellValue;
+		this.id = null;
 	}
 
 	@Override
@@ -67,6 +70,7 @@ public abstract class AbstractAst implements IAst {
 	@Override
 	public void setParent(IAst parent) {
 		this.parent = parent;
+		this.id = null;
 	}
 
 	@Override
@@ -262,8 +266,11 @@ public abstract class AbstractAst implements IAst {
 
 	@Override
 	public String getId() {
-		final String prev = isRoot() ? getCellValue().getId() : parent.getId();
-		return String.format("%s%d/", prev, getPosition());
+		if (id == null) {
+			final String prev = isRoot() ? getCellValue().getId() : parent.getId();
+			id = String.format("%s%d/", prev, getPosition()).replaceAll("\\s+", "_");
+		}
+		return id;
 	}
 
 	@Override
@@ -324,6 +331,7 @@ public abstract class AbstractAst implements IAst {
 		return Objects.hash(getId(), supertype, token, type);
 	}
 
+	// TODO: check children
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

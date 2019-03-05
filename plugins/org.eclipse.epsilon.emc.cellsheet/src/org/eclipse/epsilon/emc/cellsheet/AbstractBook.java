@@ -34,6 +34,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 		// Sanitise if relative ID
 		id = id.charAt(0) == '/' ? getName() + id : id;
+		id.replaceAll("\\s+", "_");
 
 		final Iterator<String> parts = Arrays.stream(id.split("/")).iterator();
 
@@ -195,7 +196,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 	@Override
 	public String getId() {
-		return String.format("%s/", name);
+		return String.format("%s/", name).replaceAll("\\s+", "_");
 	}
 
 	@Override
