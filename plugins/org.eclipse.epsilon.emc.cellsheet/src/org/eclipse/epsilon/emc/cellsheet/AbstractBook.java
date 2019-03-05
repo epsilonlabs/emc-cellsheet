@@ -269,6 +269,9 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	 */
 	protected boolean isOfKindOrType(Object instance, String typename, boolean isKind)
 			throws EolModelElementTypeNotFoundException {
+		if (instance == null)
+			return false;
+		
 		final ElementType type = getElementTypeOrThrow(typename);
 		final HasId hasId = getHasTypeOrThrow(instance);
 		return isKind ? hasId.getKinds().contains(type) : hasId.getType() == type;
