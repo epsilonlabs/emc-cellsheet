@@ -1,13 +1,13 @@
+import "Common.etl";
+
 @abstract
 rule Abstract2CellValue
 	transform s : Excel!CellValue
-	to t : Emf!CellValue {
+	to t : Emf!CellValue
+	extends HasCell {
 
-	t.uri := s.id;
 	t.formula := s.formula;
 	t.stringValue := s.stringValue;
-	
-	t.cell ::= s.cell;
 }
 
 rule CellValue2NoneCellValue 

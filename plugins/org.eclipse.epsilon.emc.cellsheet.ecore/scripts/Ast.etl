@@ -1,18 +1,16 @@
-/* === */
-/* AST */
-/* === */
+import "Common.etl";
+
 @abstract
 rule Abstract2Ast
 	transform s : Excel!Ast
-	to t : Emf!Ast {
-		
-	t.uri := s.id;
+	to t : Emf!Ast
+	extends HasCellValue {
+
 	t.token := s.token;
+	t.parent ::= s.parent;
 	
 	if (s.isRoot()) {
-		t.cellValue ::= s.cellValue;
-	} else {
-		t.parent ::= s.parent;
+		t.cellValue.root := t;
 	}
 }
 

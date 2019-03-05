@@ -133,6 +133,10 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	public void setExcelFile(File file) {
 		excelFile = file;
 	}
+	
+	public String getFilename() {
+		return excelFile == null ? null : excelFile.getName();
+	}
 
 	@Override
 	public int hashCode() {

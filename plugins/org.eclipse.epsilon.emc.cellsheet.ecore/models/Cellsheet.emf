@@ -35,12 +35,19 @@ class Sheet extends HasId, HasA1 {
 class Row extends HasId, HasA1 {
 	val Cell[*]#row cells;
 	ref Sheet#rows sheet;
+	
+	ref Book book;
+	
 	attr int index;
 }
 
 class Cell extends HasId, HasA1 {
 	val CellValue#cell cellValue;
 	ref Row#cells row;
+	
+	ref Book book;
+	ref Sheet sheet;
+	
 	attr int index;
 	attr String a1Index;
 }
@@ -49,8 +56,13 @@ class Cell extends HasId, HasA1 {
 // Cell Values
 // ===========
 abstract class CellValue extends HasId {
-	val Ast#cellValue ast;
 	ref Cell#cellValue cell;
+	val Ast root;
+	
+	ref Book book;
+	ref Sheet sheet;
+	ref Row row;
+	
 	attr String formula;
 	attr String stringValue;
 }
@@ -85,10 +97,14 @@ class DateCellValue extends CellValue {
 // Ast
 // ===
 abstract class Ast extends HasId {
-	ref CellValue#ast cellValue;
-
 	val Ast[*]#parent children;
 	ref Ast#children parent;
+	
+	ref Book book;
+	ref Sheet sheet;
+	ref Row row;
+	ref Cell cell;
+	ref CellValue cellValue;
 	
 	attr String token;
 }
