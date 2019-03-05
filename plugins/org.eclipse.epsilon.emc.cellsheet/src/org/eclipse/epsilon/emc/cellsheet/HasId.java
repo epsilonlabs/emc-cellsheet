@@ -38,13 +38,14 @@ public interface HasId {
 	 * @return the Unique ID
 	 */
 	public String getId();
-	
+
 	public IBook getBook();
 
 	default public String buildToString() {
-		return String.format("<%s> <%s> %s", 
+		return String.format("%s <%s> <%s>", // Format
+				getId(), // ID
 				getType().getTypename(), // Typename
-				getKinds().stream().map(ElementType::getTypename).collect(Collectors.joining(",")), // Kinds
-				getId()); // ID
+				getKinds().stream().map(ElementType::getTypename).collect(Collectors.joining(","))// Kinds
+		);
 	}
 }
