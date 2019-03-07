@@ -1,0 +1,141 @@
+package org.eclipse.epsilon.emc.cellsheet
+
+/** ===========================================================================
+ * COMMON
+ */
+abstract class HasA1 {
+	String a1
+}
+
+abstract class HasId {
+	id String ^id
+}
+
+/** ===========================================================================
+ * CORE TYPES
+ */
+class Book extends HasId, HasA1 {
+	String name
+	String filename
+	contains Sheet[] sheets opposite book
+}
+
+class Sheet extends HasId, HasA1 {
+	int index
+	String name
+	contains Row[] rows opposite sheet
+	container Book book opposite sheets
+}
+
+class Row extends HasId, HasA1 {
+	int index
+	contains Cell[] cells opposite row
+	refers Book book
+	container Sheet sheet opposite rows
+}
+
+class Cell extends HasId, HasA1 {
+	int index
+	String a1Index
+	contains CellValue cellValue opposite cell
+	refers Book book
+	refers Sheet sheet
+	container Row row opposite cells
+}
+
+/** ===========================================================================
+ * CELL VALUES
+ */
+abstract class CellValue extends HasId {
+	String formula
+	String stringValue
+	contains Ast ast opposite cellValue
+	refers Book book
+	refers Sheet sheet
+	refers Row row
+	container Cell cell opposite cellValue
+}
+
+class NoneCellValue extends CellValue {
+}
+
+class BlankCellValue extends CellValue {
+}
+
+class StringCellValue extends CellValue {
+}
+
+class FormulaCellValue extends CellValue {
+}
+
+class BooleanCellValue extends CellValue {
+	boolean booleanValue
+}
+
+class ErrorCellValue extends CellValue {
+	String errorValue
+}
+
+class DateCellValue extends CellValue {
+	Date dateValue
+}
+
+/** ===========================================================================
+ * AST
+ */
+abstract class Ast extends HasId {
+	String token
+	container Ast parent opposite children
+	contains Ast[] children opposite parent
+	refers Book book
+	refers Sheet sheet
+	refers Row row
+	refers Cell cell
+	container CellValue cellValue opposite ast
+	derived boolean isRoot get {
+		return parent === null
+	}
+}
+
+// Ast category types
+abstract class Noop extends Ast {}
+abstract class Operand extends Ast {}
+abstract class Operation extends Ast {}
+abstract class OperatorPrefix extends Ast {}
+abstract class OperatorInfix extends Ast {}
+abstract class OperatorPostfix extends Ast {}
+abstract class Unknown extends Ast {}
+
+// Ast catergory subtypes
+class Nothing extends Unknown {}
+
+class Function extends Operation {}
+
+class Text extends Operand {}
+class Number extends Operand {}
+class Logical extends Operand {}
+class Error extends Operand {}
+class Range extends Operand {}
+class Ref extends Operand {}
+
+class Plus extends OperatorPrefix {}
+class Negation extends OperatorPrefix {}
+
+class Percent extends OperatorPostfix {}
+
+class Exponention extends OperatorInfix {}
+class Multiplication extends OperatorInfix {}
+class Division extends OperatorInfix {}
+class Addition extends OperatorInfix {}
+class Subtraction extends OperatorInfix {}
+class Concatenation extends OperatorInfix {}
+
+class EQ extends OperatorInfix {}
+class LT extends OperatorInfix {}
+class GT extends OperatorInfix {}
+class LTE extends OperatorInfix {}
+class GTE extends OperatorInfix {}
+class NEQ extends OperatorInfix {}
+
+class Intersection extends OperatorInfix {}
+class Union extends OperatorInfix {}

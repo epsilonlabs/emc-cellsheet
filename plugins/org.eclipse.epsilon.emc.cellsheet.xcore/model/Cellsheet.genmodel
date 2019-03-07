@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.epsilon.emc.cellsheet.xcore/src" modelPluginID="org.eclipse.epsilon.emc.cellsheet.xcore"
+    runtimeJar="true" modelName="Cellsheet" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    testsDirectory="" booleanFlagsField="eFlags" booleanFlagsReservedBits="8" importerID="org.eclipse.emf.ecore.xcore.importer"
+    containmentProxies="true" complianceLevel="8.0" language="en" usedGenPackages="../../org.eclipse.emf.ecore/model/Ecore.genmodel#//ecore"
+    operationReflection="true" importOrganizing="true" decoration="Live" oSGiCompatible="true"
+    eclipsePlatformVersion="Juno" autoResizeProperties="true" autoExpandProperties="10"
+    findAction="true" expandAllAction="true" collapseAllAction="true" revertAction="true">
+  <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
+    <genAnnotations source="selectedPackages">
+      <details key="http://www.eclipse.org/emf/2002/Ecore" value="Ecore.xsd"/>
+    </genAnnotations>
+    <details key="directoryURI" value="."/>
+  </genAnnotations>
+  <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter.xmi">
+    <genAnnotations source="selectedPackages">
+      <details key="http://www.eclipse.org/emf/2002/Ecore" value="EcoreXMI.xsd"/>
+    </genAnnotations>
+    <details key="directoryURI" value="."/>
+  </genAnnotations>
+  <foreignModel>Cellsheet.xcore</foreignModel>
+  <modelPluginVariables>org.eclipse.xtext.xbase.lib</modelPluginVariables>
+  <modelPluginVariables>org.eclipse.emf.ecore.xcore.lib</modelPluginVariables>
+  <genPackages prefix="Cellsheet" basePackage="org.eclipse.epsilon.emc" disposableProviderFactory="true"
+      ecorePackage="cellsheet.ecore#/">
+    <genClasses image="false" ecoreClass="cellsheet.ecore#//HasA1">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//HasA1/a1"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="cellsheet.ecore#//HasId">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//HasId/id"/>
+    </genClasses>
+    <genClasses ecoreClass="cellsheet.ecore#//Book">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Book/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Book/filename"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Book/sheets"/>
+    </genClasses>
+    <genClasses ecoreClass="cellsheet.ecore#//Sheet">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Sheet/index"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Sheet/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Sheet/rows"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Sheet/book"/>
+    </genClasses>
+    <genClasses ecoreClass="cellsheet.ecore#//Row">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Row/index"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Row/cells"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Row/book"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Row/sheet"/>
+    </genClasses>
+    <genClasses ecoreClass="cellsheet.ecore#//Cell">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Cell/index"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Cell/a1Index"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Cell/cellValue"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Cell/book"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Cell/sheet"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Cell/row"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="cellsheet.ecore#//CellValue">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//CellValue/formula"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//CellValue/stringValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//CellValue/ast"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//CellValue/book"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//CellValue/sheet"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//CellValue/row"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//CellValue/cell"/>
+    </genClasses>
+    <genClasses ecoreClass="cellsheet.ecore#//NoneCellValue"/>
+    <genClasses ecoreClass="cellsheet.ecore#//BlankCellValue"/>
+    <genClasses ecoreClass="cellsheet.ecore#//StringCellValue"/>
+    <genClasses ecoreClass="cellsheet.ecore#//FormulaCellValue"/>
+    <genClasses ecoreClass="cellsheet.ecore#//BooleanCellValue">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//BooleanCellValue/booleanValue"/>
+    </genClasses>
+    <genClasses ecoreClass="cellsheet.ecore#//ErrorCellValue">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//ErrorCellValue/errorValue"/>
+    </genClasses>
+    <genClasses ecoreClass="cellsheet.ecore#//DateCellValue">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//DateCellValue/dateValue"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="cellsheet.ecore#//Ast">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Ast/token"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Ast/parent"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Ast/children"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Ast/book"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Ast/sheet"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Ast/row"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Ast/cell"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Ast/cellValue"/>
+      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Ast/isRoot"
+          get="&lt;%org.eclipse.epsilon.emc.cellsheet.Ast%> _parent = this.getParent();&#xA;return (_parent == null);"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="cellsheet.ecore#//Noop"/>
+    <genClasses image="false" ecoreClass="cellsheet.ecore#//Operand"/>
+    <genClasses image="false" ecoreClass="cellsheet.ecore#//Operation"/>
+    <genClasses image="false" ecoreClass="cellsheet.ecore#//OperatorPrefix"/>
+    <genClasses image="false" ecoreClass="cellsheet.ecore#//OperatorInfix"/>
+    <genClasses image="false" ecoreClass="cellsheet.ecore#//OperatorPostfix"/>
+    <genClasses image="false" ecoreClass="cellsheet.ecore#//Unknown"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Nothing"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Function"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Text"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Number"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Logical"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Error"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Range"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Ref"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Plus"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Negation"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Percent"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Exponention"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Multiplication"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Division"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Addition"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Subtraction"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Concatenation"/>
+    <genClasses ecoreClass="cellsheet.ecore#//EQ"/>
+    <genClasses ecoreClass="cellsheet.ecore#//LT"/>
+    <genClasses ecoreClass="cellsheet.ecore#//GT"/>
+    <genClasses ecoreClass="cellsheet.ecore#//LTE"/>
+    <genClasses ecoreClass="cellsheet.ecore#//GTE"/>
+    <genClasses ecoreClass="cellsheet.ecore#//NEQ"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Intersection"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Union"/>
+  </genPackages>
+</genmodel:GenModel>
