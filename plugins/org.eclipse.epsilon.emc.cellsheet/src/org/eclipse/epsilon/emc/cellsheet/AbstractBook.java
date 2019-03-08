@@ -17,8 +17,11 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.CachedModel;
 
+import com.google.common.net.UrlEscapers;
+
 public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
+	public static final String PROPERTY_NAME_DEFAULT = "Cellsheet";
 	@Override
 	public IBook getBook() {
 		return this;
@@ -196,7 +199,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 	@Override
 	public String getId() {
-		return String.format("%s/", name).replaceAll("\\s+", "_");
+		return UrlEscapers.urlPathSegmentEscaper().escape(name) + "/";
 	}
 
 	@Override

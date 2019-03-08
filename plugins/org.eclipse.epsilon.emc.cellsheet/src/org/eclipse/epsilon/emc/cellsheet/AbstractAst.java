@@ -248,29 +248,12 @@ public abstract class AbstractAst implements IAst {
 
 	@Override
 	public int getPosition() {
-		if (isRoot()) {
-			return 0;
-		}
-		if (parent != null) {
-			int count = 0;
-			final Iterator<IAst> it = parent.getChildren().iterator();
-			while (it.hasNext()) {
-				if (it.next() == this) {
-					return count;
-				}
-				count++;
-			}
-		}
-		return -1;
+		return position;
 	}
 
 	@Override
 	public String getId() {
-		if (id == null) {
-			final String prev = isRoot() ? getCellValue().getId() : parent.getId();
-			id = String.format("%s%d/", prev, getPosition()).replaceAll("\\s+", "_");
-		}
-		return id;
+		return (isRoot() ? cellValue.getId() : parent.getId()) + getPosition() + "/";
 	}
 
 	@Override

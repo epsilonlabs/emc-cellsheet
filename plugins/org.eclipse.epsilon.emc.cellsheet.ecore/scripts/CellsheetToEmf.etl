@@ -7,5 +7,5 @@ pre {
 }
 
 post {
-	" CellSheet2EMF - Finished".println();
+	"CellSheet2EMF - Finished".println();
 }

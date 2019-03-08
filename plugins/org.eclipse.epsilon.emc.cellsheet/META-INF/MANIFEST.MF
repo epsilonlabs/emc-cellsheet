@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.epsilon.emc.cellsheet
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.epsilon.eol.engine;visibility:=reexport
+Require-Bundle: org.eclipse.epsilon.eol.engine;visibility:=reexport,
+ com.google.guava;bundle-version="21.0.0";visibility:=reexport
 Export-Package: org.eclipse.epsilon.emc.cellsheet
 Automatic-Module-Name: org.eclipse.epsilon.emc.cellsheet

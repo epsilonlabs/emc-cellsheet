@@ -8,7 +8,7 @@ public abstract class AbstractRow implements IRow {
 	public IBook getBook() {
 		return getSheet().getBook();
 	}
-	
+
 	@Override
 	public int getA1Index() {
 		return getIndex() + 1;
@@ -32,21 +32,21 @@ public abstract class AbstractRow implements IRow {
 
 	@Override
 	public String getId() {
-		return String.format("%s%s/", getSheet().getId(), getIndex()).replaceAll("\\s+", "_");
+		return getSheet().getId() + getIndex() + "/";
 	}
 
 	@Override
 	public String getA1() {
 		return String.format("%s!A$%d", getSheet().getA1(), getA1Index());
 	}
-	
+
 	@Override
 	public String toString() {
 		return buildToString();
 	}
-	
+
 	@Override
-	public int hashCode() {	
+	public int hashCode() {
 		return Objects.hash(getIndex(), getSheet());
 	}
 
@@ -62,5 +62,5 @@ public abstract class AbstractRow implements IRow {
 		return getIndex() == other.getIndex() // Row index
 				&& Objects.equals(getSheet(), other.getSheet()); // Parents
 	}
-	
+
 }

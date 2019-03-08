@@ -18,9 +18,7 @@ abstract class HasId {
 // Core Types
 // ==========
 class Book extends HasId, HasA1 {
-	val Sheet[*]#book sheets;
-	
-	attr String filename;
+	val Sheet[*]#book sheets;	
 	attr String name;
 }
 

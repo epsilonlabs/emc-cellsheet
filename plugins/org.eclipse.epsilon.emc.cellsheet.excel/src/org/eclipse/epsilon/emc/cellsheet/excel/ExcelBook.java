@@ -27,7 +27,6 @@ import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 
 public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbook> {
 
-	public static final String PROPERTY_NAME_DEFAULT = "Excel";
 	public static final String PROPERTY_FILE = "file";
 
 	// Lower level access fields
@@ -86,14 +85,15 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	@Override
 	public Collection<HasId> getAllOfTypeFromModel(String typename) throws EolModelElementTypeNotFoundException {
 		final ElementType type = getElementTypeOrThrow(typename);
-		return allContents().stream().filter(Objects::nonNull).filter(e -> e.getType() == type).collect(Collectors.toList());
+		return allContents().stream().filter(Objects::nonNull).filter(e -> e.getType() == type)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
 		super.load(properties, resolver);
 		setExcelFile(properties.getProperty(ExcelBook.PROPERTY_FILE));
-		setName(properties.getProperty(ExcelBook.PROPERTY_NAME, "Excel"));
+		setName(properties.getProperty(ExcelBook.PROPERTY_NAME, PROPERTY_NAME_DEFAULT));
 		load();
 	}
 
@@ -133,16 +133,12 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	public void setExcelFile(File file) {
 		excelFile = file;
 	}
-	
-	public String getFilename() {
-		return excelFile == null ? null : excelFile.getName();
-	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(name, delegate);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

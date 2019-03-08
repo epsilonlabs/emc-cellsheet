@@ -43,7 +43,7 @@ public abstract class AbstractCellValue implements ICellValue {
 
 	@Override
 	public String getId() {
-		return String.format("%svalue/", getCell().getId()).replaceAll("\\s+", "_");
+		return getCell().getId() + "value/";
 	}
 
 	@Override

@@ -2,6 +2,8 @@ package org.eclipse.epsilon.emc.cellsheet;
 
 import java.util.Objects;
 
+import com.google.common.net.UrlEscapers;
+
 public abstract class AbstractSheet implements ISheet {
 
 	@Override
@@ -20,7 +22,7 @@ public abstract class AbstractSheet implements ISheet {
 
 	@Override
 	public String getId() {
-		return String.format("%s%s/", getBook().getId(), getName()).replaceAll("\\s+", "_");
+		return getBook().getId() + UrlEscapers.urlPathSegmentEscaper().escape(getName()) + "/";
 	}
 
 	@Override

@@ -4,14 +4,8 @@ rule Book2Book
 	transform s : Excel!Book
 	to t : Emf!Book
 	extends HasA1, HasId {
-	
-	if (s.filename.isDefined()) {
-		t.name := s.filename;
-	} else {
-		t.name := s.name;
-	}
+
 	t.name := s.name;
-	t.filename := s.filename;
 }
 
 rule Sheet2Sheet
