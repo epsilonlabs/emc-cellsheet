@@ -1,3 +1,11 @@
 import "Core.etl";
 import "CellValue.etl";
 import "Ast.etl";
+
+pre {
+	"CellSheet2EMF - Started".println();
+}
+
+post {
+	" CellSheet2EMF - Finished".println();
+}

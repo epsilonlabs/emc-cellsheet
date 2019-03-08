@@ -62,8 +62,8 @@
 			<layout>p2</layout>
 		</repository>
 		<repository>
-			<id>photonOrbit</id>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20180905201904/repository/</url>
+			<id>orbit</id>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository/</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>
