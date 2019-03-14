@@ -20,13 +20,7 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 	protected AstSupertype supertype;
 	protected AstType type;
 
-<<<<<<< HEAD
 	protected List<T> children = new LinkedList<T>();
-=======
-	protected List<IAst> children = new LinkedList<>();
-
-	protected String id = null;
->>>>>>> 20cb5e52... Added variable to hold position
 
 	protected AbstractAst(Builder<?, ?> b) {
 		this.position = b.position;
@@ -104,16 +98,11 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 	}
 
 	@Override
-<<<<<<< HEAD
 	public T getChildAt(int index) {
-=======
-	public IAst getChildAt(int index) {
->>>>>>> 20cb5e52... Added variable to hold position
 		return index < children.size() ? children.get(index) : null;
 	}
 
 	@Override
-<<<<<<< HEAD
 	public T removeChild(int index) {
 		final T removed = children.remove(index);
 		removed.position = -1;
@@ -137,34 +126,10 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 		}
 		child.parent = (T) this;
 		child.position = index;
-=======
-	public void removeChildAt(int index) {
-		for (int i = index + 1, n = children.size(); i < n; i++) {
-			((AbstractAst) children.get(i)).position--;
-		}
-		children.remove(index);
-	}
-
-	@Override
-	public void addChild(IAst child) {
-		child.setPosition(children.size());
-		child.setParent(this);
-		children.add(child);
-	}
-
-	@Override
-	public void addChild(int index, IAst child) {
-		for (int i = index + 1, n = children.size(); i < n; i++) {
-			((AbstractAst) children.get(i)).position++;
-		}
-		child.setPosition(index);
-		child.setParent(this);
->>>>>>> 20cb5e52... Added variable to hold position
 		children.add(index, child);
 	}
 
 	@Override
-<<<<<<< HEAD
 	public T setChild(int index, T child) {
 		final T replaced = children.set(index, child);
 		replaced.position = -1;
@@ -173,12 +138,6 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 		child.position = index;
 
 		return replaced;
-=======
-	public void setChild(int index, IAst child) {
-		child.setPosition(index);
-		child.setParent(this);
-		children.set(index, child);
->>>>>>> 20cb5e52... Added variable to hold position
 	}
 
 	@Override
@@ -302,16 +261,8 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 	}
 
 	@Override
-	public void setPosition(int position) {
-		this.position = position;
-	}
-
-	@Override
 	public String getId() {
-		// TODO: FIX THIS - what happens if something higher up in the heirarchy changes
-		if (id == null)
-			id = (isRoot() ? cellValue.getId() : parent.getId()) + getPosition() + "/";
-		return id;
+		return (isRoot() ? cellValue.getId() : parent.getId()) + getPosition() + "/";
 	}
 
 	@Override
@@ -381,7 +332,6 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 		return Objects.hash(cellValue, children, position, token, type, supertype);
 	}
 
-	// TODO: check children
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
