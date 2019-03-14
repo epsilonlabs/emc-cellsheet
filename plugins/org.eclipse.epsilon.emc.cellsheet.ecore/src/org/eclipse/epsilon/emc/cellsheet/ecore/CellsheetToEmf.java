@@ -73,7 +73,8 @@ public class CellsheetToEmf {
 		final StringProperties props = new StringProperties();
 		props.put(ExcelBook.PROPERTY_CACHED, true);
 		props.put(ExcelBook.PROPERTY_CONCURRENT, true);
-		props.put(ExcelBook.PROPERTY_NAME, "Excel");
+		props.put(ExcelBook.PROPERTY_NAME, new File(filename).getName());
+		props.put(ExcelBook.PROPERTY_ALIASES, "Excel");
 		props.put(ExcelBook.PROPERTY_FILE, filename);
 
 		final ExcelBook book = new ExcelBook();

@@ -22,6 +22,7 @@ import com.google.common.net.UrlEscapers;
 public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 	public static final String PROPERTY_NAME_DEFAULT = "Cellsheet";
+		
 	@Override
 	public IBook getBook() {
 		return this;
@@ -52,7 +53,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 			// Resolve sheet
 			if (parts.hasNext())
-				result = ((IBook) result).getSheet(parts.next());
+				result = ((IBook) result).getSheet(Integer.parseInt(parts.next()));
 			else
 				return result;
 
@@ -87,7 +88,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 			}
 
 			while (parts.hasNext()) {
-				result = ((IAst) result).getChildAt(Integer.parseInt(parts.next()));
+				result = ((IAst<?>) result).getChildAt(Integer.parseInt(parts.next()));
 			}
 
 			return result;
@@ -275,7 +276,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 			throws EolModelElementTypeNotFoundException {
 		if (instance == null)
 			return false;
-		
+
 		final ElementType type = getElementTypeOrThrow(typename);
 		final HasId hasId = getHasTypeOrThrow(instance);
 		return isKind ? hasId.getKinds().contains(type) : hasId.getType() == type;
@@ -352,7 +353,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 		}
 
 	}
-	
+
 	@Override
 	public void load() throws EolModelLoadingException {
 		// Force load of all type classes
@@ -362,7 +363,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 		AstType.values();
 		super.load();
 	}
-	
+
 	@Override
 	public String toString() {
 		return buildToString();

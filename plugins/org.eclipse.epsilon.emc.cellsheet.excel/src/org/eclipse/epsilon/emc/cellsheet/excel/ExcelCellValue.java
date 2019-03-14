@@ -1,12 +1,17 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
+import java.util.ArrayDeque;
 import java.util.Date;
+import java.util.Deque;
 
+import org.apache.poi.ss.formula.ptg.OperationPtg;
+import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.usermodel.FormulaError;
 import org.eclipse.epsilon.emc.cellsheet.AbstractCellValue;
 import org.eclipse.epsilon.emc.cellsheet.AstSupertype;
 import org.eclipse.epsilon.emc.cellsheet.AstType;
 import org.eclipse.epsilon.emc.cellsheet.CellValueType;
+import org.eclipse.epsilon.emc.cellsheet.poi.TokenMappingFormulaParser.TokenMappings;
 
 public class ExcelCellValue extends AbstractCellValue {
 
@@ -107,11 +112,45 @@ public class ExcelCellValue extends AbstractCellValue {
 
 	@Override
 	public ExcelAst getAst() {
-		if (type == CellValueType.FORMULA)
-			return ExcelAstFactory.newInstance(this);
+		if (type == CellValueType.FORMULA) {
+			final TokenMappings tokenMap = EvaluationHelper.getPtgs(getFormula(), cell);
+			final Deque<ExcelAst> stack = new ArrayDeque<>();
+			for (Ptg ptg : tokenMap) {
+				// Skip No-Ops
+				if (tokenMap.getSupertype(ptg) == AstSupertype.NOOP)
+					continue;
 
-		final ExcelAst.Builder b = new ExcelAst.Builder().withToken(getStringValue())
-				.withSupertype(AstSupertype.OPERAND).withCellValue(this);
+				final ExcelAst current = new ExcelAst.Builder()
+						.withToken(tokenMap.getToken(ptg))
+						.withSupertype(tokenMap.getSupertype(ptg))
+						.withType(tokenMap.getType(ptg))
+						.withCellValue(cell.getCellValue())
+						.build();
+
+				if (ptg instanceof OperationPtg) {
+					final OperationPtg cast = (OperationPtg) ptg;
+					for (int j = cast.getNumberOfOperands(); j > 0; j--) {
+						current.addChild(0, stack.pop());
+					}
+				}
+
+				stack.push(current);
+			}
+
+			if (stack.size() != 1) {
+				throw new AssertionError();
+			}
+
+			final ExcelAst root = stack.pop();
+			root.setPosition(0);
+			return root;
+		}
+
+		final ExcelAst.Builder b = new ExcelAst.Builder()
+				.withPosition(0)
+				.withToken(getStringValue())
+				.withSupertype(AstSupertype.OPERAND)
+				.withCellValue(this);
 		switch (type) {
 		case BOOLEAN:
 			b.withType(AstType.LOGICAL);

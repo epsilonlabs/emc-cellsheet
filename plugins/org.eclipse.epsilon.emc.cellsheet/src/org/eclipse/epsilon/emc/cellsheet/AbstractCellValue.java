@@ -52,8 +52,8 @@ public abstract class AbstractCellValue implements ICellValue {
 	}
 
 	@Override
-	public Iterator<IAst> iterator() {
-		return Collections.singleton(getAst()).iterator();
+	public Iterator<IAst<?>> iterator() {
+		return Collections.<IAst<?>>singleton(getAst()).iterator();
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import java.util.List;
  * @author Jonathan Co
  *
  */
-public interface IAst extends HasId, HasCellValue, Iterable<IAst> {
+public interface IAst<T extends IAst<T>> extends HasId, HasCellValue, Iterable<T>, Comparable<T> {
 
 	/**
 	 * Set the parent {@link IFormulaCellValue}
@@ -20,19 +20,19 @@ public interface IAst extends HasId, HasCellValue, Iterable<IAst> {
 	/**
 	 * @return the parent of this {@link IAst} or {@code null} if no parent exists
 	 */
-	public IAst getParent();
+	public T getParent();
 
 	/**
 	 * Set the parent of this {@link IAst}
 	 * 
 	 * @param parent
 	 */
-	public void setParent(IAst parent);
+	public void setParent(T parent);
 
 	/**
 	 * @return the direct child trees this Formula Tree may have.
 	 */
-	public List<IAst> getChildren();
+	public List<T> getChildren();
 
 	/**
 	 * Evaluates and returns the current node in the formula tree using the built-in
@@ -48,22 +48,22 @@ public interface IAst extends HasId, HasCellValue, Iterable<IAst> {
 
 	public AstType getType();
 
-	public IAst getRoot();
+	public T getRoot();
 
 	/**
 	 * @return this tree and all it's descendant trees. Order is based on left
 	 *         traversal
 	 */
-	public List<IAst> getAll();
+	public List<T> getAll();
 
 	/**
 	 * @param index the position of the child sub-tree
 	 * @return The position of the child at the sub-tree or {@code null} if they do
 	 *         not exist
 	 */
-	public IAst getChildAt(int index);
+	public T getChildAt(int index);
 
-	public void removeChildAt(int index);
+	public T removeChild(int index);
 
 	/**
 	 * Add a sub-tree to this {@link IAst} and assign {@code this} as the parent. If
@@ -71,25 +71,25 @@ public interface IAst extends HasId, HasCellValue, Iterable<IAst> {
 	 * 
 	 * @param child
 	 */
-	public void addChild(IAst child);
+	public void addChild(T child);
 
-	public void addChild(int index, IAst child);
+	public void addChild(int index, T child);
 
-	public void setChild(int index, IAst child);
+	public T setChild(int index, T child);
 
 	/**
 	 * Convenience method to retrieve the first sub-tree
 	 * 
 	 * @return the first sub-tree or {@code null}
 	 */
-	public IAst getFirst();
+	public T getFirst();
 
 	/**
 	 * Convenience method to retrieve the second sub-tree
 	 * 
 	 * @return the second sub-tree or {@code null}
 	 */
-	public IAst getSecond();
+	public T getSecond();
 
 	/**
 	 * Returns a formula string built at this tree. Will only elements that are
@@ -144,13 +144,19 @@ public interface IAst extends HasId, HasCellValue, Iterable<IAst> {
 	 */
 	public String toStringTree();
 
+	/**
+	 * 
+	 * @return
+	 */
 	public int getPosition();
+	
+	public void setPosition(int position);
 
-	public void accept(Visitor visitor);
+	public void accept(Visitor<T> visitor);
 
-	public static interface Visitor {
+	public static interface Visitor<R> {
 
-		public void visit(IAst tree);
+		public void visit(R tree);
 
 	}
 

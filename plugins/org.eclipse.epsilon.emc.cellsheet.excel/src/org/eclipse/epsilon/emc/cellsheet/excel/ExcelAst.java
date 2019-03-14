@@ -1,7 +1,6 @@
 package org.eclipse.epsilon.emc.cellsheet.excel;
 
 import org.eclipse.epsilon.emc.cellsheet.AbstractAst;
-import org.eclipse.epsilon.emc.cellsheet.IAst;
 import org.eclipse.epsilon.emc.cellsheet.ICellValue;
 
 /**
@@ -10,7 +9,7 @@ import org.eclipse.epsilon.emc.cellsheet.ICellValue;
  * @author Jonathan Co
  *
  */
-public class ExcelAst extends AbstractAst implements IAst {
+public class ExcelAst extends AbstractAst<ExcelAst> {
 
 	protected ExcelAst(Builder b) {
 		super(b);
@@ -24,14 +23,14 @@ public class ExcelAst extends AbstractAst implements IAst {
 	}
 
 	@Override
-	public void setParent(IAst parent) {
+	public void setParent(ExcelAst parent) {
 		if (parent != null && !(parent instanceof ExcelAst))
 			throw new IllegalArgumentException("Parent must be of type ExcelFormulaTree");
 		super.setParent(parent);
 	}
 
 	@Override
-	public void addChild(IAst child) {
+	public void addChild(ExcelAst child) {
 		if (!(child instanceof ExcelAst))
 			throw new IllegalArgumentException("Parent must be of type ExcelFormulaTree");
 		super.addChild(child);

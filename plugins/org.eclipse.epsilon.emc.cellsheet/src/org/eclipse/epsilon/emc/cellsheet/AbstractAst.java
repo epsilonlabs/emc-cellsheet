@@ -9,26 +9,33 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class AbstractAst implements IAst {
+@SuppressWarnings("unchecked")
+public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 
 	protected ICellValue cellValue;
-	protected IAst parent;
+	protected T parent;
 
+	protected int position = -1;
 	protected String token;
 	protected AstSupertype supertype;
 	protected AstType type;
 
+<<<<<<< HEAD
+	protected List<T> children = new LinkedList<T>();
+=======
 	protected List<IAst> children = new LinkedList<>();
-	
+
 	protected String id = null;
+>>>>>>> 20cb5e52... Added variable to hold position
 
 	protected AbstractAst(Builder<?, ?> b) {
+		this.position = b.position;
 		this.token = b.token;
 		this.supertype = b.supertype;
 		this.type = b.type;
 
 		this.cellValue = b.cellValue;
-		this.parent = b.parent;
+		this.parent = (T) b.parent;
 	}
 
 	@Override
@@ -53,24 +60,22 @@ public abstract class AbstractAst implements IAst {
 
 	@Override
 	public ICellValue getCellValue() {
-		return isRoot() ? cellValue : parent.getCellValue();
+		return cellValue;
 	}
 
 	@Override
 	public void setCellValue(ICellValue cellValue) {
 		this.cellValue = cellValue;
-		this.id = null;
 	}
 
 	@Override
-	public IAst getParent() {
+	public T getParent() {
 		return parent;
 	}
 
 	@Override
-	public void setParent(IAst parent) {
+	public void setParent(T parent) {
 		this.parent = parent;
-		this.id = null;
 	}
 
 	@Override
@@ -94,56 +99,96 @@ public abstract class AbstractAst implements IAst {
 	}
 
 	@Override
-	public List<IAst> getChildren() {
+	public List<T> getChildren() {
 		return children;
 	}
 
 	@Override
+<<<<<<< HEAD
+	public T getChildAt(int index) {
+=======
 	public IAst getChildAt(int index) {
-		return index < getChildren().size() ? getChildren().get(index) : null;
+>>>>>>> 20cb5e52... Added variable to hold position
+		return index < children.size() ? children.get(index) : null;
 	}
 
 	@Override
+<<<<<<< HEAD
+	public T removeChild(int index) {
+		final T removed = children.remove(index);
+		removed.position = -1;
+		for (int i = index, n = children.size(); i < n; i++) {
+			children.get(i).position--;
+		}
+		return removed;
+	}
+
+	@Override
+	public void addChild(T child) {
+		child.parent = (T) this;
+		children.add(child);
+		child.position = children.size() - 1;
+	}
+
+	@Override
+	public void addChild(int index, T child) {
+		for (int i = index, n = children.size(); i < n; i++) {
+			children.get(i).position++;
+		}
+		child.parent = (T) this;
+		child.position = index;
+=======
 	public void removeChildAt(int index) {
-		getChildren().remove(index);
+		for (int i = index + 1, n = children.size(); i < n; i++) {
+			((AbstractAst) children.get(i)).position--;
+		}
+		children.remove(index);
 	}
 
 	@Override
 	public void addChild(IAst child) {
+		child.setPosition(children.size());
 		child.setParent(this);
-		getChildren().add(child);
+		children.add(child);
 	}
 
 	@Override
 	public void addChild(int index, IAst child) {
-		if (index > children.size()) {
-			while (index >= children.size()) {
-				children.add(null);
-			}
+		for (int i = index + 1, n = children.size(); i < n; i++) {
+			((AbstractAst) children.get(i)).position++;
 		}
+		child.setPosition(index);
 		child.setParent(this);
-		getChildren().add(index, child);
+>>>>>>> 20cb5e52... Added variable to hold position
+		children.add(index, child);
 	}
 
 	@Override
+<<<<<<< HEAD
+	public T setChild(int index, T child) {
+		final T replaced = children.set(index, child);
+		replaced.position = -1;
+
+		child.parent = (T) this;
+		child.position = index;
+
+		return replaced;
+=======
 	public void setChild(int index, IAst child) {
-		if (index > children.size()) {
-			while (index >= children.size()) {
-				children.add(null);
-			}
-		}
+		child.setPosition(index);
 		child.setParent(this);
 		children.set(index, child);
+>>>>>>> 20cb5e52... Added variable to hold position
 	}
 
 	@Override
-	public IAst getFirst() {
-		return getChildAt(0);
+	public T getFirst() {
+		return children.get(0);
 	}
 
 	@Override
-	public IAst getSecond() {
-		return getChildAt(1);
+	public T getSecond() {
+		return children.get(1);
 	}
 
 	@Override
@@ -157,8 +202,8 @@ public abstract class AbstractAst implements IAst {
 	}
 
 	@Override
-	public IAst getRoot() {
-		return isRoot() ? this : parent.getRoot();
+	public T getRoot() {
+		return isRoot() ? (T) this : parent.getRoot();
 	}
 
 	@Override
@@ -167,17 +212,18 @@ public abstract class AbstractAst implements IAst {
 	}
 
 	@Override
-	public List<IAst> getAll() {
-		final List<IAst> list = new LinkedList<>();
-		accept(new Visitor() {
+	public List<T> getAll() {
+		final List<T> list = new LinkedList<>();
+		accept(new Visitor<T>() {
 
 			@Override
-			public void visit(IAst tree) {
-				for (IAst child : tree.getChildren()) {
+			public void visit(T tree) {
+				for (T child : tree.getChildren()) {
 					child.accept(this);
 				}
 				list.add(tree);
 			}
+
 		});
 		return list;
 	}
@@ -185,10 +231,10 @@ public abstract class AbstractAst implements IAst {
 	@Override
 	public String getFormula() {
 		final StringBuilder sb = new StringBuilder();
-		accept(new Visitor() {
+		accept(new Visitor<T>() {
 
 			@Override
-			public void visit(IAst tree) {
+			public void visit(T tree) {
 				// No children, straight append and return
 				if (tree.isLeaf()) {
 					sb.append(tree.getToken());
@@ -230,7 +276,7 @@ public abstract class AbstractAst implements IAst {
 					sb.append(tree.getToken());
 					sb.append('(');
 
-					final Iterator<IAst> it = tree.getChildren().iterator();
+					final Iterator<T> it = tree.getChildren().iterator();
 					while (it.hasNext()) {
 						it.next().accept(this);
 						if (it.hasNext()) {
@@ -251,19 +297,40 @@ public abstract class AbstractAst implements IAst {
 		return position;
 	}
 
-	@Override
-	public String getId() {
-		return (isRoot() ? cellValue.getId() : parent.getId()) + getPosition() + "/";
+	public void setPosition(int position) {
+		this.position = position;
 	}
 
 	@Override
-	public Iterator<IAst> iterator() {
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+	@Override
+	public String getId() {
+		// TODO: FIX THIS - what happens if something higher up in the heirarchy changes
+		if (id == null)
+			id = (isRoot() ? cellValue.getId() : parent.getId()) + getPosition() + "/";
+		return id;
+	}
+
+	@Override
+	public Iterator<T> iterator() {
 		return children.iterator();
 	}
 
 	@Override
-	public void accept(Visitor visitor) {
-		visitor.visit(this);
+	public void accept(Visitor<T> visitor) {
+		visitor.visit((T) this);
+	}
+
+	@Override
+	public int compareTo(T o) {
+		if (null == o)
+			return 1;
+		if (this == o)
+			return 0;
+		return Integer.compare(position, o.position);
 	}
 
 	@Override
@@ -297,9 +364,9 @@ public abstract class AbstractAst implements IAst {
 	protected String toTreeString(String prefix, boolean isTail) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(prefix).append(isTail ? "└── " : "├── ").append(toString()).append("\n");
-		ListIterator<IAst> it = getChildren().listIterator();
+		ListIterator<T> it = children.listIterator();
 		while (it.hasNext()) {
-			AbstractAst child = (AbstractAst) it.next(); // TODO: Fix potential cast error
+			T child = (T) it.next(); // TODO: Fix potential cast error
 
 			if (it.hasNext())
 				sb.append(child.toTreeString(prefix + (isTail ? "    " : "│   "), false));
@@ -311,7 +378,7 @@ public abstract class AbstractAst implements IAst {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getId(), supertype, token, type);
+		return Objects.hash(cellValue, children, position, token, type, supertype);
 	}
 
 	// TODO: check children
@@ -323,16 +390,23 @@ public abstract class AbstractAst implements IAst {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractAst other = (AbstractAst) obj;
-		return Objects.equals(getId(), other.getId()) && supertype == other.supertype
-				&& Objects.equals(token, other.token) && type == other.type;
+		
+		final T other = (T) obj;
+		if (!cellValue.equals(other.cellValue))
+			return false;
+		return Objects.equals(position, other.position)
+				&& Objects.equals(token, other.token)
+				&& Objects.equals(type,  other.type)
+				&& Objects.equals(supertype, other.supertype)
+				&& Objects.equals(cellValue, other.cellValue)
+				&& Objects.equals(children, other.children);
 	}
 
-	@SuppressWarnings("unchecked")
-	public static abstract class Builder<A extends AbstractAst, B extends Builder<A, B>> {
+	public static abstract class Builder<A extends AbstractAst<A>, B extends Builder<A, B>> {
 		private ICellValue cellValue;
-		private IAst parent;
+		private A parent;
 
+		private int position = -1;
 		private String token;
 		private AstType type;
 		private AstSupertype supertype;
@@ -340,10 +414,15 @@ public abstract class AbstractAst implements IAst {
 		public Builder() {
 		}
 
-		public Builder(IAst ast) {
+		public Builder(A ast) {
 			this.token = ast.getToken();
 			this.type = ast.getType();
 			this.supertype = ast.getSupertype();
+		}
+
+		public B withPosition(int position) {
+			this.position = position;
+			return (B) this;
 		}
 
 		public B withToken(String token) {
@@ -366,11 +445,12 @@ public abstract class AbstractAst implements IAst {
 			return (B) this;
 		}
 
-		public B withParent(IAst parent) {
+		public B withParent(A parent) {
 			this.parent = parent;
 			return (B) this;
 		}
 
 		public abstract A build();
 	}
+
 }

@@ -59,8 +59,7 @@ public class AbstractSheetTest {
 		final IBook book = mock(IBook.class);
 		when(book.getId()).thenReturn("Book1/");
 		when(sheet.getBook()).thenReturn(book);
-		when(sheet.getName()).thenReturn("Sheet1");
-		assertEquals("Book1/Sheet1/", sheet.getId());
+		assertEquals("Book1/0/", sheet.getId());
 	}
 
 	@Test

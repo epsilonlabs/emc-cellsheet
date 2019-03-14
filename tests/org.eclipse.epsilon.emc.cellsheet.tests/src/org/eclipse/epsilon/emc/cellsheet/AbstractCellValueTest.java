@@ -67,7 +67,7 @@ public class AbstractCellValueTest {
 	@Test
 	public void iterator_should_return_singleton_iterator() throws Exception {
 		when(cellValue.getAst()).thenAnswer(RETURNS_MOCKS);
-		final Iterator<IAst> it = cellValue.iterator();
+		final Iterator<IAst<?>> it = cellValue.iterator();
 		assertNotNull(it.next());
 		assertFalse(it.hasNext());
 	}

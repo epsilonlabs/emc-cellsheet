@@ -18,7 +18,6 @@ import org.apache.poi.xssf.streaming.SXSSFEvaluationWorkbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.eclipse.epsilon.emc.cellsheet.IAst;
 import org.eclipse.epsilon.emc.cellsheet.IBook;
 import org.eclipse.epsilon.emc.cellsheet.ICell;
 import org.eclipse.epsilon.emc.cellsheet.ICellValue;
@@ -154,15 +153,6 @@ public enum EvaluationHelper {
 
 	/**
 	 * 
-	 * @param ast
-	 * @return
-	 */
-	public static String evaluate(IAst ast) {
-		return evaluate((ExcelAst) ast);
-	}
-
-	/**
-	 * 
 	 * @param cell
 	 * @return
 	 */
@@ -189,7 +179,7 @@ public enum EvaluationHelper {
 	 * @param ast
 	 * @return
 	 */
-	public static CellReference getCellRef(IAst ast) {
+	public static CellReference getCellRef(ExcelAst ast) {
 		return getCellRef(ast.getCell());
 	}
 
@@ -220,13 +210,5 @@ public enum EvaluationHelper {
 	public static TokenMappings getPtgs(ExcelAst ast) {
 		return getPtgs(ast.getFormula(), (ExcelCell) ast.getCell());
 	}
-
-	/**
-	 * 
-	 * @param ast
-	 * @return
-	 */
-	public static TokenMappings getPtgs(IAst ast) {
-		return getPtgs((ExcelAst) ast);
-	}
+	
 }

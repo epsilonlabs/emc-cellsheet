@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  *
  * @param <T> Primitive type that the Cell Value wraps
  */
-public interface ICellValue extends HasId, HasCell, Comparable<ICellValue>, Iterable<IAst> {
+public interface ICellValue extends HasId, HasCell, Comparable<ICellValue>, Iterable<IAst<?>> {
 
 	public static final ElementType SUBTYPE = CoreType.CELL_VALUE;
 
@@ -39,7 +39,7 @@ public interface ICellValue extends HasId, HasCell, Comparable<ICellValue>, Iter
 
 	public String getErrorValue();
 
-	public IAst getAst();
+	public IAst<?> getAst();
 
 	/**
 	 * Get the parent containing cell of this cell value
