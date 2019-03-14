@@ -57,7 +57,7 @@ class Cell extends HasId, HasA1 {
 // ===========
 // Cell Values
 // ===========
-@exeed(label="return self.type.name;")
+@exeed(label="return self.stringValue + ' : ' + self.type.name;")
 abstract class CellValue extends HasId {
 	ref Cell#cellValue cell;
 	val Ast#cellValue ast;
@@ -99,6 +99,7 @@ class DateCellValue extends CellValue {
 // ===
 // Ast
 // ===
+@exeed(label="return self.token + ' : ' + self.type.name;")
 abstract class Ast extends HasId {
 	val Ast[*]#parent children;	
 	ref Ast#children parent;
