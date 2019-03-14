@@ -17,11 +17,13 @@ abstract class HasId {
 // ==========
 // Core Types
 // ==========
+@exeed(label="return self.name + ' : ' + self.type.name;")
 class Book extends HasId, HasA1 {
 	val Sheet[*]#book sheets;	
 	attr String name;
 }
 
+@exeed(label="return self.name + ' : ' + self.type.name;")
 class Sheet extends HasId, HasA1 {
 	val Row[*]#sheet rows;
 	ref Book#sheets book;
@@ -30,6 +32,7 @@ class Sheet extends HasId, HasA1 {
 	attr int index;
 }
 
+@exeed(label="return self.index + ' : ' + self.type.name;")
 class Row extends HasId, HasA1 {
 	val Cell[*]#row cells;
 	ref Sheet#rows sheet;
@@ -39,6 +42,7 @@ class Row extends HasId, HasA1 {
 	attr int index;
 }
 
+@exeed(label="return self.a1Index + (self.index + 1) + ' : ' + self.type.name;")
 class Cell extends HasId, HasA1 {
 	val CellValue#cell cellValue;
 	ref Row#cells row;
@@ -53,6 +57,7 @@ class Cell extends HasId, HasA1 {
 // ===========
 // Cell Values
 // ===========
+@exeed(label="return self.type.name;")
 abstract class CellValue extends HasId {
 	ref Cell#cellValue cell;
 	val Ast#cellValue ast;
