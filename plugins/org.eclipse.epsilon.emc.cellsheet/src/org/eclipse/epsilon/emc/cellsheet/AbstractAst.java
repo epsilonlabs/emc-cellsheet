@@ -342,13 +342,12 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 			return false;
 		
 		final T other = (T) obj;
-		if (!cellValue.equals(other.cellValue))
+		if (!Objects.equals(cellValue, other.cellValue))
 			return false;
 		return Objects.equals(position, other.position)
 				&& Objects.equals(token, other.token)
 				&& Objects.equals(type,  other.type)
 				&& Objects.equals(supertype, other.supertype)
-				&& Objects.equals(cellValue, other.cellValue)
 				&& Objects.equals(children, other.children);
 	}
 
