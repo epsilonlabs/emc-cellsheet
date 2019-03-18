@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.eclipse.epsilon.labs.emc.cellsheet.excel
+Export-Package: org.eclipse.epsilon.labs.emc.cellsheet.excel,
+ org.eclipse.epsilon.labs.emc.cellsheet.poi
+Bundle-Name: Cellsheet EMC Excel Driver
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: .
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
+ org.eclipse.e4.core.services;visibility:=reexport,
+ org.eclipse.epsilon.eol.engine;visibility:=reexport,
+ org.eclipse.epsilon.labs.emc.cellsheet;visibility:=reexport,
+ org.eclipse.epsilon.labs.emc.cellsheet.excel.dependencies;visibility:=reexport
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Epsilon Labs
+Automatic-Module-Name: org.eclipse.epsilon.labs.emc.cellsheet.excel
