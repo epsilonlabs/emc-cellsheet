@@ -31,9 +31,9 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - plugins
-            - site.xml
             - features
+            - plugins
+            - updatesite
 
 
   deploy-snapshot:
