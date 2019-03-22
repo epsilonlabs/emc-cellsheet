@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.epsilon.labs.emc.cellsheet.excel.feature_1.0.0.201903221402.jar" id="org.eclipse.epsilon.labs.emc.cellsheet.excel.feature" version="1.0.0.201903221402">
+      <category name="Cellsheet"/>
+   </feature>
+   <category-def name="Cellsheet" label="Cellsheet EMC"/>
+</site>
