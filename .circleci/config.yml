@@ -77,7 +77,7 @@ jobs:
           path: ~/repo/plugins/org.eclipse.epsilon.labs.emc.cellsheet/target/org.eclipse.epsilon.labs.emc.cellsheet-1.0.0-SNAPSHOT.jar
           destination: plugins/org.eclipse.epsilon.labs.emc.cellsheet-1.0.0-SNAPSHOT.jar
       - store_artifacts:
-          path: ~/repo/plugins/org.eclipse.epsilon.labs.emc.cellsheet/target/org.eclipse.epsilon.labs.emc.cellsheet.dependencies-1.0.0-SNAPSHOT.jar
+          path: ~/repo/plugins/org.eclipse.epsilon.labs.emc.cellsheet.dependencies/target/org.eclipse.epsilon.labs.emc.cellsheet.dependencies-1.0.0-SNAPSHOT.jar
           destination: plugins/org.eclipse.epsilon.labs.emc.cellsheet.dependencies-1.0.0-SNAPSHOT.jar
       - store_artifacts:
           path: ~/repo/plugins/org.eclipse.epsilon.labs.emc.cellsheet.dt/target/org.eclipse.epsilon.labs.emc.cellsheet.dt-1.0.0-SNAPSHOT.jar
