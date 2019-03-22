@@ -1,0 +1,157 @@
+@namespace(
+	uri="org.eclipse.epsilon.labs.emc.cellsheet",
+	prefix="cellsheet")
+package cellsheet;
+
+// =================
+// Common Interfaces
+// =================
+abstract class HasA1 {
+	attr String a1;
+}
+
+abstract class HasId {
+	id attr String ~id;
+}
+
+// ==========
+// Core Types
+// ==========
+@exeed(label="return self.name + ' : ' + self.type.name;")
+class Book extends HasId, HasA1 {
+	val Sheet[*]#book sheets;	
+	attr String name;
+}
+
+@exeed(label="return self.name + ' : ' + self.type.name;")
+class Sheet extends HasId, HasA1 {
+	val Row[*]#sheet rows;
+	ref Book#sheets book;
+	
+	attr String name;
+	attr int index;
+}
+
+@exeed(label="return self.index + ' : ' + self.type.name;")
+class Row extends HasId, HasA1 {
+	val Cell[*]#row cells;
+	ref Sheet#rows sheet;
+	
+	ref Book book;
+	
+	attr int index;
+}
+
+@exeed(label="return self.a1Index + (self.index + 1) + ' : ' + self.type.name;")
+class Cell extends HasId, HasA1 {
+	val CellValue#cell cellValue;
+	ref Row#cells row;
+	
+	ref Book book;
+	ref Sheet sheet;
+	
+	attr int index;
+	attr String a1Index;
+}
+
+// ===========
+// Cell Values
+// ===========
+@exeed(label="return self.stringValue + ' : ' + self.type.name;")
+abstract class CellValue extends HasId {
+	ref Cell#cellValue cell;
+	val Ast#cellValue ast;
+	
+	ref Book book;
+	ref Sheet sheet;
+	ref Row row;
+	
+	attr String formula;
+	attr String stringValue;
+}
+
+class NoneCellValue extends CellValue {}
+
+class NumericCellValue extends CellValue {
+	attr double numericValue;
+}
+
+class StringCellValue extends CellValue {
+}
+
+class FormulaCellValue extends CellValue {
+}
+
+class BooleanCellValue extends CellValue {
+	attr boolean booleanValue;
+}
+
+class BlankCellValue extends CellValue {}
+
+class ErrorCellValue extends CellValue {
+	attr String errorValue;
+}
+
+class DateCellValue extends CellValue {
+	attr Date dateValue;
+}
+
+// ===
+// Ast
+// ===
+@exeed(label="return self.token + ' : ' + self.type.name;")
+abstract class Ast extends HasId {
+	val Ast[*]#parent children;	
+	ref Ast#children parent;
+	ref CellValue#ast cellValue;
+	
+	ref Book book;
+	ref Sheet sheet;
+	ref Row row;
+	ref Cell cell;
+	
+	attr String token;
+}
+
+// Ast category types
+abstract class Noop extends Ast {}
+abstract class Operand extends Ast {}
+abstract class Operation extends Ast {}
+abstract class OperatorPrefix extends Ast {}
+abstract class OperatorInfix extends Ast {}
+abstract class OperatorPostfix extends Ast {}
+abstract class Unknown extends Ast {}
+
+// Ast catergory subtypes
+class Nothing extends Unknown {}
+
+class Function extends Operation {}
+
+class Text extends Operand {}
+class Number extends Operand {}
+class Logical extends Operand {}
+class Error extends Operand {}
+class Range extends Operand {}
+class Ref extends Operand {}
+
+class Plus extends OperatorPrefix {}
+class Negation extends OperatorPrefix {}
+
+class Percent extends OperatorPostfix {}
+
+class Exponention extends OperatorInfix {}
+class Multiplication extends OperatorInfix {}
+class Division extends OperatorInfix {}
+class Addition extends OperatorInfix {}
+class Subtraction extends OperatorInfix {}
+class Concatenation extends OperatorInfix {}
+
+class EQ extends OperatorInfix {}
+class LT extends OperatorInfix {}
+class GT extends OperatorInfix {}
+class LTE extends OperatorInfix {}
+class GTE extends OperatorInfix {}
+class NEQ extends OperatorInfix {}
+
+class Intersection extends OperatorInfix {}
+class Union extends OperatorInfix {}

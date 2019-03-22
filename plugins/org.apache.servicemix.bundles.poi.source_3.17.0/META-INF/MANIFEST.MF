@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Apache POI ServiceMix Bundle Sources
-Bundle-SymbolicName: org.apache.servicemix.bundles.poi.source_3.17.0
-Bundle-Version: 3.17.0
-Bundle-ClassPath: .
-Bundle-Vendor: The Apache Software Foundation
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Automatic-Module-Name: org.apache.servicemix.bundles.poi.source_3.17.0

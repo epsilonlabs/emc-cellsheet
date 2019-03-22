@@ -15,7 +15,7 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<cellsheet.prefix>epsilonlabs-1.0.0-cellsheet</cellsheet.prefix>
+		<cellsheet.prefix>epsilonlabs-${project.version}-emc-cellsheet</cellsheet.prefix>
 	</properties>
 
 	<build>
@@ -31,11 +31,11 @@
 							<goal>single</goal>
 						</goals>
 						<configuration>
-							<finalName>epsilonlabs-1.0.0</finalName>
+							<finalName>epsilonlabs-${project.version}</finalName>
 							<descriptors>
-								<descriptor>assembly/cellsheet.xml</descriptor>
-								<descriptor>assembly/cellsheet-src.xml</descriptor>
-								<descriptor>assembly/cellsheet-sources.xml</descriptor>
+								<descriptor>assembly/emc-cellsheet.xml</descriptor>
+								<descriptor>assembly/emc-cellsheet-src.xml</descriptor>
+								<descriptor>assembly/emc-cellsheet-sources.xml</descriptor>
 								<!--<descriptor>assembly/emc-cellsheet-deps.xml</descriptor> -->
 							</descriptors>
 						</configuration>
@@ -93,7 +93,7 @@
 							<goal>install-file</goal>
 						</goals>
 						<configuration>
-							<pomFile>assembly/cellsheet.pom</pomFile>
+							<pomFile>assembly/emc-cellsheet.pom</pomFile>
 							<file>${project.build.directory}/${cellsheet.prefix}.jar</file>
 							<javadoc>${project.build.directory}/${cellsheet.prefix}-javadoc.jar</javadoc>
 							<sources>${project.build.directory}/${cellsheet.prefix}-sources.jar</sources>
@@ -124,7 +124,7 @@
 								<configuration>
 									<repositoryId>ossrh</repositoryId>
 									<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-									<pomFile>assembly/cellsheet.pom</pomFile>
+									<pomFile>assembly/emc-cellsheet.pom</pomFile>
 									<file>${project.build.directory}/${cellsheet.prefix}.jar</file>
 									<javadoc>${project.build.directory}/${cellsheet.prefix}-javadoc.jar</javadoc>
 									<sources>${project.build.directory}/${cellsheet.prefix}-sources.jar</sources>

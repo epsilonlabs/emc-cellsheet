@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.epsilon.emc.cellsheet.excel.feature"
-      label="Cellsheet EMC - Excel Implementation"
+      id="org.eclipse.epsilon.labs.emc.cellsheet.excel.feature"
+      label="Cellsheet EMC - Excel"
       version="1.0.0.qualifier"
-      provider-name="Epsilon">
+      provider-name="Epsilon Labs">
 
    <description>
       EMC Cellsheet Driver implementation that targets Excel-based spreadsheets. Works with both .xls and .xlsx formats
@@ -89,62 +89,60 @@ Everyone is permitted to copy and distribute copies of this Agreement, but in or
 This Agreement is governed by the laws of the State of New York and the intellectual property laws of the United States of America. No party to this Agreement will bring a legal action under this Agreement more than one year after the cause of action arose. Each party waives its rights to a jury trial in any resulting litigation.
    </license>
 
+   <includes
+         id="org.eclipse.epsilon.core.dt.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.epsilon.core.feature"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.e4.core.services"/>
       <import plugin="org.eclipse.epsilon.eol.engine"/>
-      <import plugin="org.apache.servicemix.bundles.poi_3.17.0" version="3.17.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.collections_4.1.0" version="4.1.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.logging" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.codec" version="1.10.0" match="greaterOrEqual"/>
-      <import plugin="javax.xml"/>
-      <import plugin="org.apache.ant"/>
-      <import plugin="org.apache.xmlbeans_2.6.0" version="2.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.epsilon.common.dt"/>
+      <import plugin="org.slf4j.api"/>
    </requires>
 
    <plugin
-         id="org.eclipse.epsilon.emc.cellsheet.excel"
+         id="org.eclipse.epsilon.labs.emc.cellsheet.excel.dependencies"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.epsilon.emc.cellsheet.excel.dependencies"
+         id="com.google.guava"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="21.0.0.v20170206-1425"
+         unpack="false"/>
 
    <plugin
-         id="org.eclipse.epsilon.emc.cellsheet"
+         id="org.eclipse.epsilon.labs.emc.cellsheet.excel"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.collections_4.1.0"
+         id="org.eclipse.epsilon.labs.emc.cellsheet"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.xmlbeans_2.6.0"
+         id="org.eclipse.epsilon.labs.emc.cellsheet.dt"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.servicemix.bundles.poi_3.17.0"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.codec"
+         id="org.eclipse.epsilon.labs.emc.cellsheet.excel.dt"
          download-size="0"
          install-size="0"
          version="0.0.0"

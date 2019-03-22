@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><pommodel>
+	<groupId>org.eclipse.epsilon.labs</groupId>
+	<artifactId>emc-cellsheet</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<url>https://github.com/epsilonlabs/emc-cellsheet</url>
+	<description>Cellsheet EMC Driver</description>
+
+	<licenses>
+		<license>
+			<name>Eclipse Public License - v 2.0</name>
+			<url>https://www.eclipse.org/legal/epl-2.0/</url>
+		</license>
+	</licenses>
+
+  <scm>
+  	<connection>scm:git:git@github.com:epsilonlabs/emc-cellsheet.git</connection>
+  	<developerConnection>scm:git:git@github.com:epsilonlabs/emc-cellsheet.git</developerConnection>
+  	<url>https://github.com/epsilonlabs/emc-cellsheet/tree/master</url>
+  </scm>
+
+  <developers>
+  	<developer>
+  		<name>Jonathan Co</name>
+  		<email>jc956@york.ac.uk</email>
+  		<organization>Epsilon Labs</organization>
+  		<organizationUrl>https://www.eclipse.org/epsilon/</organizationUrl>
+  	</developer>
+  </developers>
+
+	<eclipsePlugins directory="../plugins">
+		<eclipsePlugin name="org.eclipse.epsilon.labs.emc.cellsheet"/>
+		<eclipsePlugin name="org.eclipse.epsilon.labs.emc.cellsheet.excel"/>
+	</eclipsePlugins>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.poi</artifactId>
+			<version>4.0.1_1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>ooxml-schemas</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>27.1-jre</version>
+		</dependency>
+	</dependencies>
+</pommodel>

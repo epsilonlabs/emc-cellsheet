@@ -1,0 +1,42 @@
+rule BinaryAssembly
+	transform pommodel : PomModel!t_pommodel {
+	parameters {
+		return Map {'type' = 'binary'};
+	} 
+	template : 'pommodel2assembly.egl'
+	target : 'assembly/' + pommodel.e_artifactId.text + '.xml'
+}
+
+rule BinaryWithSourcesAssembly
+	transform pommodel : PomModel!t_pommodel {
+	parameters {
+		return Map {'type' = 'binary+sources'};
+	}
+	template : 'pommodel2assembly.egl'
+	target : 'assembly/' + pommodel.e_artifactId.text + '-src.xml'
+}
+
+rule SourcesAssembly
+	transform pommodel : PomModel!t_pommodel {
+	parameters {
+		return Map {'type' = 'sources'};
+	}
+	template : 'pommodel2assembly.egl'
+	target : 'assembly/' + pommodel.e_artifactId.text + '-sources.xml'
+}
+
+rule Jar2DepsAssembly
+	transform pommodel : PomModel!t_pommodel {
+	guard : pommodel.e_eclipsePlugins.children.size() > 0
+	parameters {
+		return Map {'type' = 'dependencies'};
+	}
+	template : 'pommodel2assembly.egl'
+	target : 'assembly/' + pommodel.e_artifactId.text + '-deps.xml'
+}
+
+rule Pom
+	transform pommodel : PomModel!t_pommodel {
+	template : 'pommodel2pom.egl'
+	target : 'assembly/' + pommodel.e_artifactId.text + '.pom'
+}
