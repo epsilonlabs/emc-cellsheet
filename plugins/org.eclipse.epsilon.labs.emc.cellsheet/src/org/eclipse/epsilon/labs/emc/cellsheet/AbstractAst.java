@@ -260,9 +260,15 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 		this.position = position;
 	}
 
+	// TODO: Future change to respond to changes in hierarchy
+	private String id = null;
+
 	@Override
 	public String getId() {
-		return (isRoot() ? cellValue.getId() : parent.getId()) + getPosition() + "/";
+		if (id == null) {
+			id = (isRoot() ? cellValue.getId() : parent.getId()) + getPosition() + "/";
+		}
+		return id;
 	}
 
 	@Override
@@ -327,9 +333,15 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 		return sb.toString();
 	}
 
+	// TODO: Future change to respond to changes in hierarchy
+	private int hashcode = -1;
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(cellValue, children, position, token, type, supertype);
+		if (hashcode < 0) {
+			hashcode = Objects.hash(cellValue, children, position, token, type, supertype);
+		}
+		return hashcode;
 	}
 
 	@Override
@@ -340,14 +352,12 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		
+
 		final T other = (T) obj;
 		if (!Objects.equals(cellValue, other.cellValue))
 			return false;
-		return Objects.equals(position, other.position)
-				&& Objects.equals(token, other.token)
-				&& Objects.equals(type,  other.type)
-				&& Objects.equals(supertype, other.supertype)
+		return Objects.equals(position, other.position) && Objects.equals(token, other.token)
+				&& Objects.equals(type, other.type) && Objects.equals(supertype, other.supertype)
 				&& Objects.equals(children, other.children);
 	}
 
