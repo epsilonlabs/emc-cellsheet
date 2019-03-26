@@ -8,3 +8,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.epsilon.labs.emc.cellsheet.excel;bundle-version="1.0.0"; resolution:=mandatory,
  org.eclipse.epsilon.emc.emf;bundle-version="1.6.0",
  org.eclipse.epsilon.etl.engine;bundle-version="1.6.0"
+Export-Package: org.eclipse.epsilon.labs.emc.cellsheet.ecore
