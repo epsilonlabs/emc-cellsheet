@@ -93,7 +93,7 @@ public class CellsheetToEmf {
 	}
 
 	public static String getFilename(String... args) {
-		return args.length == 0 ? "./spreadsheets/Spreadsheet Equiv.xlsx" : args[0];
+		return args[0];
 	}
 
 }
