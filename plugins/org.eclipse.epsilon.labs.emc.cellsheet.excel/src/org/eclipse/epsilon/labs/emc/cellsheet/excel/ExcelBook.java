@@ -2,6 +2,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -126,8 +127,8 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		}
 	}
 
-	public void setExcelFile(String filepath) {
-		setExcelFile(new File(filepath));
+	public void setExcelFile(String path) {
+		setExcelFile(Paths.get(path).toFile());
 	}
 
 	public void setExcelFile(File file) {

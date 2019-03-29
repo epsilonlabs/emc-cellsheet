@@ -7,7 +7,7 @@
             class="org.eclipse.epsilon.labs.emc.cellsheet.excel.ExcelBook"
             dialog="org.eclipse.epsilon.labs.emc.cellsheet.excel.dt.ExcelBookConfigurationDialog"
             icon="icons/spreadsheet.png"
-            label="Microsoft Excel Cellsheet"
+            label="Cellsheet Excel"
             stable="false"
             type="ExcelBook">
       </modelType>
