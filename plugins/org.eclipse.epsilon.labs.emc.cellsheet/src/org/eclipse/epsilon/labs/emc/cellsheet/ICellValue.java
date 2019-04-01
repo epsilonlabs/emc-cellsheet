@@ -7,12 +7,11 @@ import java.util.stream.Stream;
 
 /**
  * <p>
- * CellValue is an abstract model element that defines the contents of a Cell.
- * <p>
+ * Wrapper for the actual contents of a {@link ICell}.
+ * </p>
  * 
  * @author Jonathan Co
  *
- * @param <T> Primitive type that the Cell Value wraps
  */
 public interface ICellValue extends HasId, HasCell, Comparable<ICellValue>, Iterable<IAst<?>> {
 
@@ -23,8 +22,22 @@ public interface ICellValue extends HasId, HasCell, Comparable<ICellValue>, Iter
 		return Stream.of(getType(), SUBTYPE).collect(Collectors.toSet());
 	}
 
+	/**
+	 * <p>
+	 * Retrieve the concrete type of this cell value. Can be any of those listed in
+	 * {@link CellValueType}.
+	 * </p>
+	 * 
+	 * @return the concrete type of this cell value
+	 */
 	public CellValueType getType();
-	
+
+	/**
+	 * <p>
+	 * Set the concrete type of this cell value.
+	 * </p>
+	 * @param type
+	 */
 	public void setType(CellValueType type);
 
 	public boolean getBooleanValue();
@@ -47,5 +60,7 @@ public interface ICellValue extends HasId, HasCell, Comparable<ICellValue>, Iter
 	 * @return the parent cell
 	 */
 	public ICell getCell();
+
+	public boolean isBlank();
 
 }

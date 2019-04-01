@@ -17,13 +17,19 @@ abstract class HasId {
 // ==========
 // Core Types
 // ==========
-@exeed(label="return self.name + ' : ' + self.type.name;")
+@exeed(
+	label="return self.name + ' : ' + self.type.name;",
+	referenceLabel="return self.id;"
+)
 class Book extends HasId, HasA1 {
 	val Sheet[*]#book sheets;	
 	attr String name;
 }
 
-@exeed(label="return self.name + ' : ' + self.type.name;")
+@exeed(
+	label="return self.name + ' : ' + self.type.name;",
+	referenceLabel="return self.id;"
+)
 class Sheet extends HasId, HasA1 {
 	val Row[*]#sheet rows;
 	ref Book#sheets book;
@@ -32,7 +38,10 @@ class Sheet extends HasId, HasA1 {
 	attr int index;
 }
 
-@exeed(label="return self.index + ' : ' + self.type.name;")
+@exeed(
+	label="return self.index + ' : ' + self.type.name;",
+	referenceLabel="return self.id;"
+)
 class Row extends HasId, HasA1 {
 	val Cell[*]#row cells;
 	ref Sheet#rows sheet;

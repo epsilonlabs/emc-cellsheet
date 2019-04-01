@@ -1,6 +1,7 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -59,6 +60,11 @@ public abstract class AbstractCellValue implements ICellValue {
 	@Override
 	public String toString() {
 		return buildToString();
+	}
+
+	@Override
+	public boolean isBlank() {
+		return EnumSet.of(CellValueType.BLANK, CellValueType.NONE).contains(type);
 	}
 
 	@Override

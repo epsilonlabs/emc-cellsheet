@@ -10,6 +10,10 @@ rule HasId
 	transform s : Any
 	to t : Any {
 	t.id := s.id;
+	
+	if (debug) {
+		s.toString().println();
+	}
 }
 
 @abstract

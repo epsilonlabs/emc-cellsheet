@@ -1,0 +1,28 @@
+pre {
+	var root = Book.all.first();
+}
+
+context Book {
+	constraint CheckOnlyOneBook {
+		check: Book.all.size() == 1
+	}
+}
+
+context Sheet {
+	constraint CheckBookReference {
+		check: self.book.isDefined() and self.book == root
+	}
+}
+
+context Row {
+	constraint CheckBookReference {
+		check: self.book.isDefined() and self.book == root
+		message: self.id + " : " + self.book
+		fix {
+			title: "Change Book"
+			do {
+				self.book := root;
+			}
+		}
+	}
+}

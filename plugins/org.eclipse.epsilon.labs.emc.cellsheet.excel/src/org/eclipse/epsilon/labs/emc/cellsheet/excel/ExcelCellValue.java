@@ -13,6 +13,8 @@ import org.eclipse.epsilon.labs.emc.cellsheet.AstType;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellValueType;
 import org.eclipse.epsilon.labs.emc.cellsheet.poi.TokenMappingFormulaParser.TokenMappings;
 
+import com.google.common.primitives.Doubles;
+
 public class ExcelCellValue extends AbstractCellValue {
 
 	protected ExcelCell cell;
@@ -42,22 +44,34 @@ public class ExcelCellValue extends AbstractCellValue {
 
 	@Override
 	public boolean getBooleanValue() {
-		if (type == CellValueType.BOOLEAN) {
+		switch (type) {
+		case BOOLEAN:
 			return cell.getDelegate().getBooleanCellValue();
+		case FORMULA:
+			return Boolean.valueOf(getStringValue());
+			default:
+				 return false;
 		}
-		return false;
 	}
 
 	@Override
 	public double getNumericValue() {
-		if (type == CellValueType.NUMERIC) {
+		switch (type) {
+		case NUMERIC:
 			return cell.getDelegate().getNumericCellValue();
+		case FORMULA:
+			Double result = Doubles.tryParse(getStringValue());
+			if (result != null) {
+				return result;
+			}
+		default:
+			return 0;
 		}
-		return 0;
 	}
 
 	@Override
 	public Date getDateValue() {
+		// FIXME: IF formula return evaluated date
 		if (type == CellValueType.DATE) {
 			return cell.getDelegate().getDateCellValue();
 		}
@@ -81,7 +95,7 @@ public class ExcelCellValue extends AbstractCellValue {
 		case DATE:
 			return getDateValue().toString();
 		case FORMULA:
-			return getFormula();
+			return getAst().evaluate();
 		case ERROR:
 			return getErrorValue();
 		default:
@@ -120,12 +134,9 @@ public class ExcelCellValue extends AbstractCellValue {
 				if (tokenMap.getSupertype(ptg) == AstSupertype.NOOP)
 					continue;
 
-				final ExcelAst current = new ExcelAst.Builder()
-						.withToken(tokenMap.getToken(ptg))
-						.withSupertype(tokenMap.getSupertype(ptg))
-						.withType(tokenMap.getType(ptg))
-						.withCellValue(cell.getCellValue())
-						.build();
+				final ExcelAst current = new ExcelAst.Builder().withToken(tokenMap.getToken(ptg))
+						.withSupertype(tokenMap.getSupertype(ptg)).withType(tokenMap.getType(ptg))
+						.withCellValue(cell.getCellValue()).build();
 
 				if (ptg instanceof OperationPtg) {
 					final OperationPtg cast = (OperationPtg) ptg;
@@ -146,11 +157,8 @@ public class ExcelCellValue extends AbstractCellValue {
 			return root;
 		}
 
-		final ExcelAst.Builder b = new ExcelAst.Builder()
-				.withPosition(0)
-				.withToken(getStringValue())
-				.withSupertype(AstSupertype.OPERAND)
-				.withCellValue(this);
+		final ExcelAst.Builder b = new ExcelAst.Builder().withPosition(0).withToken(getStringValue())
+				.withSupertype(AstSupertype.OPERAND).withCellValue(this);
 		switch (type) {
 		case BOOLEAN:
 			b.withType(AstType.LOGICAL);

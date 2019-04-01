@@ -3,21 +3,16 @@ package org.eclipse.epsilon.labs.emc.cellsheet.ecore;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.common.util.StringProperties;
-import org.eclipse.epsilon.labs.emc.cellsheet.excel.ExcelBook;
 import org.eclipse.epsilon.emc.emf.EmfModel;
 import org.eclipse.epsilon.emc.emf.EmfUtil;
-import org.eclipse.epsilon.emc.emf.InMemoryEmfModel;
+import org.eclipse.epsilon.eol.execute.context.Variable;
+import org.eclipse.epsilon.eol.types.EolPrimitiveType;
 import org.eclipse.epsilon.etl.EtlModule;
+import org.eclipse.epsilon.labs.emc.cellsheet.excel.ExcelBook;
 
 public class CellsheetToEmf {
 
@@ -25,15 +20,15 @@ public class CellsheetToEmf {
 		System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "8");
 
 		final String filename = getFilename(args);
-		final String output = getOutput(filename);
-
 		final ExcelBook book = getBook(filename);
-		final EmfModel emf = getEmf(output);
+		final EmfModel emf = getEmf(getOutput(filename));
 		emf.store();
 
 		final EtlModule etl = new EtlModule();
 		etl.getContext().getModelRepository().addModel(book);
 		etl.getContext().getModelRepository().addModel(emf);
+
+		etl.getContext().getFrameStack().putGlobal(new Variable("debug", doDebug(args), EolPrimitiveType.Boolean));
 
 		etl.parse(Paths.get("./scripts/CellsheetToEmf.etl").toUri());
 		if (!etl.getParseProblems().isEmpty()) {
@@ -54,18 +49,20 @@ public class CellsheetToEmf {
 			file.delete();
 		}
 
-		URI createFileURI = URI.createFileURI("./models/Cellsheet.ecore");
-		final Resource metamodel = EmfUtil.createResource(createFileURI);
-		metamodel.load(null);
-		final EPackage ePackage = (EPackage) metamodel.getContents().get(0);
+		StringProperties props = new StringProperties();
+		props.put(EmfModel.PROPERTY_NAME, "Emf");
+		props.put(EmfModel.PROPERTY_CACHED, true);
+		props.put(EmfModel.PROPERTY_CONCURRENT, true);
+		props.put(EmfModel.PROPERTY_STOREONDISPOSAL, true);
+		props.put(EmfModel.PROPERTY_READONLOAD, false);
 
-		final Resource resource = EmfUtil.createResource(URI.createFileURI(output.replaceAll("\\s+", "_")));
-		final InMemoryEmfModel model = new InMemoryEmfModel("Emf", resource, Collections.singleton(ePackage));
-		model.setConcurrent(true);
-		model.setCachingEnabled(true);
-		model.setStoredOnDisposal(true);
-		model.setReadOnLoad(false);
+		props.put(EmfModel.PROPERTY_FILE_BASED_METAMODEL_URI, EmfUtil.createFileBasedURI("./models/Cellsheet.ecore"));
 
+		props.put(EmfModel.PROPERTY_MODEL_URI, EmfUtil.createFileBasedURI(output));
+
+		EmfModel model = new EmfModel();
+		model.load(props);
+		model.store();
 		return model;
 	}
 
@@ -85,15 +82,22 @@ public class CellsheetToEmf {
 	public static String getOutput(String filename) throws Exception {
 		Path path = Paths.get(filename).getFileName();
 		String[] split = path.toString().split(Pattern.quote("."));
-		split[split.length - 1] = "model";
-
-		String output = "./out/" + Arrays.stream(split).collect(Collectors.joining("."));
-		new File("./out/").mkdirs();
-		return output;
+		new File("out/").mkdirs();
+		return "out/" + split[0].replaceAll("\\s+", "_") + ".model";
 	}
 
 	public static String getFilename(String... args) {
+		if (args.length < 1) {
+			throw new IllegalArgumentException("No filename");
+		}
 		return args[0];
+	}
+
+	public static boolean doDebug(String... args) {
+		if (args.length < 2) {
+			return true;
+		}
+		return Boolean.getBoolean(args[1]);
 	}
 
 }
