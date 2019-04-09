@@ -157,13 +157,13 @@ public class AbstractBookTest {
 	}
 
 	@Test
-	public void getHasTypeOrThrow_should_return_element_when_given_HasType_instance() throws Exception {
-		assertEquals(book, book.getHasTypeOrThrow(book));
+	public void getHasIdOrThrow_should_return_element_when_given_HasType_instance() throws Exception {
+		assertEquals(book, book.getHasIdOrThrow(book));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void getHasTypeOrThrow_should_throw_exception_when_given_non_HasType_instance() throws Exception {
-		book.getHasTypeOrThrow(this);
+	public void getHasIdOrThrow_should_throw_exception_when_given_non_HasType_instance() throws Exception {
+		book.getHasIdOrThrow(this);
 	}
 
 	@Test

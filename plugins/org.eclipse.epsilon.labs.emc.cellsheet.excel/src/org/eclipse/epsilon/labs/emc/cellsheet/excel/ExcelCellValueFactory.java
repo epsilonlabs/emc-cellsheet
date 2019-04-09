@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellValueType;
 
+@SuppressWarnings("deprecation")
 public class ExcelCellValueFactory {
 
 	private ExcelCellValueFactory() {

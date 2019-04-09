@@ -3,12 +3,14 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
+
 public interface ElementType {
 
 	static Map<String, ElementType> map = new HashMap<>();
 
-	static Map<String, ElementType> getTypeMap() {
-		return map;
+	public static Map<String, ElementType> getTypeMap() {
+		return ImmutableMap.copyOf(map);
 	}
 
 	static void addToMap(String typename, ElementType type) {

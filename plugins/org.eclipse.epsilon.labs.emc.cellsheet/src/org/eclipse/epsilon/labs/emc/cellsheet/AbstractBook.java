@@ -1,28 +1,43 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import java.util.AbstractCollection;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
+import org.eclipse.epsilon.common.util.Multimap;
+import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.CachedModel;
+import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 
 import com.google.common.net.UrlEscapers;
 
 public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 	public static final String PROPERTY_NAME_DEFAULT = "Cellsheet";
-		
+	public static final String PROPERTY_PRE_CACHE = "pre_cache";
+
+	protected boolean preCache;
+
+	protected AbstractBook() {
+		// Ensure classloader loads all types
+		CoreType.values();
+		CellValueType.values();
+		AstSupertype.values();
+		AstType.values();
+	}
+
 	@Override
 	public IBook getBook() {
 		return this;
@@ -102,12 +117,60 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 	@Override
 	public boolean owns(Object instance) {
-		return instance instanceof HasId ? getHasTypeOrThrow(instance).getBook() == this : false;
+		return instance instanceof HasId ? getHasIdOrThrow(instance).getBook() == this : false;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Collection<HasId> allContentsFromModel() {
+		final Collection<HasId> allContents = new ArrayList<HasId>();
+		allContents.add(this);
+
+		final Deque<Iterator<HasId>> stack = new LinkedList<>();
+
+		Iterator<? extends HasId> it = iterator();
+		HasId next = null;
+
+		try {
+			while (it != null) {
+				while (it.hasNext()) {
+					next = it.next();
+					allContents.add(next);
+
+					// Build the cache as we go
+					if (isPreCacheEnabled()) {
+						addToCache(next.getType().getTypename(), next);
+					}
+					stack.offer(((Iterable<HasId>) next).iterator());
+				}
+				it = stack.poll();
+			}
+		} catch (Exception e) {
+			throw new AssertionError(e);
+		}
+
+		return allContents;
 	}
 
 	@Override
-	protected Collection<HasId> allContentsFromModel() {
-		return new AllContentsCollection();
+	public Collection<HasId> getAllOfKindFromModel(String typename) throws EolModelElementTypeNotFoundException {
+		System.out.println("AbstractBook.getAllOfTypeFromModel()");
+		final ElementType type = getElementTypeOrThrow(typename);
+		return allContents().stream().filter(e -> e.getKinds().contains(type)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Collection<HasId> getAllOfTypeFromModel(String typename) throws EolModelElementTypeNotFoundException {
+		System.out.println("AbstractBook.getAllOfTypeFromModel()");
+		final ElementType type = getElementTypeOrThrow(typename);
+		return allContents().stream().filter(Objects::nonNull).filter(e -> e.getType() == type)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	protected Collection<HasId> getAllOfKindOrType(boolean isKind, String modelElementType)
+			throws EolModelElementTypeNotFoundException {
+		return super.getAllOfKindOrType(false, modelElementType);
 	}
 
 	/*
@@ -146,7 +209,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 	@Override
 	public Object getTypeOf(Object instance) {
-		return getHasTypeOrThrow(instance).getType();
+		return getHasIdOrThrow(instance).getType();
 	}
 
 	@Override
@@ -176,7 +239,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 	@Override
 	protected Collection<String> getAllTypeNamesOf(Object instance) {
-		return getHasTypeOrThrow(instance).getKinds().stream().map(k -> k.getTypename()).collect(Collectors.toList());
+		return getHasIdOrThrow(instance).getKinds().stream().map(k -> k.getTypename()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -194,33 +257,6 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 		return getAllOfKind(kind.getTypename());
 	}
 
-	/*
-	 * IDENTIFICATION
-	 */
-
-	@Override
-	public String getId() {
-		return UrlEscapers.urlPathSegmentEscaper().escape(name) + "/";
-	}
-
-	@Override
-	public String getA1() {
-		return String.format("[%s]", name);
-	}
-
-	/*
-	 * UTILITY
-	 */
-
-	@Override
-	public Object getEnumerationValue(String enumeration, String label) throws EolEnumerationValueNotFoundException {
-		throw new UnsupportedOperationException();
-	}
-
-	public boolean isLoaded() {
-		return allContentsAreCached;
-	}
-
 	/**
 	 * If {@link #isModelElement(Object)} returns false throw exception
 	 * 
@@ -230,20 +266,6 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	protected HasId getHasIdOrThrow(Object instance) {
 		if (!(instance instanceof HasId)) {
 			throw new IllegalArgumentException("Not a valid Cellsheet model element with ID: " + instance + " ( "
-					+ instance.getClass().getCanonicalName() + ")");
-		}
-		return (HasId) instance;
-	}
-
-	/**
-	 * If {@link #isModelElement(Object)} returns false throw exception
-	 * 
-	 * @param instance
-	 * @throws IllegalArgumentException
-	 */
-	protected HasId getHasTypeOrThrow(Object instance) {
-		if (!(instance instanceof HasId)) {
-			throw new IllegalArgumentException("Not a valid Cellsheet model element: " + instance + " ( "
 					+ instance.getClass().getCanonicalName() + ")");
 		}
 		return (HasId) instance;
@@ -278,90 +300,94 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 			return false;
 
 		final ElementType type = getElementTypeOrThrow(typename);
-		final HasId hasId = getHasTypeOrThrow(instance);
+		final HasId hasId = getHasIdOrThrow(instance);
 		return isKind ? hasId.getKinds().contains(type) : hasId.getType() == type;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected class AllContentsCollection extends AbstractCollection<HasId> {
+	/*
+	 * IDENTIFICATION
+	 */
 
-		@Override
-		public Iterator<HasId> iterator() {
-			return new AllContentsIterator(Collections.singleton(AbstractBook.this).iterator());
-		}
+	@Override
+	public String getId() {
+		return UrlEscapers.urlPathSegmentEscaper().escape(name) + "/";
+	}
 
-		@Override
-		public int size() {
-			int count = 0;
-			final Iterator it = iterator();
-			while (it.hasNext()) {
-				count++;
-				it.next();
-			}
-			return count;
+	@Override
+	public String getA1() {
+		return String.format("[%s]", name);
+	}
+
+	/*
+	 * UTILITY
+	 */
+
+	@Override
+	public Object getEnumerationValue(String enumeration, String label) throws EolEnumerationValueNotFoundException {
+		throw new UnsupportedOperationException();
+	}
+
+	public boolean isLoaded() {
+		return allContentsAreCached;
+	}
+
+	@Override
+	public void setConcurrent(boolean concurrent) {
+		this.concurrent = concurrent;
+		typeCache = typeCache != null ? new Multimap<>(isConcurrent(), typeCache) : new Multimap<>(isConcurrent());
+
+		kindCache = new Multimap<Object, HasId>(isConcurrent());
+
+		if (concurrent) {
+			allContentsCache = allContentsCache != null ? new ConcurrentLinkedQueue<>(allContentsCache)
+					: new ConcurrentLinkedQueue<>();
+		} else {
+			allContentsCache = allContentsCache != null ? new ArrayList<>(allContentsCache) : new ArrayList<>();
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes" })
-	protected class AllContentsIterator implements Iterator {
+	public void setPreCache(boolean preCache) {
+		this.preCache = preCache && isCachingEnabled();
+		System.out.println("pre_cache set: " + preCache);
+	}
 
-		private Deque<Iterator> stack = new LinkedList<>();
-		private Iterator<?> iterator;
-		private HasId current = null;
+	public boolean isPreCacheEnabled() {
+		return preCache;
+	}
 
-		public AllContentsIterator(Iterator<?> start) {
-			this.iterator = start;
+	@Override
+	protected void addToCache(String type, HasId instance) throws EolModelElementTypeNotFoundException {
+		if (allContentsAreCached)
+			allContentsCache.add(instance);
+
+		for (ElementType t : instance.getKinds()) {
+			typeCache.put(t, instance);
 		}
+	}
 
-		@Override
-		public boolean hasNext() {
-			if (iterator == null) {
-				return false;
-			}
+	@Override
+	protected void removeFromCache(HasId instance) throws EolModelElementTypeNotFoundException {
+		if (allContentsAreCached)
+			allContentsCache.remove(instance);
 
-			if (iterator.hasNext()) {
-				return true;
-			}
-
-			if (stack.isEmpty()) {
-				return false;
-			}
-
-			iterator = stack.pop();
-			return hasNext();
+		for (ElementType t : instance.getKinds()) {
+			typeCache.remove(t, instance);
 		}
+	}
 
-		@Override
-		public HasId next() {
-			if (iterator == null) {
-				throw new NoSuchElementException();
-			}
-
-			if (iterator.hasNext()) {
-				current = (HasId) iterator.next();
-			} else {
-				iterator = stack.pop();
-				return next();
-			}
-
-			if (current instanceof Iterable) {
-				stack.push(iterator);
-				iterator = ((Iterable<?>) current).iterator();
-			}
-
-			return current;
-		}
-
+	@Override
+	public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
+		super.load(properties, resolver);
+		this.setPreCache(properties.getBooleanProperty(PROPERTY_PRE_CACHE, false));
 	}
 
 	@Override
 	public void load() throws EolModelLoadingException {
-		// Force load of all type classes
-		CoreType.values();
-		CellValueType.values();
-		AstSupertype.values();
-		AstType.values();
 		super.load();
+		if (preCache) {
+			ElementType.getTypeMap().values().forEach(t -> typeCache.put(t, Collections.emptyList()));
+			allContents();
+		}
 	}
 
 	@Override

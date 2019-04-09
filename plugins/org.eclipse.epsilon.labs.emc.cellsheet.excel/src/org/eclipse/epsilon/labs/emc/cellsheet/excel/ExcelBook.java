@@ -3,28 +3,22 @@ package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.Transformer;
-import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.common.util.StringProperties;
-import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 import org.eclipse.epsilon.labs.emc.cellsheet.AbstractBook;
-import org.eclipse.epsilon.labs.emc.cellsheet.ElementType;
-import org.eclipse.epsilon.labs.emc.cellsheet.HasId;
 import org.eclipse.epsilon.labs.emc.cellsheet.IBook;
 import org.eclipse.epsilon.labs.emc.cellsheet.ISheet;
+
+import com.google.common.collect.Iterators;
 
 public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbook> {
 
@@ -59,12 +53,8 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 
 	@Override
 	public Iterator<ISheet> iterator() {
-		return new TransformIterator<Sheet, ISheet>(delegate.iterator(), new Transformer<Sheet, ISheet>() {
-			@Override
-			public ISheet transform(Sheet input) {
-				return getSheet(delegate.getSheetIndex(input));
-			}
-		});
+		return Iterators.transform(delegate.iterator(),
+				s -> new ExcelSheet(ExcelBook.this, delegate.getSheetIndex(s)));
 	}
 
 	@Override
@@ -75,19 +65,6 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	@Override
 	public Workbook getDelegate() {
 		return delegate;
-	}
-
-	@Override
-	public Collection<HasId> getAllOfKindFromModel(String typename) throws EolModelElementTypeNotFoundException {
-		final ElementType type = getElementTypeOrThrow(typename);
-		return allContents().stream().filter(e -> e.getKinds().contains(type)).collect(Collectors.toList());
-	}
-
-	@Override
-	public Collection<HasId> getAllOfTypeFromModel(String typename) throws EolModelElementTypeNotFoundException {
-		final ElementType type = getElementTypeOrThrow(typename);
-		return allContents().stream().filter(Objects::nonNull).filter(e -> e.getType() == type)
-				.collect(Collectors.toList());
 	}
 
 	@Override

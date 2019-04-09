@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.eclipse.epsilon.labs.emc.cellsheet.AbstractCell;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellValueType;
 
+@SuppressWarnings("deprecation")
 public class ExcelCell extends AbstractCell implements HasDelegate<Cell> {
 
 	protected ExcelRow row;

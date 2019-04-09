@@ -9,6 +9,7 @@ import org.eclipse.epsilon.labs.emc.cellsheet.ICell;
 import org.eclipse.epsilon.labs.emc.cellsheet.ICellRegion;
 import org.eclipse.epsilon.labs.emc.cellsheet.ISheet;
 
+@SuppressWarnings("deprecation")
 public class ExcelCellRegion implements ICellRegion {
 
 	protected ExcelBook book;
