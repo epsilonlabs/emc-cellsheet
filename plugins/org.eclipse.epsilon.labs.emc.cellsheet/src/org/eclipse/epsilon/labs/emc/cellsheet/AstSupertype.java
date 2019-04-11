@@ -2,13 +2,8 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 public enum AstSupertype implements ElementType {
 
-	NOOP("Noop"),
-	OPERAND("Operand"),
-	OPERATION("Operation"),
-	OPERATOR_PREFIX("OperatorPrefix"),
-	OPERATOR_INFIX("OperatorInfix"),
-	OPERATOR_POSTFIX("OperatorPostfix"),
-	UNKNOWN("Unknown");
+	NOOP("Noop"), OPERAND("Operand"), OPERATION("Operation"), OPERATOR_PREFIX("OperatorPrefix"),
+	OPERATOR_INFIX("OperatorInfix"), OPERATOR_POSTFIX("OperatorPostfix"), UNKNOWN("Unknown");
 
 	private final String typename;
 

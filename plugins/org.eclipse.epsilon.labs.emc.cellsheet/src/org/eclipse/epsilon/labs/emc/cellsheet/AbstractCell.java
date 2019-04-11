@@ -6,6 +6,19 @@ import java.util.Objects;
 
 public abstract class AbstractCell implements ICell {
 
+	protected IRow row;
+	protected ICellValue cellValue;
+	protected int col;
+
+	protected AbstractCell() {
+		;
+	}
+
+	protected AbstractCell(AbstractCell.Builder<?, ?> b) {
+		this.row = b.row;
+		this.col = b.col;
+	}
+
 	@Override
 	public ISheet getSheet() {
 		return getRow().getSheet();
@@ -15,6 +28,31 @@ public abstract class AbstractCell implements ICell {
 	public IBook getBook() {
 		return getSheet().getBook();
 	}
+
+	@Override
+	public IRow getRow() {
+		return this.row;
+	}
+	
+	@Override
+	public int getRowIndex() {
+		return this.row.getIndex();
+	}
+
+	@Override
+	public int getColIndex() {
+		return this.col;
+	}
+
+	@Override
+	public ICellValue getCellValue() {
+		if (cellValue == null) {
+			this.cellValue = initCellValue();
+		}
+		return this.cellValue;
+	}
+	
+	protected abstract ICellValue initCellValue();
 
 	@Override
 	public int getA1Row() {
@@ -33,7 +71,7 @@ public abstract class AbstractCell implements ICell {
 		if (this == o)
 			return 0;
 
-		int parent = this.getRow().compareTo(o.getRow());
+		int parent = getRow().compareTo(o.getRow());
 		return parent == 0 ? Integer.compare(this.getColIndex(), o.getColIndex()) : parent;
 	}
 
@@ -75,4 +113,22 @@ public abstract class AbstractCell implements ICell {
 				&& Objects.equals(getRow(), other.getRow()); // Parents
 	}
 
+	@SuppressWarnings("unchecked")
+	public static abstract class Builder<T extends AbstractCell, B extends Builder<T, B>> {
+
+		protected IRow row;
+		protected int col;
+
+		public B withRow(IRow row) {
+			this.row = row;
+			return (B) this;
+		}
+
+		public B withCol(int col) {
+			this.col = col;
+			return (B) this;
+		}
+
+		public abstract T build();
+	}
 }

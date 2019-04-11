@@ -3,41 +3,23 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 public enum AstType implements ElementType {
 
 	// Default
-	NOTHING("Nothing"),
-	WHITESPACE("Whitespace"),
-	
+	NOTHING("Nothing"), WHITESPACE("Whitespace"),
+
 	// Operands
-	TEXT("Text"),
-	NUMBER("Number"),
-	LOGICAL("Logical"),
-	ERROR("Error"),
-	RANGE("Range"),
-	REF("Ref"),
-	
+	TEXT("Text"), NUMBER("Number"), LOGICAL("Logical"), ERROR("Error"), RANGE("Range"), REF("Ref"),
+
 	// Functions
 	FUNCTION("Function"),
 
 	// Operators
-	PLUS("Plus"),
-	NEGATION("Negation"),
-	PERCENT("Percent"),
-	EXPONENTION("Exponention"),
-	MULTIPLICATION("Multiplication"),
-	DIVISION("Division"),
-	ADDITION("Addition"),
-	SUBTRACTION("Subtraction"),
+	PLUS("Plus"), NEGATION("Negation"), PERCENT("Percent"), EXPONENTION("Exponention"),
+	MULTIPLICATION("Multiplication"), DIVISION("Division"), ADDITION("Addition"), SUBTRACTION("Subtraction"),
 
 	CONCATENATION("Concatenation"),
 
-	EQ("EQ"),
-	LT("LT"),
-	GT("GT"),
-	LTE("LTE"),
-	GTE("GTE"),
-	NEQ("NEQ"),
+	EQ("EQ"), LT("LT"), GT("GT"), LTE("LTE"), GTE("GTE"), NEQ("NEQ"),
 
-	INTERSECTION("Intersection"),
-	UNION("Union");
+	INTERSECTION("Intersection"), UNION("Union");
 
 	private final String typename;
 

@@ -149,7 +149,7 @@ public interface IAst<T extends IAst<T>> extends HasId, HasCellValue, Iterable<T
 	 * @return
 	 */
 	public int getPosition();
-	
+
 	public void setPosition(int position);
 
 	public void accept(Visitor<T> visitor);

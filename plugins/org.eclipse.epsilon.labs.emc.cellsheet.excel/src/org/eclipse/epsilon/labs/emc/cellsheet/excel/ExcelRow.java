@@ -4,26 +4,38 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.Transformer;
-import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.labs.emc.cellsheet.AbstractRow;
+import org.eclipse.epsilon.labs.emc.cellsheet.CoreType;
 import org.eclipse.epsilon.labs.emc.cellsheet.ICell;
+
+import com.google.common.collect.Iterators;
 
 public class ExcelRow extends AbstractRow implements HasDelegate<Row> {
 
-	protected ExcelSheet sheet;
-	protected int index;
+	public ExcelRow() {
+		;
+	}
 
-	ExcelRow(ExcelSheet sheet, int index) {
-		this.sheet = sheet;
-		this.index = index;
+	public ExcelRow(ExcelRow.Builder b) {
+		super(b);
 	}
 
 	@Override
-	public List<ICell> cells() {
-		return IteratorUtils.toList(iterator());
+	public Row getDelegate() {
+		return getSheet().getDelegate().getRow(index);
+	}
+
+	@Override
+	public ExcelBook getBook() {
+		return (ExcelBook) super.getBook();
+	}
+
+	@Override
+	public ExcelSheet getSheet() {
+		return (ExcelSheet) sheet;
 	}
 
 	@Override
@@ -31,32 +43,48 @@ public class ExcelRow extends AbstractRow implements HasDelegate<Row> {
 		if (col < 0) {
 			throw new IndexOutOfBoundsException("col index must be positive, was given: " + col);
 		}
-		return new ExcelCell(this, col);
-	}
 
-	@Override
-	public int getIndex() {
-		return index;
-	}
+		// Cached
+		if (getBook().isCached()) {
+			try {
+				return getBook().getAllOfType(CoreType.CELL)
+								.stream()
+								.map(c -> (ExcelCell) c)
+								.filter(c -> c.getColIndex() == col && c.getRow().equals(this))
+								.findFirst()
+								.orElse(null);
+			} catch (EolModelElementTypeNotFoundException e) {
+				throw new AssertionError(e);
+			}
+		}
 
-	@Override
-	public Row getDelegate() {
-		return sheet.getDelegate().getRow(index);
-	}
-
-	@Override
-	public ExcelSheet getSheet() {
-		return sheet;
+		final Cell cell = getDelegate().getCell(col);
+		return cell == null ? null : new ExcelCell.Builder().withRow(this).withCol(col).build();
 	}
 
 	@Override
 	public Iterator<ICell> iterator() {
-		return new TransformIterator<Cell, ICell>(getDelegate().iterator(), new Transformer<Cell, ExcelCell>() {
-			@Override
-			public ExcelCell transform(Cell cell) {
-				return ExcelRow.this.getCell(cell.getColumnIndex());
+		// Cached
+		if (getBook().isCached()) {
+			try {
+				return getBook().getAllOfType(CoreType.CELL)
+								.stream()
+								.map(c -> (ICell) c)
+								.filter(c -> c.getRow().equals(this))
+								.iterator();
+			} catch (EolModelElementTypeNotFoundException e) {
+				throw new AssertionError(e);
 			}
-		});
+		}
+
+		// Not Cached
+		final ExcelCell.Builder b = new ExcelCell.Builder().withRow(this).withCol(index);
+		return Iterators.transform(getDelegate().iterator(), c -> b.withRow(this).withCol(c.getColumnIndex()).build());
+	}
+
+	@Override
+	public List<ICell> cells() {
+		return IteratorUtils.toList(iterator());
 	}
 
 	@Override
@@ -87,4 +115,13 @@ public class ExcelRow extends AbstractRow implements HasDelegate<Row> {
 		return true;
 	}
 
+	public static class Builder extends AbstractRow.Builder<ExcelRow, Builder> {
+		@Override
+		public ExcelRow build() {
+			if (this.sheet.getClass() != ExcelSheet.class) {
+				throw new IllegalArgumentException("Sheet must be of type " + ExcelSheet.class.getCanonicalName());
+			}
+			return new ExcelRow(this);
+		}
+	}
 }

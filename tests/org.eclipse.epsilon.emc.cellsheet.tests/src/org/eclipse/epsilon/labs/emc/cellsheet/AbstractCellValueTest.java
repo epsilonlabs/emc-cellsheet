@@ -79,14 +79,6 @@ public class AbstractCellValueTest {
 	}
 
 	@Test
-	public void constructor_should_should_set_type_to_FORMULA_when_given_FORMULA() throws Exception {
-		cellValue = mock(AbstractCellValue.class,
-				withSettings().useConstructor(CellValueType.FORMULA).defaultAnswer(CALLS_REAL_METHODS));
-		assertEquals(CellValueType.FORMULA, cellValue.getType());
-
-	}
-
-	@Test
 	public void setType_should_change_type() throws Exception {
 		cellValue.setType(CellValueType.NUMERIC);
 		assertEquals(CellValueType.NUMERIC, cellValue.getType());

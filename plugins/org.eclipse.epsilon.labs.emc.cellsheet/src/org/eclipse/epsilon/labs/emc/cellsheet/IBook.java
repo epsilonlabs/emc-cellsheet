@@ -41,7 +41,7 @@ public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 	public ISheet getSheet(String name);
 
 	public List<? extends ISheet> sheets();
-	
+
 	/*
 	 * CONVENIENCE TYPE METHODS
 	 */

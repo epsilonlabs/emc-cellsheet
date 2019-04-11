@@ -9,14 +9,17 @@ import java.util.Objects;
 
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 import org.eclipse.epsilon.labs.emc.cellsheet.AbstractBook;
+import org.eclipse.epsilon.labs.emc.cellsheet.CoreType;
 import org.eclipse.epsilon.labs.emc.cellsheet.IBook;
 import org.eclipse.epsilon.labs.emc.cellsheet.ISheet;
+import org.eclipse.epsilon.labs.emc.cellsheet.Profiler;
 
 import com.google.common.collect.Iterators;
 
@@ -40,21 +43,47 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	public ExcelSheet getSheet(int index) {
 		if (index < 0 || index >= delegate.getNumberOfSheets()) {
 			throw new IndexOutOfBoundsException(
-					"index must be p∂ositive and within range of number of existing sheets, was given: " + index);
+					"index must be positive and within range of number of existing sheets, was given: " + index);
 		}
-		return new ExcelSheet(this, index);
+		if (isCached()) {
+			return typeCache.get(CoreType.SHEET)
+							.stream()
+							.map(s -> (ExcelSheet) s)
+							.filter(s -> s.getIndex() == index)
+							.findFirst()
+							.orElse(null);
+		}
+		return new ExcelSheet.Builder().withBook(this).withIndex(index).withName(delegate.getSheetName(index)).build();
 	}
 
 	@Override
 	public ExcelSheet getSheet(String name) {
-		int index = delegate.getSheetIndex(name);
-		return index < 0 ? null : getSheet(index);
+		if (isCached()) {
+			return typeCache.get(CoreType.SHEET)
+							.stream()
+							.map(s -> (ExcelSheet) s)
+							.filter(s -> s.getName().equals(name))
+							.findFirst()
+							.orElse(null);
+		}
+		Sheet sheet = delegate.getSheet(name);
+		return sheet == null ? null
+				: new ExcelSheet.Builder()	.withBook(this)
+											.withIndex(delegate.getSheetIndex(sheet))
+											.withName(name)
+											.build();
 	}
 
 	@Override
 	public Iterator<ISheet> iterator() {
+		if (isCached()) {
+			return Iterators.transform(typeCache.get(CoreType.SHEET).iterator(), s -> (ExcelSheet) s);
+		}
+
+		// Not cached
+		final ExcelSheet.Builder b = new ExcelSheet.Builder().withBook(this);
 		return Iterators.transform(delegate.iterator(),
-				s -> new ExcelSheet(ExcelBook.this, delegate.getSheetIndex(s)));
+				s -> b.withIndex(delegate.getSheetIndex(s)).withName(s.getSheetName()).build());
 	}
 
 	@Override
@@ -77,12 +106,22 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 
 	@Override
 	public void loadModel() throws EolModelLoadingException {
+		Profiler.profileStart(this, "loadModel");
 		try {
 			delegate = WorkbookFactory.create(excelFile, null, true);
 			delegate.setMissingCellPolicy(MissingCellPolicy.CREATE_NULL_AS_BLANK);
 		} catch (Exception e) {
 			throw new EolModelLoadingException(e, this);
 		}
+		Profiler.profileStop(this, "loadModel");
+	}
+
+	@Override
+	protected void doPreCache() throws EolModelLoadingException {
+		Profiler.profileStart(this, "doPreCache()");
+		allContents();
+		Profiler.profileStop(this, "doPreCache()");
+		System.out.println();
 	}
 
 	@Override
@@ -114,7 +153,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(name, delegate);
+		return Objects.hash(name);
 	}
 
 	@Override

@@ -36,6 +36,7 @@ public interface ICellValue extends HasId, HasCell, Comparable<ICellValue>, Iter
 	 * <p>
 	 * Set the concrete type of this cell value.
 	 * </p>
+	 * 
 	 * @param type
 	 */
 	public void setType(CellValueType type);

@@ -2,14 +2,8 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 public enum CellValueType implements ElementType {
 
-	NONE("NoneCellValue"),
-	NUMERIC("NumericCellValue"),
-	STRING("StringCellValue"),
-	FORMULA("FormulaCellValue"),
-	BOOLEAN("BooleanCellValue"),
-	BLANK("BlankCellValue"),
-	ERROR("ErrorCellValue"),
-	DATE("DateCellValue");
+	NONE("NoneCellValue"), NUMERIC("NumericCellValue"), STRING("StringCellValue"), FORMULA("FormulaCellValue"),
+	BOOLEAN("BooleanCellValue"), BLANK("BlankCellValue"), ERROR("ErrorCellValue"), DATE("DateCellValue");
 
 	private final String typename;
 

@@ -3,12 +3,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 public enum CoreType implements ElementType {
 
 	// Core structural types
-	BOOK("Book"),
-	SHEET("Sheet"),
-	ROW("Row"),
-	CELL("Cell"),
-	CELL_VALUE("CellValue"),
-	AST("Ast");
+	BOOK("Book"), SHEET("Sheet"), ROW("Row"), CELL("Cell"), CELL_VALUE("CellValue"), AST("Ast");
 
 	protected final String typename;
 

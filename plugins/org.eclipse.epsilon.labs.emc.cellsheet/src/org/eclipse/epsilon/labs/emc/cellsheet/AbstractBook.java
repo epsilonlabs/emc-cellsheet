@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
@@ -123,15 +124,18 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Collection<HasId> allContentsFromModel() {
+		Profiler.profileStart(this, "allContentsFromModel");
 		final Collection<HasId> allContents = new ArrayList<HasId>();
-		allContents.add(this);
-
 		final Deque<Iterator<HasId>> stack = new LinkedList<>();
 
 		Iterator<? extends HasId> it = iterator();
 		HasId next = null;
-
 		try {
+			allContents.add(this);
+			if (isPreCacheEnabled()) {
+				addToCache(getType().getTypename(), this);
+			}
+
 			while (it != null) {
 				while (it.hasNext()) {
 					next = it.next();
@@ -148,29 +152,31 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 		} catch (Exception e) {
 			throw new AssertionError(e);
 		}
-
+		Profiler.profileStop(this, "allContentsFromModel");
 		return allContents;
 	}
 
 	@Override
 	public Collection<HasId> getAllOfKindFromModel(String typename) throws EolModelElementTypeNotFoundException {
-		System.out.println("AbstractBook.getAllOfTypeFromModel()");
 		final ElementType type = getElementTypeOrThrow(typename);
-		return allContents().stream().filter(e -> e.getKinds().contains(type)).collect(Collectors.toList());
+		Profiler.profileStart(this, "getAllOfKindFromModel");
+		final List<HasId> kinds = allContents()	.stream()
+												.filter(e -> e.getKinds().contains(type))
+												.collect(Collectors.toList());
+		Profiler.profileStop(this, "getAllOfKindFromModel");
+		return kinds;
 	}
 
 	@Override
 	public Collection<HasId> getAllOfTypeFromModel(String typename) throws EolModelElementTypeNotFoundException {
-		System.out.println("AbstractBook.getAllOfTypeFromModel()");
+		Profiler.profileStart(this, "getAllOfTypeFromModel");
 		final ElementType type = getElementTypeOrThrow(typename);
-		return allContents().stream().filter(Objects::nonNull).filter(e -> e.getType() == type)
-				.collect(Collectors.toList());
-	}
-
-	@Override
-	protected Collection<HasId> getAllOfKindOrType(boolean isKind, String modelElementType)
-			throws EolModelElementTypeNotFoundException {
-		return super.getAllOfKindOrType(false, modelElementType);
+		final List<HasId> types = allContents()	.stream()
+												.filter(Objects::nonNull)
+												.filter(e -> e.getType() == type)
+												.collect(Collectors.toList());
+		Profiler.profileStop(this, "getAllOfTypeFromModel");
+		return types;
 	}
 
 	/*
@@ -253,8 +259,26 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	}
 
 	@Override
+	public Collection<HasId> getAllOfType(String type) throws EolModelElementTypeNotFoundException {
+		Profiler.profileCaller();
+		Profiler.profileStart(this, "getAllOfType(" + type + ")");
+		final Collection<HasId> allOfType = super.getAllOfType(type);
+		Profiler.profileStop(this, "getAllOfType(" + type + ")");
+		return allOfType;
+	}
+
+	@Override
 	public Collection<HasId> getAllOfKind(ElementType kind) throws EolModelElementTypeNotFoundException {
 		return getAllOfKind(kind.getTypename());
+	}
+
+	@Override
+	public Collection<HasId> getAllOfKind(String kind) throws EolModelElementTypeNotFoundException {
+		Profiler.profileCaller();
+		Profiler.profileStart(this, "getAllOfKind(" + kind + ")");
+		final Collection<HasId> allOfKind = super.getAllOfKind(kind);
+		Profiler.profileStop(this, "getAllOfKind(" + kind + ")");
+		return allOfKind;
 	}
 
 	/**
@@ -327,7 +351,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 		throw new UnsupportedOperationException();
 	}
 
-	public boolean isLoaded() {
+	public boolean isCached() {
 		return allContentsAreCached;
 	}
 
@@ -335,8 +359,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	public void setConcurrent(boolean concurrent) {
 		this.concurrent = concurrent;
 		typeCache = typeCache != null ? new Multimap<>(isConcurrent(), typeCache) : new Multimap<>(isConcurrent());
-
-		kindCache = new Multimap<Object, HasId>(isConcurrent());
+		kindCache = typeCache;
 
 		if (concurrent) {
 			allContentsCache = allContentsCache != null ? new ConcurrentLinkedQueue<>(allContentsCache)
@@ -348,7 +371,6 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 	public void setPreCache(boolean preCache) {
 		this.preCache = preCache && isCachingEnabled();
-		System.out.println("pre_cache set: " + preCache);
 	}
 
 	public boolean isPreCacheEnabled() {
@@ -385,10 +407,19 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	public void load() throws EolModelLoadingException {
 		super.load();
 		if (preCache) {
-			ElementType.getTypeMap().values().forEach(t -> typeCache.put(t, Collections.emptyList()));
-			allContents();
+			doPreCache();
 		}
 	}
+
+	@Override
+	public void clearCache() {
+		super.clearCache();
+		if (preCache) {
+			ElementType.getTypeMap().values().forEach(t -> typeCache.put(t, Collections.emptyList()));
+		}
+	}
+
+	protected abstract void doPreCache() throws EolModelLoadingException;
 
 	@Override
 	public String toString() {

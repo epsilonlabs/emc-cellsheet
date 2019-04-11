@@ -4,6 +4,30 @@ import java.util.Objects;
 
 public abstract class AbstractSheet implements ISheet {
 
+	protected IBook book;
+	protected int index;
+	protected String name;
+
+	protected AbstractSheet() {
+		;
+	}
+
+	protected AbstractSheet(AbstractSheet.Builder<?, ?> b) {
+		this.book = b.book;
+		this.index = b.index;
+		this.name = b.name;
+	}
+	
+	@Override
+	public int getIndex() {
+		return this.index;
+	}
+	
+	@Override
+	public String getName() {
+		return this.name;
+	}
+
 	@Override
 	public IRow getA1Row(int row) {
 		return getRow(row - 1);
@@ -50,5 +74,41 @@ public abstract class AbstractSheet implements ISheet {
 		return getIndex() == other.getIndex() // Sheet index
 				&& Objects.equals(getName(), other.getName()) // Sheet name
 				&& Objects.equals(getBook(), other.getBook()); // Parents
+	}
+
+	@SuppressWarnings("unchecked")
+	public static abstract class Builder<T extends AbstractSheet, B extends Builder<T, B>> {
+
+		protected IBook book;
+		protected int index;
+		protected String name;
+
+		public Builder() {
+			;
+		}
+
+		public Builder(T sheet) {
+			this.book = sheet.book;
+			this.index = sheet.index;
+			this.name = sheet.name;
+		}
+
+		public B withBook(IBook book) {
+			this.book = book;
+			return (B) this;
+		}
+
+		public B withIndex(int index) {
+			this.index = index;
+			return (B) this;
+		}
+
+		public B withName(String name) {
+			this.name = name;
+			return (B) this;
+		}
+
+		public abstract T build();
+
 	}
 }

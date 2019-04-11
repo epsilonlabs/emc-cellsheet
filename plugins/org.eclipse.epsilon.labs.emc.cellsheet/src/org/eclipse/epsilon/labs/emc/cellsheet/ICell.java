@@ -44,7 +44,7 @@ public interface ICell extends HasId, HasA1, HasRow, Comparable<ICell>, Iterable
 	default public Set<ElementType> getKinds() {
 		return KINDS;
 	}
-	
+
 	/**
 	 * @return 0-based row index of this Cell
 	 */
@@ -66,11 +66,6 @@ public interface ICell extends HasId, HasA1, HasRow, Comparable<ICell>, Iterable
 	public int getA1Row();
 
 	public ICellValue getCellValue();
-
-	/**
-	 * @return {@code true} if the cell contains no value, {@code false} otherwise
-	 */
-	public boolean isBlank();
 
 	public int compareTo(ICell o);
 
