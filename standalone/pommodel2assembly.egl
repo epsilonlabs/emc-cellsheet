@@ -26,8 +26,8 @@
         	<directory>[%=directory%]/[%=plugin.a_name%]/[%=plugin.getSource()%]</directory>
         	<outputDirectory></outputDirectory>
         	</fileSet>
-        [% } %]
-	[% }
+        [% }
+	}
 } %]
 	</fileSets>
 </assembly>

@@ -13,24 +13,25 @@
 		</license>
 	</licenses>
 
-  <scm>
-  	<connection>scm:git:git@github.com:epsilonlabs/emc-cellsheet.git</connection>
-  	<developerConnection>scm:git:git@github.com:epsilonlabs/emc-cellsheet.git</developerConnection>
-  	<url>https://github.com/epsilonlabs/emc-cellsheet/tree/master</url>
-  </scm>
+	<scm>
+		<connection>scm:git:git@github.com:epsilonlabs/emc-cellsheet.git</connection>
+		<developerConnection>scm:git:git@github.com:epsilonlabs/emc-cellsheet.git</developerConnection>
+		<url>https://github.com/epsilonlabs/emc-cellsheet/tree/master</url>
+	</scm>
 
-  <developers>
-  	<developer>
-  		<name>Jonathan Co</name>
-  		<email>jc956@york.ac.uk</email>
-  		<organization>Epsilon Labs</organization>
-  		<organizationUrl>https://www.eclipse.org/epsilon/</organizationUrl>
-  	</developer>
-  </developers>
+	<developers>
+		<developer>
+			<name>Jonathan Co</name>
+			<email>jc956@york.ac.uk</email>
+			<organization>Epsilon Labs</organization>
+			<organizationUrl>https://www.eclipse.org/epsilon/</organizationUrl>
+		</developer>
+	</developers>
 
 	<eclipsePlugins directory="../plugins">
 		<eclipsePlugin name="org.eclipse.epsilon.labs.emc.cellsheet"/>
 		<eclipsePlugin name="org.eclipse.epsilon.labs.emc.cellsheet.excel"/>
+		<eclipsePlugin name="org.eclipse.epsilon.labs.workflow.cellsheet"/>
 	</eclipsePlugins>
 
 	<dependencies>
@@ -49,5 +50,29 @@
 			<artifactId>guava</artifactId>
 			<version>27.1-jre</version>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.epsilon</groupId>
+			<artifactId>epsilon-core</artifactId>
+			<version>1.6.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.epsilon</groupId>
+			<artifactId>epsilon-workflow</artifactId>
+			<version>1.6.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>oss-snapshots</id>
+			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 </pommodel>

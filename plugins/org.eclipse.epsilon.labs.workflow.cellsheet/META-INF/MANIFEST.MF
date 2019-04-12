@@ -9,7 +9,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ant.core,
  org.apache.ant,
  org.eclipse.epsilon.eol.engine,
- org.eclipse.epsilon.workflow,
  org.eclipse.epsilon.eol.dt;resolution:=optional,
  org.eclipse.epsilon.labs.emc.cellsheet.excel
 Export-Package: org.eclipse.epsilon.labs.workflow.tasks.cellsheet

@@ -23,5 +23,13 @@
         	<directory>../plugins/org.eclipse.epsilon.labs.emc.cellsheet.excel/src</directory>
         	<outputDirectory></outputDirectory>
         	</fileSet>
+		<fileSet>
+			<directory>../plugins/org.eclipse.epsilon.labs.workflow.cellsheet/target/classes</directory>
+        	<outputDirectory></outputDirectory>
+        </fileSet> 
+        <fileSet>
+        	<directory>../plugins/org.eclipse.epsilon.labs.workflow.cellsheet/src</directory>
+        	<outputDirectory></outputDirectory>
+        	</fileSet>
 	</fileSets>
 </assembly>

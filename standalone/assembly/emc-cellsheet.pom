@@ -29,6 +29,7 @@
 	</developers>	
 		
 		
+		
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
@@ -45,5 +46,28 @@
 			<artifactId>guava</artifactId>
 			<version>27.1-jre</version>
 		</dependency>	
+		<dependency>
+			<groupId>org.eclipse.epsilon</groupId>
+			<artifactId>epsilon-core</artifactId>
+			<version>1.6.0-SNAPSHOT</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.eclipse.epsilon</groupId>
+			<artifactId>epsilon-workflow</artifactId>
+			<version>1.6.0-SNAPSHOT</version>
+		</dependency>	
 	</dependencies>	
+	<repositories>
+		<repository>
+			<id>oss-snapshots</id>
+			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>false</enabled>
+			</releases>	
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>	
+		</repository>	
+	</repositories>	
 </project>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.epsilon.labs</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>org.eclipse.epsilon.labs.workflow.cellsheet</artifactId>
+	<packaging>eclipse-plugin</packaging>
+
+	<properties>
+		<workflow.version>1.6.0-SNAPSHOT</workflow.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.basedir}/lib</outputDirectory>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.eclipse.epsilon</groupId>
+									<artifactId>epsilon-workflow</artifactId>
+									<version>${workflow.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<classifier>sources</classifier>
+									<groupId>org.eclipse.epsilon</groupId>
+									<artifactId>epsilon-workflow</artifactId>
+									<version>${workflow.version}</version>
+								</artifactItem>
+							</artifactItems>
+							<useBaseVersion>true</useBaseVersion>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<extraClasspathElements>
+						<extraClasspathElement>
+							<groupId>org.eclipse.epsilon</groupId>
+							<artifactId>epsilon-workflow</artifactId>
+							<version>${workflow.version}</version>
+						</extraClasspathElement>
+					</extraClasspathElements>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>build-jar</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<xslt style="pluginxml2tasksxml.xslt" in="plugin.xml"
+									out="src/org/eclipse/epsilon/labs/workflow/tasks/cellsheet/tasks.xml" />
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Attach the workflow.jar as a separate artifact so it is available 
+				for compilation of other workflow projects -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>lib/org.eclipse.epsilon.labs.workflow.cellsheet.jar</file>
+									<type>jar</type>
+									<classifier>taskjar</classifier>
+								</artifact>
+							</artifacts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.epsilon</groupId>
+			<artifactId>epsilon-workflow</artifactId>
+			<version>1.6.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+
+	<repositories>
+		<repository>
+			<id>oss-snapshots</id>
+			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+</project>
