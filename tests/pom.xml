@@ -14,7 +14,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>org.eclipse.epsilon.emc.cellsheet.tests</module>
-		<module>org.eclipse.epsilon.emc.cellsheet.excel.tests</module>
+		<module>org.eclipse.epsilon.labs.emc.cellsheet.tests</module>
+		<module>org.eclipse.epsilon.labs.emc.cellsheet.excel.tests</module>
 	</modules>
 </project>
