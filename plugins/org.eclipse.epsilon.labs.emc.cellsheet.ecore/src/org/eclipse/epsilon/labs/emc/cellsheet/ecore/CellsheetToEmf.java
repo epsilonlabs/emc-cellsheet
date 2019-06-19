@@ -3,43 +3,51 @@ package org.eclipse.epsilon.labs.emc.cellsheet.ecore;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.eclipse.epsilon.common.parse.problem.ParseProblem;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.emc.emf.EmfModel;
 import org.eclipse.epsilon.emc.emf.EmfUtil;
-import org.eclipse.epsilon.eol.execute.context.Variable;
-import org.eclipse.epsilon.eol.types.EolPrimitiveType;
-import org.eclipse.epsilon.etl.EtlModule;
+import org.eclipse.epsilon.eol.EolModule;
+import org.eclipse.epsilon.labs.emc.cellsheet.Profiler;
 import org.eclipse.epsilon.labs.emc.cellsheet.excel.ExcelBook;
 
 public class CellsheetToEmf {
 
 	public static void main(String... args) throws Exception {
 		System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "8");
+		System.setProperty("profile", "false");
 
 		final String filename = getFilename(args);
+		System.out.println("Transformation Test: " + filename);
+
 		final ExcelBook book = getBook(filename);
 		final EmfModel emf = getEmf(getOutput(filename));
 		emf.store();
 
-		final EtlModule etl = new EtlModule();
-		etl.getContext().getModelRepository().addModel(book);
-		etl.getContext().getModelRepository().addModel(emf);
+		final EolModule eol = new EolModule();
 
-		etl.getContext().getFrameStack().putGlobal(new Variable("debug", doDebug(args), EolPrimitiveType.Boolean));
+		eol.getContext().getModelRepository().addModel(book);
+		eol.getContext().getModelRepository().addModel(emf);
 
-		etl.parse(Paths.get("./scripts/CellsheetToEmf.etl").toUri());
-		if (!etl.getParseProblems().isEmpty()) {
-			for (ParseProblem pp : etl.getParseProblems()) {
+		eol.parse(Paths.get("./scripts/CellsheetToEmf.eol").toUri());
+		if (!eol.getParseProblems().isEmpty()) {
+			for (ParseProblem pp : eol.getParseProblems()) {
 				System.out.println(pp);
 			}
 			System.exit(1);
 		}
 
-		etl.execute();
+		Profiler.profileStart(eol, "transform");
+		eol.execute();
+		Profiler.profileStop(eol, "transform");
+		Profiler.profileStart(eol, "store");
 		emf.store();
+		Profiler.profileStop(eol, "store");
+
+		Profiler.profileCounts();
 	}
 
 	public static EmfModel getEmf(String output) throws Exception {
@@ -51,18 +59,18 @@ public class CellsheetToEmf {
 
 		StringProperties props = new StringProperties();
 		props.put(EmfModel.PROPERTY_NAME, "Emf");
-		props.put(EmfModel.PROPERTY_CACHED, true);
+		props.put(EmfModel.PROPERTY_CACHED, false);
 		props.put(EmfModel.PROPERTY_CONCURRENT, true);
 		props.put(EmfModel.PROPERTY_STOREONDISPOSAL, true);
 		props.put(EmfModel.PROPERTY_READONLOAD, false);
 
 		props.put(EmfModel.PROPERTY_FILE_BASED_METAMODEL_URI, EmfUtil.createFileBasedURI("./models/Cellsheet.ecore"));
-
 		props.put(EmfModel.PROPERTY_MODEL_URI, EmfUtil.createFileBasedURI(output));
 
 		EmfModel model = new EmfModel();
 		model.load(props);
 		model.store();
+
 		return model;
 	}
 
@@ -70,9 +78,14 @@ public class CellsheetToEmf {
 		final StringProperties props = new StringProperties();
 		props.put(ExcelBook.PROPERTY_CACHED, true);
 		props.put(ExcelBook.PROPERTY_CONCURRENT, true);
-		props.put(ExcelBook.PROPERTY_NAME, new File(filename).getName());
-		props.put(ExcelBook.PROPERTY_ALIASES, "Excel");
+		props.put(ExcelBook.PROPERTY_PRE_CACHE, true);
+		props.put(ExcelBook.PROPERTY_NAME, "Excel");
 		props.put(ExcelBook.PROPERTY_FILE, filename);
+
+		for (Entry<Object, Object> e : props.entrySet()) {
+			System.out.println(e.getKey() + ": " + e.getValue());
+		}
+		System.out.println();
 
 		final ExcelBook book = new ExcelBook();
 		book.load(props);

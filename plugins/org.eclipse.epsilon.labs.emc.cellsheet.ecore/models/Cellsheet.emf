@@ -18,16 +18,16 @@ abstract class HasId {
 // Core Types
 // ==========
 @exeed(
-	label="return self.name + ' : ' + self.type.name;",
+	label="return self.a1 + ' : ' + self.type.name;",
 	referenceLabel="return self.id;"
 )
 class Book extends HasId, HasA1 {
 	val Sheet[*]#book sheets;	
-	attr String name;
+	attr String bookname;
 }
 
 @exeed(
-	label="return self.name + ' : ' + self.type.name;",
+	label="return self.a1 + ' : ' + self.type.name;",
 	referenceLabel="return self.id;"
 )
 class Sheet extends HasId, HasA1 {
@@ -39,7 +39,7 @@ class Sheet extends HasId, HasA1 {
 }
 
 @exeed(
-	label="return self.index + ' : ' + self.type.name;",
+	label="return self.a1 + ' : ' + self.type.name;",
 	referenceLabel="return self.id;"
 )
 class Row extends HasId, HasA1 {
@@ -51,7 +51,9 @@ class Row extends HasId, HasA1 {
 	attr int index;
 }
 
-@exeed(label="return self.a1Index + (self.index + 1) + ' : ' + self.type.name;")
+@exeed(
+	label="return self.a1 + ' : ' + self.type.name;"
+)
 class Cell extends HasId, HasA1 {
 	val CellValue#cell cellValue;
 	ref Row#cells row;
@@ -59,8 +61,8 @@ class Cell extends HasId, HasA1 {
 	ref Book book;
 	ref Sheet sheet;
 	
-	attr int index;
-	attr String a1Index;
+	attr int colIndex;
+	attr String a1Col;
 }
 
 // ===========
@@ -113,11 +115,6 @@ abstract class Ast extends HasId {
 	val Ast[*]#parent children;	
 	ref Ast#children parent;
 	ref CellValue#ast cellValue;
-	
-	ref Book book;
-	ref Sheet sheet;
-	ref Row row;
-	ref Cell cell;
 	
 	attr String token;
 }

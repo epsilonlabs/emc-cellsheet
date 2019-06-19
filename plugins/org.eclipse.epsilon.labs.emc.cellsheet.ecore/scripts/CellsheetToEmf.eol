@@ -1,0 +1,113 @@
+// Transform Books
+for (excelBook in Excel!Book.all) {
+	excelBook.toEmf();
+}
+
+operation Excel!Book toEmf() : Emf!Book {
+	var book = new Emf!Book;
+	book.id = self.id;
+	book.a1 = self.a1;
+	book.bookname = self.bookname;
+	
+	for (sheet in self.sheets) {
+		sheet.toEmf(book);
+	}
+	
+	return book;
+}
+
+operation Excel!Sheet toEmf(book : Emf!Book) : Emf!Sheet {
+	var sheet = new Emf!Sheet;
+	sheet.id = self.id;
+	sheet.a1 = self.a1;
+	sheet.name = self.name;
+	sheet.index = self.index;
+	sheet.book = book;
+	
+	for (row in self.rows) {
+		row.toEmf(sheet);
+	}
+	
+	return sheet;
+}
+
+operation Excel!Row toEmf(sheet : Emf!Sheet) : Emf!Row {
+	var row = new Emf!Row;
+	row.id = self.id;
+	row.a1 = self.a1;
+	row.index = self.index;
+	row.book = sheet.book;
+	row.sheet = sheet;
+	
+	for (cell in self.cells) {
+		cell.toEmf(row);
+	}
+	
+	return row;
+}
+
+operation Excel!Cell toEmf(row : Emf!Row) : Emf!Cell {
+	var cell = new Emf!Cell;
+	cell.id = self.id;
+	cell.a1 = self.a1;
+	cell.colIndex = self.colIndex;
+	cell.a1Col = self.a1Col;
+	cell.book = row.book;
+	cell.sheet = row.sheet;
+	cell.row = row;
+	
+	self.cellValue.toEmf(cell);
+	
+	return cell;
+}
+
+operation Excel!CellValue toEmf(cell : Emf!Cell) : Emf!CellValue {
+	var cv = Emf.createInstance(self.type.typename);
+	cv.id = self.id;
+	cv.formula = self.formula;
+	cv.stringValue = self.stringValue;	
+	cv.book = cell.book;
+	cv.sheet = cell.sheet;
+	cv.row = cell.row;
+	cv.cell = cell;
+	
+	if (self.isTypeOf(Excel!NumericCellValue)) {
+		cv.numericValue = self.numericValue;
+	}
+	if (self.isTypeOf(Excel!BooleanCellValue)) {
+		cv.booleanValue = self.booleanValue;
+	}
+	if (self.isTypeOf(Excel!ErrorCellValue)) {
+		cv.errorValue = self.errorValue;
+	}
+	if (self.isTypeOf(Excel!DateCellValue)) {
+		cv.dateValue = self.dateValue;
+	}
+	
+	self.ast.toEmf(cv);
+	
+	return cv;
+}
+
+operation Excel!Ast toEmf(parent : Any) : Emf!Ast {
+	var ast = Emf.createInstance(self.type.typename);
+	ast.id = self.id;
+	ast.token = self.token;
+	
+	if (parent.isKindOf(Emf!CellValue)) {
+		ast.cellValue = parent;
+	}
+	else if(parent.isKindOf(Emf!Ast)) {
+		ast.parent = parent;
+	} else {
+		throw "Excel!Ast.toEmf parent not a CellValue or AST";
+	}
+	
+	for (child in self.children) {
+		child.toEmf(ast);
+	}
+	
+	return ast;
+}
+
+ 
