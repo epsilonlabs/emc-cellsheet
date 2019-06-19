@@ -30,6 +30,7 @@ import org.mockito.junit.MockitoRule;
 public class AbstractBookTest {
 
 	private static final String NAME = "Expected";
+	private static final String BOOKNAME = "EXPECTED_NAME.xlsx";
 
 	@Rule
 	public MockitoRule mockito = MockitoJUnit.rule();
@@ -40,6 +41,7 @@ public class AbstractBookTest {
 	@Before
 	public void setup() {
 		book.setName(NAME);
+		book.bookname = BOOKNAME;
 	}
 
 	@Test
@@ -148,12 +150,12 @@ public class AbstractBookTest {
 
 	@Test
 	public void getId_should_return_ID_String() throws Exception {
-		assertEquals(NAME + "/", book.getId());
+		assertEquals(BOOKNAME + "/", book.getId());
 	}
 
 	@Test
 	public void getA1_should_return_A1_string() throws Exception {
-		assertEquals("[" + NAME + "]", book.getA1());
+		assertEquals("[" + BOOKNAME + "]", book.getA1());
 	}
 
 	@Test

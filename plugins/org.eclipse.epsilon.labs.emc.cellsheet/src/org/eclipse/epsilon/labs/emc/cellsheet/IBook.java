@@ -32,6 +32,10 @@ public interface IBook extends HasId, IModel, Iterable<ISheet>, HasA1 {
 	default public Set<ElementType> getKinds() {
 		return KINDS;
 	}
+	
+	public String getBookname();
+	
+	public void setBookname(String bookname);
 
 	/*
 	 * SHEETS

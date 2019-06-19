@@ -30,6 +30,8 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	public static final String PROPERTY_PRE_CACHE = "pre_cache";
 
 	protected boolean preCache;
+	
+	protected String bookname;
 
 	protected AbstractBook() {
 		// Ensure classloader loads all types
@@ -37,6 +39,16 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 		CellValueType.values();
 		AstSupertype.values();
 		AstType.values();
+	}
+	
+	@Override
+	public String getBookname() {
+		return this.bookname;
+	}
+	
+	@Override
+	public void setBookname(String bookname) {
+		this.bookname = bookname;
 	}
 
 	@Override
@@ -53,7 +65,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	public Object getElementById(String id) {
 
 		// Sanitise if relative ID
-		id = id.charAt(0) == '/' ? getName() + id : id;
+		id = id.charAt(0) == '/' ? getBookname() + id : id;
 		id.replaceAll("\\s+", "_");
 
 		final Iterator<String> parts = Arrays.stream(id.split("/")).iterator();
@@ -62,7 +74,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 		try {
 			// Resolve book
-			if (parts.hasNext() && getName().equals(parts.next()))
+			if (parts.hasNext() && getBookname().equals(parts.next()))
 				result = this;
 			else
 				return null;
@@ -334,12 +346,12 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 	@Override
 	public String getId() {
-		return UrlEscapers.urlPathSegmentEscaper().escape(name) + "/";
+		return UrlEscapers.urlPathSegmentEscaper().escape(bookname) + "/";
 	}
 
 	@Override
 	public String getA1() {
-		return String.format("[%s]", name);
+		return String.format("[%s]", bookname);
 	}
 
 	/*
@@ -401,6 +413,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
 		super.load(properties, resolver);
 		this.setPreCache(properties.getBooleanProperty(PROPERTY_PRE_CACHE, false));
+		this.bookname = properties.getProperty(PROPERTY_NAME);
 	}
 
 	@Override

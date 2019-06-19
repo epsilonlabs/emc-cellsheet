@@ -18,6 +18,7 @@ public class ExcelBookTest {
 		book.load(props);
 		
 		assertEquals(book.getName(), "Cellsheet");
+		assertEquals(book.getBookname(), "Spreadsheet Equiv.xlsx");
 		assertEquals(book.getSheet(0).getName(), "Assumptions");
 	}
 }

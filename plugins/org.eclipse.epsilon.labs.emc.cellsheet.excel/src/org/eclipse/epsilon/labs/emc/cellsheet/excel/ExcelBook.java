@@ -113,6 +113,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		} catch (Exception e) {
 			throw new EolModelLoadingException(e, this);
 		}
+		this.bookname = excelFile.getName();
 		Profiler.profileStop(this, "loadModel");
 	}
 
@@ -153,7 +154,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(name);
+		return Objects.hash(delegate);
 	}
 
 	@Override
@@ -165,8 +166,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 		if (getClass() != obj.getClass())
 			return false;
 		ExcelBook other = (ExcelBook) obj;
-		return Objects.equals(name, other.name) // Book name
-				&& Objects.equals(delegate, other.delegate); // POI Delegate
+		return Objects.equals(delegate, other.delegate); // POI Delegate
 	}
 
 }
