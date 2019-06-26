@@ -43,10 +43,16 @@ public interface IAst<T extends IAst<T>> extends HasId, HasCellValue, Iterable<T
 	public String evaluate();
 
 	public String getToken();
+	
+	public void setToken(String token);
 
 	public AstSupertype getSupertype();
+	
+	public void setSupertype(AstSupertype supertype);
 
 	public AstType getType();
+	
+	public void setType(AstType type);
 
 	public T getRoot();
 

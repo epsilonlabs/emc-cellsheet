@@ -20,9 +20,19 @@ public class ExcelAst extends AbstractAst<ExcelAst> {
 	}
 
 	public static class Builder extends AbstractAst.Builder<ExcelAst, Builder> {
+		
+		public Builder() {
+			super();
+		}
+		
+		public Builder(ExcelAst ast) {
+			super(ast);
+		}
+		
 		@Override
 		public ExcelAst build() {
 			return new ExcelAst(this);
 		}
+
 	}
 }

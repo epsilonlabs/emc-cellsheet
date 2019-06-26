@@ -76,6 +76,10 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 	public String getToken() {
 		return token;
 	}
+	
+	public void setToken(String token) {
+		this.token = token;
+	}
 
 	@Override
 	public AstSupertype getSupertype() {
@@ -83,8 +87,18 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 	}
 
 	@Override
+	public void setSupertype(AstSupertype supertype) {
+		this.supertype = supertype;
+	}
+	
+	@Override
 	public AstType getType() {
 		return type;
+	}
+	
+	@Override
+	public void setType(AstType type) {
+		this.type = type;
 	}
 
 	@Override
@@ -260,15 +274,9 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 		this.position = position;
 	}
 
-	// TODO: Future change to respond to changes in hierarchy
-	private String id = null;
-
 	@Override
 	public String getId() {
-		if (id == null) {
-			id = (isRoot() ? cellValue.getId() : parent.getId()) + getPosition() + "/";
-		}
-		return id;
+		return (isRoot() ? cellValue.getId() : parent.getId()) + getPosition() + "/";
 	}
 
 	@Override
@@ -333,15 +341,9 @@ public abstract class AbstractAst<T extends AbstractAst<T>> implements IAst<T> {
 		return sb.toString();
 	}
 
-	// TODO: Future change to respond to changes in hierarchy
-	private int hashcode = -1;
-
 	@Override
 	public int hashCode() {
-		if (hashcode < 0) {
-			hashcode = Objects.hash(cellValue, children, position, token, type, supertype);
-		}
-		return hashcode;
+		return Objects.hash(cellValue, children, position, token, type, supertype);
 	}
 
 	@Override
