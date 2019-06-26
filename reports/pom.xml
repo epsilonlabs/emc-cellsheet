@@ -45,31 +45,31 @@
         <!-- Plugins -->
         <dependency>
             <groupId>org.eclipse.epsilon.labs</groupId>
-            <artifactId>org.eclipse.epsilon.emc.cellsheet</artifactId>
+            <artifactId>org.eclipse.epsilon.labs.emc.cellsheet</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.epsilon.labs</groupId>
-            <artifactId>org.eclipse.epsilon.emc.cellsheet.dt</artifactId>
+            <artifactId>org.eclipse.epsilon.labs.emc.cellsheet.dt</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.epsilon.labs</groupId>
-            <artifactId>org.eclipse.epsilon.emc.cellsheet.excel</artifactId>
+            <artifactId>org.eclipse.epsilon.labs.emc.cellsheet.excel</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.epsilon.labs</groupId>
-            <artifactId>org.eclipse.epsilon.emc.cellsheet.excel.dependencies</artifactId>
+            <artifactId>org.eclipse.epsilon.labs.emc.cellsheet.excel.dependencies</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.epsilon.labs</groupId>
-            <artifactId>org.eclipse.epsilon.emc.cellsheet.excel.dt</artifactId>
+            <artifactId>org.eclipse.epsilon.labs.emc.cellsheet.excel.dt</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
@@ -77,13 +77,13 @@
         <!-- Test Code -->
         <dependency>
             <groupId>org.eclipse.epsilon.labs</groupId>
-            <artifactId>org.eclipse.epsilon.emc.cellsheet.tests</artifactId>
+            <artifactId>org.eclipse.epsilon.labs.emc.cellsheet.tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.epsilon.labs</groupId>
-            <artifactId>org.eclipse.epsilon.emc.cellsheet.excel.tests</artifactId>
+            <artifactId>org.eclipse.epsilon.labs.emc.cellsheet.excel.tests</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
