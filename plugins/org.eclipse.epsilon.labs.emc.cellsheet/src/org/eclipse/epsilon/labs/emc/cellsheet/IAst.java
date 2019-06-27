@@ -160,9 +160,9 @@ public interface IAst<T extends IAst<T>> extends HasId, HasCellValue, Iterable<T
 
 	public void accept(Visitor<T> visitor);
 
-	public static interface Visitor<R> {
+	public static interface Visitor<T> {
 
-		public void visit(R tree);
+		public void visit(T tree);
 
 	}
 
