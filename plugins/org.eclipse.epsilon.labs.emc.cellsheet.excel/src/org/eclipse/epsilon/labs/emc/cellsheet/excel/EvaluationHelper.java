@@ -106,7 +106,7 @@ public enum EvaluationHelper {
 					throw new UnsupportedOperationException();
 				}
 				return cell.getBook().getSheet(cast.getFirstSheetIndex()).getRow(cast.getRow())
-						.getCell(cast.getColumn()).getCellValue().toString();
+						.getCell(cast.getColumn()).getId();
 			}
 
 		} catch (Exception e) {
