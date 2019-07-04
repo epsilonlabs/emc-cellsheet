@@ -41,7 +41,7 @@ public class AbstractBookTest {
 	@Before
 	public void setup() {
 		book.setName(NAME);
-		book.bookname = BOOKNAME;
+		book.setBookname(BOOKNAME);
 	}
 
 	@Test

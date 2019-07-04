@@ -30,7 +30,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	public static final String PROPERTY_PRE_CACHE = "pre_cache";
 
 	protected boolean preCache;
-	
+	protected String internalId;
 	protected String bookname;
 
 	protected AbstractBook() {
@@ -49,6 +49,9 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	@Override
 	public void setBookname(String bookname) {
 		this.bookname = bookname;
+		if (this.internalId == null) {
+			setInternalId(bookname);
+		}
 	}
 
 	@Override
@@ -65,7 +68,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	public Object getElementById(String id) {
 
 		// Sanitise if relative ID
-		id = id.charAt(0) == '/' ? getBookname() + id : id;
+		id = id.charAt(0) == '/' ? this.internalId + id : id;
 		id.replaceAll("\\s+", "_");
 
 		final Iterator<String> parts = Arrays.stream(id.split("/")).iterator();
@@ -74,7 +77,7 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 		try {
 			// Resolve book
-			if (parts.hasNext() && getBookname().equals(parts.next()))
+			if (parts.hasNext() && this.internalId.equals(parts.next()))
 				result = this;
 			else
 				return null;
@@ -346,12 +349,20 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 
 	@Override
 	public String getId() {
-		return UrlEscapers.urlPathSegmentEscaper().escape(bookname) + "/";
+		return this.internalId + "/";
 	}
 
 	@Override
 	public String getA1() {
 		return String.format("[%s]", bookname);
+	}
+	
+	protected String getInternalId() {
+		return this.internalId;
+	}
+	
+	protected void setInternalId(String internalId) {
+		this.internalId = UrlEscapers.urlPathSegmentEscaper().escape(internalId);
 	}
 
 	/*
@@ -413,7 +424,8 @@ public abstract class AbstractBook extends CachedModel<HasId> implements IBook {
 	public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
 		super.load(properties, resolver);
 		this.setPreCache(properties.getBooleanProperty(PROPERTY_PRE_CACHE, false));
-		this.bookname = properties.getProperty(PROPERTY_NAME);
+		this.setName(properties.getProperty(PROPERTY_NAME, PROPERTY_NAME_DEFAULT));
+
 	}
 
 	@Override

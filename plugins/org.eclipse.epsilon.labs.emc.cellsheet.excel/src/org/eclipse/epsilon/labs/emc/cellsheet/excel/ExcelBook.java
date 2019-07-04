@@ -30,7 +30,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	// Lower level access fields
 	protected Workbook delegate = null;
 	protected File excelFile = null;
-
+	
 	public ExcelBook() {
 		;
 	}
@@ -100,7 +100,7 @@ public class ExcelBook extends AbstractBook implements IBook, HasDelegate<Workbo
 	public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
 		super.load(properties, resolver);
 		setExcelFile(properties.getProperty(ExcelBook.PROPERTY_FILE));
-		setName(properties.getProperty(ExcelBook.PROPERTY_NAME, PROPERTY_NAME_DEFAULT));
+		setBookname(excelFile.getName());
 		load();
 	}
 

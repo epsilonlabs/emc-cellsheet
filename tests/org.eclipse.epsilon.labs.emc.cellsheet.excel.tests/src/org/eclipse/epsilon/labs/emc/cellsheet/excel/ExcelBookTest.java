@@ -11,13 +11,13 @@ public class ExcelBookTest {
 	@Test
 	public void test_load_when_using_properties() throws Exception {
 		StringProperties props = new StringProperties();
-		props.put(ExcelBook.PROPERTY_NAME, "Cellsheet");
+		props.put(ExcelBook.PROPERTY_NAME, "Excel");
 		props.put(ExcelBook.PROPERTY_FILE, "resources/Spreadsheet Equiv.xlsx");
 		
 		ExcelBook book = new ExcelBook();
 		book.load(props);
 		
-		assertEquals(book.getName(), "Cellsheet");
+		assertEquals(book.getName(), "Excel");
 		assertEquals(book.getBookname(), "Spreadsheet Equiv.xlsx");
 		assertEquals(book.getSheet(0).getName(), "Assumptions");
 	}
