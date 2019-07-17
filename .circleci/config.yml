@@ -60,17 +60,21 @@ jobs:
       - run: mvn -f plugins/eclipse package
 
       # Save built artifacts
-      - store_artifacts:
-          path: plugins/eclipse/releng/update/target/repository/features
-          destination: features
+      - run:
+          command: |
+            mkdir site
+            mv plugins/eclipse/releng/update/target/repository/features site/features
+            mv plugins/eclipse/releng/update/target/repository/plugins site/plugins
+            mv plugins/eclipse/releng/update/target/category.xml site/site.xml
 
       - store_artifacts:
-          path: plugins/eclipse/releng/update/target/repository/plugins
-          destination: plugins
-
-      - store_artifacts:
-          path: plugins/eclipse/releng/update/target/category.xml
-          destination: site.xml
+          path: site
+          destination: .
+      
+      - persist_to_workspace:
+          root: .
+          paths:
+            - site
 
       - save_cache:
           key: m2-{{ checksum "pom.xml" }}
@@ -114,6 +118,13 @@ jobs:
   deploy-epsilonlabs:
     executor: jdk-8
     steps:
+      - attach_workspace:
+          at: .
+
+      - store_artifacts:
+          path: site
+          destination: .
+
       - run:
           name: Trigger Epsilon Labs Deployment
           command: curl -X POST "https://circleci.com/api/v1.1/project/github/epsilonlabs/epsilonlabs-updatesite?circle-token=$TRIGGER_BUILD"
