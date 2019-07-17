@@ -40,7 +40,6 @@ jobs:
             - excel/target
 
       - slack/status:
-          fail_only: true
           success_message: JARs built successfully on $CIRCLE_BRANCH
           failure_message: Erroring building JARs on $CIRCLE_BRANCH
           webhook: https://hooks.slack.com/services/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
@@ -79,7 +78,6 @@ jobs:
             - ~/.m2
       
       - slack/status:
-          fail_only: true
           success_message: Eclipse Update Site built successfully on $CIRCLE_BRANCH
           failure_message: Erroring building Eclipse Update Site on $CIRCLE_BRANCH
           webhook: https://hooks.slack.com/services/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
