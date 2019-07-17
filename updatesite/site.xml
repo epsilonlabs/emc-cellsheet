@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site>
-   <feature url="features/org.eclipse.epsilon.labs.emc.cellsheet.excel.feature__1.0.0.qualifier.jar" id="org.eclipse.epsilon.labs.emc.cellsheet.excel.feature" version="1.0.0.qualifier">
-      <category name="Cellsheet"/>
-   </feature>
-   <category-def name="Cellsheet" label="Cellsheet EMC"/>
-</site>
