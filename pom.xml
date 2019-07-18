@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" 
-    xmlns="http://maven.apache.org/POM/4.0.0" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.eclipse.epsilon.labs</groupId>
@@ -73,6 +73,7 @@
     <modules>
         <module>core</module>
         <module>excel</module>
+        <module>emf</module>
     </modules>
 
     <properties>
@@ -85,8 +86,8 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
         <!-- jacoco -->
-        <argLine />
-        <argLine.global />
+        <argLine/>
+        <argLine.global/>
 
         <gpg.executable>gpg</gpg.executable>
 
@@ -272,7 +273,8 @@
                         <failIfNoTests>false</failIfNoTests>
                         <systemPropertyVariables>
                             <!-- Set JUL Formatting -->
-                            <java.util.logging.SimpleFormatter.format>[%4$s] %5$s%6$s%n</java.util.logging.SimpleFormatter.format>
+                            <java.util.logging.SimpleFormatter.format>[%4$s] %5$s%6$s%n
+                            </java.util.logging.SimpleFormatter.format>
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>

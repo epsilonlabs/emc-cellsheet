@@ -1,0 +1,146 @@
+@namespace(
+	uri="org.eclipse.epsilon.labs.cellsheet",
+	prefix="cellsheet")
+@genmodel(basePackage="org.eclipse.epsilon.labs.emf")
+package cellsheet;
+
+mapentry EStringToTokenEntry : String -> Token;
+
+// Has A1 Notation e.g. 'Sheet 1'!B52
+abstract class HasA1 {
+	derived attr String a1;
+}
+
+abstract class HasId {
+	id attr String ~id;
+}
+
+class Workspace {
+	val Book[*]#workspace books;
+}
+
+class Book extends HasId, HasA1 {
+	ref Workspace#books workspace;
+	val CellFormat[*]#book cellFormats;
+	val EStringToTokenEntry[*] tokens;
+	val Sheet[*]#book sheets;
+	attr String bookname;
+}
+
+class Sheet extends HasId, HasA1 {
+	ref Book#sheets book;
+	val Row[*]#sheet rows;
+	attr String name;
+	
+	op int getSheetIndex();
+}
+
+class Row extends HasId, HasA1 {
+	ref Sheet#rows sheet;
+	val Cell[*]#row cells;
+	attr int rowIndex;
+	
+	op Book getBook();
+	op int getA1RowIndex();
+}
+
+abstract class Cell extends HasId, HasA1 {
+	ref Row#cells row;
+	attr int colIndex;
+	
+	val Ast[*]#cell asts;
+	ref Ast root;
+	
+	op Book getBook();
+	op Sheet getSheet();
+	op int getRowIndex();
+	op int getA1RowIndex();
+	op String getA1ColIndex();
+}
+
+class BlankCell extends Cell {
+	attr Object value;
+}
+
+class TextCell extends Cell {
+	attr String value;
+}
+
+class NumericCell extends Cell {
+	attr Double value;
+}
+
+class BooleanCell extends Cell {
+	attr Boolean value;
+}
+
+class DateCell extends Cell {
+	attr Date value;
+}
+
+class FormulaCell extends Cell {
+	attr String value;
+}
+
+// AST
+class Token {
+	attr String value;
+	ref Ast[*]#token usedBy;
+}
+
+abstract class Ast {
+	val Ast[*]#parent children;
+	ref Cell#asts cell;
+	ref Token#usedBy token;
+	attr String cachedResult;
+	
+	op String evaluate();
+}
+
+abstract class Noop extends Ast {}
+abstract class Operand extends Ast {}
+abstract class Operation extends Ast {}
+abstract class PrefixOperator extends Ast {}
+abstract class InfixOperator extends Ast {}
+abstract class PostfixOperator extends Ast {}
+abstract class Unknown extends Ast {}
+
+class Nothing extends Noop {}
+class Whitespace extends Noop {}
+
+class Text extends Operand {}
+class Number extends Operand {}
+class Logical extends Operand {}
+class Error extends Operand {}
+class Range extends Operand {}
+class Ref extends Operand {}
+
+class RelativeRef extends Ref {}
+class RelativeRange extends Ref {}
+
+class Function extends Operation {}
+
+class Plus extends PrefixOperator {}
+class Negation extends PrefixOperator {}
+class Percent extends PostfixOperator {}
+
+class Exponention extends InfixOperator {}
+class Multiplication extends InfixOperator {}
+class Division extends InfixOperator {}
+class Addition extends InfixOperator {}
+class Subtraction extends InfixOperator {}
+class Concatenation extends InfixOperator {}
+class EQ extends InfixOperator {}
+class LT extends InfixOperator {}
+class GT extends InfixOperator {}
+class LTE extends InfixOperator {}
+class GTE extends InfixOperator {}
+class NEQ extends InfixOperator {}
+class Intersection extends InfixOperator {}
+class Union extends InfixOperator {}
+
+// CellFormat
+class CellFormat extends HasId {
+	ref Book#cellFormats book;
+	attr String value;
+}

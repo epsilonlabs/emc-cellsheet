@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" 
-    xmlns="http://maven.apache.org/POM/4.0.0" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -16,8 +16,8 @@
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>
-        EMC Cellsheet Excel Component
-        Support for Excel 2007+ documents
+        EMC Cellsheet Excel component
+        Back-end supporting Excel 2007+ documents
     </description>
 
     <dependencies>
@@ -59,7 +59,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.emc.cellsheet.excel</Bundle-SymbolicName>
                         <Export-Package>
-                                org.eclipse.epsilon.labs.emc.cellsheet.excel
+                            org.eclipse.epsilon.labs.emc.cellsheet.excel
                         </Export-Package>
                     </instructions>
                 </configuration>

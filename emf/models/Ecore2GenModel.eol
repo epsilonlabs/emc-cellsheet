@@ -1,0 +1,7 @@
+var rootPackage = "org.eclipse.epsilon.labs.emf.cellsheet";
+var genmodel = GenModel!GenModel.all.first();
+
+genmodel.bundleManifest = false;
+
+genmodel.modelDirectory = "/emf-cellsheet-model/src/main/java";
+genmodel.modelPluginID = rootPackage + ".model";
