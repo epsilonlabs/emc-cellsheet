@@ -9,6 +9,7 @@ import java.util.Set;
 public abstract class InfixOperator extends AbstractAst {
 
     public InfixOperator() {
+        super();
     }
 
     public InfixOperator(Token token) {

@@ -9,6 +9,7 @@ import java.util.Set;
 public abstract class PrefixOperator extends AbstractAst {
 
     public PrefixOperator() {
+        super();
     }
 
     public PrefixOperator(Token token) {

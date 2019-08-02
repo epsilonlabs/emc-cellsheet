@@ -9,6 +9,8 @@ import org.eclipse.epsilon.labs.emc.cellsheet.ast.Number;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("unchecked")
@@ -85,7 +87,7 @@ public class PoiCellTest {
         assertThat(root.getToken().getValue()).isEqualTo("SUM");
         assertThat(root.getChildren()).hasSize(1);
 
-        Ast child = root.getChildren().get(0);
+        Ast child = (Ast) root.getChildren().get(0);
         assertThat(child).isNotNull().isInstanceOf(Range.class);
         assertThat(child.getToken().getValue()).isEqualTo("A1:A5");
     }

@@ -49,7 +49,7 @@ public class PoiAstFactory {
 
                 if (ptg instanceof OperationPtg) {
                     for (int i = ((OperationPtg) ptg).getNumberOfOperands(); i > 0; i--) {
-                        ast.getChildren().add(0, stack.pop());
+                        ast.addChild(i - 1, stack.pop());
                     }
                 }
                 stack.push(ast);

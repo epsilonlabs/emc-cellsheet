@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public interface Ast<T extends Ast> extends HasId {
+public interface Ast<T extends Ast<T>> extends HasId {
 
     Cell getCell();
 
@@ -24,6 +24,8 @@ public interface Ast<T extends Ast> extends HasId {
     void setPosition(int position);
 
     List<T> getChildren();
+
+    T childAt(int position);
 
     void addChild(int position, T child);
 

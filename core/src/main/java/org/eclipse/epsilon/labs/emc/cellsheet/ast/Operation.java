@@ -10,6 +10,7 @@ import java.util.Set;
 public abstract class Operation extends AbstractAst {
 
     public Operation() {
+        super();
     }
 
     public Operation(Token token) {

@@ -9,8 +9,11 @@ import org.eclipse.epsilon.labs.emc.cellsheet.ast.Union;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("unchecked")
 public class PoiAstFactoryTest {
 
     private Cell delegate;
@@ -33,7 +36,9 @@ public class PoiAstFactoryTest {
         assertThat(ast.getParent()).isNull();
         assertThat(ast.getChildren()).hasSize(1);
 
-        ast = ast.getChildren().get(0);
+        List children = ast.getChildren();
+
+        ast = ast.childAt(0);
         assertThat(ast).isInstanceOf(Range.class);
         assertThat(ast.getToken().getValue()).isEqualTo("A1:A5");
         assertThat(ast.getParent()).isSameAs(root);
@@ -44,17 +49,25 @@ public class PoiAstFactoryTest {
     public void of_given_SUM_with_UNION() {
         delegate.setCellFormula("SUM(A1:A5,B1:B5)");
         Ast root = getAst();
-        Ast ast = root;
 
-        assertThat(ast).isInstanceOf(Function.class);
-        assertThat(ast.getToken().getValue()).isEqualTo("SUM");
-        assertThat(ast.getParent()).isNull();
-        assertThat(ast.getChildren()).hasSize(1);
+        assertThat(root).isNotNull().isInstanceOf(Function.class);
+        assertThat(root.getToken().getValue()).isEqualTo("SUM");
+        assertThat(root.getParent()).isNull();
+        assertThat(root.getChildren()).hasSize(2);
 
-        ast = ast.getChildren().get(0);
-        assertThat(ast).isInstanceOf(Union.class);
+        Ast ast = root.childAt(0);
+        assertThat(ast).isNotNull().isInstanceOf(Range.class);
         assertThat(ast.getParent()).isSameAs(root);
-        assertThat(ast.getChildren()).isNotEmpty().hasSize(2);
+        assertThat(ast.getChildren()).isEmpty();
+        assertThat(ast.getPosition()).isEqualTo(0);
+        assertThat(ast.getToken().getValue()).isEqualTo("A1:A5");
+
+        ast = root.childAt(1);
+        assertThat(ast).isNotNull().isInstanceOf(Range.class);
+        assertThat(ast.getParent()).isSameAs(root);
+        assertThat(ast.getChildren()).isEmpty();
+        assertThat(ast.getPosition()).isEqualTo(1);
+        assertThat(ast.getToken().getValue()).isEqualTo("B1:B5");
     }
 
     Ast getAst() {

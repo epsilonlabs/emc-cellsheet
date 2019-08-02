@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.graph.*;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
@@ -14,27 +15,22 @@ import static com.google.common.base.Preconditions.*;
 
 public abstract class AbstractAst implements Ast<AbstractAst> {
 
-    protected AstEvaluator evaluator;
-
     protected Cell cell;
-
+    protected Token token;
+    protected AstEvaluator evaluator;
     protected MutableValueGraph<AbstractAst, Integer> graph;
 
-    protected Token token;
-    private List<AbstractAst> successors;
-
     protected AbstractAst() {
-        graph = ValueGraphBuilder.directed().allowsSelfLoops(false).build();
+        this.graph = ValueGraphBuilder.directed().allowsSelfLoops(false).build();
     }
 
     protected AbstractAst(Token token) {
-        super();
+        this();
         this.token = token;
     }
 
     protected AbstractAst(String token) {
-        super();
-        this.token = TokenFactory.getInstance().getToken(token);
+        this(TokenFactory.getInstance().getToken(token));
     }
 
     @Override
@@ -50,8 +46,13 @@ public abstract class AbstractAst implements Ast<AbstractAst> {
         if (graph.nodes().contains(this))
             return graph.successors(this).stream()
                     .sorted(Comparator.comparingInt(AbstractAst::getPosition))
-                    .collect(Collectors.toList());
+                    .collect(ImmutableList.toImmutableList());
         return Collections.emptyList();
+    }
+
+    @Override
+    public AbstractAst childAt(int position) {
+        return Iterables.get(getChildren(), position, null);
     }
 
     @Override
@@ -68,9 +69,12 @@ public abstract class AbstractAst implements Ast<AbstractAst> {
         graph.addNode(child);
 
         // Shift any other children if needed
-        graph.successors(this).stream()
-                .filter(v -> v.getPosition() >= position)
-                .forEach(v -> v.setPosition(v.getPosition() + 1));
+        List<AbstractAst> children = getChildren();
+        if (children.stream().anyMatch(v -> v.getPosition() == position)) {
+            children.stream()
+                    .filter(v -> v.getPosition() >= position)
+                    .forEach(v -> v.setPosition(v.getPosition() + 1));
+        }
 
         // Add all contents from child
         graph.putEdgeValue(this, child, position);

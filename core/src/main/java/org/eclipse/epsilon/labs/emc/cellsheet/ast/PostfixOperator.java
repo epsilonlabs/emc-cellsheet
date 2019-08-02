@@ -9,6 +9,7 @@ import java.util.Set;
 public abstract class PostfixOperator extends AbstractAst {
 
     public PostfixOperator() {
+        super();
     }
 
     public PostfixOperator(Token token) {
