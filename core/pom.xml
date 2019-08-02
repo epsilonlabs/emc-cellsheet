@@ -16,7 +16,7 @@
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>
-        EMC Cellsheet core component.
+        EMC Cellsheet Core components.
         Common interfaces and utilities for dedicated spreadsheet technology back-ends
     </description>
 
@@ -27,13 +27,30 @@
         </dependency>
 
         <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
 
         <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
         </dependency>
 
         <dependency>
@@ -51,8 +68,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.emc.cellsheet.core</Bundle-SymbolicName>
                         <Export-Package>
-                            <!-- TODO: Change once package has been refactored -->
-                            org.eclipse.epsilon.labs.emc.cellsheet
+                            org.eclipse.epsilon.labs.emc.cellsheet,org.eclipse.epsilon.labs.emc.cellsheet.ast
                         </Export-Package>
                     </instructions>
                 </configuration>

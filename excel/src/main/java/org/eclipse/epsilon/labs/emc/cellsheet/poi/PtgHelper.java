@@ -2,9 +2,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet.poi;
 
 import java.lang.reflect.Method;
 
-import org.apache.poi.ss.formula.ptg.AttrPtg;
-import org.apache.poi.ss.formula.ptg.Ptg;
-import org.apache.poi.ss.formula.ptg.ValueOperatorPtg;
+import org.apache.poi.ss.formula.ptg.*;
 
 /**
  * Helper class for interacting with {@link Ptg} instances
@@ -33,7 +31,14 @@ public class PtgHelper {
 	 * @throws UnsupportedOperationException Encounters a ptg that cannot be
 	 *                                       converted
 	 */
-	public static String toString(final Ptg ptg) {
+	public static String valueOf(final Ptg ptg) {
+		if (ptg instanceof ScalarConstantPtg) {
+			if (ptg instanceof IntPtg) return String.valueOf(((IntPtg) ptg).getValue());
+			if (ptg instanceof NumberPtg) return String.valueOf(((NumberPtg) ptg).getValue());
+			if (ptg instanceof StringPtg) return ((StringPtg) ptg).getValue();
+			if (ptg instanceof BoolPtg) return String.valueOf(((BoolPtg) ptg).getValue());
+		}
+
 		try {
 			if (ptg instanceof ValueOperatorPtg) {
 				final Method method = ValueOperatorPtg.class.getDeclaredMethod("getSid");
