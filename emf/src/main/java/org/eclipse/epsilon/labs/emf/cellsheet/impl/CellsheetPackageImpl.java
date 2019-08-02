@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -23,6 +24,8 @@ import org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage;
 import org.eclipse.epsilon.labs.emf.cellsheet.Concatenation;
 import org.eclipse.epsilon.labs.emf.cellsheet.DateCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Division;
+import org.eclipse.epsilon.labs.emf.cellsheet.ErrorCell;
+import org.eclipse.epsilon.labs.emf.cellsheet.Exponentiation;
 import org.eclipse.epsilon.labs.emf.cellsheet.Exponention;
 import org.eclipse.epsilon.labs.emf.cellsheet.FormulaCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Function;
@@ -34,7 +37,6 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Logical;
 import org.eclipse.epsilon.labs.emf.cellsheet.Multiplication;
 import org.eclipse.epsilon.labs.emf.cellsheet.Negation;
 import org.eclipse.epsilon.labs.emf.cellsheet.Noop;
-import org.eclipse.epsilon.labs.emf.cellsheet.Nothing;
 import org.eclipse.epsilon.labs.emf.cellsheet.NumericCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Operand;
 import org.eclipse.epsilon.labs.emf.cellsheet.Operation;
@@ -54,7 +56,6 @@ import org.eclipse.epsilon.labs.emf.cellsheet.TextCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Token;
 import org.eclipse.epsilon.labs.emf.cellsheet.Union;
 import org.eclipse.epsilon.labs.emf.cellsheet.Unknown;
-import org.eclipse.epsilon.labs.emf.cellsheet.Whitespace;
 import org.eclipse.epsilon.labs.emf.cellsheet.Workspace;
 
 /**
@@ -181,13 +182,6 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass noopEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass operandEClass = null;
 
 	/**
@@ -230,14 +224,7 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass nothingEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass whitespaceEClass = null;
+	private EClass noopEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -272,14 +259,14 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass rangeEClass = null;
+	private EClass refEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass refEClass = null;
+	private EClass rangeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -328,7 +315,7 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass exponentionEClass = null;
+	private EClass exponentiationEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -585,6 +572,16 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
+	public EReference getWorkspace_Tokens() {
+		return (EReference)workspaceEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getBook() {
 		return bookEClass;
 	}
@@ -615,7 +612,7 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
-	public EReference getBook_Tokens() {
+	public EReference getBook_Sheets() {
 		return (EReference)bookEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -625,18 +622,8 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
-	public EReference getBook_Sheets() {
-		return (EReference)bookEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EAttribute getBook_Bookname() {
-		return (EAttribute)bookEClass.getEStructuralFeatures().get(4);
+		return (EAttribute)bookEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -675,8 +662,18 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
-	public EAttribute getSheet_Name() {
+	public EAttribute getSheet_SheetName() {
 		return (EAttribute)sheetEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getSheet_SheetIndex() {
+		return (EAttribute)sheetEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -935,16 +932,6 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
-	public EReference getAst_Token() {
-		return (EReference)astEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EReference getAst_Children() {
 		return (EReference)astEClass.getEStructuralFeatures().get(0);
 	}
@@ -965,18 +952,8 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
-	public EAttribute getAst_CachedResult() {
-		return (EAttribute)astEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getNoop() {
-		return noopEClass;
+	public EReference getAst_Token() {
+		return (EReference)astEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1045,18 +1022,8 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
-	public EClass getNothing() {
-		return nothingEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EClass getWhitespace() {
-		return whitespaceEClass;
+	public EClass getNoop() {
+		return noopEClass;
 	}
 
 	/**
@@ -1105,8 +1072,8 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
-	public EClass getRange() {
-		return rangeEClass;
+	public EClass getRef() {
+		return refEClass;
 	}
 
 	/**
@@ -1115,8 +1082,8 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
-	public EClass getRef() {
-		return refEClass;
+	public EClass getRange() {
+		return rangeEClass;
 	}
 
 	/**
@@ -1185,8 +1152,8 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
-	public EClass getExponention() {
-		return exponentionEClass;
+	public EClass getExponentiation() {
+		return exponentiationEClass;
 	}
 
 	/**
@@ -1390,18 +1357,19 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 
 		workspaceEClass = createEClass(WORKSPACE);
 		createEReference(workspaceEClass, WORKSPACE__BOOKS);
+		createEReference(workspaceEClass, WORKSPACE__TOKENS);
 
 		bookEClass = createEClass(BOOK);
 		createEReference(bookEClass, BOOK__WORKSPACE);
 		createEReference(bookEClass, BOOK__CELL_FORMATS);
-		createEReference(bookEClass, BOOK__TOKENS);
 		createEReference(bookEClass, BOOK__SHEETS);
 		createEAttribute(bookEClass, BOOK__BOOKNAME);
 
 		sheetEClass = createEClass(SHEET);
 		createEReference(sheetEClass, SHEET__BOOK);
 		createEReference(sheetEClass, SHEET__ROWS);
-		createEAttribute(sheetEClass, SHEET__NAME);
+		createEAttribute(sheetEClass, SHEET__SHEET_NAME);
+		createEAttribute(sheetEClass, SHEET__SHEET_INDEX);
 
 		rowEClass = createEClass(ROW);
 		createEReference(rowEClass, ROW__SHEET);
@@ -1440,9 +1408,6 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 		createEReference(astEClass, AST__CHILDREN);
 		createEReference(astEClass, AST__CELL);
 		createEReference(astEClass, AST__TOKEN);
-		createEAttribute(astEClass, AST__CACHED_RESULT);
-
-		noopEClass = createEClass(NOOP);
 
 		operandEClass = createEClass(OPERAND);
 
@@ -1456,9 +1421,7 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 
 		unknownEClass = createEClass(UNKNOWN);
 
-		nothingEClass = createEClass(NOTHING);
-
-		whitespaceEClass = createEClass(WHITESPACE);
+		noopEClass = createEClass(NOOP);
 
 		textEClass = createEClass(TEXT);
 
@@ -1468,9 +1431,9 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 
 		errorEClass = createEClass(ERROR);
 
-		rangeEClass = createEClass(RANGE);
-
 		refEClass = createEClass(REF);
+
+		rangeEClass = createEClass(RANGE);
 
 		relativeRefEClass = createEClass(RELATIVE_REF);
 
@@ -1484,7 +1447,7 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 
 		percentEClass = createEClass(PERCENT);
 
-		exponentionEClass = createEClass(EXPONENTION);
+		exponentiationEClass = createEClass(EXPONENTIATION);
 
 		multiplicationEClass = createEClass(MULTIPLICATION);
 
@@ -1559,28 +1522,26 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 		booleanCellEClass.getESuperTypes().add(this.getCell());
 		dateCellEClass.getESuperTypes().add(this.getCell());
 		formulaCellEClass.getESuperTypes().add(this.getCell());
-		noopEClass.getESuperTypes().add(this.getAst());
 		operandEClass.getESuperTypes().add(this.getAst());
 		operationEClass.getESuperTypes().add(this.getAst());
 		prefixOperatorEClass.getESuperTypes().add(this.getAst());
 		infixOperatorEClass.getESuperTypes().add(this.getAst());
 		postfixOperatorEClass.getESuperTypes().add(this.getAst());
 		unknownEClass.getESuperTypes().add(this.getAst());
-		nothingEClass.getESuperTypes().add(this.getNoop());
-		whitespaceEClass.getESuperTypes().add(this.getNoop());
+		noopEClass.getESuperTypes().add(this.getAst());
 		textEClass.getESuperTypes().add(this.getOperand());
 		numberEClass.getESuperTypes().add(this.getOperand());
 		logicalEClass.getESuperTypes().add(this.getOperand());
 		errorEClass.getESuperTypes().add(this.getOperand());
-		rangeEClass.getESuperTypes().add(this.getOperand());
 		refEClass.getESuperTypes().add(this.getOperand());
+		rangeEClass.getESuperTypes().add(this.getOperand());
 		relativeRefEClass.getESuperTypes().add(this.getRef());
 		relativeRangeEClass.getESuperTypes().add(this.getRef());
 		functionEClass.getESuperTypes().add(this.getOperation());
 		plusEClass.getESuperTypes().add(this.getPrefixOperator());
 		negationEClass.getESuperTypes().add(this.getPrefixOperator());
 		percentEClass.getESuperTypes().add(this.getPostfixOperator());
-		exponentionEClass.getESuperTypes().add(this.getInfixOperator());
+		exponentiationEClass.getESuperTypes().add(this.getInfixOperator());
 		multiplicationEClass.getESuperTypes().add(this.getInfixOperator());
 		divisionEClass.getESuperTypes().add(this.getInfixOperator());
 		additionEClass.getESuperTypes().add(this.getInfixOperator());
@@ -1609,20 +1570,19 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 
 		initEClass(workspaceEClass, Workspace.class, "Workspace", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getWorkspace_Books(), this.getBook(), this.getBook_Workspace(), "books", null, 0, -1, Workspace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getWorkspace_Tokens(), this.getEStringToTokenEntry(), null, "tokens", null, 0, -1, Workspace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(bookEClass, Book.class, "Book", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getBook_Workspace(), this.getWorkspace(), this.getWorkspace_Books(), "workspace", null, 0, 1, Book.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBook_CellFormats(), this.getCellFormat(), this.getCellFormat_Book(), "cellFormats", null, 0, -1, Book.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getBook_Tokens(), this.getEStringToTokenEntry(), null, "tokens", null, 0, -1, Book.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBook_Sheets(), this.getSheet(), this.getSheet_Book(), "sheets", null, 0, -1, Book.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getBook_Bookname(), ecorePackage.getEString(), "bookname", null, 0, 1, Book.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(sheetEClass, Sheet.class, "Sheet", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getSheet_Book(), this.getBook(), this.getBook_Sheets(), "book", null, 0, 1, Sheet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSheet_Rows(), this.getRow(), this.getRow_Sheet(), "rows", null, 0, -1, Sheet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getSheet_Name(), ecorePackage.getEString(), "name", null, 0, 1, Sheet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		addEOperation(sheetEClass, ecorePackage.getEInt(), "getSheetIndex", 0, 1, IS_UNIQUE, IS_ORDERED);
+		initEAttribute(getSheet_SheetName(), ecorePackage.getEString(), "sheetName", null, 0, 1, Sheet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSheet_SheetIndex(), ecorePackage.getEInt(), "sheetIndex", null, 0, 1, Sheet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(rowEClass, Row.class, "Row", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getRow_Sheet(), this.getSheet(), this.getSheet_Rows(), "sheet", null, 0, 1, Row.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1675,11 +1635,8 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 		initEReference(getAst_Children(), this.getAst(), null, "children", null, 0, -1, Ast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getAst_Cell(), this.getCell(), this.getCell_Asts(), "cell", null, 0, 1, Ast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getAst_Token(), this.getToken(), this.getToken_UsedBy(), "token", null, 0, 1, Ast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAst_CachedResult(), ecorePackage.getEString(), "cachedResult", null, 0, 1, Ast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		addEOperation(astEClass, ecorePackage.getEString(), "evaluate", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-		initEClass(noopEClass, Noop.class, "Noop", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(operandEClass, Operand.class, "Operand", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1691,11 +1648,9 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 
 		initEClass(postfixOperatorEClass, PostfixOperator.class, "PostfixOperator", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(unknownEClass, Unknown.class, "Unknown", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(unknownEClass, Unknown.class, "Unknown", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(nothingEClass, Nothing.class, "Nothing", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(whitespaceEClass, Whitespace.class, "Whitespace", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(noopEClass, Noop.class, "Noop", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(textEClass, Text.class, "Text", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1705,9 +1660,9 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 
 		initEClass(errorEClass, org.eclipse.epsilon.labs.emf.cellsheet.Error.class, "Error", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(rangeEClass, Range.class, "Range", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
 		initEClass(refEClass, Ref.class, "Ref", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(rangeEClass, Range.class, "Range", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(relativeRefEClass, RelativeRef.class, "RelativeRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1721,7 +1676,7 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 
 		initEClass(percentEClass, Percent.class, "Percent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(exponentionEClass, Exponention.class, "Exponention", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(exponentiationEClass, Exponentiation.class, "Exponentiation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(multiplicationEClass, Multiplication.class, "Multiplication", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

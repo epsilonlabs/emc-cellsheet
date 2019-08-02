@@ -21,6 +21,8 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Concatenation;
 import org.eclipse.epsilon.labs.emf.cellsheet.DateCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Division;
 import org.eclipse.epsilon.labs.emf.cellsheet.EQ;
+import org.eclipse.epsilon.labs.emf.cellsheet.ErrorCell;
+import org.eclipse.epsilon.labs.emf.cellsheet.Exponentiation;
 import org.eclipse.epsilon.labs.emf.cellsheet.Exponention;
 import org.eclipse.epsilon.labs.emf.cellsheet.FormulaCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Function;
@@ -37,7 +39,6 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Multiplication;
 import org.eclipse.epsilon.labs.emf.cellsheet.NEQ;
 import org.eclipse.epsilon.labs.emf.cellsheet.Negation;
 import org.eclipse.epsilon.labs.emf.cellsheet.Noop;
-import org.eclipse.epsilon.labs.emf.cellsheet.Nothing;
 import org.eclipse.epsilon.labs.emf.cellsheet.NumericCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Operand;
 import org.eclipse.epsilon.labs.emf.cellsheet.Operation;
@@ -57,7 +58,6 @@ import org.eclipse.epsilon.labs.emf.cellsheet.TextCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Token;
 import org.eclipse.epsilon.labs.emf.cellsheet.Union;
 import org.eclipse.epsilon.labs.emf.cellsheet.Unknown;
-import org.eclipse.epsilon.labs.emf.cellsheet.Whitespace;
 import org.eclipse.epsilon.labs.emf.cellsheet.Workspace;
 
 /**
@@ -239,13 +239,6 @@ public class CellsheetSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case CellsheetPackage.NOOP: {
-				Noop noop = (Noop)theEObject;
-				T result = caseNoop(noop);
-				if (result == null) result = caseAst(noop);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case CellsheetPackage.OPERAND: {
 				Operand operand = (Operand)theEObject;
 				T result = caseOperand(operand);
@@ -288,19 +281,10 @@ public class CellsheetSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case CellsheetPackage.NOTHING: {
-				Nothing nothing = (Nothing)theEObject;
-				T result = caseNothing(nothing);
-				if (result == null) result = caseNoop(nothing);
-				if (result == null) result = caseAst(nothing);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case CellsheetPackage.WHITESPACE: {
-				Whitespace whitespace = (Whitespace)theEObject;
-				T result = caseWhitespace(whitespace);
-				if (result == null) result = caseNoop(whitespace);
-				if (result == null) result = caseAst(whitespace);
+			case CellsheetPackage.NOOP: {
+				Noop noop = (Noop)theEObject;
+				T result = caseNoop(noop);
+				if (result == null) result = caseAst(noop);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -336,19 +320,19 @@ public class CellsheetSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case CellsheetPackage.RANGE: {
-				Range range = (Range)theEObject;
-				T result = caseRange(range);
-				if (result == null) result = caseOperand(range);
-				if (result == null) result = caseAst(range);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case CellsheetPackage.REF: {
 				Ref ref = (Ref)theEObject;
 				T result = caseRef(ref);
 				if (result == null) result = caseOperand(ref);
 				if (result == null) result = caseAst(ref);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case CellsheetPackage.RANGE: {
+				Range range = (Range)theEObject;
+				T result = caseRange(range);
+				if (result == null) result = caseOperand(range);
+				if (result == null) result = caseAst(range);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -402,11 +386,11 @@ public class CellsheetSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case CellsheetPackage.EXPONENTION: {
-				Exponention exponention = (Exponention)theEObject;
-				T result = caseExponention(exponention);
-				if (result == null) result = caseInfixOperator(exponention);
-				if (result == null) result = caseAst(exponention);
+			case CellsheetPackage.EXPONENTIATION: {
+				Exponentiation exponentiation = (Exponentiation)theEObject;
+				T result = caseExponentiation(exponentiation);
+				if (result == null) result = caseInfixOperator(exponentiation);
+				if (result == null) result = caseAst(exponentiation);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -766,21 +750,6 @@ public class CellsheetSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Noop</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Noop</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseNoop(Noop object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Operand</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -871,32 +840,17 @@ public class CellsheetSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Nothing</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Noop</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Nothing</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Noop</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseNothing(Nothing object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Whitespace</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Whitespace</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseWhitespace(Whitespace object) {
+	public T caseNoop(Noop object) {
 		return null;
 	}
 
@@ -961,21 +915,6 @@ public class CellsheetSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Range</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Range</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseRange(Range object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Ref</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -987,6 +926,21 @@ public class CellsheetSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseRef(Ref object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Range</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Range</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseRange(Range object) {
 		return null;
 	}
 
@@ -1081,17 +1035,17 @@ public class CellsheetSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Exponention</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Exponentiation</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Exponention</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Exponentiation</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseExponention(Exponention object) {
+	public T caseExponentiation(Exponentiation object) {
 		return null;
 	}
 

@@ -5,22 +5,22 @@ package org.eclipse.epsilon.labs.emf.cellsheet.impl;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage;
-import org.eclipse.epsilon.labs.emf.cellsheet.Nothing;
+import org.eclipse.epsilon.labs.emf.cellsheet.Exponentiation;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Nothing</b></em>'.
+ * An implementation of the model object '<em><b>Exponentiation</b></em>'.
  * <!-- end-user-doc -->
  *
  * @generated
  */
-public class NothingImpl extends NoopImpl implements Nothing {
+public class ExponentiationImpl extends InfixOperatorImpl implements Exponentiation {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected NothingImpl() {
+	protected ExponentiationImpl() {
 		super();
 	}
 
@@ -31,7 +31,7 @@ public class NothingImpl extends NoopImpl implements Nothing {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return CellsheetPackage.Literals.NOTHING;
+		return CellsheetPackage.Literals.EXPONENTIATION;
 	}
 
-} //NothingImpl
+} //ExponentiationImpl

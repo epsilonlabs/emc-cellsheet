@@ -8,16 +8,13 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.EMap;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
-import org.eclipse.emf.ecore.util.EcoreEMap;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -40,7 +37,6 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Workspace;
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.BookImpl#getA1 <em>A1</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.BookImpl#getWorkspace <em>Workspace</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.BookImpl#getCellFormats <em>Cell Formats</em>}</li>
- *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.BookImpl#getTokens <em>Tokens</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.BookImpl#getSheets <em>Sheets</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.BookImpl#getBookname <em>Bookname</em>}</li>
  * </ul>
@@ -77,16 +73,6 @@ public class BookImpl extends HasIdImpl implements Book {
 	 * @ordered
 	 */
 	protected EList<CellFormat> cellFormats;
-
-	/**
-	 * The cached value of the '{@link #getTokens() <em>Tokens</em>}' map.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getTokens()
-	 * @generated
-	 * @ordered
-	 */
-	protected EMap<String, Token> tokens;
 
 	/**
 	 * The cached value of the '{@link #getSheets() <em>Sheets</em>}' containment reference list.
@@ -222,19 +208,6 @@ public class BookImpl extends HasIdImpl implements Book {
 	 * @generated
 	 */
 	@Override
-	public EMap<String, Token> getTokens() {
-		if (tokens == null) {
-			tokens = new EcoreEMap<String,Token>(CellsheetPackage.Literals.ESTRING_TO_TOKEN_ENTRY, EStringToTokenEntryImpl.class, this, CellsheetPackage.BOOK__TOKENS);
-		}
-		return tokens;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EList<Sheet> getSheets() {
 		if (sheets == null) {
 			sheets = new EObjectContainmentWithInverseEList<Sheet>(Sheet.class, this, CellsheetPackage.BOOK__SHEETS, CellsheetPackage.SHEET__BOOK);
@@ -298,8 +271,6 @@ public class BookImpl extends HasIdImpl implements Book {
 				return basicSetWorkspace(null, msgs);
 			case CellsheetPackage.BOOK__CELL_FORMATS:
 				return ((InternalEList<?>)getCellFormats()).basicRemove(otherEnd, msgs);
-			case CellsheetPackage.BOOK__TOKENS:
-				return ((InternalEList<?>)getTokens()).basicRemove(otherEnd, msgs);
 			case CellsheetPackage.BOOK__SHEETS:
 				return ((InternalEList<?>)getSheets()).basicRemove(otherEnd, msgs);
 		}
@@ -334,9 +305,6 @@ public class BookImpl extends HasIdImpl implements Book {
 				return getWorkspace();
 			case CellsheetPackage.BOOK__CELL_FORMATS:
 				return getCellFormats();
-			case CellsheetPackage.BOOK__TOKENS:
-				if (coreType) return getTokens();
-				else return getTokens().map();
 			case CellsheetPackage.BOOK__SHEETS:
 				return getSheets();
 			case CellsheetPackage.BOOK__BOOKNAME:
@@ -363,9 +331,6 @@ public class BookImpl extends HasIdImpl implements Book {
 			case CellsheetPackage.BOOK__CELL_FORMATS:
 				getCellFormats().clear();
 				getCellFormats().addAll((Collection<? extends CellFormat>)newValue);
-				return;
-			case CellsheetPackage.BOOK__TOKENS:
-				((EStructuralFeature.Setting)getTokens()).set(newValue);
 				return;
 			case CellsheetPackage.BOOK__SHEETS:
 				getSheets().clear();
@@ -395,9 +360,6 @@ public class BookImpl extends HasIdImpl implements Book {
 			case CellsheetPackage.BOOK__CELL_FORMATS:
 				getCellFormats().clear();
 				return;
-			case CellsheetPackage.BOOK__TOKENS:
-				getTokens().clear();
-				return;
 			case CellsheetPackage.BOOK__SHEETS:
 				getSheets().clear();
 				return;
@@ -422,8 +384,6 @@ public class BookImpl extends HasIdImpl implements Book {
 				return getWorkspace() != null;
 			case CellsheetPackage.BOOK__CELL_FORMATS:
 				return cellFormats != null && !cellFormats.isEmpty();
-			case CellsheetPackage.BOOK__TOKENS:
-				return tokens != null && !tokens.isEmpty();
 			case CellsheetPackage.BOOK__SHEETS:
 				return sheets != null && !sheets.isEmpty();
 			case CellsheetPackage.BOOK__BOOKNAME:

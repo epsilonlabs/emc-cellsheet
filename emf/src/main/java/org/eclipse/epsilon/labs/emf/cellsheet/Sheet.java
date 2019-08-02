@@ -15,7 +15,8 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Sheet#getBook <em>Book</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Sheet#getRows <em>Rows</em>}</li>
- *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Sheet#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Sheet#getSheetName <em>Sheet Name</em>}</li>
+ *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Sheet#getSheetIndex <em>Sheet Index</em>}</li>
  * </ul>
  *
  * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getSheet()
@@ -62,33 +63,47 @@ public interface Sheet extends HasId, HasA1 {
 	EList<Row> getRows();
 
 	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
+	 * Returns the value of the '<em><b>Sheet Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Name</em>' attribute.
-	 * @see #setName(String)
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getSheet_Name()
+	 * @return the value of the '<em>Sheet Name</em>' attribute.
+	 * @see #setSheetName(String)
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getSheet_SheetName()
 	 * @model
 	 * @generated
 	 */
-	String getName();
+	String getSheetName();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.epsilon.labs.emf.cellsheet.Sheet#getName <em>Name</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.epsilon.labs.emf.cellsheet.Sheet#getSheetName <em>Sheet Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
-	 * @see #getName()
+	 * @param value the new value of the '<em>Sheet Name</em>' attribute.
+	 * @see #getSheetName()
 	 * @generated
 	 */
-	void setName(String value);
+	void setSheetName(String value);
 
 	/**
+	 * Returns the value of the '<em><b>Sheet Index</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @model kind="operation"
+	 * @return the value of the '<em>Sheet Index</em>' attribute.
+	 * @see #setSheetIndex(int)
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getSheet_SheetIndex()
+	 * @model
 	 * @generated
 	 */
 	int getSheetIndex();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.epsilon.labs.emf.cellsheet.Sheet#getSheetIndex <em>Sheet Index</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Sheet Index</em>' attribute.
+	 * @see #getSheetIndex()
+	 * @generated
+	 */
+	void setSheetIndex(int value);
 
 } // Sheet

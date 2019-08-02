@@ -10,7 +10,7 @@ package org.eclipse.epsilon.labs.emf.cellsheet;
  *
  *
  * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getUnknown()
- * @model abstract="true"
+ * @model
  * @generated
  */
 public interface Unknown extends Ast {

@@ -35,7 +35,6 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Token;
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstImpl#getChildren <em>Children</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstImpl#getCell <em>Cell</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstImpl#getToken <em>Token</em>}</li>
- *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstImpl#getCachedResult <em>Cached Result</em>}</li>
  * </ul>
  *
  * @generated
@@ -62,26 +61,6 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 	protected Token token;
 
 	/**
-	 * The default value of the '{@link #getCachedResult() <em>Cached Result</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getCachedResult()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String CACHED_RESULT_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getCachedResult() <em>Cached Result</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getCachedResult()
-	 * @generated
-	 * @ordered
-	 */
-	protected String cachedResult = CACHED_RESULT_EDEFAULT;
-
-	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -98,6 +77,62 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 	@Override
 	protected EClass eStaticClass() {
 		return CellsheetPackage.Literals.AST;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EList<Ast> getChildren() {
+		if (children == null) {
+			children = new EObjectContainmentEList<Ast>(Ast.class, this, CellsheetPackage.AST__CHILDREN);
+		}
+		return children;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Cell getCell() {
+		if (eContainerFeatureID() != CellsheetPackage.AST__CELL) return null;
+		return (Cell)eInternalContainer();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetCell(Cell newCell, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject)newCell, CellsheetPackage.AST__CELL, msgs);
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setCell(Cell newCell) {
+		if (newCell != eInternalContainer() || (eContainerFeatureID() != CellsheetPackage.AST__CELL && newCell != null)) {
+			if (EcoreUtil.isAncestor(this, newCell))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+			NotificationChain msgs = null;
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
+			if (newCell != null)
+				msgs = ((InternalEObject)newCell).eInverseAdd(this, CellsheetPackage.CELL__ASTS, Cell.class, msgs);
+			msgs = basicSetCell(newCell, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CellsheetPackage.AST__CELL, newCell, newCell));
 	}
 
 	/**
@@ -168,86 +203,10 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 	 * @generated
 	 */
 	@Override
-	public EList<Ast> getChildren() {
-		if (children == null) {
-			children = new EObjectContainmentEList<Ast>(Ast.class, this, CellsheetPackage.AST__CHILDREN);
-		}
-		return children;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Cell getCell() {
-		if (eContainerFeatureID() != CellsheetPackage.AST__CELL) return null;
-		return (Cell)eInternalContainer();
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetCell(Cell newCell, NotificationChain msgs) {
-		msgs = eBasicSetContainer((InternalEObject)newCell, CellsheetPackage.AST__CELL, msgs);
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setCell(Cell newCell) {
-		if (newCell != eInternalContainer() || (eContainerFeatureID() != CellsheetPackage.AST__CELL && newCell != null)) {
-			if (EcoreUtil.isAncestor(this, newCell))
-				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-			NotificationChain msgs = null;
-			if (eInternalContainer() != null)
-				msgs = eBasicRemoveFromContainer(msgs);
-			if (newCell != null)
-				msgs = ((InternalEObject)newCell).eInverseAdd(this, CellsheetPackage.CELL__ASTS, Cell.class, msgs);
-			msgs = basicSetCell(newCell, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CellsheetPackage.AST__CELL, newCell, newCell));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String getCachedResult() {
-		return cachedResult;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setCachedResult(String newCachedResult) {
-		String oldCachedResult = cachedResult;
-		cachedResult = newCachedResult;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CellsheetPackage.AST__CACHED_RESULT, oldCachedResult, cachedResult));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 */
-	@Override
 	public String evaluate() {
-		return getCachedResult();
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -317,8 +276,6 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 			case CellsheetPackage.AST__TOKEN:
 				if (resolve) return getToken();
 				return basicGetToken();
-			case CellsheetPackage.AST__CACHED_RESULT:
-				return getCachedResult();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -342,9 +299,6 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 			case CellsheetPackage.AST__TOKEN:
 				setToken((Token)newValue);
 				return;
-			case CellsheetPackage.AST__CACHED_RESULT:
-				setCachedResult((String)newValue);
-				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -366,9 +320,6 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 			case CellsheetPackage.AST__TOKEN:
 				setToken((Token)null);
 				return;
-			case CellsheetPackage.AST__CACHED_RESULT:
-				setCachedResult(CACHED_RESULT_EDEFAULT);
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -387,26 +338,8 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 				return getCell() != null;
 			case CellsheetPackage.AST__TOKEN:
 				return token != null;
-			case CellsheetPackage.AST__CACHED_RESULT:
-				return CACHED_RESULT_EDEFAULT == null ? cachedResult != null : !CACHED_RESULT_EDEFAULT.equals(cachedResult);
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (cachedResult: ");
-		result.append(cachedResult);
-		result.append(')');
-		return result.toString();
 	}
 
 } //AstImpl

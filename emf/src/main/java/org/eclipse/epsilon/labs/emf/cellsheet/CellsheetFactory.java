@@ -121,22 +121,22 @@ public interface CellsheetFactory extends EFactory {
 	Token createToken();
 
 	/**
-	 * Returns a new object of class '<em>Nothing</em>'.
+	 * Returns a new object of class '<em>Unknown</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Nothing</em>'.
+	 * @return a new object of class '<em>Unknown</em>'.
 	 * @generated
 	 */
-	Nothing createNothing();
+	Unknown createUnknown();
 
 	/**
-	 * Returns a new object of class '<em>Whitespace</em>'.
+	 * Returns a new object of class '<em>Noop</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Whitespace</em>'.
+	 * @return a new object of class '<em>Noop</em>'.
 	 * @generated
 	 */
-	Whitespace createWhitespace();
+	Noop createNoop();
 
 	/**
 	 * Returns a new object of class '<em>Text</em>'.
@@ -175,15 +175,6 @@ public interface CellsheetFactory extends EFactory {
 	Error createError();
 
 	/**
-	 * Returns a new object of class '<em>Range</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Range</em>'.
-	 * @generated
-	 */
-	Range createRange();
-
-	/**
 	 * Returns a new object of class '<em>Ref</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -191,6 +182,15 @@ public interface CellsheetFactory extends EFactory {
 	 * @generated
 	 */
 	Ref createRef();
+
+	/**
+	 * Returns a new object of class '<em>Range</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Range</em>'.
+	 * @generated
+	 */
+	Range createRange();
 
 	/**
 	 * Returns a new object of class '<em>Relative Ref</em>'.
@@ -247,13 +247,13 @@ public interface CellsheetFactory extends EFactory {
 	Percent createPercent();
 
 	/**
-	 * Returns a new object of class '<em>Exponention</em>'.
+	 * Returns a new object of class '<em>Exponentiation</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Exponention</em>'.
+	 * @return a new object of class '<em>Exponentiation</em>'.
 	 * @generated
 	 */
-	Exponention createExponention();
+	Exponentiation createExponentiation();
 
 	/**
 	 * Returns a new object of class '<em>Multiplication</em>'.

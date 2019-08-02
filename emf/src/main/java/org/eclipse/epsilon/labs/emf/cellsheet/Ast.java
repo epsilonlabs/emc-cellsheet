@@ -18,7 +18,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getChildren <em>Children</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getCell <em>Cell</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getToken <em>Token</em>}</li>
- *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getCachedResult <em>Cached Result</em>}</li>
  * </ul>
  *
  * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getAst()
@@ -26,30 +25,6 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface Ast extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Token</b></em>' reference.
-	 * It is bidirectional and its opposite is '{@link org.eclipse.epsilon.labs.emf.cellsheet.Token#getUsedBy <em>Used By</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Token</em>' reference.
-	 * @see #setToken(Token)
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getAst_Token()
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.Token#getUsedBy
-	 * @model opposite="usedBy"
-	 * @generated
-	 */
-	Token getToken();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getToken <em>Token</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Token</em>' reference.
-	 * @see #getToken()
-	 * @generated
-	 */
-	void setToken(Token value);
-
 	/**
 	 * Returns the value of the '<em><b>Children</b></em>' containment reference list.
 	 * The list contents are of type {@link org.eclipse.epsilon.labs.emf.cellsheet.Ast}.
@@ -87,26 +62,28 @@ public interface Ast extends EObject {
 	void setCell(Cell value);
 
 	/**
-	 * Returns the value of the '<em><b>Cached Result</b></em>' attribute.
+	 * Returns the value of the '<em><b>Token</b></em>' reference.
+	 * It is bidirectional and its opposite is '{@link org.eclipse.epsilon.labs.emf.cellsheet.Token#getUsedBy <em>Used By</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Cached Result</em>' attribute.
-	 * @see #setCachedResult(String)
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getAst_CachedResult()
-	 * @model
+	 * @return the value of the '<em>Token</em>' reference.
+	 * @see #setToken(Token)
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getAst_Token()
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.Token#getUsedBy
+	 * @model opposite="usedBy"
 	 * @generated
 	 */
-	String getCachedResult();
+	Token getToken();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getCachedResult <em>Cached Result</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getToken <em>Token</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Cached Result</em>' attribute.
-	 * @see #getCachedResult()
+	 * @param value the new value of the '<em>Token</em>' reference.
+	 * @see #getToken()
 	 * @generated
 	 */
-	void setCachedResult(String value);
+	void setToken(Token value);
 
 	/**
 	 * <!-- begin-user-doc -->

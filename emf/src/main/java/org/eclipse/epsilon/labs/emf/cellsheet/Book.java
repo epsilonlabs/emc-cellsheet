@@ -3,7 +3,6 @@
 package org.eclipse.epsilon.labs.emf.cellsheet;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.EMap;
 
 /**
  * <!-- begin-user-doc -->
@@ -16,7 +15,6 @@ import org.eclipse.emf.common.util.EMap;
  * <ul>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Book#getWorkspace <em>Workspace</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Book#getCellFormats <em>Cell Formats</em>}</li>
- *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Book#getTokens <em>Tokens</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Book#getSheets <em>Sheets</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Book#getBookname <em>Bookname</em>}</li>
  * </ul>
@@ -63,19 +61,6 @@ public interface Book extends HasId, HasA1 {
 	 * @generated
 	 */
 	EList<CellFormat> getCellFormats();
-
-	/**
-	 * Returns the value of the '<em><b>Tokens</b></em>' map.
-	 * The key is of type {@link java.lang.String},
-	 * and the value is of type {@link org.eclipse.epsilon.labs.emf.cellsheet.Token},
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Tokens</em>' map.
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getBook_Tokens()
-	 * @model mapType="org.eclipse.epsilon.labs.emf.cellsheet.EStringToTokenEntry&lt;org.eclipse.emf.ecore.EString, org.eclipse.epsilon.labs.emf.cellsheet.Token&gt;"
-	 * @generated
-	 */
-	EMap<String, Token> getTokens();
 
 	/**
 	 * Returns the value of the '<em><b>Sheets</b></em>' containment reference list.

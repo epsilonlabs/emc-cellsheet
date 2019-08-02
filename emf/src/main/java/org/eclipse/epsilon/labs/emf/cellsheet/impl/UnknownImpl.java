@@ -14,7 +14,7 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Unknown;
  *
  * @generated
  */
-public abstract class UnknownImpl extends AstImpl implements Unknown {
+public class UnknownImpl extends AstImpl implements Unknown {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

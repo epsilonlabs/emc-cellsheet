@@ -18,19 +18,19 @@
     </genClasses>
     <genClasses ecoreClass="cellsheet.ecore#//Workspace">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Workspace/books"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Workspace/tokens"/>
     </genClasses>
     <genClasses ecoreClass="cellsheet.ecore#//Book">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cellsheet.ecore#//Book/workspace"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Book/cellFormats"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Book/tokens"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Book/sheets"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Book/bookname"/>
     </genClasses>
     <genClasses ecoreClass="cellsheet.ecore#//Sheet">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cellsheet.ecore#//Sheet/book"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Sheet/rows"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Sheet/name"/>
-      <genOperations ecoreOperation="cellsheet.ecore#//Sheet/getSheetIndex"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Sheet/sheetName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Sheet/sheetIndex"/>
     </genClasses>
     <genClasses ecoreClass="cellsheet.ecore#//Row">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cellsheet.ecore#//Row/sheet"/>
@@ -76,31 +76,28 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Ast/children"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cellsheet.ecore#//Ast/cell"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Ast/token"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//Ast/cachedResult"/>
       <genOperations ecoreOperation="cellsheet.ecore#//Ast/evaluate"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="cellsheet.ecore#//Noop"/>
     <genClasses image="false" ecoreClass="cellsheet.ecore#//Operand"/>
     <genClasses image="false" ecoreClass="cellsheet.ecore#//Operation"/>
     <genClasses image="false" ecoreClass="cellsheet.ecore#//PrefixOperator"/>
     <genClasses image="false" ecoreClass="cellsheet.ecore#//InfixOperator"/>
     <genClasses image="false" ecoreClass="cellsheet.ecore#//PostfixOperator"/>
-    <genClasses image="false" ecoreClass="cellsheet.ecore#//Unknown"/>
-    <genClasses ecoreClass="cellsheet.ecore#//Nothing"/>
-    <genClasses ecoreClass="cellsheet.ecore#//Whitespace"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Unknown"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Noop"/>
     <genClasses ecoreClass="cellsheet.ecore#//Text"/>
     <genClasses ecoreClass="cellsheet.ecore#//Number"/>
     <genClasses ecoreClass="cellsheet.ecore#//Logical"/>
     <genClasses ecoreClass="cellsheet.ecore#//Error"/>
-    <genClasses ecoreClass="cellsheet.ecore#//Range"/>
     <genClasses ecoreClass="cellsheet.ecore#//Ref"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Range"/>
     <genClasses ecoreClass="cellsheet.ecore#//RelativeRef"/>
     <genClasses ecoreClass="cellsheet.ecore#//RelativeRange"/>
     <genClasses ecoreClass="cellsheet.ecore#//Function"/>
     <genClasses ecoreClass="cellsheet.ecore#//Plus"/>
     <genClasses ecoreClass="cellsheet.ecore#//Negation"/>
     <genClasses ecoreClass="cellsheet.ecore#//Percent"/>
-    <genClasses ecoreClass="cellsheet.ecore#//Exponention"/>
+    <genClasses ecoreClass="cellsheet.ecore#//Exponentiation"/>
     <genClasses ecoreClass="cellsheet.ecore#//Multiplication"/>
     <genClasses ecoreClass="cellsheet.ecore#//Division"/>
     <genClasses ecoreClass="cellsheet.ecore#//Addition"/>

@@ -6,14 +6,18 @@ import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
-import org.eclipse.epsilon.labs.emc.cellsheet.ReferenceUtil;
+
 import org.eclipse.epsilon.labs.emf.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emf.cellsheet.Book;
 import org.eclipse.epsilon.labs.emf.cellsheet.Cell;
@@ -264,19 +268,25 @@ public abstract class CellImpl extends HasIdImpl implements Cell {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @generated
 	 */
 	@Override
 	public Book getBook() {
-		return getSheet().getBook();
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @generated
 	 */
 	@Override
 	public Sheet getSheet() {
-		return getRow().getSheet();
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -286,7 +296,9 @@ public abstract class CellImpl extends HasIdImpl implements Cell {
 	 */
 	@Override
 	public int getRowIndex() {
-		return getRow().getRowIndex();
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -296,7 +308,9 @@ public abstract class CellImpl extends HasIdImpl implements Cell {
 	 */
 	@Override
 	public int getA1RowIndex() {
-		return getRow().getRowIndex() + 1;
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -306,7 +320,9 @@ public abstract class CellImpl extends HasIdImpl implements Cell {
 	 */
 	@Override
 	public String getA1ColIndex() {
-		return org.eclipse.epsilon.labs.emc.cellsheet.ReferenceUtil.indexToA1(getColIndex());
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**

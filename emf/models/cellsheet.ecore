@@ -19,24 +19,24 @@
   <eClassifiers xsi:type="ecore:EClass" name="Workspace">
     <eStructuralFeatures xsi:type="ecore:EReference" name="books" upperBound="-1"
         eType="#//Book" containment="true" eOpposite="#//Book/workspace"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tokens" upperBound="-1"
+        eType="#//EStringToTokenEntry" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Book" eSuperTypes="#//HasId #//HasA1">
     <eStructuralFeatures xsi:type="ecore:EReference" name="workspace" eType="#//Workspace"
         eOpposite="#//Workspace/books"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="cellFormats" upperBound="-1"
         eType="#//CellFormat" containment="true" eOpposite="#//CellFormat/book"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="tokens" upperBound="-1"
-        eType="#//EStringToTokenEntry" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sheets" upperBound="-1"
         eType="#//Sheet" containment="true" eOpposite="#//Sheet/book"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="bookname" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Sheet" eSuperTypes="#//HasId #//HasA1">
-    <eOperations name="getSheetIndex" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="book" eType="#//Book" eOpposite="#//Book/sheets"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="rows" upperBound="-1" eType="#//Row"
         containment="true" eOpposite="#//Row/sheet"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sheetName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sheetIndex" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Row" eSuperTypes="#//HasId #//HasA1">
     <eOperations name="getBook" eType="#//Book"/>
@@ -89,30 +89,27 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="cell" eType="#//Cell" eOpposite="#//Cell/asts"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="token" eType="#//Token"
         eOpposite="#//Token/usedBy"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cachedResult" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Noop" abstract="true" eSuperTypes="#//Ast"/>
   <eClassifiers xsi:type="ecore:EClass" name="Operand" abstract="true" eSuperTypes="#//Ast"/>
   <eClassifiers xsi:type="ecore:EClass" name="Operation" abstract="true" eSuperTypes="#//Ast"/>
   <eClassifiers xsi:type="ecore:EClass" name="PrefixOperator" abstract="true" eSuperTypes="#//Ast"/>
   <eClassifiers xsi:type="ecore:EClass" name="InfixOperator" abstract="true" eSuperTypes="#//Ast"/>
   <eClassifiers xsi:type="ecore:EClass" name="PostfixOperator" abstract="true" eSuperTypes="#//Ast"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Unknown" abstract="true" eSuperTypes="#//Ast"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Nothing" eSuperTypes="#//Noop"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Whitespace" eSuperTypes="#//Noop"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Unknown" eSuperTypes="#//Ast"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Noop" eSuperTypes="#//Ast"/>
   <eClassifiers xsi:type="ecore:EClass" name="Text" eSuperTypes="#//Operand"/>
   <eClassifiers xsi:type="ecore:EClass" name="Number" eSuperTypes="#//Operand"/>
   <eClassifiers xsi:type="ecore:EClass" name="Logical" eSuperTypes="#//Operand"/>
   <eClassifiers xsi:type="ecore:EClass" name="Error" eSuperTypes="#//Operand"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Range" eSuperTypes="#//Operand"/>
   <eClassifiers xsi:type="ecore:EClass" name="Ref" eSuperTypes="#//Operand"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Range" eSuperTypes="#//Operand"/>
   <eClassifiers xsi:type="ecore:EClass" name="RelativeRef" eSuperTypes="#//Ref"/>
   <eClassifiers xsi:type="ecore:EClass" name="RelativeRange" eSuperTypes="#//Ref"/>
   <eClassifiers xsi:type="ecore:EClass" name="Function" eSuperTypes="#//Operation"/>
   <eClassifiers xsi:type="ecore:EClass" name="Plus" eSuperTypes="#//PrefixOperator"/>
   <eClassifiers xsi:type="ecore:EClass" name="Negation" eSuperTypes="#//PrefixOperator"/>
   <eClassifiers xsi:type="ecore:EClass" name="Percent" eSuperTypes="#//PostfixOperator"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Exponention" eSuperTypes="#//InfixOperator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Exponentiation" eSuperTypes="#//InfixOperator"/>
   <eClassifiers xsi:type="ecore:EClass" name="Multiplication" eSuperTypes="#//InfixOperator"/>
   <eClassifiers xsi:type="ecore:EClass" name="Division" eSuperTypes="#//InfixOperator"/>
   <eClassifiers xsi:type="ecore:EClass" name="Addition" eSuperTypes="#//InfixOperator"/>

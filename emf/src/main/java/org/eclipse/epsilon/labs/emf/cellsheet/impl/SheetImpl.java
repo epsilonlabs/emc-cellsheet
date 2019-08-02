@@ -35,7 +35,8 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Sheet;
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.SheetImpl#getA1 <em>A1</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.SheetImpl#getBook <em>Book</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.SheetImpl#getRows <em>Rows</em>}</li>
- *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.SheetImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.SheetImpl#getSheetName <em>Sheet Name</em>}</li>
+ *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.SheetImpl#getSheetIndex <em>Sheet Index</em>}</li>
  * </ul>
  *
  * @generated
@@ -72,24 +73,44 @@ public class SheetImpl extends HasIdImpl implements Sheet {
 	protected EList<Row> rows;
 
 	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * The default value of the '{@link #getSheetName() <em>Sheet Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getName()
+	 * @see #getSheetName()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String NAME_EDEFAULT = null;
+	protected static final String SHEET_NAME_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * The cached value of the '{@link #getSheetName() <em>Sheet Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getName()
+	 * @see #getSheetName()
 	 * @generated
 	 * @ordered
 	 */
-	protected String name = NAME_EDEFAULT;
+	protected String sheetName = SHEET_NAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getSheetIndex() <em>Sheet Index</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSheetIndex()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int SHEET_INDEX_EDEFAULT = 0;
+
+	/**
+	 * The cached value of the '{@link #getSheetIndex() <em>Sheet Index</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSheetIndex()
+	 * @generated
+	 * @ordered
+	 */
+	protected int sheetIndex = SHEET_INDEX_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -195,8 +216,8 @@ public class SheetImpl extends HasIdImpl implements Sheet {
 	 * @generated
 	 */
 	@Override
-	public String getName() {
-		return name;
+	public String getSheetName() {
+		return sheetName;
 	}
 
 	/**
@@ -205,11 +226,11 @@ public class SheetImpl extends HasIdImpl implements Sheet {
 	 * @generated
 	 */
 	@Override
-	public void setName(String newName) {
-		String oldName = name;
-		name = newName;
+	public void setSheetName(String newSheetName) {
+		String oldSheetName = sheetName;
+		sheetName = newSheetName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CellsheetPackage.SHEET__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, CellsheetPackage.SHEET__SHEET_NAME, oldSheetName, sheetName));
 	}
 
 	/**
@@ -219,7 +240,20 @@ public class SheetImpl extends HasIdImpl implements Sheet {
 	 */
 	@Override
 	public int getSheetIndex() {
-		return getBook().getSheets().indexOf(this);
+		return sheetIndex;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setSheetIndex(int newSheetIndex) {
+		int oldSheetIndex = sheetIndex;
+		sheetIndex = newSheetIndex;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CellsheetPackage.SHEET__SHEET_INDEX, oldSheetIndex, sheetIndex));
 	}
 
 	/**
@@ -285,8 +319,10 @@ public class SheetImpl extends HasIdImpl implements Sheet {
 				return getBook();
 			case CellsheetPackage.SHEET__ROWS:
 				return getRows();
-			case CellsheetPackage.SHEET__NAME:
-				return getName();
+			case CellsheetPackage.SHEET__SHEET_NAME:
+				return getSheetName();
+			case CellsheetPackage.SHEET__SHEET_INDEX:
+				return getSheetIndex();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -310,8 +346,11 @@ public class SheetImpl extends HasIdImpl implements Sheet {
 				getRows().clear();
 				getRows().addAll((Collection<? extends Row>)newValue);
 				return;
-			case CellsheetPackage.SHEET__NAME:
-				setName((String)newValue);
+			case CellsheetPackage.SHEET__SHEET_NAME:
+				setSheetName((String)newValue);
+				return;
+			case CellsheetPackage.SHEET__SHEET_INDEX:
+				setSheetIndex((Integer)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -334,8 +373,11 @@ public class SheetImpl extends HasIdImpl implements Sheet {
 			case CellsheetPackage.SHEET__ROWS:
 				getRows().clear();
 				return;
-			case CellsheetPackage.SHEET__NAME:
-				setName(NAME_EDEFAULT);
+			case CellsheetPackage.SHEET__SHEET_NAME:
+				setSheetName(SHEET_NAME_EDEFAULT);
+				return;
+			case CellsheetPackage.SHEET__SHEET_INDEX:
+				setSheetIndex(SHEET_INDEX_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -355,8 +397,10 @@ public class SheetImpl extends HasIdImpl implements Sheet {
 				return getBook() != null;
 			case CellsheetPackage.SHEET__ROWS:
 				return rows != null && !rows.isEmpty();
-			case CellsheetPackage.SHEET__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case CellsheetPackage.SHEET__SHEET_NAME:
+				return SHEET_NAME_EDEFAULT == null ? sheetName != null : !SHEET_NAME_EDEFAULT.equals(sheetName);
+			case CellsheetPackage.SHEET__SHEET_INDEX:
+				return sheetIndex != SHEET_INDEX_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -405,8 +449,10 @@ public class SheetImpl extends HasIdImpl implements Sheet {
 		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (a1: ");
 		result.append(a1);
-		result.append(", name: ");
-		result.append(name);
+		result.append(", sheetName: ");
+		result.append(sheetName);
+		result.append(", sheetIndex: ");
+		result.append(sheetIndex);
 		result.append(')');
 		return result.toString();
 	}

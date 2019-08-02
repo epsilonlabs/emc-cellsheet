@@ -17,12 +17,12 @@ abstract class HasId {
 
 class Workspace {
 	val Book[*]#workspace books;
+	val EStringToTokenEntry[*] tokens;
 }
 
 class Book extends HasId, HasA1 {
 	ref Workspace#books workspace;
 	val CellFormat[*]#book cellFormats;
-	val EStringToTokenEntry[*] tokens;
 	val Sheet[*]#book sheets;
 	attr String bookname;
 }
@@ -30,9 +30,8 @@ class Book extends HasId, HasA1 {
 class Sheet extends HasId, HasA1 {
 	ref Book#sheets book;
 	val Row[*]#sheet rows;
-	attr String name;
-	
-	op int getSheetIndex();
+	attr String sheetName;
+	attr int sheetIndex;
 }
 
 class Row extends HasId, HasA1 {
@@ -92,29 +91,25 @@ abstract class Ast {
 	val Ast[*]#parent children;
 	ref Cell#asts cell;
 	ref Token#usedBy token;
-	attr String cachedResult;
 	
 	op String evaluate();
 }
 
-abstract class Noop extends Ast {}
 abstract class Operand extends Ast {}
 abstract class Operation extends Ast {}
 abstract class PrefixOperator extends Ast {}
 abstract class InfixOperator extends Ast {}
 abstract class PostfixOperator extends Ast {}
-abstract class Unknown extends Ast {}
 
-class Nothing extends Noop {}
-class Whitespace extends Noop {}
+class Unknown extends Ast {}
+class Noop extends Ast {}
 
 class Text extends Operand {}
 class Number extends Operand {}
 class Logical extends Operand {}
 class Error extends Operand {}
-class Range extends Operand {}
 class Ref extends Operand {}
-
+class Range extends Operand {}
 class RelativeRef extends Ref {}
 class RelativeRange extends Ref {}
 
@@ -124,7 +119,7 @@ class Plus extends PrefixOperator {}
 class Negation extends PrefixOperator {}
 class Percent extends PostfixOperator {}
 
-class Exponention extends InfixOperator {}
+class Exponentiation extends InfixOperator {}
 class Multiplication extends InfixOperator {}
 class Division extends InfixOperator {}
 class Addition extends InfixOperator {}

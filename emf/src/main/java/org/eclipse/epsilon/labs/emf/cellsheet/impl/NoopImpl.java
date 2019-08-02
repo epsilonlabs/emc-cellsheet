@@ -14,7 +14,7 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Noop;
  *
  * @generated
  */
-public abstract class NoopImpl extends AstImpl implements Noop {
+public class NoopImpl extends AstImpl implements Noop {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

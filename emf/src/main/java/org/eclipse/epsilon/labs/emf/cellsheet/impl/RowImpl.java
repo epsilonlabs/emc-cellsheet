@@ -220,7 +220,9 @@ public class RowImpl extends HasIdImpl implements Row {
 	 */
 	@Override
 	public Book getBook() {
-		return getSheet().getBook();
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -230,7 +232,9 @@ public class RowImpl extends HasIdImpl implements Row {
 	 */
 	@Override
 	public int getA1RowIndex() {
-		return getRowIndex() + 1;
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**

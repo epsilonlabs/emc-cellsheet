@@ -3,6 +3,7 @@
 package org.eclipse.epsilon.labs.emf.cellsheet;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 
 import org.eclipse.emf.ecore.EObject;
 
@@ -16,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Workspace#getBooks <em>Books</em>}</li>
+ *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Workspace#getTokens <em>Tokens</em>}</li>
  * </ul>
  *
  * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getWorkspace()
@@ -36,5 +38,18 @@ public interface Workspace extends EObject {
 	 * @generated
 	 */
 	EList<Book> getBooks();
+
+	/**
+	 * Returns the value of the '<em><b>Tokens</b></em>' map.
+	 * The key is of type {@link java.lang.String},
+	 * and the value is of type {@link org.eclipse.epsilon.labs.emf.cellsheet.Token},
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Tokens</em>' map.
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getWorkspace_Tokens()
+	 * @model mapType="org.eclipse.epsilon.labs.emf.cellsheet.EStringToTokenEntry&lt;org.eclipse.emf.ecore.EString, org.eclipse.epsilon.labs.emf.cellsheet.Token&gt;"
+	 * @generated
+	 */
+	EMap<String, Token> getTokens();
 
 } // Workspace

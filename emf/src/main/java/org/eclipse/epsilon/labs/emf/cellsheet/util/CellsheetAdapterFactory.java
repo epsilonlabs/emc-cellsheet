@@ -23,6 +23,8 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Concatenation;
 import org.eclipse.epsilon.labs.emf.cellsheet.DateCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Division;
 import org.eclipse.epsilon.labs.emf.cellsheet.EQ;
+import org.eclipse.epsilon.labs.emf.cellsheet.ErrorCell;
+import org.eclipse.epsilon.labs.emf.cellsheet.Exponentiation;
 import org.eclipse.epsilon.labs.emf.cellsheet.Exponention;
 import org.eclipse.epsilon.labs.emf.cellsheet.FormulaCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Function;
@@ -39,7 +41,6 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Multiplication;
 import org.eclipse.epsilon.labs.emf.cellsheet.NEQ;
 import org.eclipse.epsilon.labs.emf.cellsheet.Negation;
 import org.eclipse.epsilon.labs.emf.cellsheet.Noop;
-import org.eclipse.epsilon.labs.emf.cellsheet.Nothing;
 import org.eclipse.epsilon.labs.emf.cellsheet.NumericCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Operand;
 import org.eclipse.epsilon.labs.emf.cellsheet.Operation;
@@ -59,7 +60,6 @@ import org.eclipse.epsilon.labs.emf.cellsheet.TextCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Token;
 import org.eclipse.epsilon.labs.emf.cellsheet.Union;
 import org.eclipse.epsilon.labs.emf.cellsheet.Unknown;
-import org.eclipse.epsilon.labs.emf.cellsheet.Whitespace;
 import org.eclipse.epsilon.labs.emf.cellsheet.Workspace;
 
 /**
@@ -183,10 +183,6 @@ public class CellsheetAdapterFactory extends AdapterFactoryImpl {
 				return createAstAdapter();
 			}
 			@Override
-			public Adapter caseNoop(Noop object) {
-				return createNoopAdapter();
-			}
-			@Override
 			public Adapter caseOperand(Operand object) {
 				return createOperandAdapter();
 			}
@@ -211,12 +207,8 @@ public class CellsheetAdapterFactory extends AdapterFactoryImpl {
 				return createUnknownAdapter();
 			}
 			@Override
-			public Adapter caseNothing(Nothing object) {
-				return createNothingAdapter();
-			}
-			@Override
-			public Adapter caseWhitespace(Whitespace object) {
-				return createWhitespaceAdapter();
+			public Adapter caseNoop(Noop object) {
+				return createNoopAdapter();
 			}
 			@Override
 			public Adapter caseText(Text object) {
@@ -235,12 +227,12 @@ public class CellsheetAdapterFactory extends AdapterFactoryImpl {
 				return createErrorAdapter();
 			}
 			@Override
-			public Adapter caseRange(Range object) {
-				return createRangeAdapter();
-			}
-			@Override
 			public Adapter caseRef(Ref object) {
 				return createRefAdapter();
+			}
+			@Override
+			public Adapter caseRange(Range object) {
+				return createRangeAdapter();
 			}
 			@Override
 			public Adapter caseRelativeRef(RelativeRef object) {
@@ -267,8 +259,8 @@ public class CellsheetAdapterFactory extends AdapterFactoryImpl {
 				return createPercentAdapter();
 			}
 			@Override
-			public Adapter caseExponention(Exponention object) {
-				return createExponentionAdapter();
+			public Adapter caseExponentiation(Exponentiation object) {
+				return createExponentiationAdapter();
 			}
 			@Override
 			public Adapter caseMultiplication(Multiplication object) {
@@ -571,20 +563,6 @@ public class CellsheetAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.epsilon.labs.emf.cellsheet.Noop <em>Noop</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.Noop
-	 * @generated
-	 */
-	public Adapter createNoopAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.epsilon.labs.emf.cellsheet.Operand <em>Operand</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -669,30 +647,16 @@ public class CellsheetAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.epsilon.labs.emf.cellsheet.Nothing <em>Nothing</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.epsilon.labs.emf.cellsheet.Noop <em>Noop</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.Nothing
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.Noop
 	 * @generated
 	 */
-	public Adapter createNothingAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.epsilon.labs.emf.cellsheet.Whitespace <em>Whitespace</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.Whitespace
-	 * @generated
-	 */
-	public Adapter createWhitespaceAdapter() {
+	public Adapter createNoopAdapter() {
 		return null;
 	}
 
@@ -753,20 +717,6 @@ public class CellsheetAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.epsilon.labs.emf.cellsheet.Range <em>Range</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.Range
-	 * @generated
-	 */
-	public Adapter createRangeAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.epsilon.labs.emf.cellsheet.Ref <em>Ref</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -777,6 +727,20 @@ public class CellsheetAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createRefAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.epsilon.labs.emf.cellsheet.Range <em>Range</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.Range
+	 * @generated
+	 */
+	public Adapter createRangeAdapter() {
 		return null;
 	}
 
@@ -865,16 +829,16 @@ public class CellsheetAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.epsilon.labs.emf.cellsheet.Exponention <em>Exponention</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.epsilon.labs.emf.cellsheet.Exponentiation <em>Exponentiation</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.Exponention
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.Exponentiation
 	 * @generated
 	 */
-	public Adapter createExponentionAdapter() {
+	public Adapter createExponentiationAdapter() {
 		return null;
 	}
 

@@ -23,6 +23,8 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Concatenation;
 import org.eclipse.epsilon.labs.emf.cellsheet.DateCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Division;
 import org.eclipse.epsilon.labs.emf.cellsheet.EQ;
+import org.eclipse.epsilon.labs.emf.cellsheet.ErrorCell;
+import org.eclipse.epsilon.labs.emf.cellsheet.Exponentiation;
 import org.eclipse.epsilon.labs.emf.cellsheet.Exponention;
 import org.eclipse.epsilon.labs.emf.cellsheet.FormulaCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Function;
@@ -35,7 +37,7 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Logical;
 import org.eclipse.epsilon.labs.emf.cellsheet.Multiplication;
 import org.eclipse.epsilon.labs.emf.cellsheet.NEQ;
 import org.eclipse.epsilon.labs.emf.cellsheet.Negation;
-import org.eclipse.epsilon.labs.emf.cellsheet.Nothing;
+import org.eclipse.epsilon.labs.emf.cellsheet.Noop;
 import org.eclipse.epsilon.labs.emf.cellsheet.NumericCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Percent;
 import org.eclipse.epsilon.labs.emf.cellsheet.Plus;
@@ -50,7 +52,7 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Text;
 import org.eclipse.epsilon.labs.emf.cellsheet.TextCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Token;
 import org.eclipse.epsilon.labs.emf.cellsheet.Union;
-import org.eclipse.epsilon.labs.emf.cellsheet.Whitespace;
+import org.eclipse.epsilon.labs.emf.cellsheet.Unknown;
 import org.eclipse.epsilon.labs.emf.cellsheet.Workspace;
 
 /**
@@ -109,21 +111,21 @@ public class CellsheetFactoryImpl extends EFactoryImpl implements CellsheetFacto
 			case CellsheetPackage.DATE_CELL: return createDateCell();
 			case CellsheetPackage.FORMULA_CELL: return createFormulaCell();
 			case CellsheetPackage.TOKEN: return createToken();
-			case CellsheetPackage.NOTHING: return createNothing();
-			case CellsheetPackage.WHITESPACE: return createWhitespace();
+			case CellsheetPackage.UNKNOWN: return createUnknown();
+			case CellsheetPackage.NOOP: return createNoop();
 			case CellsheetPackage.TEXT: return createText();
 			case CellsheetPackage.NUMBER: return createNumber();
 			case CellsheetPackage.LOGICAL: return createLogical();
 			case CellsheetPackage.ERROR: return createError();
-			case CellsheetPackage.RANGE: return createRange();
 			case CellsheetPackage.REF: return createRef();
+			case CellsheetPackage.RANGE: return createRange();
 			case CellsheetPackage.RELATIVE_REF: return createRelativeRef();
 			case CellsheetPackage.RELATIVE_RANGE: return createRelativeRange();
 			case CellsheetPackage.FUNCTION: return createFunction();
 			case CellsheetPackage.PLUS: return createPlus();
 			case CellsheetPackage.NEGATION: return createNegation();
 			case CellsheetPackage.PERCENT: return createPercent();
-			case CellsheetPackage.EXPONENTION: return createExponention();
+			case CellsheetPackage.EXPONENTIATION: return createExponentiation();
 			case CellsheetPackage.MULTIPLICATION: return createMultiplication();
 			case CellsheetPackage.DIVISION: return createDivision();
 			case CellsheetPackage.ADDITION: return createAddition();
@@ -280,9 +282,9 @@ public class CellsheetFactoryImpl extends EFactoryImpl implements CellsheetFacto
 	 * @generated
 	 */
 	@Override
-	public Nothing createNothing() {
-		NothingImpl nothing = new NothingImpl();
-		return nothing;
+	public Unknown createUnknown() {
+		UnknownImpl unknown = new UnknownImpl();
+		return unknown;
 	}
 
 	/**
@@ -291,9 +293,9 @@ public class CellsheetFactoryImpl extends EFactoryImpl implements CellsheetFacto
 	 * @generated
 	 */
 	@Override
-	public Whitespace createWhitespace() {
-		WhitespaceImpl whitespace = new WhitespaceImpl();
-		return whitespace;
+	public Noop createNoop() {
+		NoopImpl noop = new NoopImpl();
+		return noop;
 	}
 
 	/**
@@ -346,9 +348,9 @@ public class CellsheetFactoryImpl extends EFactoryImpl implements CellsheetFacto
 	 * @generated
 	 */
 	@Override
-	public Range createRange() {
-		RangeImpl range = new RangeImpl();
-		return range;
+	public Ref createRef() {
+		RefImpl ref = new RefImpl();
+		return ref;
 	}
 
 	/**
@@ -357,9 +359,9 @@ public class CellsheetFactoryImpl extends EFactoryImpl implements CellsheetFacto
 	 * @generated
 	 */
 	@Override
-	public Ref createRef() {
-		RefImpl ref = new RefImpl();
-		return ref;
+	public Range createRange() {
+		RangeImpl range = new RangeImpl();
+		return range;
 	}
 
 	/**
@@ -434,9 +436,9 @@ public class CellsheetFactoryImpl extends EFactoryImpl implements CellsheetFacto
 	 * @generated
 	 */
 	@Override
-	public Exponention createExponention() {
-		ExponentionImpl exponention = new ExponentionImpl();
-		return exponention;
+	public Exponentiation createExponentiation() {
+		ExponentiationImpl exponentiation = new ExponentiationImpl();
+		return exponentiation;
 	}
 
 	/**
