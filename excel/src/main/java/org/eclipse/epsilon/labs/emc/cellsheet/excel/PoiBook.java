@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.formula.BaseFormulaEvaluator;
 import org.apache.poi.ss.formula.FormulaParsingWorkbook;
+import org.apache.poi.ss.formula.WorkbookEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -32,6 +34,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
 
     private Workbook delegate;
     private FormulaParsingWorkbook delegateFpw;
+    private WorkbookEvaluator delegateEvaluator;
 
     private Workspace workspace;
     private String modelUri;
@@ -161,7 +164,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
     }
 
     protected FormulaParsingWorkbook getFpw() {
-        checkArgument(delegate != null);
+        checkArgument(delegate != null,"Delegate not initialised");
         if (delegateFpw == null) {
             if (delegate instanceof HSSFWorkbook)
                 delegateFpw = HSSFEvaluationWorkbook.create((HSSFWorkbook) delegate);
@@ -171,6 +174,17 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
                 delegateFpw = SXSSFEvaluationWorkbook.create((SXSSFWorkbook) delegate);
         }
         return delegateFpw;
+    }
+
+    protected WorkbookEvaluator getInternalEvaluator() {
+        checkArgument(delegate != null, "Delegate not initialised");
+        if (delegateEvaluator == null) {
+            delegateEvaluator = ((BaseFormulaEvaluator) delegate
+                    .getCreationHelper()
+                    .createFormulaEvaluator())
+                    ._getWorkbookEvaluator();
+        }
+        return delegateEvaluator;
     }
 
     /**

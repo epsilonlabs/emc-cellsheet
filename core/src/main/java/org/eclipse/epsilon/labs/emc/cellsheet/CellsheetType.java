@@ -58,11 +58,11 @@ public enum CellsheetType {
     ADDITION("Addition"),
     SUBTRACTION("Subtraction"),
     CONCATENATION("Concatenation"),
-    EQ("TOKEN"),
+    EQ("EQ"),
     LT("LT"),
     GT("GT"),
     LTE("LTE"),
-    GTE("TOKEN"),
+    GTE("GTE"),
     NEQ("NEQ"),
     INTERSECTION("INTERSECTION"),
     UNION("UNION");

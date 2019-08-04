@@ -42,6 +42,8 @@ public interface Ast<T extends Ast<T>> extends HasId {
 
     void setEvaluator(AstEvaluator evaluator);
 
+    String getFormula();
+
     @Override
     default String getId() {
         if (getParent() == null) {

@@ -166,7 +166,17 @@ public abstract class AbstractAst implements Ast<AbstractAst> {
         this.evaluator = evaluator;
     }
 
+    @Override
+    public String getFormula() {
+        if (getChildren().isEmpty()) return token.getValue();
+        ToFormulaAstVisitor toFormulaAstVisitor = new ToFormulaAstVisitor();
+        toFormulaAstVisitor.visit(this);
+        return toFormulaAstVisitor.toString();
+    }
+
     public void accept(Visitor<AbstractAst> visitor) {
         visitor.visit(this);
     }
+
+
 }

@@ -1,6 +1,7 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AbstractAst;
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.Function;
 import org.junit.Before;
 import org.junit.Test;
 

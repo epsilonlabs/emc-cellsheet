@@ -27,26 +27,27 @@ public class PoiAstFactoryTest {
 
     @Test
     public void of_given_SUM() {
-        delegate.setCellFormula("SUM(A1:A5)");
+        String formula = "SUM(A1:A5)";
+        delegate.setCellFormula(formula);
         Ast root = getAst();
-        Ast ast = root;
 
-        assertThat(ast).isInstanceOf(Function.class);
-        assertThat(ast.getToken().getValue()).isEqualTo("SUM");
-        assertThat(ast.getParent()).isNull();
-        assertThat(ast.getChildren()).hasSize(1);
+        assertThat(root).isInstanceOf(Function.class);
+        assertThat(root.getToken().getValue()).isEqualTo("SUM");
+        assertThat(root.getParent()).isNull();
+        assertThat(root.getChildren()).hasSize(1);
+        assertThat(root.getFormula()).isEqualTo(formula);
 
-        List children = ast.getChildren();
-
-        ast = ast.childAt(0);
+        Ast ast = root.childAt(0);
         assertThat(ast).isInstanceOf(Range.class);
         assertThat(ast.getToken().getValue()).isEqualTo("A1:A5");
         assertThat(ast.getParent()).isSameAs(root);
         assertThat(ast.getChildren()).isEmpty();
+        assertThat(ast.getFormula()).isEqualTo("A1:A5");
     }
 
     @Test
     public void of_given_SUM_with_UNION() {
+        String formula = "SUM(A1:A5,B1:B5)";
         delegate.setCellFormula("SUM(A1:A5,B1:B5)");
         Ast root = getAst();
 
@@ -54,6 +55,7 @@ public class PoiAstFactoryTest {
         assertThat(root.getToken().getValue()).isEqualTo("SUM");
         assertThat(root.getParent()).isNull();
         assertThat(root.getChildren()).hasSize(2);
+        assertThat(root.getFormula()).isEqualTo(formula);
 
         Ast ast = root.childAt(0);
         assertThat(ast).isNotNull().isInstanceOf(Range.class);
@@ -61,6 +63,7 @@ public class PoiAstFactoryTest {
         assertThat(ast.getChildren()).isEmpty();
         assertThat(ast.getPosition()).isEqualTo(0);
         assertThat(ast.getToken().getValue()).isEqualTo("A1:A5");
+        assertThat(ast.getFormula()).isEqualTo("A1:A5");
 
         ast = root.childAt(1);
         assertThat(ast).isNotNull().isInstanceOf(Range.class);
@@ -68,6 +71,7 @@ public class PoiAstFactoryTest {
         assertThat(ast.getChildren()).isEmpty();
         assertThat(ast.getPosition()).isEqualTo(1);
         assertThat(ast.getToken().getValue()).isEqualTo("B1:B5");
+        assertThat(ast.getFormula()).isEqualTo("B1:B5");
     }
 
     Ast getAst() {
