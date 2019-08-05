@@ -59,7 +59,7 @@ jobs:
 
       - run:
           command: |
-            mvn install
+            mvn install -DskipTests
             ./.util/build-eclipse.sh
 
       # Save built artifacts
