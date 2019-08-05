@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eclipse.epsilon.labs</groupId>
+		<artifactId>emc-cellsheet</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>emf-cellsheet-model</artifactId>
+	
+	<packaging>bundle</packaging>
+	
+	<name>${project.groupId}:${project.artifactId}</name>
+	<description>Cellsheet EMF model</description>
+	
+	<properties>
+		<emf.ecore.xmi.version>2.15.0</emf.ecore.xmi.version>
+		<emf.ecore.version>2.18.0</emf.ecore.version>
+		<eclipse.runtime.version>3.15.100</eclipse.runtime.version>
+		<eclipse.resources.version>3.13.300</eclipse.resources.version>
+		<emf.edit.version>2.14.0</emf.edit.version>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.emf</groupId>
+			<artifactId>org.eclipse.emf.ecore</artifactId>
+			<version>${emf.ecore.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.emf</groupId>
+			<artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+			<version>${emf.ecore.xmi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.epsilon.labs</groupId>
+			<artifactId>emc-cellsheet-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.groupId}.emf.cellsheet.model</Bundle-SymbolicName>
+						<Automatic-Module-Name>${project.groupId}.emf.cellsheet.model</Automatic-Module-Name>
+						<Export-Package>
+							org.eclipse.epsilon.labs.cellsheet,
+							org.eclipse.epsilon.labs.cellsheet.impl,
+							org.eclipse.epsilon.labs.cellsheet.util
+						</Export-Package>
+						<Require-Bundle>
+							org.eclipse.epsilon.labs.emc.cellsheet.core;visibility:=reexport,
+							org.eclipse.core.runtime,
+							org.eclipse.emf.ecore;visibility:=reexport
+						</Require-Bundle>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

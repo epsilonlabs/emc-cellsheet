@@ -1,3 +1,0 @@
-<antlib>
-    <taskdef name="epsilon.cellsheet.loadModel" classname="org.eclipse.epsilon.labs.workflow.tasks.cellsheet.LoadCellsheetModelTask"/>
-</antlib>

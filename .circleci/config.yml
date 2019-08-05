@@ -1,132 +1,183 @@
 version: 2.1
+orbs:
+  slack: circleci/slack@3.2.0
 
-# orbs:
-#   codecov: codecov/codecov@1.0.1
-
-jobs:
-  build:
+executors:
+  jdk-8:
     docker:
       - image: circleci/openjdk:8-jdk
-
     working_directory: ~/repo
 
+jobs:
+  build-jar:
+    executor: jdk-8
     steps:
       - checkout
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            - v1-dependencies-
-      
-      - run:
-          command: |
-            mvn clean install
-            bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+            - m2-{{ checksum "pom.xml" }}
+            - m2-
+
+      - run: mvn clean install
 
       - save_cache:
+          key: m2-{{ checksum "pom.xml" }}
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
+
+      # Save built artifacts
+      - run: mkdir artifacts && cp -r core/target/*.jar excel/target/*.jar artifacts/
+
+      - store_artifacts:
+          path: artifacts
+          destination: .
 
       - persist_to_workspace:
           root: .
           paths:
-            - features
-            - plugins
-            - updatesite
+            - core/target
+            - excel/target
 
+      - slack/status:
+          success_message: JARs built successfully on $CIRCLE_BRANCH
+          failure_message: Erroring building JARs on $CIRCLE_BRANCH
+          webhook: https://hooks.slack.com/services/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
 
-  deploy-snapshot:
-    docker:
-      - image: circleci/openjdk:8-jdk
-    
-    working_directory: ~/repo
+  build-eclipse:
+    executor: jdk-8
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - m2-{{ checksum "pom.xml" }}
+            - m2-
+
+      - attach_workspace:
+          at: .
+
+      - run:
+          command: |
+            mvn install -DskipTests
+            ./.util/build-eclipse.sh
+
+      # Save built artifacts
+      - run:
+          command: |
+            mkdir site
+            mv plugins/eclipse/releng/update/target/repository/features site/features
+            mv plugins/eclipse/releng/update/target/repository/plugins site/plugins
+            mv plugins/eclipse/releng/update/target/category.xml site/site.xml
+
+      - store_artifacts:
+          path: site
+          destination: .
+      
+      - persist_to_workspace:
+          root: .
+          paths:
+            - site
+
+      - save_cache:
+          key: m2-{{ checksum "pom.xml" }}
+          paths:
+            - ~/.m2
+      
+      - slack/status:
+          success_message: Eclipse Update Site built successfully on $CIRCLE_BRANCH
+          failure_message: Erroring building Eclipse Update Site on $CIRCLE_BRANCH
+          webhook: https://hooks.slack.com/services/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
+
+  deploy-ossrh:
+    executor: jdk-8
 
     steps:
       - checkout
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            - v1-dependencies-
+            - m2-{{ checksum "pom.xml" }}
+            - m2-
 
-      - run: echo $GPG_SECRET_KEYS | base64 --decode | gpg --import --no-tty --batch --yes
-      - run: echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust --no-tty --batch --yes
-      - run: mvn clean install javadoc:aggregate -B -U -DskipTests=true
-      - run: cd standalone && mvn clean deploy -s ../.circleci/settings.xml -Possrh -B -U -DskipTests=true
+      - attach_workspace:
+          at: .
+
+      - run: echo -e $GPG_KEY | gpg --import --no-tty --batch --yes
+
+      - run: mvn deploy -s .circleci/settings.xml -DskipTest=true
 
       - save_cache:
+          key: m2-{{ checksum "pom.xml" }}
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
 
+      - slack/status:
+          success_message: JARs deployed to OSSRH on $CIRCLE_BRANCH
+          failure_message: Error deploying OSSRH on $CIRCLE_BRANCH
+          webhook: https://hooks.slack.com/services/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
 
-  deploy-labs:
-    docker:
-      - image: circleci/openjdk:8-jdk
-    
-    working_directory: ~/repo
-
+  deploy-epsilonlabs:
+    executor: jdk-8
     steps:
       - attach_workspace:
-          at: ~/repo
+          at: .
 
-      # Store Artifacts
-      # Plugins
       - store_artifacts:
-          path: ~/repo/plugins/org.eclipse.epsilon.labs.emc.cellsheet/target/org.eclipse.epsilon.labs.emc.cellsheet-1.0.0-SNAPSHOT.jar
-          destination: plugins/org.eclipse.epsilon.labs.emc.cellsheet-1.0.0-SNAPSHOT.jar
-      - store_artifacts:
-          path: ~/repo/plugins/org.eclipse.epsilon.labs.emc.cellsheet.dependencies/target/org.eclipse.epsilon.labs.emc.cellsheet.dependencies-1.0.0-SNAPSHOT.jar
-          destination: plugins/org.eclipse.epsilon.labs.emc.cellsheet.dependencies-1.0.0-SNAPSHOT.jar
-      - store_artifacts:
-          path: ~/repo/plugins/org.eclipse.epsilon.labs.emc.cellsheet.dt/target/org.eclipse.epsilon.labs.emc.cellsheet.dt-1.0.0-SNAPSHOT.jar
-          destination: plugins/org.eclipse.epsilon.labs.emc.cellsheet.dt-1.0.0-SNAPSHOT.jar
-      - store_artifacts:
-          path: ~/repo/plugins/org.eclipse.epsilon.labs.emc.cellsheet.excel/target/org.eclipse.epsilon.labs.emc.cellsheet.excel-1.0.0-SNAPSHOT.jar
-          destination: plugins/org.eclipse.epsilon.labs.emc.cellsheet.excel-1.0.0-SNAPSHOT.jar
-      - store_artifacts:
-          path: ~/repo/plugins/org.eclipse.epsilon.labs.emc.cellsheet.excel.dependencies/target/org.eclipse.epsilon.labs.emc.cellsheet.excel.dependencies-1.0.0-SNAPSHOT.jar
-          destination: plugins/org.eclipse.epsilon.labs.emc.cellsheet.excel.dependencies-1.0.0-SNAPSHOT.jar
-      - store_artifacts:
-          path: ~/repo/plugins/org.eclipse.epsilon.labs.emc.cellsheet.excel.dt/target/org.eclipse.epsilon.labs.emc.cellsheet.excel.dt-1.0.0-SNAPSHOT.jar
-          destination: plugins/org.eclipse.epsilon.labs.emc.cellsheet.excel.dt-1.0.0-SNAPSHOT.jar
+          path: site
+          destination: .
 
-      # Features
-      - store_artifacts:
-          path: ~/repo/features/org.eclipse.epsilon.labs.emc.cellsheet.excel.feature/target/org.eclipse.epsilon.labs.emc.cellsheet.excel.feature-1.0.0-SNAPSHOT.jar
-          destination: features/org.eclipse.epsilon.labs.emc.cellsheet.excel.feature-1.0.0-SNAPSHOT.jar
-      
-      # Update Site
-      - store_artifacts:
-          path: ~/repo/updatesite/site.xml
-          destination: site.xml
-
-      - run: 
+      - run:
           name: Trigger Epsilon Labs Deployment
           command: curl -X POST "https://circleci.com/api/v1.1/project/github/epsilonlabs/epsilonlabs-updatesite?circle-token=$TRIGGER_BUILD"
-
+      
+      - slack/status:
+          only_for_branches: develop,master
+          success_message: Triggered EpsilonLabs deployment on $CIRCLE_BRANCH
+          failure_message: Error triggering EpsilonLabs deployment on $CIRCLE_BRANCH
+          webhook: https://hooks.slack.com/services/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
 
 workflows:
   version: 2
   build-deploy:
     jobs:
-      - build
-      - deploy-snapshot:
+      - build-jar:
+          filters:
+            branches:
+              only: 
+                - /.*/
+            tags:
+              only:
+                - /.*/
+      - build-eclipse:
           requires:
-            - build
+            - build-jar
+          filters:
+            branches:
+              only: 
+                - /.*/
+            tags:
+              only:
+                - /.*/
+      - deploy-ossrh:
+          requires:
+            - build-jar
           filters:
             branches:
               only:
-                - master
                 - develop
-                - /^release*/
-      - deploy-labs:
+                - /release.*/
+            tags:
+              only:
+                - /v.*/
+      - deploy-epsilonlabs:
           requires:
-            - build
+            - build-eclipse
           filters:
             branches:
               only:
-                - master
                 - develop
-                - /^release*/
+                - /release.*/
+            tags:
+              only:
+                - /v.*/

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://maven.apache.org/POM/4.0.0" 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.epsilon.labs.emc.cellsheet.eclipse</groupId>
+        <artifactId>org.eclipse.epsilon.labs.emc.cellsheet.eclipse</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>org.eclipse.epsilon.labs.emc.cellsheet.eclipse.features</artifactId>
+
+    <packaging>pom</packaging>
+
+    <name>EMC Cellsheet Eclipse Features</name>
+    <description />
+
+    <modules>
+        <module>org.eclipse.epsilon.labs.emc.cellsheet.core.feature</module>
+        <module>org.eclipse.epsilon.labs.emc.cellsheet.excel.feature</module>
+    </modules>
+
+</project>
