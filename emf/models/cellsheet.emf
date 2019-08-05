@@ -87,12 +87,19 @@ class Token {
 	ref Ast[*]#token usedBy;
 }
 
+class AstEval {
+	attr String stringValue;
+	attr double numberValue;
+	attr boolean isString = false;
+	attr boolean isNumber = false;
+	attr boolean isError = false;
+}
+
 abstract class Ast {
 	val Ast[*]#parent children;
 	ref Cell#asts cell;
 	ref Token#usedBy token;
-	
-	op String evaluate();
+	val AstEval result;
 }
 
 abstract class Operand extends Ast {}

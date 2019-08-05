@@ -23,7 +23,6 @@ import org.eclipse.epsilon.labs.emf.cellsheet.CellFormat;
 import org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage;
 import org.eclipse.epsilon.labs.emf.cellsheet.HasA1;
 import org.eclipse.epsilon.labs.emf.cellsheet.Sheet;
-import org.eclipse.epsilon.labs.emf.cellsheet.Token;
 import org.eclipse.epsilon.labs.emf.cellsheet.Workspace;
 
 /**

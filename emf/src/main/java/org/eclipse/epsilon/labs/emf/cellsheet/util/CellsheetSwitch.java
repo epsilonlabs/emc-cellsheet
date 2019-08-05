@@ -11,6 +11,7 @@ import org.eclipse.emf.ecore.util.Switch;
 
 import org.eclipse.epsilon.labs.emf.cellsheet.Addition;
 import org.eclipse.epsilon.labs.emf.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emf.cellsheet.AstEval;
 import org.eclipse.epsilon.labs.emf.cellsheet.BlankCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Book;
 import org.eclipse.epsilon.labs.emf.cellsheet.BooleanCell;
@@ -21,9 +22,7 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Concatenation;
 import org.eclipse.epsilon.labs.emf.cellsheet.DateCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Division;
 import org.eclipse.epsilon.labs.emf.cellsheet.EQ;
-import org.eclipse.epsilon.labs.emf.cellsheet.ErrorCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Exponentiation;
-import org.eclipse.epsilon.labs.emf.cellsheet.Exponention;
 import org.eclipse.epsilon.labs.emf.cellsheet.FormulaCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Function;
 import org.eclipse.epsilon.labs.emf.cellsheet.GT;
@@ -230,6 +229,12 @@ public class CellsheetSwitch<T> extends Switch<T> {
 			case CellsheetPackage.TOKEN: {
 				Token token = (Token)theEObject;
 				T result = caseToken(token);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case CellsheetPackage.AST_EVAL: {
+				AstEval astEval = (AstEval)theEObject;
+				T result = caseAstEval(astEval);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -731,6 +736,21 @@ public class CellsheetSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseToken(Token object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Ast Eval</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Ast Eval</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseAstEval(AstEval object) {
 		return null;
 	}
 

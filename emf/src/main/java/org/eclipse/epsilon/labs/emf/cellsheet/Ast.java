@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getChildren <em>Children</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getCell <em>Cell</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getToken <em>Token</em>}</li>
+ *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getResult <em>Result</em>}</li>
  * </ul>
  *
  * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getAst()
@@ -86,11 +87,25 @@ public interface Ast extends EObject {
 	void setToken(Token value);
 
 	/**
+	 * Returns the value of the '<em><b>Result</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @model
+	 * @return the value of the '<em>Result</em>' containment reference.
+	 * @see #setResult(AstEval)
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getAst_Result()
+	 * @model containment="true"
 	 * @generated
 	 */
-	String evaluate();
+	AstEval getResult();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getResult <em>Result</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Result</em>' containment reference.
+	 * @see #getResult()
+	 * @generated
+	 */
+	void setResult(AstEval value);
 
 } // Ast

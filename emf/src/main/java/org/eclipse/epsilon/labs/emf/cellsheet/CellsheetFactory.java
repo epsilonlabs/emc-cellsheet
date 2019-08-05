@@ -121,6 +121,15 @@ public interface CellsheetFactory extends EFactory {
 	Token createToken();
 
 	/**
+	 * Returns a new object of class '<em>Ast Eval</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Ast Eval</em>'.
+	 * @generated
+	 */
+	AstEval createAstEval();
+
+	/**
 	 * Returns a new object of class '<em>Unknown</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

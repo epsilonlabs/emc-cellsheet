@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -14,6 +13,7 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 import org.eclipse.epsilon.labs.emf.cellsheet.Addition;
 import org.eclipse.epsilon.labs.emf.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emf.cellsheet.AstEval;
 import org.eclipse.epsilon.labs.emf.cellsheet.BlankCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Book;
 import org.eclipse.epsilon.labs.emf.cellsheet.BooleanCell;
@@ -24,9 +24,7 @@ import org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage;
 import org.eclipse.epsilon.labs.emf.cellsheet.Concatenation;
 import org.eclipse.epsilon.labs.emf.cellsheet.DateCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Division;
-import org.eclipse.epsilon.labs.emf.cellsheet.ErrorCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Exponentiation;
-import org.eclipse.epsilon.labs.emf.cellsheet.Exponention;
 import org.eclipse.epsilon.labs.emf.cellsheet.FormulaCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Function;
 import org.eclipse.epsilon.labs.emf.cellsheet.HasA1;
@@ -169,6 +167,13 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	private EClass tokenEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass astEvalEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -922,6 +927,66 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
+	public EClass getAstEval() {
+		return astEvalEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getAstEval_StringValue() {
+		return (EAttribute)astEvalEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getAstEval_NumberValue() {
+		return (EAttribute)astEvalEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getAstEval_IsString() {
+		return (EAttribute)astEvalEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getAstEval_IsNumber() {
+		return (EAttribute)astEvalEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EAttribute getAstEval_IsError() {
+		return (EAttribute)astEvalEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
 	public EClass getAst() {
 		return astEClass;
 	}
@@ -954,6 +1019,16 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	@Override
 	public EReference getAst_Token() {
 		return (EReference)astEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public EReference getAst_Result() {
+		return (EReference)astEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -1404,10 +1479,18 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 		createEAttribute(tokenEClass, TOKEN__VALUE);
 		createEReference(tokenEClass, TOKEN__USED_BY);
 
+		astEvalEClass = createEClass(AST_EVAL);
+		createEAttribute(astEvalEClass, AST_EVAL__STRING_VALUE);
+		createEAttribute(astEvalEClass, AST_EVAL__NUMBER_VALUE);
+		createEAttribute(astEvalEClass, AST_EVAL__IS_STRING);
+		createEAttribute(astEvalEClass, AST_EVAL__IS_NUMBER);
+		createEAttribute(astEvalEClass, AST_EVAL__IS_ERROR);
+
 		astEClass = createEClass(AST);
 		createEReference(astEClass, AST__CHILDREN);
 		createEReference(astEClass, AST__CELL);
 		createEReference(astEClass, AST__TOKEN);
+		createEReference(astEClass, AST__RESULT);
 
 		operandEClass = createEClass(OPERAND);
 
@@ -1631,12 +1714,18 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 		initEAttribute(getToken_Value(), ecorePackage.getEString(), "value", null, 0, 1, Token.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getToken_UsedBy(), this.getAst(), this.getAst_Token(), "usedBy", null, 0, -1, Token.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		initEClass(astEvalEClass, AstEval.class, "AstEval", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getAstEval_StringValue(), ecorePackage.getEString(), "stringValue", null, 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAstEval_NumberValue(), ecorePackage.getEDouble(), "numberValue", null, 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAstEval_IsString(), ecorePackage.getEBoolean(), "isString", "false", 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAstEval_IsNumber(), ecorePackage.getEBoolean(), "isNumber", "false", 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAstEval_IsError(), ecorePackage.getEBoolean(), "isError", "false", 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		initEClass(astEClass, Ast.class, "Ast", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getAst_Children(), this.getAst(), null, "children", null, 0, -1, Ast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getAst_Cell(), this.getCell(), this.getCell_Asts(), "cell", null, 0, 1, Ast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getAst_Token(), this.getToken(), this.getToken_UsedBy(), "token", null, 0, 1, Ast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		addEOperation(astEClass, ecorePackage.getEString(), "evaluate", 0, 1, IS_UNIQUE, IS_ORDERED);
+		initEReference(getAst_Result(), this.getAstEval(), null, "result", null, 0, 1, Ast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(operandEClass, Operand.class, "Operand", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

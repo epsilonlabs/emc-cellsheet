@@ -999,6 +999,70 @@ public interface CellsheetPackage extends EPackage {
 	int TOKEN_FEATURE_COUNT = 2;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstEvalImpl <em>Ast Eval</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.AstEvalImpl
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getAstEval()
+	 * @generated
+	 */
+	int AST_EVAL = 15;
+
+	/**
+	 * The feature id for the '<em><b>String Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int AST_EVAL__STRING_VALUE = 0;
+
+	/**
+	 * The feature id for the '<em><b>Number Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int AST_EVAL__NUMBER_VALUE = 1;
+
+	/**
+	 * The feature id for the '<em><b>Is String</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int AST_EVAL__IS_STRING = 2;
+
+	/**
+	 * The feature id for the '<em><b>Is Number</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int AST_EVAL__IS_NUMBER = 3;
+
+	/**
+	 * The feature id for the '<em><b>Is Error</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int AST_EVAL__IS_ERROR = 4;
+
+	/**
+	 * The number of structural features of the '<em>Ast Eval</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int AST_EVAL_FEATURE_COUNT = 5;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstImpl <em>Ast</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1006,7 +1070,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getAst()
 	 * @generated
 	 */
-	int AST = 15;
+	int AST = 16;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1036,13 +1100,22 @@ public interface CellsheetPackage extends EPackage {
 	int AST__TOKEN = 2;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int AST__RESULT = 3;
+
+	/**
 	 * The number of structural features of the '<em>Ast</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int AST_FEATURE_COUNT = 3;
+	int AST_FEATURE_COUNT = 4;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.OperandImpl <em>Operand</em>}' class.
@@ -1052,7 +1125,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getOperand()
 	 * @generated
 	 */
-	int OPERAND = 16;
+	int OPERAND = 17;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1082,6 +1155,15 @@ public interface CellsheetPackage extends EPackage {
 	int OPERAND__TOKEN = AST__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OPERAND__RESULT = AST__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Operand</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1098,7 +1180,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getOperation()
 	 * @generated
 	 */
-	int OPERATION = 17;
+	int OPERATION = 18;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1128,6 +1210,15 @@ public interface CellsheetPackage extends EPackage {
 	int OPERATION__TOKEN = AST__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OPERATION__RESULT = AST__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Operation</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1144,7 +1235,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getPrefixOperator()
 	 * @generated
 	 */
-	int PREFIX_OPERATOR = 18;
+	int PREFIX_OPERATOR = 19;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1174,6 +1265,15 @@ public interface CellsheetPackage extends EPackage {
 	int PREFIX_OPERATOR__TOKEN = AST__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PREFIX_OPERATOR__RESULT = AST__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Prefix Operator</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1190,7 +1290,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getInfixOperator()
 	 * @generated
 	 */
-	int INFIX_OPERATOR = 19;
+	int INFIX_OPERATOR = 20;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1220,6 +1320,15 @@ public interface CellsheetPackage extends EPackage {
 	int INFIX_OPERATOR__TOKEN = AST__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INFIX_OPERATOR__RESULT = AST__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Infix Operator</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1236,7 +1345,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getPostfixOperator()
 	 * @generated
 	 */
-	int POSTFIX_OPERATOR = 20;
+	int POSTFIX_OPERATOR = 21;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1266,6 +1375,15 @@ public interface CellsheetPackage extends EPackage {
 	int POSTFIX_OPERATOR__TOKEN = AST__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int POSTFIX_OPERATOR__RESULT = AST__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Postfix Operator</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1282,7 +1400,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getUnknown()
 	 * @generated
 	 */
-	int UNKNOWN = 21;
+	int UNKNOWN = 22;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1312,6 +1430,15 @@ public interface CellsheetPackage extends EPackage {
 	int UNKNOWN__TOKEN = AST__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UNKNOWN__RESULT = AST__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Unknown</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1328,7 +1455,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getNoop()
 	 * @generated
 	 */
-	int NOOP = 22;
+	int NOOP = 23;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1358,6 +1485,15 @@ public interface CellsheetPackage extends EPackage {
 	int NOOP__TOKEN = AST__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NOOP__RESULT = AST__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Noop</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1374,7 +1510,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getText()
 	 * @generated
 	 */
-	int TEXT = 23;
+	int TEXT = 24;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1404,6 +1540,15 @@ public interface CellsheetPackage extends EPackage {
 	int TEXT__TOKEN = OPERAND__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TEXT__RESULT = OPERAND__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Text</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1420,7 +1565,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getNumber()
 	 * @generated
 	 */
-	int NUMBER = 24;
+	int NUMBER = 25;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1450,6 +1595,15 @@ public interface CellsheetPackage extends EPackage {
 	int NUMBER__TOKEN = OPERAND__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NUMBER__RESULT = OPERAND__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Number</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1466,7 +1620,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getLogical()
 	 * @generated
 	 */
-	int LOGICAL = 25;
+	int LOGICAL = 26;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1496,6 +1650,15 @@ public interface CellsheetPackage extends EPackage {
 	int LOGICAL__TOKEN = OPERAND__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOGICAL__RESULT = OPERAND__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Logical</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1512,7 +1675,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getError()
 	 * @generated
 	 */
-	int ERROR = 26;
+	int ERROR = 27;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1542,6 +1705,15 @@ public interface CellsheetPackage extends EPackage {
 	int ERROR__TOKEN = OPERAND__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ERROR__RESULT = OPERAND__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Error</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1558,7 +1730,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getRef()
 	 * @generated
 	 */
-	int REF = 27;
+	int REF = 28;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1588,6 +1760,15 @@ public interface CellsheetPackage extends EPackage {
 	int REF__TOKEN = OPERAND__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REF__RESULT = OPERAND__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Ref</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1604,7 +1785,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getRange()
 	 * @generated
 	 */
-	int RANGE = 28;
+	int RANGE = 29;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1634,6 +1815,15 @@ public interface CellsheetPackage extends EPackage {
 	int RANGE__TOKEN = OPERAND__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int RANGE__RESULT = OPERAND__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Range</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1650,7 +1840,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getRelativeRef()
 	 * @generated
 	 */
-	int RELATIVE_REF = 29;
+	int RELATIVE_REF = 30;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1680,6 +1870,15 @@ public interface CellsheetPackage extends EPackage {
 	int RELATIVE_REF__TOKEN = REF__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int RELATIVE_REF__RESULT = REF__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Relative Ref</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1696,7 +1895,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getRelativeRange()
 	 * @generated
 	 */
-	int RELATIVE_RANGE = 30;
+	int RELATIVE_RANGE = 31;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1726,6 +1925,15 @@ public interface CellsheetPackage extends EPackage {
 	int RELATIVE_RANGE__TOKEN = REF__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int RELATIVE_RANGE__RESULT = REF__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Relative Range</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1742,7 +1950,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getFunction()
 	 * @generated
 	 */
-	int FUNCTION = 31;
+	int FUNCTION = 32;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1772,6 +1980,15 @@ public interface CellsheetPackage extends EPackage {
 	int FUNCTION__TOKEN = OPERATION__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FUNCTION__RESULT = OPERATION__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Function</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1788,7 +2005,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getPlus()
 	 * @generated
 	 */
-	int PLUS = 32;
+	int PLUS = 33;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1818,6 +2035,15 @@ public interface CellsheetPackage extends EPackage {
 	int PLUS__TOKEN = PREFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PLUS__RESULT = PREFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Plus</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1834,7 +2060,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getNegation()
 	 * @generated
 	 */
-	int NEGATION = 33;
+	int NEGATION = 34;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1864,6 +2090,15 @@ public interface CellsheetPackage extends EPackage {
 	int NEGATION__TOKEN = PREFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NEGATION__RESULT = PREFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Negation</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1880,7 +2115,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getPercent()
 	 * @generated
 	 */
-	int PERCENT = 34;
+	int PERCENT = 35;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1910,6 +2145,15 @@ public interface CellsheetPackage extends EPackage {
 	int PERCENT__TOKEN = POSTFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PERCENT__RESULT = POSTFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Percent</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1926,7 +2170,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getExponentiation()
 	 * @generated
 	 */
-	int EXPONENTIATION = 35;
+	int EXPONENTIATION = 36;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -1956,6 +2200,15 @@ public interface CellsheetPackage extends EPackage {
 	int EXPONENTIATION__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXPONENTIATION__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Exponentiation</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1972,7 +2225,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getMultiplication()
 	 * @generated
 	 */
-	int MULTIPLICATION = 36;
+	int MULTIPLICATION = 37;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2002,6 +2255,15 @@ public interface CellsheetPackage extends EPackage {
 	int MULTIPLICATION__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MULTIPLICATION__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Multiplication</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2018,7 +2280,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getDivision()
 	 * @generated
 	 */
-	int DIVISION = 37;
+	int DIVISION = 38;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2048,6 +2310,15 @@ public interface CellsheetPackage extends EPackage {
 	int DIVISION__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DIVISION__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Division</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2064,7 +2335,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getAddition()
 	 * @generated
 	 */
-	int ADDITION = 38;
+	int ADDITION = 39;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2094,6 +2365,15 @@ public interface CellsheetPackage extends EPackage {
 	int ADDITION__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ADDITION__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Addition</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2110,7 +2390,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getSubtraction()
 	 * @generated
 	 */
-	int SUBTRACTION = 39;
+	int SUBTRACTION = 40;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2140,6 +2420,15 @@ public interface CellsheetPackage extends EPackage {
 	int SUBTRACTION__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SUBTRACTION__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Subtraction</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2156,7 +2445,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getConcatenation()
 	 * @generated
 	 */
-	int CONCATENATION = 40;
+	int CONCATENATION = 41;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2186,6 +2475,15 @@ public interface CellsheetPackage extends EPackage {
 	int CONCATENATION__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONCATENATION__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Concatenation</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2202,7 +2500,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getEQ()
 	 * @generated
 	 */
-	int EQ = 41;
+	int EQ = 42;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2232,6 +2530,15 @@ public interface CellsheetPackage extends EPackage {
 	int EQ__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EQ__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>EQ</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2248,7 +2555,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getLT()
 	 * @generated
 	 */
-	int LT = 42;
+	int LT = 43;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2278,6 +2585,15 @@ public interface CellsheetPackage extends EPackage {
 	int LT__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LT__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>LT</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2294,7 +2610,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getGT()
 	 * @generated
 	 */
-	int GT = 43;
+	int GT = 44;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2324,6 +2640,15 @@ public interface CellsheetPackage extends EPackage {
 	int GT__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GT__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>GT</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2340,7 +2665,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getLTE()
 	 * @generated
 	 */
-	int LTE = 44;
+	int LTE = 45;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2370,6 +2695,15 @@ public interface CellsheetPackage extends EPackage {
 	int LTE__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LTE__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>LTE</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2386,7 +2720,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getGTE()
 	 * @generated
 	 */
-	int GTE = 45;
+	int GTE = 46;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2416,6 +2750,15 @@ public interface CellsheetPackage extends EPackage {
 	int GTE__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GTE__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>GTE</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2432,7 +2775,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getNEQ()
 	 * @generated
 	 */
-	int NEQ = 46;
+	int NEQ = 47;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2462,6 +2805,15 @@ public interface CellsheetPackage extends EPackage {
 	int NEQ__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NEQ__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>NEQ</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2478,7 +2830,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getIntersection()
 	 * @generated
 	 */
-	int INTERSECTION = 47;
+	int INTERSECTION = 48;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2508,6 +2860,15 @@ public interface CellsheetPackage extends EPackage {
 	int INTERSECTION__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INTERSECTION__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Intersection</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2524,7 +2885,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getUnion()
 	 * @generated
 	 */
-	int UNION = 48;
+	int UNION = 49;
 
 	/**
 	 * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -2554,6 +2915,15 @@ public interface CellsheetPackage extends EPackage {
 	int UNION__TOKEN = INFIX_OPERATOR__TOKEN;
 
 	/**
+	 * The feature id for the '<em><b>Result</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int UNION__RESULT = INFIX_OPERATOR__RESULT;
+
+	/**
 	 * The number of structural features of the '<em>Union</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2570,7 +2940,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getCellFormat()
 	 * @generated
 	 */
-	int CELL_FORMAT = 49;
+	int CELL_FORMAT = 50;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -3081,6 +3451,71 @@ public interface CellsheetPackage extends EPackage {
 	EReference getToken_UsedBy();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval <em>Ast Eval</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Ast Eval</em>'.
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.AstEval
+	 * @generated
+	 */
+	EClass getAstEval();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getStringValue <em>String Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>String Value</em>'.
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getStringValue()
+	 * @see #getAstEval()
+	 * @generated
+	 */
+	EAttribute getAstEval_StringValue();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getNumberValue <em>Number Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Number Value</em>'.
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getNumberValue()
+	 * @see #getAstEval()
+	 * @generated
+	 */
+	EAttribute getAstEval_NumberValue();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsString <em>Is String</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Is String</em>'.
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsString()
+	 * @see #getAstEval()
+	 * @generated
+	 */
+	EAttribute getAstEval_IsString();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsNumber <em>Is Number</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Is Number</em>'.
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsNumber()
+	 * @see #getAstEval()
+	 * @generated
+	 */
+	EAttribute getAstEval_IsNumber();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsError <em>Is Error</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Is Error</em>'.
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsError()
+	 * @see #getAstEval()
+	 * @generated
+	 */
+	EAttribute getAstEval_IsError();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast <em>Ast</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3122,6 +3557,17 @@ public interface CellsheetPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getAst_Token();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.epsilon.labs.emf.cellsheet.Ast#getResult <em>Result</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Result</em>'.
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.Ast#getResult()
+	 * @see #getAst()
+	 * @generated
+	 */
+	EReference getAst_Result();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.epsilon.labs.emf.cellsheet.Operand <em>Operand</em>}'.
@@ -3890,6 +4336,56 @@ public interface CellsheetPackage extends EPackage {
 		EReference TOKEN__USED_BY = eINSTANCE.getToken_UsedBy();
 
 		/**
+		 * The meta object literal for the '{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstEvalImpl <em>Ast Eval</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.AstEvalImpl
+		 * @see org.eclipse.epsilon.labs.emf.cellsheet.impl.CellsheetPackageImpl#getAstEval()
+		 * @generated
+		 */
+		EClass AST_EVAL = eINSTANCE.getAstEval();
+
+		/**
+		 * The meta object literal for the '<em><b>String Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute AST_EVAL__STRING_VALUE = eINSTANCE.getAstEval_StringValue();
+
+		/**
+		 * The meta object literal for the '<em><b>Number Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute AST_EVAL__NUMBER_VALUE = eINSTANCE.getAstEval_NumberValue();
+
+		/**
+		 * The meta object literal for the '<em><b>Is String</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute AST_EVAL__IS_STRING = eINSTANCE.getAstEval_IsString();
+
+		/**
+		 * The meta object literal for the '<em><b>Is Number</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute AST_EVAL__IS_NUMBER = eINSTANCE.getAstEval_IsNumber();
+
+		/**
+		 * The meta object literal for the '<em><b>Is Error</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute AST_EVAL__IS_ERROR = eINSTANCE.getAstEval_IsError();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstImpl <em>Ast</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3922,6 +4418,14 @@ public interface CellsheetPackage extends EPackage {
 		 * @generated
 		 */
 		EReference AST__TOKEN = eINSTANCE.getAst_Token();
+
+		/**
+		 * The meta object literal for the '<em><b>Result</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference AST__RESULT = eINSTANCE.getAst_Result();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.OperandImpl <em>Operand</em>}' class.

@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.epsilon.labs.emf.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emf.cellsheet.AstEval;
 import org.eclipse.epsilon.labs.emf.cellsheet.Cell;
 import org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage;
 import org.eclipse.epsilon.labs.emf.cellsheet.Token;
@@ -35,6 +36,7 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Token;
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstImpl#getChildren <em>Children</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstImpl#getCell <em>Cell</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstImpl#getToken <em>Token</em>}</li>
+ *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstImpl#getResult <em>Result</em>}</li>
  * </ul>
  *
  * @generated
@@ -59,6 +61,16 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 	 * @ordered
 	 */
 	protected Token token;
+
+	/**
+	 * The cached value of the '{@link #getResult() <em>Result</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getResult()
+	 * @generated
+	 * @ordered
+	 */
+	protected AstEval result;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -203,10 +215,43 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 	 * @generated
 	 */
 	@Override
-	public String evaluate() {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+	public AstEval getResult() {
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetResult(AstEval newResult, NotificationChain msgs) {
+		AstEval oldResult = result;
+		result = newResult;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CellsheetPackage.AST__RESULT, oldResult, newResult);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void setResult(AstEval newResult) {
+		if (newResult != result) {
+			NotificationChain msgs = null;
+			if (result != null)
+				msgs = ((InternalEObject)result).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CellsheetPackage.AST__RESULT, null, msgs);
+			if (newResult != null)
+				msgs = ((InternalEObject)newResult).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CellsheetPackage.AST__RESULT, null, msgs);
+			msgs = basicSetResult(newResult, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CellsheetPackage.AST__RESULT, newResult, newResult));
 	}
 
 	/**
@@ -243,6 +288,8 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 				return basicSetCell(null, msgs);
 			case CellsheetPackage.AST__TOKEN:
 				return basicSetToken(null, msgs);
+			case CellsheetPackage.AST__RESULT:
+				return basicSetResult(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -276,6 +323,8 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 			case CellsheetPackage.AST__TOKEN:
 				if (resolve) return getToken();
 				return basicGetToken();
+			case CellsheetPackage.AST__RESULT:
+				return getResult();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -299,6 +348,9 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 			case CellsheetPackage.AST__TOKEN:
 				setToken((Token)newValue);
 				return;
+			case CellsheetPackage.AST__RESULT:
+				setResult((AstEval)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -320,6 +372,9 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 			case CellsheetPackage.AST__TOKEN:
 				setToken((Token)null);
 				return;
+			case CellsheetPackage.AST__RESULT:
+				setResult((AstEval)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -338,6 +393,8 @@ public abstract class AstImpl extends EObjectImpl implements Ast {
 				return getCell() != null;
 			case CellsheetPackage.AST__TOKEN:
 				return token != null;
+			case CellsheetPackage.AST__RESULT:
+				return result != null;
 		}
 		return super.eIsSet(featureID);
 	}

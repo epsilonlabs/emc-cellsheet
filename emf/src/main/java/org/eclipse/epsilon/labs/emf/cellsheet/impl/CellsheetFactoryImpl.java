@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 import org.eclipse.epsilon.labs.emf.cellsheet.Addition;
+import org.eclipse.epsilon.labs.emf.cellsheet.AstEval;
 import org.eclipse.epsilon.labs.emf.cellsheet.BlankCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Book;
 import org.eclipse.epsilon.labs.emf.cellsheet.BooleanCell;
@@ -23,9 +24,7 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Concatenation;
 import org.eclipse.epsilon.labs.emf.cellsheet.DateCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Division;
 import org.eclipse.epsilon.labs.emf.cellsheet.EQ;
-import org.eclipse.epsilon.labs.emf.cellsheet.ErrorCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Exponentiation;
-import org.eclipse.epsilon.labs.emf.cellsheet.Exponention;
 import org.eclipse.epsilon.labs.emf.cellsheet.FormulaCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Function;
 import org.eclipse.epsilon.labs.emf.cellsheet.GT;
@@ -111,6 +110,7 @@ public class CellsheetFactoryImpl extends EFactoryImpl implements CellsheetFacto
 			case CellsheetPackage.DATE_CELL: return createDateCell();
 			case CellsheetPackage.FORMULA_CELL: return createFormulaCell();
 			case CellsheetPackage.TOKEN: return createToken();
+			case CellsheetPackage.AST_EVAL: return createAstEval();
 			case CellsheetPackage.UNKNOWN: return createUnknown();
 			case CellsheetPackage.NOOP: return createNoop();
 			case CellsheetPackage.TEXT: return createText();
@@ -274,6 +274,17 @@ public class CellsheetFactoryImpl extends EFactoryImpl implements CellsheetFacto
 	public Token createToken() {
 		TokenImpl token = new TokenImpl();
 		return token;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public AstEval createAstEval() {
+		AstEvalImpl astEval = new AstEvalImpl();
+		return astEval;
 	}
 
 	/**

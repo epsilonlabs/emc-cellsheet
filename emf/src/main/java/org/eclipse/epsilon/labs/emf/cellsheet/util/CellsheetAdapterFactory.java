@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject;
 
 import org.eclipse.epsilon.labs.emf.cellsheet.Addition;
 import org.eclipse.epsilon.labs.emf.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emf.cellsheet.AstEval;
 import org.eclipse.epsilon.labs.emf.cellsheet.BlankCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Book;
 import org.eclipse.epsilon.labs.emf.cellsheet.BooleanCell;
@@ -23,9 +24,7 @@ import org.eclipse.epsilon.labs.emf.cellsheet.Concatenation;
 import org.eclipse.epsilon.labs.emf.cellsheet.DateCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Division;
 import org.eclipse.epsilon.labs.emf.cellsheet.EQ;
-import org.eclipse.epsilon.labs.emf.cellsheet.ErrorCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Exponentiation;
-import org.eclipse.epsilon.labs.emf.cellsheet.Exponention;
 import org.eclipse.epsilon.labs.emf.cellsheet.FormulaCell;
 import org.eclipse.epsilon.labs.emf.cellsheet.Function;
 import org.eclipse.epsilon.labs.emf.cellsheet.GT;
@@ -177,6 +176,10 @@ public class CellsheetAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseToken(Token object) {
 				return createTokenAdapter();
+			}
+			@Override
+			public Adapter caseAstEval(AstEval object) {
+				return createAstEvalAdapter();
 			}
 			@Override
 			public Adapter caseAst(Ast object) {
@@ -545,6 +548,20 @@ public class CellsheetAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createTokenAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval <em>Ast Eval</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.AstEval
+	 * @generated
+	 */
+	public Adapter createAstEvalAdapter() {
 		return null;
 	}
 
