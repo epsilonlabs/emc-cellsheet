@@ -45,6 +45,7 @@ public class PoiAstFactory {
             LinkedHashMap<Ptg, String> ptgs = parser.getPtgs();
             for (Ptg ptg : ptgs.keySet()) {
                 Ast ast = of(ptg, ptgs.get(ptg));
+                ast.setEvaluator(PoiAstEvaluator.getInstance());
                 if (ast instanceof Unknown) continue;
 
                 if (ptg instanceof OperationPtg) {
