@@ -57,7 +57,10 @@ jobs:
       - attach_workspace:
           at: .
 
-      - run: mvn -f plugins/eclipse package
+      - run:
+          command: |
+            mvn install
+            ./.util/build-eclipse.sh
 
       # Save built artifacts
       - run:
