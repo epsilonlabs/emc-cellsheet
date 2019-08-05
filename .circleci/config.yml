@@ -113,7 +113,6 @@ jobs:
             - ~/.m2
 
       - slack/status:
-          only_for_branches: develop,master
           success_message: JARs deployed to OSSRH on $CIRCLE_BRANCH
           failure_message: Error deploying OSSRH on $CIRCLE_BRANCH
           webhook: https://hooks.slack.com/services/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
@@ -142,10 +141,24 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - build-jar
+      - build-jar:
+          filters:
+            branches:
+              only: 
+                - /.*/
+            tags:
+              only:
+                - /.*/
       - build-eclipse:
           requires:
             - build-jar
+          filters:
+            branches:
+              only: 
+                - /.*/
+            tags:
+              only:
+                - /.*/
       - deploy-ossrh:
           requires:
             - build-jar
@@ -153,7 +166,10 @@ workflows:
             branches:
               only:
                 - develop
-                - master
+                - /release.*/
+            tags:
+              only:
+                - /v.*/
       - deploy-epsilonlabs:
           requires:
             - build-eclipse
@@ -161,4 +177,7 @@ workflows:
             branches:
               only:
                 - develop
-                - master
+                - /release.*/
+            tags:
+              only:
+                - /v.*/
