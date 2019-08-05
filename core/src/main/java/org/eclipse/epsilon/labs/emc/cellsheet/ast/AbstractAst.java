@@ -3,13 +3,9 @@ package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.graph.*;
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
-import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
-import org.eclipse.epsilon.labs.emc.cellsheet.TokenFactory;
+import org.eclipse.epsilon.labs.emc.cellsheet.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -115,7 +111,7 @@ public abstract class AbstractAst implements Ast<AbstractAst> {
 
     @Override
     public Cell getCell() {
-        return cell == null ? getParent().getCell() : cell;
+        return getParent() == null ? cell : getParent().getCell();
     }
 
     @Override
@@ -152,12 +148,12 @@ public abstract class AbstractAst implements Ast<AbstractAst> {
     }
 
     @Override
-    public String evaluate() {
+    public AstEval evaluate() {
         return evaluator.evaluate(this);
     }
 
     @Override
-    public String evaluate(AstEvaluator evaluator) {
+    public AstEval evaluate(AstEvaluator evaluator) {
         return evaluator.evaluate(this);
     }
 

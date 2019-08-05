@@ -36,9 +36,9 @@ public interface Ast<T extends Ast<T>> extends HasId {
     @Override
     Iterator<T> iterator();
 
-    String evaluate();
+    AstEval evaluate();
 
-    String evaluate(AstEvaluator evaluator);
+    AstEval evaluate(AstEvaluator evaluator);
 
     void setEvaluator(AstEvaluator evaluator);
 
