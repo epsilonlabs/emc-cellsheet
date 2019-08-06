@@ -15,6 +15,11 @@ public class BlankCellTest {
     BlankCell cell;
 
     @Test
+    public void getValue_should_return_null() {
+        assertThat(cell.getValue()).isNull();
+    }
+
+    @Test
     public void getType_should_return_BLANKCELL() {
         assertThat(cell.getType()).isEqualTo(CellsheetType.BLANK_CELL);
     }
