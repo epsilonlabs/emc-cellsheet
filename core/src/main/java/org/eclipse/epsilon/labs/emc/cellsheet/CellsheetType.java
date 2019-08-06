@@ -84,8 +84,4 @@ public enum CellsheetType {
         return reverseLookup.get(typeName);
     }
 
-    public static void main(String[] args) {
-        System.out.println(GT.getTypeName());
-        System.out.println(CELL_FORMAT.getTypeName());
-    }
 }
