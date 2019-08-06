@@ -7,9 +7,7 @@ public interface HasId extends Iterable {
 
     String getId();
 
-    default CellsheetType getType() {
-        return CellsheetType.HAS_ID;
-    }
+    CellsheetType getType();
 
     default Set<CellsheetType> getKinds() {
         return EnumSet.of(CellsheetType.HAS_ID);

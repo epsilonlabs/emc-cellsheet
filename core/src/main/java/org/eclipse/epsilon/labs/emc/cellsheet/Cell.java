@@ -55,13 +55,8 @@ public interface Cell<T> extends HasA1 {
     }
 
     @Override
-    default CellsheetType getType() {
-        return CellsheetType.CELL;
-    }
-
-    @Override
     default Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.CELL, CellsheetType.HAS_A1, CellsheetType.HAS_ID);
+        return EnumSet.of(getType(), CellsheetType.CELL, CellsheetType.HAS_A1, CellsheetType.HAS_ID);
     }
 
     interface Builder<T extends Cell<V>, V, B extends Builder<T, V, B>> extends CellsheetBuilder {

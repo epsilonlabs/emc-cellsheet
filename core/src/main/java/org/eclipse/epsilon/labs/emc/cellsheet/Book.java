@@ -20,8 +20,6 @@ public interface Book extends HasA1 {
 
     Sheet getSheet(String sheetName);
 
-
-
     String getBookName();
 
     void setBookName(String bookName);
