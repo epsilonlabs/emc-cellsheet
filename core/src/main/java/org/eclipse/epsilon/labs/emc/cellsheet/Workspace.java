@@ -253,7 +253,7 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     @Override
     public String getId() {
-        return "cellsheet:///";
+        return "cellsheet:///" + getName();
     }
 
     @Override
