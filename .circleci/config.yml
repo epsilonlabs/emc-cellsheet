@@ -19,7 +19,10 @@ jobs:
             - m2-{{ checksum "pom.xml" }}
             - m2-
 
-      - run: mvn clean package
+      - run:
+          command: |
+            mvn clean package
+            bash <(curl -s https://codecov.io/bash)
 
       - save_cache:
           key: m2-{{ checksum "pom.xml" }}
