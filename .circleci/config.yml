@@ -19,7 +19,7 @@ jobs:
             - m2-{{ checksum "pom.xml" }}
             - m2-
 
-      - run: mvn clean install
+      - run: mvn clean package
 
       - save_cache:
           key: m2-{{ checksum "pom.xml" }}
@@ -40,8 +40,8 @@ jobs:
             - excel/target
 
       - slack/status:
-          success_message: JARs built successfully on $CIRCLE_BRANCH
-          failure_message: Erroring building JARs on $CIRCLE_BRANCH
+          success_message: JARs built successfully on $CIRCLE_BRANCH$CIRCLE_TAG
+          failure_message: Erroring building JARs on $CIRCLE_BRANCH$CIRCLE_TAG
           webhook: https://hooks.slack.com/services/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
 
   build-eclipse:
@@ -85,8 +85,8 @@ jobs:
             - ~/.m2
       
       - slack/status:
-          success_message: Eclipse Update Site built successfully on $CIRCLE_BRANCH
-          failure_message: Erroring building Eclipse Update Site on $CIRCLE_BRANCH
+          success_message: Eclipse Update Site built successfully on $CIRCLE_BRANCH$CIRCLE_TAG
+          failure_message: Erroring building Eclipse Update Site on $CIRCLE_BRANCH$CIRCLE_TAG
           webhook: https://hooks.slack.com/services/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
 
   deploy-ossrh:
@@ -105,7 +105,7 @@ jobs:
 
       - run: echo -e $GPG_KEY | gpg --import --no-tty --batch --yes
 
-      - run: mvn deploy -s .circleci/settings.xml -DskipTest=true
+      - run: mvn deploy -s .circleci/settings.xml -DskipTests
 
       - save_cache:
           key: m2-{{ checksum "pom.xml" }}
@@ -113,8 +113,8 @@ jobs:
             - ~/.m2
 
       - slack/status:
-          success_message: JARs deployed to OSSRH on $CIRCLE_BRANCH
-          failure_message: Error deploying OSSRH on $CIRCLE_BRANCH
+          success_message: JARs deployed to OSSRH on $CIRCLE_BRANCH$CIRCLE_TAG
+          failure_message: Error deploying OSSRH on $CIRCLE_BRANCH$CIRCLE_TAG
           webhook: https://hooks.slack.com/services/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
 
   deploy-epsilonlabs:
@@ -132,9 +132,8 @@ jobs:
           command: curl -X POST "https://circleci.com/api/v1.1/project/github/epsilonlabs/epsilonlabs-updatesite?circle-token=$TRIGGER_BUILD"
       
       - slack/status:
-          only_for_branches: develop,master
-          success_message: Triggered EpsilonLabs deployment on $CIRCLE_BRANCH
-          failure_message: Error triggering EpsilonLabs deployment on $CIRCLE_BRANCH
+          success_message: Triggered EpsilonLabs deployment on $CIRCLE_BRANCH$CIRCLE_TAG
+          failure_message: Error triggering EpsilonLabs deployment on $CIRCLE_BRANCH$CIRCLE_TAG
           webhook: https://hooks.slack.com/services/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
 
 workflows:
@@ -143,9 +142,6 @@ workflows:
     jobs:
       - build-jar:
           filters:
-            branches:
-              only: 
-                - /.*/
             tags:
               only:
                 - /.*/
@@ -153,9 +149,6 @@ workflows:
           requires:
             - build-jar
           filters:
-            branches:
-              only: 
-                - /.*/
             tags:
               only:
                 - /.*/
@@ -170,14 +163,14 @@ workflows:
             tags:
               only:
                 - /v.*/
-      - deploy-epsilonlabs:
-          requires:
-            - build-eclipse
-          filters:
-            branches:
-              only:
-                - develop
-                - /release.*/
-            tags:
-              only:
-                - /v.*/
+      # - deploy-epsilonlabs:
+      #     requires:
+      #       - build-eclipse
+      #     filters:
+      #       branches:
+      #         only:
+      #           - develop
+      #           - /release.*/
+      #       tags:
+      #         only:
+      #           - /v.*/
