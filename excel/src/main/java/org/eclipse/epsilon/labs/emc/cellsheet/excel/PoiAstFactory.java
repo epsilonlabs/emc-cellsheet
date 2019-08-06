@@ -13,6 +13,7 @@ import org.eclipse.epsilon.labs.emc.cellsheet.poi.PtgHelper;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 public class PoiAstFactory {
@@ -26,12 +27,14 @@ public class PoiAstFactory {
     }
 
     public Ast of(PoiCell cell) {
-        if (cell instanceof PoiBlankCell) return new Nothing();
-        if (cell instanceof PoiBooleanCell) return new Logical(((PoiBooleanCell) cell).getValue());
-        if (cell instanceof PoiTextCell) return new Text(((PoiTextCell) cell).getValue());
-        if (cell instanceof PoiNumericCell) return new Number(((PoiNumericCell) cell).getValue());
-        if (cell instanceof PoiDateCell) return new Text(cell.getValue().toString());
-        if (cell instanceof PoiErrorCell) return new Error(((PoiErrorCell) cell).getValue());
+        Ast ast = null;
+
+        if (cell instanceof PoiBlankCell) ast = new Text("");
+        if (cell instanceof PoiBooleanCell) ast = new Logical(((PoiBooleanCell) cell).getValue());
+        if (cell instanceof PoiTextCell) ast = new Text(((PoiTextCell) cell).getValue());
+        if (cell instanceof PoiNumericCell) ast = new Number(((PoiNumericCell) cell).getValue());
+        if (cell instanceof PoiDateCell) ast = new Text(cell.getValue().toString());
+        if (cell instanceof PoiErrorCell) ast = new Error(((PoiErrorCell) cell).getValue());
 
         if (cell instanceof PoiFormulaCell) {
             PoiCellsheetFormulaParser parser = new PoiCellsheetFormulaParser(
@@ -44,24 +47,26 @@ public class PoiAstFactory {
 
             LinkedHashMap<Ptg, String> ptgs = parser.getPtgs();
             for (Ptg ptg : ptgs.keySet()) {
-                Ast ast = of(ptg, ptgs.get(ptg));
-                ast.setEvaluator(PoiAstEvaluator.getInstance());
-                if (ast instanceof Unknown) continue;
+                Ast current = of(ptg, ptgs.get(ptg));
+                if (current instanceof Unknown) continue;
 
                 if (ptg instanceof OperationPtg) {
                     for (int i = ((OperationPtg) ptg).getNumberOfOperands(); i > 0; i--) {
-                        ast.addChild(i - 1, stack.pop());
+                        current.addChild(i - 1, stack.pop());
                     }
                 }
-                stack.push(ast);
+                stack.push(current);
             }
 
             checkState(stack.size() == 1, "Left over Asts during construction");
-            stack.peek().setCell(cell);
-            return stack.pop();
+            ast = stack.pop();
         }
 
-        throw new AssertionError("PoiCell#getType returning unknown type: " + cell.getType());
+        checkArgument(ast != null, "Failed to build AST for %s", cell.toString());
+
+        ast.setCell(cell);
+        ast.setEvaluator(PoiAstEvaluator.getInstance());
+        return ast;
     }
 
     public Ast of(Ptg ptg) {
