@@ -19,10 +19,6 @@ public interface Cell<T> extends HasA1 {
 
     Row getRow();
 
-    default Ast getRoot() {
-        return getAsts().get(0);
-    }
-
     int getColIndex();
 
     default String getA1ColIndex() {
@@ -41,6 +37,15 @@ public interface Cell<T> extends HasA1 {
 
     List<Ast> getAsts();
 
+    default Ast getRoot() {
+        return getAsts().get(0);
+    }
+
+    default void addAst(Ast ast) {
+        getAsts().add(ast);
+        ast.setCell(this);
+    }
+
     @Override
     Iterator<HasId> iterator();
 
@@ -55,13 +60,8 @@ public interface Cell<T> extends HasA1 {
     }
 
     @Override
-    default CellsheetType getType() {
-        return CellsheetType.CELL;
-    }
-
-    @Override
     default Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.CELL, CellsheetType.HAS_A1, CellsheetType.HAS_ID);
+        return EnumSet.of(getType(), CellsheetType.CELL, CellsheetType.HAS_A1, CellsheetType.HAS_ID);
     }
 
     interface Builder<T extends Cell<V>, V, B extends Builder<T, V, B>> extends CellsheetBuilder {

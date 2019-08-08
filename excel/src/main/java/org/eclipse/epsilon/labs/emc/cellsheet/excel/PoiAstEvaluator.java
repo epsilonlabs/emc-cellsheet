@@ -5,7 +5,6 @@ import org.apache.poi.ss.formula.eval.*;
 import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.AstEval;
-import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -13,6 +12,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class PoiAstEvaluator implements AstEvaluator {
 
     private static PoiAstEvaluator ourInstance = new PoiAstEvaluator();
+
 
     public static PoiAstEvaluator getInstance() {
         return ourInstance;
@@ -25,14 +25,22 @@ public class PoiAstEvaluator implements AstEvaluator {
     public AstEval evaluate(Ast ast) {
         // Initial checks and quick eval if possible
         checkArgument(ast.getCell() instanceof PoiCell, "Given non POI based AST to evaluate");
-        PoiCell cell = (PoiCell) ast.getCell();
-        AstEval value = new AstEval();
 
-        if (cell.getType() != CellsheetType.FORMULA_CELL) {
-            value.setStringValue(cell.getValue().toString());
-            value.setString(true);
-            return value;
+        switch (ast.getType()) {
+            case ERROR:
+            case LOGICAL:
+            case TEXT:
+            case UNKNOWN:
+                return new AstEval(ast.getToken().getValue());
+            case NUMBER:
+                return new AstEval(Double.valueOf(ast.getToken().getValue()));
+            case NOOP:
+                return AstEval.EMPTY;
+            default:
+                break;
         }
+
+        PoiCell cell = (PoiCell) ast.getCell();
 
         // Perform actual evaluation
         WorkbookEvaluator evaluator = cell.getBook().getInternalEvaluator();
@@ -43,33 +51,22 @@ public class PoiAstEvaluator implements AstEvaluator {
                         true,
                         true));
 
-        if (result instanceof ErrorEval) {
-            value.setIsError(true);
-            value.setStringValue(((ErrorEval) result).getErrorString());
-            return value;
-        }
-
-        if (result instanceof NumberEval) {
-            value.setNumberValue(((NumberEval) result).getNumberValue());
-            value.setNumber(true);
-            return value;
-        }
+        if (result instanceof ErrorEval) return new AstEval(((ErrorEval) result).getErrorString(), true);
+        if (result instanceof NumberEval) return new AstEval(((NumberEval) result).getNumberValue());
 
         if (result instanceof RefEval) {
             RefEval cast = (RefEval) result;
-            value.setStringValue(cell
+            return new AstEval(cell
                     .getBook()
                     .getSheet(cast.getFirstSheetIndex())
                     .getRow(cast.getRow())
                     .getCell(cast.getColumn())
                     .getA1()
             );
-            return value;
         }
 
         if (result instanceof StringValueEval) {
-            value.setStringValue(((StringValueEval) result).getStringValue());
-            return value;
+            return new AstEval(((StringValueEval) result).getStringValue());
         }
 
         throw new AssertionError("Unknown ValueEval given: " + result);

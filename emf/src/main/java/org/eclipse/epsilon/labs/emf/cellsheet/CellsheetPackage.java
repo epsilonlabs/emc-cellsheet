@@ -1009,13 +1009,13 @@ public interface CellsheetPackage extends EPackage {
 	int AST_EVAL = 15;
 
 	/**
-	 * The feature id for the '<em><b>String Value</b></em>' attribute.
+	 * The feature id for the '<em><b>Text</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int AST_EVAL__STRING_VALUE = 0;
+	int AST_EVAL__TEXT = 0;
 
 	/**
 	 * The feature id for the '<em><b>Number Value</b></em>' attribute.
@@ -1027,31 +1027,13 @@ public interface CellsheetPackage extends EPackage {
 	int AST_EVAL__NUMBER_VALUE = 1;
 
 	/**
-	 * The feature id for the '<em><b>Is String</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int AST_EVAL__IS_STRING = 2;
-
-	/**
-	 * The feature id for the '<em><b>Is Number</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int AST_EVAL__IS_NUMBER = 3;
-
-	/**
 	 * The feature id for the '<em><b>Is Error</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int AST_EVAL__IS_ERROR = 4;
+	int AST_EVAL__IS_ERROR = 2;
 
 	/**
 	 * The number of structural features of the '<em>Ast Eval</em>' class.
@@ -1060,7 +1042,7 @@ public interface CellsheetPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int AST_EVAL_FEATURE_COUNT = 5;
+	int AST_EVAL_FEATURE_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstImpl <em>Ast</em>}' class.
@@ -3461,15 +3443,15 @@ public interface CellsheetPackage extends EPackage {
 	EClass getAstEval();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getStringValue <em>String Value</em>}'.
+	 * Returns the meta object for the attribute '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getText <em>Text</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>String Value</em>'.
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getStringValue()
+	 * @return the meta object for the attribute '<em>Text</em>'.
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getText()
 	 * @see #getAstEval()
 	 * @generated
 	 */
-	EAttribute getAstEval_StringValue();
+	EAttribute getAstEval_Text();
 
 	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getNumberValue <em>Number Value</em>}'.
@@ -3481,28 +3463,6 @@ public interface CellsheetPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getAstEval_NumberValue();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsString <em>Is String</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Is String</em>'.
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsString()
-	 * @see #getAstEval()
-	 * @generated
-	 */
-	EAttribute getAstEval_IsString();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsNumber <em>Is Number</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Is Number</em>'.
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsNumber()
-	 * @see #getAstEval()
-	 * @generated
-	 */
-	EAttribute getAstEval_IsNumber();
 
 	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsError <em>Is Error</em>}'.
@@ -4346,12 +4306,12 @@ public interface CellsheetPackage extends EPackage {
 		EClass AST_EVAL = eINSTANCE.getAstEval();
 
 		/**
-		 * The meta object literal for the '<em><b>String Value</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Text</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute AST_EVAL__STRING_VALUE = eINSTANCE.getAstEval_StringValue();
+		EAttribute AST_EVAL__TEXT = eINSTANCE.getAstEval_Text();
 
 		/**
 		 * The meta object literal for the '<em><b>Number Value</b></em>' attribute feature.
@@ -4360,22 +4320,6 @@ public interface CellsheetPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute AST_EVAL__NUMBER_VALUE = eINSTANCE.getAstEval_NumberValue();
-
-		/**
-		 * The meta object literal for the '<em><b>Is String</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute AST_EVAL__IS_STRING = eINSTANCE.getAstEval_IsString();
-
-		/**
-		 * The meta object literal for the '<em><b>Is Number</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute AST_EVAL__IS_NUMBER = eINSTANCE.getAstEval_IsNumber();
 
 		/**
 		 * The meta object literal for the '<em><b>Is Error</b></em>' attribute feature.

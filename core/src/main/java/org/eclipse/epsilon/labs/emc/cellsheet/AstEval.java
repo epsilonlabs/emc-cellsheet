@@ -1,57 +1,55 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import java.util.Optional;
+
 public class AstEval {
 
-    private String stringValue = "";
-    private double numberValue = 0.0;
-    private boolean isString = false;
-    private boolean isNumber = false;
+    public static final AstEval EMPTY = new AstEval();
+
+    private Optional<String> text = Optional.empty();
+    private Optional<Double> number = Optional.empty();
     private boolean isError = false;
 
-    public String getStringValue() {
-        return stringValue;
+    private AstEval() {
+        this.text = Optional.of("");
     }
 
-    public void setStringValue(String stringValue) {
-        this.stringValue = stringValue;
+    public AstEval(double value) {
+        this.number = Optional.of(value);
     }
 
-    public double getNumberValue() {
-        return numberValue;
+    public AstEval(String value, boolean isError) {
+        this.text = Optional.of(value == null ? "" : value);
+        this.isError = isError;
     }
 
-    public void setNumberValue(double numberValue) {
-        this.numberValue = numberValue;
+    public AstEval(String value) {
+        this(value, false);
     }
 
-    public boolean setIsString() {
-        return isString;
+    public String getText() {
+        return toString();
     }
 
-    public void setString(boolean string) {
-        isString = string;
+    public double getNumber() {
+        return number.orElse(0.0);
     }
 
-    public boolean setIsNumber() {
-        return isNumber;
+    public boolean isText() {
+        return !isError && text.isPresent();
     }
 
-    public void setNumber(boolean number) {
-        isNumber = number;
+    public boolean isNumber() {
+        return number.isPresent();
     }
 
-    public boolean hasError() {
+    public boolean isError() {
         return isError;
-    }
-
-    public void setIsError(boolean error) {
-        this.isError = error;
     }
 
     @Override
     public String toString() {
-        if (isNumber) return Double.toString(numberValue);
-        if (isError) return stringValue;
-        return stringValue;
+        return number.isPresent() ? Double.toString(number.get()) : text.get();
     }
+
 }

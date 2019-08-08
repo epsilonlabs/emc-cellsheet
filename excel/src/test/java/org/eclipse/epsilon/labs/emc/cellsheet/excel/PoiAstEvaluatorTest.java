@@ -10,9 +10,10 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("unchecked")
 public class PoiAstEvaluatorTest {
 
-    private PoiFormulaCell cell;
+    private PoiCell cell;
     private Cell delegate;
     private PoiBook book;
 
@@ -32,10 +33,26 @@ public class PoiAstEvaluatorTest {
     }
 
     @Test
+    public void evaluate_given_text_cell_should_return_text() {
+        String text = "This is the text to return";
+        delegate.setCellValue(text);
+        cell = book.getSheet(0).getRow(0).getCell(0);
+        assertThat(cell).isNotNull().isInstanceOf(PoiTextCell.class);
+        AstEval result = cell.getRoot().evaluate();
+
+        assertThat(result.isText()).isTrue();
+        assertThat(result.isNumber()).isFalse();
+        assertThat(result.isError()).isFalse();
+        assertThat(result.getText()).isEqualTo(text);
+    }
+
+    @Test
     public void evaluate_given_sumA1E5_should_return_25() {
         delegate.setCellFormula("SUM(Values!A1:E5)");
-        cell = (PoiFormulaCell) book.getSheet(0).getRow(0).getCell(0);
+        cell = book.getSheet(0).getRow(0).getCell(0);
+        assertThat(cell).isNotNull().isInstanceOf(PoiFormulaCell.class);
         AstEval result = cell.getRoot().evaluate();
-        assertThat(result.getNumberValue()).isEqualTo(25);
+        assertThat(result.getNumber()).isEqualTo(25);
     }
+
 }

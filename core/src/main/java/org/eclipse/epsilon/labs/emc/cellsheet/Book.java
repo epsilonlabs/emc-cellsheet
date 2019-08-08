@@ -20,8 +20,6 @@ public interface Book extends HasA1 {
 
     Sheet getSheet(String sheetName);
 
-
-
     String getBookName();
 
     void setBookName(String bookName);
@@ -46,7 +44,7 @@ public interface Book extends HasA1 {
 
     @Override
     default String getId() {
-        return getWorkspace().getId() + UrlEscapers.urlPathSegmentEscaper().escape(getBookName());
+        return getWorkspace().getId() + "/" + UrlEscapers.urlPathSegmentEscaper().escape(getBookName());
     }
 
     @Override

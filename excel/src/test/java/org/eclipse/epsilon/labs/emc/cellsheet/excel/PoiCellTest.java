@@ -57,7 +57,7 @@ public class PoiCellTest {
         assertThat(cell).isInstanceOf(PoiBlankCell.class);
 
         Ast root = cell.getRoot();
-        assertThat(root).isNotNull().isInstanceOf(Nothing.class);
+        assertThat(root).isNotNull();
         assertThat(root.getToken().getValue()).isBlank();
     }
 
