@@ -36,7 +36,6 @@ public class PoiAstFactoryTest {
         assertThat(root.getParent()).isNull();
         assertThat(root.getChildren()).hasSize(1);
         assertThat(root.getFormula()).isEqualTo(formula);
-        assertThat(root.getCell()).isNotNull();
 
         Ast ast = root.childAt(0);
         assertThat(ast).isInstanceOf(Range.class);
@@ -44,7 +43,6 @@ public class PoiAstFactoryTest {
         assertThat(ast.getParent()).isSameAs(root);
         assertThat(ast.getChildren()).isEmpty();
         assertThat(ast.getFormula()).isEqualTo("A1:A5");
-        assertThat(ast.getCell()).isSameAs(root.getCell());
     }
 
     @Test
@@ -58,7 +56,6 @@ public class PoiAstFactoryTest {
         assertThat(root.getParent()).isNull();
         assertThat(root.getChildren()).hasSize(2);
         assertThat(root.getFormula()).isEqualTo(formula);
-        assertThat(root.getCell()).isNotNull();
 
         Ast ast = root.childAt(0);
         assertThat(ast).isNotNull().isInstanceOf(Range.class);
@@ -67,7 +64,6 @@ public class PoiAstFactoryTest {
         assertThat(ast.getPosition()).isEqualTo(0);
         assertThat(ast.getToken().getValue()).isEqualTo("A1:A5");
         assertThat(ast.getFormula()).isEqualTo("A1:A5");
-        assertThat(ast.getCell()).isSameAs(root.getCell());
 
         ast = root.childAt(1);
         assertThat(ast).isNotNull().isInstanceOf(Range.class);
@@ -76,7 +72,6 @@ public class PoiAstFactoryTest {
         assertThat(ast.getPosition()).isEqualTo(1);
         assertThat(ast.getToken().getValue()).isEqualTo("B1:B5");
         assertThat(ast.getFormula()).isEqualTo("B1:B5");
-        assertThat(ast.getCell()).isSameAs(root.getCell());
     }
 
     Ast getAst() {

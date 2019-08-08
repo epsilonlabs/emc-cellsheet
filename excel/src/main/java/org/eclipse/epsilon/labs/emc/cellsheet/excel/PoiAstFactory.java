@@ -64,7 +64,6 @@ public class PoiAstFactory {
 
         checkArgument(ast != null, "Failed to build AST for %s", cell.toString());
 
-        ast.setCell(cell);
         ast.setEvaluator(PoiAstEvaluator.getInstance());
         return ast;
     }

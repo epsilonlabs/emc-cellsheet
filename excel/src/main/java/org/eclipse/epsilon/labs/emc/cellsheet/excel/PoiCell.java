@@ -49,7 +49,7 @@ public abstract class PoiCell<T> implements Cell<T>, PoiDelegate<org.apache.poi.
     @Override
     public Ast getRoot() {
         if (asts.isEmpty()) {
-            asts.add(PoiAstFactory.getInstance().of(this));
+            addAst(PoiAstFactory.getInstance().of(this));
         }
         return asts.get(0);
     }

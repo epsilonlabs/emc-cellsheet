@@ -163,7 +163,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         this.delegate = delegate;
     }
 
-    protected FormulaParsingWorkbook getFpw() {
+    public FormulaParsingWorkbook getFpw() {
         checkArgument(delegate != null,"Delegate not initialised");
         if (delegateFpw == null) {
             if (delegate instanceof HSSFWorkbook)
@@ -176,7 +176,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         return delegateFpw;
     }
 
-    protected WorkbookEvaluator getInternalEvaluator() {
+    public WorkbookEvaluator getInternalEvaluator() {
         checkArgument(delegate != null, "Delegate not initialised");
         if (delegateEvaluator == null) {
             delegateEvaluator = ((BaseFormulaEvaluator) delegate

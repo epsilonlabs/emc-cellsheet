@@ -19,10 +19,6 @@ public interface Cell<T> extends HasA1 {
 
     Row getRow();
 
-    default Ast getRoot() {
-        return getAsts().get(0);
-    }
-
     int getColIndex();
 
     default String getA1ColIndex() {
@@ -40,6 +36,15 @@ public interface Cell<T> extends HasA1 {
     T getValue();
 
     List<Ast> getAsts();
+
+    default Ast getRoot() {
+        return getAsts().get(0);
+    }
+
+    default void addAst(Ast ast) {
+        getAsts().add(ast);
+        ast.setCell(this);
+    }
 
     @Override
     Iterator<HasId> iterator();
