@@ -8,7 +8,6 @@ import org.eclipse.epsilon.labs.emc.cellsheet.AstEval;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType.FORMULA_CELL;
 
 public class PoiAstEvaluator implements AstEvaluator {
 

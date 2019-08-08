@@ -8,6 +8,9 @@ import org.apache.poi.ss.formula.ptg.FuncVarPtg;
 import org.apache.poi.ss.formula.ptg.OperandPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emc.cellsheet.excel.PoiBook;
+import org.eclipse.epsilon.labs.emc.cellsheet.excel.PoiCell;
 
 import java.util.*;
 
@@ -40,6 +43,17 @@ public class PoiCellsheetFormulaParser extends FormulaParser {
      */
     public PoiCellsheetFormulaParser(String formula, FormulaParsingWorkbook book, int sheetIndex, int rowIndex) {
         super(formula, book, sheetIndex, rowIndex);
+    }
+
+    public PoiCellsheetFormulaParser(Ast ast) {
+        this(ast.getFormula(),
+                ((PoiBook) ast.getCell().getBook()).getFpw(),
+                ast.getCell().getSheet().getSheetIndex(),
+                ast.getCell().getRowIndex());
+    }
+
+    public PoiCellsheetFormulaParser(PoiCell cell) {
+        this(cell.getRoot());
     }
 
     @Override
