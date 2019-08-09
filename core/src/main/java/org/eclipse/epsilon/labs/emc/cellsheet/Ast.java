@@ -9,6 +9,8 @@ import java.util.Set;
 
 public interface Ast<T extends Ast<T>> extends HasId {
 
+    int ROOT = -1;
+
     Cell getCell();
 
     void setCell(Cell cell);
@@ -19,9 +21,17 @@ public interface Ast<T extends Ast<T>> extends HasId {
 
     void setToken(Token token);
 
-    int getPosition();
+    default void setToken(String token) {
+        setToken(TokenFactory.getInstance().getToken(token));
+    }
 
-    void setPosition(int position);
+    default String getTokenValue() {
+        return getToken().getValue();
+    }
+
+    Ast getRoot();
+
+    int getPosition();
 
     List<T> getChildren();
 
@@ -29,20 +39,28 @@ public interface Ast<T extends Ast<T>> extends HasId {
 
     void addChild(int position, T child);
 
-    int addChild(T child);
+    void addChild(T child);
 
     T removeChild(int position);
+
+    T removeChild(T child);
 
     @Override
     Iterator<T> iterator();
 
     AstEval evaluate();
 
-    AstEval evaluate(AstEvaluator evaluator);
-
     void setEvaluator(AstEvaluator evaluator);
 
     String getFormula();
+
+    default boolean isRoot() {
+        return getPosition() == ROOT;
+    }
+
+    default boolean isLeaf() {
+        return getChildren().isEmpty();
+    }
 
     @Override
     default String getId() {
