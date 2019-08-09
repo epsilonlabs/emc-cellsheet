@@ -5,11 +5,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Function;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Range;
-import org.eclipse.epsilon.labs.emc.cellsheet.ast.Union;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,55 +23,46 @@ public class PoiAstFactoryTest {
     }
 
     @Test
-    public void of_given_SUM() {
-        String formula = "SUM(A1:A5)";
-        delegate.setCellFormula(formula);
-        Ast root = getAst();
+    public void of_should_return_ast_given_sum_function() {
+        Ast root = getAst("SUM(A1:A5)");
 
-        assertThat(root).isInstanceOf(Function.class);
-        assertThat(root.getToken().getValue()).isEqualTo("SUM");
-        assertThat(root.getParent()).isNull();
+        assertThat(root).isNotNull().isInstanceOf(Function.class);
+        assertThat(root.getTokenValue()).isEqualTo("SUM");
         assertThat(root.getChildren()).hasSize(1);
-        assertThat(root.getFormula()).isEqualTo(formula);
+        assertThat(root.isRoot()).isTrue();
 
         Ast ast = root.childAt(0);
-        assertThat(ast).isInstanceOf(Range.class);
-        assertThat(ast.getToken().getValue()).isEqualTo("A1:A5");
-        assertThat(ast.getParent()).isSameAs(root);
-        assertThat(ast.getChildren()).isEmpty();
-        assertThat(ast.getFormula()).isEqualTo("A1:A5");
+        assertThat(ast).isNotNull().isInstanceOf(Range.class);
+        assertThat(ast.getTokenValue()).isEqualTo("A1:A5");
+        assertThat(ast.getParent()).isEqualTo(root);
+        assertThat(ast.isLeaf()).isTrue();
     }
 
     @Test
     public void of_given_SUM_with_UNION() {
-        String formula = "SUM(A1:A5,B1:B5)";
-        delegate.setCellFormula("SUM(A1:A5,B1:B5)");
-        Ast root = getAst();
+        Ast root = getAst("SUM(A1:A5,B1:B5)");
 
         assertThat(root).isNotNull().isInstanceOf(Function.class);
-        assertThat(root.getToken().getValue()).isEqualTo("SUM");
-        assertThat(root.getParent()).isNull();
+        assertThat(root.getTokenValue()).isEqualTo("SUM");
+        assertThat(root.isRoot()).isTrue();
         assertThat(root.getChildren()).hasSize(2);
-        assertThat(root.getFormula()).isEqualTo(formula);
+        assertThat(root.getFormula()).isEqualTo("SUM(A1:A5,B1:B5)");
 
         Ast ast = root.childAt(0);
         assertThat(ast).isNotNull().isInstanceOf(Range.class);
-        assertThat(ast.getParent()).isSameAs(root);
-        assertThat(ast.getChildren()).isEmpty();
-        assertThat(ast.getPosition()).isEqualTo(0);
-        assertThat(ast.getToken().getValue()).isEqualTo("A1:A5");
-        assertThat(ast.getFormula()).isEqualTo("A1:A5");
+        assertThat(ast.getTokenValue()).isEqualTo("A1:A5");
+        assertThat(ast.getParent()).isEqualTo(root);
+        assertThat(ast.isLeaf());
 
         ast = root.childAt(1);
         assertThat(ast).isNotNull().isInstanceOf(Range.class);
-        assertThat(ast.getParent()).isSameAs(root);
-        assertThat(ast.getChildren()).isEmpty();
-        assertThat(ast.getPosition()).isEqualTo(1);
-        assertThat(ast.getToken().getValue()).isEqualTo("B1:B5");
-        assertThat(ast.getFormula()).isEqualTo("B1:B5");
+        assertThat(ast.getTokenValue()).isEqualTo("B1:B5");
+        assertThat(ast.getParent()).isEqualTo(root);
+        assertThat(ast.isLeaf());
     }
 
-    Ast getAst() {
+    private Ast getAst(String formula) {
+        delegate.setCellFormula(formula);
         return PoiAstFactory.getInstance().of(book.getSheet(0).getRow(0).getCell(0));
     }
 }

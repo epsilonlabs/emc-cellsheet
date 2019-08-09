@@ -11,7 +11,9 @@ import org.eclipse.epsilon.labs.emc.cellsheet.poi.PoiCellsheetFormulaParser;
 import org.eclipse.epsilon.labs.emc.cellsheet.poi.PtgHelper;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.LinkedHashMap;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
@@ -52,7 +54,7 @@ public class PoiAstFactory {
 
                 if (ptg instanceof OperationPtg) {
                     for (int i = ((OperationPtg) ptg).getNumberOfOperands(); i > 0; i--) {
-                        current.addChild(i - 1, stack.pop());
+                        current.addChild(0, stack.pop());
                     }
                 }
                 stack.push(current);
