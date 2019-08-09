@@ -4,7 +4,7 @@ import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 
 import java.util.Iterator;
 
-public class ToFormulaAstVisitor implements Ast.Visitor<Ast> {
+public class ToFormulaAstVisitor implements Ast.Visitor {
 
     private final StringBuilder sb = new StringBuilder();
 
