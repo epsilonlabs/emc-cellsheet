@@ -63,11 +63,11 @@ public interface Ast<T extends Ast<T>> extends HasId {
         return EnumSet.of(CellsheetType.AST, CellsheetType.HAS_ID);
     }
 
-    void accept(Visitor<T> visitor);
+    void accept(Visitor visitor);
 
-    interface Visitor<T> {
+    interface Visitor {
 
-        void visit(T ast);
+        void visit(Ast ast);
 
     }
 }
