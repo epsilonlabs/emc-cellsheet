@@ -8,15 +8,15 @@ import java.util.Set;
 
 public abstract class InfixOperator extends AbstractAst {
 
-    public InfixOperator() {
+    protected InfixOperator() {
         super();
     }
 
-    public InfixOperator(Token token) {
+    protected InfixOperator(Token token) {
         super(token);
     }
 
-    public InfixOperator(String token) {
+    protected InfixOperator(String token) {
         super(token);
     }
 

@@ -8,15 +8,15 @@ import java.util.Set;
 
 public abstract class Operand extends AbstractAst {
 
-    public Operand() {
+    protected Operand() {
         super();
     }
 
-    public Operand(Token token) {
+    protected Operand(Token token) {
         super(token);
     }
 
-    public Operand(String token) {
+    protected Operand(String token) {
         super(token);
     }
 
