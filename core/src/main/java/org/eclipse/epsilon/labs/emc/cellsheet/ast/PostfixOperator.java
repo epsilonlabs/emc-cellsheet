@@ -8,15 +8,15 @@ import java.util.Set;
 
 public abstract class PostfixOperator extends AbstractAst {
 
-    public PostfixOperator() {
+    protected PostfixOperator() {
         super();
     }
 
-    public PostfixOperator(Token token) {
+    protected PostfixOperator(Token token) {
         super(token);
     }
 
-    public PostfixOperator(String token) {
+    protected PostfixOperator(String token) {
         super(token);
     }
 

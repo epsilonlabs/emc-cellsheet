@@ -66,8 +66,8 @@ public abstract class PoiCell<T> implements Cell<T>, PoiDelegate<org.apache.poi.
 
     public static abstract class Builder<T extends PoiCell<V>, V, B> implements Cell.Builder<T, V, Builder<T, V, B>> {
         protected V value;
-        protected PoiRow row;
-        protected int colIndex;
+        PoiRow row;
+        int colIndex;
 
         @Override
         public Builder<T, V, B> withRow(Row row) {

@@ -8,15 +8,15 @@ import java.util.Set;
 
 public abstract class PrefixOperator extends AbstractAst {
 
-    public PrefixOperator() {
+    protected PrefixOperator() {
         super();
     }
 
-    public PrefixOperator(Token token) {
+    protected PrefixOperator(Token token) {
         super(token);
     }
 
-    public PrefixOperator(String token) {
+    protected PrefixOperator(String token) {
         super(token);
     }
 
