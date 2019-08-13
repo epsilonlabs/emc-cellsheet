@@ -7,15 +7,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public interface Ast<T extends Ast<T>> extends HasId {
+public interface Ast extends HasId {
 
-    int ROOT = -1;
+    int UNASSIGNED = -1;
 
     Cell getCell();
 
     void setCell(Cell cell);
 
-    T getParent();
+    Ast getParent();
+
+    void setParent(Ast parent);
 
     Token getToken();
 
@@ -33,20 +35,22 @@ public interface Ast<T extends Ast<T>> extends HasId {
 
     int getPosition();
 
-    List<T> getChildren();
+    void setPosition(int position);
 
-    T childAt(int position);
+    List<Ast> getChildren();
 
-    void addChild(int position, T child);
+    Ast childAt(int position);
 
-    void addChild(T child);
+    void addChild(int position, Ast child);
 
-    T removeChild(int position);
+    void addChild(Ast child);
 
-    T removeChild(T child);
+    Ast removeChild(int position);
+
+    Ast removeChild(Ast child);
 
     @Override
-    Iterator<T> iterator();
+    Iterator<Ast> iterator();
 
     AstEval evaluate();
 
@@ -55,7 +59,7 @@ public interface Ast<T extends Ast<T>> extends HasId {
     String getFormula();
 
     default boolean isRoot() {
-        return getPosition() == ROOT;
+        return getPosition() == UNASSIGNED;
     }
 
     default boolean isLeaf() {
@@ -65,7 +69,7 @@ public interface Ast<T extends Ast<T>> extends HasId {
     @Override
     default String getId() {
         if (getParent() == null) {
-            return getCell().getId() + "/asts/" + 0;
+            return getCell().getId() + "/asts/" + getPosition();
         } else {
             return getParent().getId() + "/" + getPosition();
         }

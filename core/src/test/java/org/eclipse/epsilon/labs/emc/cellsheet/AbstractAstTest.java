@@ -22,7 +22,7 @@ public class AbstractAstTest {
     @Test
     public void getCell_should_return_null_when_root() {
         assertThat(root.getCell()).isNull();
-        assertThat(root.getPosition()).isEqualTo(Ast.ROOT);
+        assertThat(root.getPosition()).isEqualTo(Ast.UNASSIGNED);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class AbstractAstTest {
     public void getRoot_should_return_root_when_ast_is_child() {
         AbstractAst child = new DummyAst();
         assertThat(child.getRoot()).isEqualTo(child);
-        assertThat(child.getPosition()).isEqualTo(Ast.ROOT);
+        assertThat(child.getPosition()).isEqualTo(Ast.UNASSIGNED);
         assertThat(root.getChildren()).isEmpty();
 
         root.addChild(child);
@@ -109,7 +109,7 @@ public class AbstractAstTest {
         root.addChild(a);
         root.addChild(b);
 
-        List<AbstractAst> children = root.getChildren();
+        List<Ast> children = root.getChildren();
         assertThat(children).containsExactly(a, b);
         assertThat(children).contains(a, atIndex(0));
         assertThat(children).contains(b, atIndex(1));
@@ -135,7 +135,7 @@ public class AbstractAstTest {
 
         AbstractAst child = new DummyAst();
         assertThat(child.getParent()).isNull();
-        assertThat(child.getPosition()).isEqualTo(Ast.ROOT);
+        assertThat(child.getPosition()).isEqualTo(Ast.UNASSIGNED);
         assertThat(child.getRoot()).isEqualTo(child);
 
         root.addChild(child);
@@ -227,13 +227,13 @@ public class AbstractAstTest {
 
     @Test
     public void getPosition_should_return_ROOT_value_when_root() {
-        assertThat(root.getPosition()).isEqualTo(Ast.ROOT);
+        assertThat(root.getPosition()).isEqualTo(Ast.UNASSIGNED);
     }
 
     @Test
     public void getPosition_should_return_same_position_as_contained_in_list() {
         AbstractAst child = new DummyAst();
-        assertThat(child.getPosition()).isEqualTo(Ast.ROOT);
+        assertThat(child.getPosition()).isEqualTo(Ast.UNASSIGNED);
 
         root.addChild(child);
         assertThat(child.getPosition()).isEqualTo(0);
