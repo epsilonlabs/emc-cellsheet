@@ -49,7 +49,7 @@ public class AstEval {
 
     @Override
     public String toString() {
-        return number.isPresent() ? Double.toString(number.get()) : text.get();
+        return number.isPresent() ? Double.toString(number.get()) : text.orElse("");
     }
 
 }
