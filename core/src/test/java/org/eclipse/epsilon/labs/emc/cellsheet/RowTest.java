@@ -11,42 +11,37 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class BookTest {
-
-    private static final String BOOKNAME = "Example Book 1.xlsx";
+public class RowTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
-    Book book;
+    private Row row;
 
     @Test
     public void getId_should_return_correct_id() {
-        Workspace workspace = mock(Workspace.class);
-        when(workspace.getId()).thenReturn("cellsheet:///Workspace%201");
-        when(book.getWorkspace()).thenReturn(workspace);
-        stubName();
-        assertThat(book.getId()).isEqualTo("cellsheet:///Workspace%201/Example%20Book%201.xlsx");
+        Sheet sheet = mock(Sheet.class);
+        when(sheet.getId()).thenReturn("cellsheet:///Workspace%201/Example%20Book%201.xlsx/0");
+        when(row.getSheet()).thenReturn(sheet);
+        assertThat(row.getId()).isEqualTo("cellsheet:///Workspace%201/Example%20Book%201.xlsx/0/0");
     }
 
     @Test
     public void getA1_should_return_correct_a1() {
-        stubName();
-        assertThat(book.getA1()).isEqualTo("[Example Book 1.xlsx]");
+        Sheet sheet = mock(Sheet.class);
+        when(sheet.getA1()).thenReturn("[Example Workbook 1.xlsx]'Example Sheet 1'");
+        when(row.getSheet()).thenReturn(sheet);
+        assertThat(row.getA1()).isEqualTo("[Example Workbook 1.xlsx]'Example Sheet 1'!$A1");
     }
 
     @Test
     public void getType_should_return_correct_type() {
-        assertThat(book.getType()).isEqualTo(CellsheetType.BOOK);
+        assertThat(row.getType()).isEqualTo(CellsheetType.ROW);
     }
 
     @Test
     public void getKinds_should_return_correct_types() {
-        assertThat(book.getKinds().toArray()).containsExactlyInAnyOrder(
-                CellsheetType.BOOK,
+        assertThat(row.getKinds().toArray()).containsExactlyInAnyOrder(
+                CellsheetType.ROW,
                 CellsheetType.HAS_ID,
                 CellsheetType.HAS_A1);
-    }
-
-    private void stubName() {
-        when(book.getBookName()).thenReturn(BOOKNAME);
     }
 }

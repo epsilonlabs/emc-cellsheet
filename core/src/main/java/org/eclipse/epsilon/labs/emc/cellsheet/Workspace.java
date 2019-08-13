@@ -1,8 +1,10 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ForwardingDeque;
 import com.google.common.collect.Queues;
+import com.google.common.net.UrlEscapers;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolEnumerationValueNotFoundException;
@@ -11,19 +13,27 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.eol.exceptions.models.EolNotInstantiableModelElementTypeException;
 import org.eclipse.epsilon.eol.models.CachedModel;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class Workspace extends CachedModel<HasId> implements HasId {
 
     public static final String PROPERTY_EXTENSION = "backendRegistry";
     public static final String PROPERTY_MODEL_URIS = "modelUri";
 
-    private Set<CellsheetBackend> backendRegistry = new HashSet<>();
-
+    private static Logger logger = LoggerFactory.getLogger(Workspace.class);
     protected Map<String, Token> tokens = new HashMap<>();
     protected Map<String, Book> books = new HashMap<>();
+    private Set<CellsheetBackend> backendRegistry = new HashSet<>();
 
     public Token getToken(String value) {
         return tokens.get(value);
@@ -35,6 +45,11 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     public Map<String, Book> getBooks() {
         return books;
+    }
+
+    public void addBook(Book book) {
+        books.put(book.getBookName(), book);
+        book.setWorkspace(this);
     }
 
     @Override
@@ -133,7 +148,7 @@ public class Workspace extends CachedModel<HasId> implements HasId {
                     .withWorkspace(this)
                     .withModelUri(uri)
                     .build();
-            books.put(book.getBookName(), book);
+            addBook(book);
         }
 
         // Do the loading
@@ -182,39 +197,6 @@ public class Workspace extends CachedModel<HasId> implements HasId {
         return instance instanceof HasId ? ((HasId) instance).getType().getTypeName() : null;
     }
 
-    @Override
-    public Object getElementById(String id) {
-//        URI uri = null;
-//        try {
-//            uri = new URI(id);
-//        } catch(URISyntaxException e) {
-//            throw new IllegalArgumentException("Malformed ID given: ", e);
-//        }
-//
-//        if (!uri.getScheme().equals("cellsheet")) throw new IllegalArgumentException("Non-Cellsheet ID given");
-//
-//        ListIterator<String> pathParts = Arrays.asList(uri.getPath().split("/")).listIterator();
-//
-//        if (!pathParts.hasNext()) {
-//            return this;
-//        }
-//
-//        Book book = books.get(pathParts.next());
-//        if (pathParts.hasNext() ) {
-//            if (book == null)
-//                throw new IllegalArgumentException("No Book with name: " + pathParts.previous());
-//        } else {
-//            return book;
-//        }
-//
-//        Integer sheetIndex = Ints.tryParse(pathParts.next());
-//        if (sheetIndex == null) throw new IllegalArgumentException("Bad ID given, sheet part invalid");
-//
-//        Sheet sheet = book.getSheet(Ints.tryParse(pathParts.next()));
-//
-
-        throw new UnsupportedOperationException();
-    }
 
     @Override
     public String getElementId(Object instance) {
@@ -253,7 +235,7 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     @Override
     public String getId() {
-        return "cellsheet:///" + getName();
+        return "cellsheet:///" + UrlEscapers.urlPathSegmentEscaper().escape(getName());
     }
 
     @Override
@@ -268,5 +250,87 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     public void registerBookFactory(CellsheetBackend backend) {
         backendRegistry.add(backend);
+    }
+
+    @Override
+    public Object getElementById(String id) {
+
+        /*
+         * Validation checks
+         */
+        checkArgument(!Strings.isNullOrEmpty(id), "ID must not be null or empty, given {}", id);
+        final Iterator<String> it;
+        try {
+            URI uri = new URI(id);
+            if (!uri.getScheme().equals("cellsheet"))
+                throw new IllegalArgumentException(String.format("Non-Cellsheet ID given %s", id));
+            it = Arrays.stream(uri.getPath().split("/")).iterator();
+            it.next();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(String.format("Malformed ID given %s", id), e);
+        }
+
+        /*
+         * Processing
+         */
+        String part;
+        try {
+            // Workspace
+            part = URLDecoder.decode(it.next(), "UTF-8");
+            if (!part.equals(getName())) return null; // Not an ID for this workspace
+            if (!it.hasNext()) return this;
+
+            // Book
+            Book book;
+            part = URLDecoder.decode(it.next(), "UTF-8");
+            book = books.get(part);
+            if (book == null) return null;
+            if (!it.hasNext()) return book;
+
+            // Sheet
+            Sheet sheet;
+            part = it.next();
+            sheet = book.getSheet(Integer.valueOf(part));
+            if (sheet == null) return null;
+            if (!it.hasNext()) return sheet;
+
+            // Row
+            Row row;
+            part = it.next();
+            row = sheet.getRow(Integer.valueOf(part));
+            if (row == null) return null;
+            if (!it.hasNext()) return row;
+
+            // Cell
+            Cell cell;
+            part = it.next();
+            cell = row.getCell(Integer.valueOf(part));
+            if (cell == null) return null;
+            if (!it.hasNext()) return cell;
+
+            // Cell parts
+            part = it.next();
+            if (!it.hasNext())
+                throw new IllegalArgumentException(String.format("Malformed ID given %s, missing cell parts", id));
+            switch (part) {
+                case "asts":
+                    return resolveAstIdPath(cell, it);
+                case "cellFormat":
+                default:
+                    throw new UnsupportedOperationException(String.format("[%s] cell part is not supported yet", part));
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionError("UTF-8 not supported");
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(String.format("Malformed ID given %s", id), e);
+        }
+    }
+
+    private Ast resolveAstIdPath(Cell cell, Iterator<String> it) throws NumberFormatException {
+        int astIdx = Integer.valueOf(it.next());
+        Ast ast = (Ast) cell.getAsts().get(astIdx);
+        while (it.hasNext()) ast = ast.childAt(Integer.valueOf(it.next()));
+        return ast;
     }
 }
