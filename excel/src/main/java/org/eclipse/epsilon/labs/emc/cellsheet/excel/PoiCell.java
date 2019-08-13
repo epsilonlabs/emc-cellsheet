@@ -3,7 +3,6 @@ package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 

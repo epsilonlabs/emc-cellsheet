@@ -1,7 +1,5 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import com.google.common.collect.Sets;
-
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +41,7 @@ public interface Cell<T> extends HasA1 {
 
     default void addAst(Ast ast) {
         getAsts().add(ast);
+        ast.setPosition(getAsts().size() - 1);
         ast.setCell(this);
     }
 

@@ -10,13 +10,13 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public abstract class AbstractAst implements Ast<AbstractAst> {
+public abstract class AbstractAst implements Ast {
 
     protected Cell cell;
     protected Token token;
-    protected AbstractAst parent = null;
-    protected List<AbstractAst> children = new InternalAstList();
-    protected int position = ROOT;
+    protected Ast parent = null;
+    protected List<Ast> children = new InternalAstList();
+    protected int position = UNASSIGNED;
     protected AstEvaluator evaluator;
 
     protected AbstractAst() {
@@ -41,8 +41,13 @@ public abstract class AbstractAst implements Ast<AbstractAst> {
     }
 
     @Override
-    public AbstractAst getParent() {
+    public Ast getParent() {
         return parent;
+    }
+
+    @Override
+    public void setParent(Ast parent) {
+        this.parent = parent;
     }
 
     @Override
@@ -61,33 +66,33 @@ public abstract class AbstractAst implements Ast<AbstractAst> {
     }
 
     @Override
-    public List<AbstractAst> getChildren() {
+    public List<Ast> getChildren() {
         return Collections.unmodifiableList(children);
     }
 
     @Override
-    public AbstractAst childAt(int position) {
+    public Ast childAt(int position) {
         return children.get(position);
     }
 
     @Override
-    public void addChild(AbstractAst child) {
+    public void addChild(Ast child) {
         children.add(child);
     }
 
     @Override
-    public void addChild(int position, AbstractAst child) {
+    public void addChild(int position, Ast child) {
         children.add(position, child);
     }
 
     @Override
-    public AbstractAst removeChild(int position) {
+    public Ast removeChild(int position) {
         return children.remove(position);
     }
 
     @Override
-    public AbstractAst removeChild(AbstractAst child) {
-        return children.remove(child.position);
+    public Ast removeChild(Ast child) {
+        return children.remove(child.getPosition());
     }
 
     @Override
@@ -96,7 +101,12 @@ public abstract class AbstractAst implements Ast<AbstractAst> {
     }
 
     @Override
-    public Iterator<AbstractAst> iterator() {
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    @Override
+    public Iterator<Ast> iterator() {
         return children.iterator();
     }
 
@@ -122,52 +132,52 @@ public abstract class AbstractAst implements Ast<AbstractAst> {
         visitor.visit(this);
     }
 
-    class InternalAstList extends ForwardingList<AbstractAst> {
+    class InternalAstList extends ForwardingList<Ast> {
 
-        final List<AbstractAst> delegate = new ArrayList<>(0);
+        final List<Ast> delegate = new ArrayList<>(0);
 
         @Override
-        public boolean add(AbstractAst ast) {
+        public boolean add(Ast ast) {
             checkArgument(!delegate.contains(ast), "AST already present at index {}", ast.getPosition());
             if (ast.getParent() != null && !ast.getParent().equals(AbstractAst.this))
                 ast.getParent().removeChild(ast);
             reindex();
-            ast.parent = AbstractAst.this;
-            ast.position = delegate.size();
+            ast.setParent(AbstractAst.this);
+            ast.setPosition(delegate.size());
             return super.add(ast);
         }
 
         @Override
-        public void add(int index, AbstractAst ast) {
+        public void add(int index, Ast ast) {
             checkArgument(!delegate.contains(ast), "AST already present at index {}", ast.getPosition());
             super.add(index, ast);
             if (ast.getParent() != null && !ast.getParent().equals(AbstractAst.this))
                 ast.getParent().removeChild(ast);
-            ast.parent = AbstractAst.this;
+            ast.setParent(AbstractAst.this);
             reindex();
         }
 
         @Override
-        public AbstractAst remove(int index) {
-            AbstractAst removed = super.remove(index);
+        public Ast remove(int index) {
+            Ast removed = super.remove(index);
             resetParent(removed);
             reindex();
             return removed;
         }
 
         @Override
-        protected List<AbstractAst> delegate() {
+        protected List<Ast> delegate() {
             return delegate;
         }
 
         void reindex() {
             if (delegate.isEmpty()) return;
-            for (int i = 0, n = delegate.size(); i < n; i++) delegate.get(i).position = i;
+            for (int i = 0, n = delegate.size(); i < n; i++) delegate.get(i).setPosition(i);
         }
 
-        void resetParent(AbstractAst ast) {
-            ast.parent = null;
-            ast.position = Ast.ROOT;
+        void resetParent(Ast ast) {
+            ast.setParent(null);
+            ast.setPosition(Ast.UNASSIGNED);
         }
     }
 

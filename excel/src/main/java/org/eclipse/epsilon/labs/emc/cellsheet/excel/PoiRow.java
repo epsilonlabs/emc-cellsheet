@@ -31,6 +31,8 @@ public class PoiRow implements Row, PoiDelegate<org.apache.poi.ss.usermodel.Row>
         PoiCell.Builder builder;
         org.apache.poi.ss.usermodel.Cell raw = getDelegate().getCell(colIndex);
 
+        if (raw == null) return null;
+
         switch (raw.getCellType()) {
             case NUMERIC:
                 if (DateUtil.isCellDateFormatted(raw)) {
