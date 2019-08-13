@@ -1,6 +1,7 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AbstractAst;
+import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAst;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,7 +70,8 @@ public class AbstractAstTest {
 
     @Test
     public void getToken_should_return_token() {
-        assertThat(root.getToken()).isNotNull();
+        root.setToken("Hello World");
+        assertThat(root.getToken().getValue()).isEqualTo("Hello World");
     }
 
     @Test
@@ -243,12 +245,5 @@ public class AbstractAstTest {
     @Test
     public void getKinds_should_contain_correct_types() {
         assertThat(root.getKinds()).containsExactlyInAnyOrder(CellsheetType.AST, CellsheetType.HAS_ID);
-    }
-
-    private class DummyAst extends AbstractAst {
-
-        DummyAst() {
-            super(UUID.randomUUID().toString());
-        }
     }
 }
