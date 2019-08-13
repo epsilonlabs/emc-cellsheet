@@ -39,7 +39,7 @@ public interface Book extends HasA1 {
 
     @Override
     default String getA1() {
-        return "[" + getBookName() +"]";
+        return "[" + getBookName() + "]";
     }
 
     @Override

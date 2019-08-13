@@ -16,13 +16,13 @@ public class Logical extends Operand {
     }
 
     public Logical(Token token) {
-        checkArgument(token.equals(TRUE)||token.equals(FALSE));
+        checkArgument(token.equals(TRUE) || token.equals(FALSE));
         this.token = token;
     }
 
     @Override
     public void setToken(Token token) {
-        checkArgument(token.equals(TRUE)||token.equals(FALSE));
+        checkArgument(token.equals(TRUE) || token.equals(FALSE));
         super.setToken(token);
     }
 
