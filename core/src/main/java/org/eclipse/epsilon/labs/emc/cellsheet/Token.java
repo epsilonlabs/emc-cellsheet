@@ -1,6 +1,9 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Token implements HasId {
 

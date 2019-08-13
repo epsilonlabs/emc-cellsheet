@@ -76,12 +76,12 @@ public enum CellsheetType {
         this.typeName = typeName;
     }
 
-    public String getTypeName() {
-        return typeName;
-    }
-
     public static CellsheetType fromTypeName(String typeName) {
         return reverseLookup.get(typeName);
+    }
+
+    public String getTypeName() {
+        return typeName;
     }
 
 }

@@ -114,7 +114,7 @@ public abstract class AbstractAst implements Ast {
     public AstEval evaluate() {
         return evaluator.evaluate(this);
     }
-    
+
     @Override
     public void setEvaluator(AstEvaluator evaluator) {
         this.evaluator = evaluator;
