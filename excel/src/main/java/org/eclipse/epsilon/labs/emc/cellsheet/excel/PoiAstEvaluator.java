@@ -5,6 +5,7 @@ import org.apache.poi.ss.formula.eval.*;
 import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.AstEval;
+import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -40,11 +41,19 @@ public class PoiAstEvaluator implements AstEvaluator {
                 break;
         }
 
-        PoiCell cell = (PoiCell) ast.getCell();
+        return doEval(ast.getFormula(), (PoiCell) ast.getCell());
+    }
 
+    @Override
+    public AstEval evaluate(String formula, Cell cell) {
+        checkArgument(cell instanceof PoiCell, "Not an instance of PoiCell");
+        return doEval(formula, (PoiCell) cell);
+    }
+
+    AstEval doEval(String formula, PoiCell cell) {
         // Perform actual evaluation
         WorkbookEvaluator evaluator = cell.getBook().getInternalEvaluator();
-        ValueEval result = evaluator.evaluate(ast.getFormula(),
+        ValueEval result = evaluator.evaluate(formula,
                 new CellReference(cell.getSheet().getSheetName(),
                         cell.getRowIndex(),
                         cell.getColIndex(),
@@ -61,7 +70,7 @@ public class PoiAstEvaluator implements AstEvaluator {
                     .getSheet(cast.getFirstSheetIndex())
                     .getRow(cast.getRow())
                     .getCell(cast.getColumn())
-                    .getA1()
+                    .getId()
             );
         }
 
@@ -71,5 +80,4 @@ public class PoiAstEvaluator implements AstEvaluator {
 
         throw new AssertionError("Unknown ValueEval given: " + result);
     }
-
 }
