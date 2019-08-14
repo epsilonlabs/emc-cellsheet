@@ -9,7 +9,7 @@ public class ToFormulaAstVisitor implements Ast.Visitor {
     private final StringBuilder sb = new StringBuilder();
 
     @Override
-    public void visit(Ast ast) {
+    public void visit(Ast ast) throws Exception {
         if (ast.getChildren().isEmpty()) {
             add(ast);
             return;
@@ -57,12 +57,12 @@ public class ToFormulaAstVisitor implements Ast.Visitor {
         return this;
     }
 
-    ToFormulaAstVisitor recurse(Ast root, int childPosition) {
+    ToFormulaAstVisitor recurse(Ast root, int childPosition) throws Exception {
         root.childAt(childPosition).accept(this);
         return this;
     }
 
-    ToFormulaAstVisitor recurse(Ast root) {
+    ToFormulaAstVisitor recurse(Ast root) throws Exception {
         Iterator<Ast> it = root.getChildren().iterator();
         while (it.hasNext()) {
             it.next().accept(this);

@@ -87,11 +87,11 @@ public interface Ast extends HasId {
         return EnumSet.of(CellsheetType.AST, CellsheetType.HAS_ID);
     }
 
-    void accept(Visitor visitor);
+    void accept(Visitor visitor) throws Exception;
 
     interface Visitor {
 
-        void visit(Ast ast);
+        void visit(Ast ast) throws Exception;
 
     }
 }
