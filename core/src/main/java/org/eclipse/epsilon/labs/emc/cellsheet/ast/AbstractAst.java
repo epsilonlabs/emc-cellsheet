@@ -3,6 +3,8 @@ package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ForwardingList;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +15,8 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkArgument;
 
 public abstract class AbstractAst implements Ast {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractAst.class);
 
     protected Cell cell;
     protected Token token;
@@ -125,9 +129,14 @@ public abstract class AbstractAst implements Ast {
     @Override
     public String getFormula() {
         if (getChildren().isEmpty()) return token.getValue();
-        ToFormulaAstVisitor toFormulaAstVisitor = new ToFormulaAstVisitor();
-        toFormulaAstVisitor.visit(this);
-        return toFormulaAstVisitor.toString();
+        try {
+            ToFormulaAstVisitor toFormulaAstVisitor = new ToFormulaAstVisitor();
+            toFormulaAstVisitor.visit(this);
+            return toFormulaAstVisitor.toString();
+        } catch (Exception e) {
+            logger.error("Error reconstructing formula in AST {}", this);
+            throw new AssertionError(e);
+        }
     }
 
     @Override
@@ -144,7 +153,7 @@ public abstract class AbstractAst implements Ast {
                 .toString();
     }
 
-    public void accept(Visitor visitor) {
+    public void accept(Visitor visitor) throws Exception {
         visitor.visit(this);
     }
 
