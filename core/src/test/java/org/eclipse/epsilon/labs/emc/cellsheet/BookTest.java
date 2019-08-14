@@ -21,10 +21,10 @@ public class BookTest {
     @Test
     public void getId_should_return_correct_id() {
         Workspace workspace = mock(Workspace.class);
-        when(workspace.getId()).thenReturn("cellsheet:///Workspace%201");
+        when(workspace.getId()).thenReturn("cellsheet://Workspace%201");
         when(book.getWorkspace()).thenReturn(workspace);
         stubName();
-        assertThat(book.getId()).isEqualTo("cellsheet:///Workspace%201/Example%20Book%201.xlsx");
+        assertThat(book.getId()).isEqualTo("cellsheet://Workspace%201/Example%20Book%201.xlsx");
     }
 
     @Test

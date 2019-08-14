@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,14 @@ public class WorkspaceTest {
 
     @Test
     public void getId() {
-        assertThat(workspace.getId()).isNotBlank().isEqualTo("cellsheet:///Workspace%201");
+        assertThat(workspace.getId()).isNotBlank().isEqualTo("cellsheet://Workspace%201");
+    }
+
+    @Test
+    public void getElementById_should_return_self_when_given_workspace_id() {
+        System.out.println(workspace.getId());
+        Object element = workspace.getElementById(workspace.getId());
+        assertThat(element).isInstanceOf(Workspace.class).isSameAs(workspace);
     }
 
     @Test

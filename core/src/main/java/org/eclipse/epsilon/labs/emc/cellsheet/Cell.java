@@ -50,12 +50,15 @@ public interface Cell<T> extends HasA1 {
 
     @Override
     default String getA1() {
+        if (getSheet() == null || getRow() == null || getColIndex() < 0) return HasA1.super.getA1();
         return getSheet().getA1() + "!" + getA1ColIndex() + getA1RowIndex();
     }
 
     @Override
     default String getId() {
-        return getRow().getId() + "/" + getColIndex();
+        return (getRow() == null ? HasA1.super.getId() : getRow().getId())
+                + "/"
+                + getColIndex();
     }
 
     @Override

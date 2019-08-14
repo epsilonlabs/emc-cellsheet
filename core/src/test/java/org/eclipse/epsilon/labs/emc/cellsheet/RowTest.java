@@ -19,9 +19,9 @@ public class RowTest {
     @Test
     public void getId_should_return_correct_id() {
         Sheet sheet = mock(Sheet.class);
-        when(sheet.getId()).thenReturn("cellsheet:///Workspace%201/Example%20Book%201.xlsx/0");
+        when(sheet.getId()).thenReturn("cellsheet://Workspace%201/Example%20Book%201.xlsx/0");
         when(row.getSheet()).thenReturn(sheet);
-        assertThat(row.getId()).isEqualTo("cellsheet:///Workspace%201/Example%20Book%201.xlsx/0/0");
+        assertThat(row.getId()).isEqualTo("cellsheet://Workspace%201/Example%20Book%201.xlsx/0/0");
     }
 
     @Test

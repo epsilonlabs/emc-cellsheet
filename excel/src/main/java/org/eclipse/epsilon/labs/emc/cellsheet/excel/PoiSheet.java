@@ -1,13 +1,16 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import org.eclipse.epsilon.labs.emc.cellsheet.Book;
+import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Row;
 import org.eclipse.epsilon.labs.emc.cellsheet.Sheet;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -59,6 +62,18 @@ public class PoiSheet implements Sheet, PoiDelegate<org.apache.poi.ss.usermodel.
                 getDelegate().rowIterator(),
                 r -> getRow(r.getRowNum())
         );
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", getId())
+                .add("book", book)
+                .add("sheetIndex", sheetIndex)
+                .add("sheetName", sheetName)
+                .add("type", getType().getTypeName())
+                .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
+                .toString();
     }
 
     public static class Builder implements Sheet.Builder<PoiSheet, Builder> {

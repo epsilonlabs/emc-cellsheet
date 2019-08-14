@@ -20,6 +20,7 @@ public class PoiAstEvaluatorTest {
     @Before
     public void setUp() throws Exception {
         book = new PoiBook(WorkbookFactory.create(true));
+        book.setBookName(PoiAstEvaluatorTest.class.getSimpleName() + " Book.xlsx");
         delegate = book.getDelegate().createSheet("Sheet 1").createRow(0).createCell(0);
 
         // Setup values

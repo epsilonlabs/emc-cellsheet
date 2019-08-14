@@ -28,12 +28,15 @@ public interface Row extends HasA1 {
 
     @Override
     default String getA1() {
+        if (getSheet() == null || getRowIndex() < 0) return HasA1.super.getA1();
         return getSheet().getA1() + "!$A" + getA1RowIndex();
     }
 
     @Override
     default String getId() {
-        return getSheet().getId() + "/" + getRowIndex();
+        return (getSheet() == null ? HasA1.super.getId() : getSheet().getId())
+                + "/"
+                + getRowIndex();
     }
 
     @Override
@@ -43,7 +46,7 @@ public interface Row extends HasA1 {
 
     @Override
     default Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.ROW, CellsheetType.HAS_A1, CellsheetType.HAS_ID);
+        return EnumSet.of(getType(), CellsheetType.HAS_A1, CellsheetType.HAS_ID);
     }
 
     interface Builder<T extends Row, B extends Builder<T, B>> extends CellsheetBuilder {

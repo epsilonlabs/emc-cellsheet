@@ -5,7 +5,11 @@ import java.util.Set;
 
 public interface HasId extends Iterable {
 
-    String getId();
+    String UNASSIGNED = ".";
+
+    default String getId() {
+        return UNASSIGNED;
+    }
 
     CellsheetType getType();
 
