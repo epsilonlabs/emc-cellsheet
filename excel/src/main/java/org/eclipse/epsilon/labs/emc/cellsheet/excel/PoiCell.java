@@ -1,10 +1,12 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
+import com.google.common.base.MoreObjects;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -61,6 +63,18 @@ public abstract class PoiCell<T> implements Cell<T>, PoiDelegate<org.apache.poi.
     @Override
     public org.apache.poi.ss.usermodel.Cell getDelegate() {
         return row.getDelegate().getCell(colIndex);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", getId())
+                .add("row", row)
+                .add("colIndex", colIndex)
+                .add("value", getValue())
+                .add("type", getType().getTypeName())
+                .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
+                .toString();
     }
 
     public static abstract class Builder<T extends PoiCell<V>, V, B> implements Cell.Builder<T, V, Builder<T, V, B>> {

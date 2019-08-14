@@ -23,12 +23,15 @@ public interface Sheet extends HasA1 {
 
     @Override
     default String getA1() {
+        if (getBook() == null || getSheetName() == null) return HasA1.super.getA1();
         return getBook().getA1() + "'" + getSheetName() + "'";
     }
 
     @Override
     default String getId() {
-        return getBook().getId() + "/" + getSheetIndex();
+        return (getBook() == null ? HasA1.super.getId() : getBook().getId())
+                + "/"
+                + getSheetIndex();
     }
 
     @Override
@@ -38,7 +41,7 @@ public interface Sheet extends HasA1 {
 
     @Override
     default Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.SHEET, CellsheetType.HAS_A1, CellsheetType.HAS_ID);
+        return EnumSet.of(getType(), CellsheetType.HAS_A1, CellsheetType.HAS_ID);
     }
 
     interface Builder<T extends Sheet, B extends Builder<T, B>> {

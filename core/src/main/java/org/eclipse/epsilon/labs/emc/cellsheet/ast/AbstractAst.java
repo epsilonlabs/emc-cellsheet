@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ForwardingList;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -126,6 +128,20 @@ public abstract class AbstractAst implements Ast {
         ToFormulaAstVisitor toFormulaAstVisitor = new ToFormulaAstVisitor();
         toFormulaAstVisitor.visit(this);
         return toFormulaAstVisitor.toString();
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", getId())
+                .add("cell", getCell())
+                .add("parent", getParent())
+                .add("isRoot", isRoot())
+                .add("position", position)
+                .add("token", getTokenValue())
+                .add("type", getType().getTypeName())
+                .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
+                .toString();
     }
 
     public void accept(Visitor visitor) {

@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests that individual PTGs are converted correctly into their AST equivalents
  */
 @RunWith(Parameterized.class)
+@SuppressWarnings("unchecked")
 public class PoiAstFactoryConversionTest {
 
     @Parameterized.Parameters
@@ -65,6 +66,6 @@ public class PoiAstFactoryConversionTest {
     public void of_given_ptg_should_correctly_convert_ptg_to_ast() {
         Ast ast = PoiAstFactory.getInstance().of(ptg);
         assertThat(ast).isNotNull().isInstanceOf(astClazz);
-        assertThat(ast.getToken().getValue()).isEqualTo(expectedValue);
+        assertThat(ast.getTokenValue()).isEqualTo(expectedValue);
     }
 }

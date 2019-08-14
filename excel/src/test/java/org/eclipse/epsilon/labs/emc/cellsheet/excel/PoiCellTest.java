@@ -21,8 +21,8 @@ public class PoiCellTest {
 
     @Before
     public void setUp() throws Exception {
-        book = new PoiBook();
-        book.setDelegate(WorkbookFactory.create(true));
+        book = new PoiBook(WorkbookFactory.create(true));
+        book.setBookName(PoiCellTest.class.getSimpleName() + " Book.xlsx");
         delegateCell = book.getDelegate().createSheet("Test Sheet 1").createRow(0).createCell(0);
     }
 
@@ -36,7 +36,7 @@ public class PoiCellTest {
 
         Ast root = cell.getRoot();
         assertThat(root).isNotNull().isInstanceOf(Text.class);
-        assertThat(root.getToken().getValue()).isEqualTo(value);
+        assertThat(root.getTokenValue()).isEqualTo(value);
     }
 
     @Test

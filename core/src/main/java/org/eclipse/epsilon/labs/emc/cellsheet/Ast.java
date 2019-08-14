@@ -2,6 +2,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 
+import javax.swing.text.html.Option;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -69,10 +70,11 @@ public interface Ast extends HasId {
     @Override
     default String getId() {
         if (getParent() == null) {
-            return getCell().getId() + "/asts/" + getPosition();
-        } else {
-            return getParent().getId() + "/" + getPosition();
+            return (getCell() == null ? HasId.super.getId() : getCell().getId())
+                    + "/asts/"
+                    + getPosition();
         }
+        return getParent().getId() + "/" + getPosition();
     }
 
     @Override

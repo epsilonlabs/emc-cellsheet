@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
@@ -15,16 +16,15 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
-import org.eclipse.epsilon.labs.emc.cellsheet.Book;
-import org.eclipse.epsilon.labs.emc.cellsheet.CellFormat;
-import org.eclipse.epsilon.labs.emc.cellsheet.Sheet;
-import org.eclipse.epsilon.labs.emc.cellsheet.Workspace;
+import org.eclipse.epsilon.labs.emc.cellsheet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -185,6 +185,19 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
                     ._getWorkbookEvaluator();
         }
         return delegateEvaluator;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", getId())
+                .add("workspace", workspace)
+                .add("bookName", bookName)
+                .add("modelUri", modelUri)
+                .add("delegate", delegate)
+                .add("type", getType().getTypeName())
+                .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
+                .toString();
     }
 
     /**

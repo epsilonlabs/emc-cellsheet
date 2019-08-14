@@ -3,10 +3,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 import com.google.common.net.UrlEscapers;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public interface Book extends HasA1 {
 
@@ -39,12 +36,15 @@ public interface Book extends HasA1 {
 
     @Override
     default String getA1() {
+        if (getBookName() == null) return HasA1.super.getA1();
         return "[" + getBookName() + "]";
     }
 
     @Override
     default String getId() {
-        return getWorkspace().getId() + "/" + UrlEscapers.urlPathSegmentEscaper().escape(getBookName());
+        return (getWorkspace() == null ? HasA1.super.getId() : getWorkspace().getId())
+                + "/"
+                + UrlEscapers.urlPathSegmentEscaper().escape(getBookName());
     }
 
     @Override
@@ -54,7 +54,7 @@ public interface Book extends HasA1 {
 
     @Override
     default Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.BOOK, CellsheetType.HAS_A1, CellsheetType.HAS_ID);
+        return EnumSet.of(getType(), CellsheetType.HAS_A1, CellsheetType.HAS_ID);
     }
 
     interface Builder<T extends Book, B extends Builder<T, B>> extends CellsheetBuilder {

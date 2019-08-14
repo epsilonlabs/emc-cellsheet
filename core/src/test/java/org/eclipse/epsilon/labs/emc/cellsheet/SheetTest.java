@@ -19,9 +19,9 @@ public class SheetTest {
     @Test
     public void getId_should_return_id() {
         Book book = mock(Book.class);
-        when(book.getId()).thenReturn("cellsheet:///Workspace%1/Example%20Book%201.xlsx");
+        when(book.getId()).thenReturn("cellsheet://Workspace%1/Example%20Book%201.xlsx");
         when(sheet.getBook()).thenReturn(book);
-        assertThat(sheet.getId()).isEqualTo("cellsheet:///Workspace%1/Example%20Book%201.xlsx/0");
+        assertThat(sheet.getId()).isEqualTo("cellsheet://Workspace%1/Example%20Book%201.xlsx/0");
     }
 
     @Test

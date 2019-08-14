@@ -1,5 +1,6 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ForwardingDeque;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -165,6 +167,7 @@ public class Workspace extends CachedModel<HasId> implements HasId {
     @Override
     protected void disposeModel() {
         books.values().forEach(Book::dispose);
+        books.clear();
     }
 
     @Override
@@ -188,7 +191,7 @@ public class Workspace extends CachedModel<HasId> implements HasId {
     }
 
     @Override
-    public Object getEnumerationValue(String enumeration, String label) throws EolEnumerationValueNotFoundException {
+    public Object getEnumerationValue(String enumeration, String label) {
         throw new UnsupportedOperationException();
     }
 
@@ -235,7 +238,8 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     @Override
     public String getId() {
-        return "cellsheet:///" + UrlEscapers.urlPathSegmentEscaper().escape(getName());
+        return "cellsheet://"
+                + (getName() == null ? "." : UrlEscapers.urlPathSegmentEscaper().escape(getName()));
     }
 
     @Override
@@ -253,6 +257,18 @@ public class Workspace extends CachedModel<HasId> implements HasId {
     }
 
     @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", getId())
+                .add("name", getName())
+                .add("cached", isCachingEnabled())
+                .add("concurrent", isConcurrent())
+                .add("type", getType().getTypeName())
+                .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
+                .toString();
+    }
+
+    @Override
     public Object getElementById(String id) {
 
         /*
@@ -264,10 +280,16 @@ public class Workspace extends CachedModel<HasId> implements HasId {
             URI uri = new URI(id);
             if (!uri.getScheme().equals("cellsheet"))
                 throw new IllegalArgumentException(String.format("Non-Cellsheet ID given %s", id));
+            // Check workspace
+            String workspacePart = URLDecoder.decode(uri.getAuthority(), "UTF-8");
+            if (!workspacePart.equals(getName())) return null; // Not an ID for this workspace
+            if (Strings.isNullOrEmpty(uri.getPath())) return this;
             it = Arrays.stream(uri.getPath().split("/")).iterator();
             it.next();
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(String.format("Malformed ID given %s", id), e);
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionError("UTF-8 not supported");
         }
 
         /*
@@ -275,11 +297,6 @@ public class Workspace extends CachedModel<HasId> implements HasId {
          */
         String part;
         try {
-            // Workspace
-            part = URLDecoder.decode(it.next(), "UTF-8");
-            if (!part.equals(getName())) return null; // Not an ID for this workspace
-            if (!it.hasNext()) return this;
-
             // Book
             Book book;
             part = URLDecoder.decode(it.next(), "UTF-8");

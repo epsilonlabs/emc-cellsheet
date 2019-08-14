@@ -5,7 +5,11 @@ import java.util.Set;
 
 public interface HasA1 extends HasId {
 
-    String getA1();
+    String UNASSIGNED = "*unassigned*";
+
+    default String getA1() {
+        return UNASSIGNED;
+    }
 
     @Override
     default Set<CellsheetType> getKinds() {
