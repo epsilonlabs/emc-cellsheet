@@ -9,6 +9,17 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+/**
+ * Model Type representing a Cell with a Formula value
+ *
+ * <p>
+ * {@link #getValue()} will return the formula defined in this cell. In order to
+ * get the evaluated value use {@code getRoot().evaluate()}
+ * </p>
+ *
+ * @author Jonathan Co
+ * @since 3.0.0
+ */
 public interface FormulaCell extends Cell<String> {
 
     @Override

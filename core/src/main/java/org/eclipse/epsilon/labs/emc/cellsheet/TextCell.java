@@ -9,6 +9,12 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+/**
+ * Model Type representing a Cell with a Text value
+ *
+ * @author Jonathan Co
+ * @since 3.0.0
+ */
 public interface TextCell extends Cell<String> {
 
     @Override
