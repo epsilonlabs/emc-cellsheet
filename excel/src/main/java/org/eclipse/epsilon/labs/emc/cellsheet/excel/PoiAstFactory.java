@@ -12,7 +12,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 import org.apache.poi.ss.formula.ptg.*;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.Token;
-import org.eclipse.epsilon.labs.emc.cellsheet.TokenFactory;
+import org.eclipse.epsilon.labs.emc.cellsheet.Tokens;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Error;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Number;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.*;
@@ -90,7 +90,7 @@ public class PoiAstFactory {
 
     protected Ast of(Ptg ptg, String value) {
         Ast ast = null;
-        Token token = TokenFactory.getInstance().getToken(value == null ? PtgHelper.valueOf(ptg) : value);
+        Token token = Tokens.getToken(value == null ? PtgHelper.valueOf(ptg) : value);
 
         // OPERANDS
         if (ptg instanceof OperandPtg || ptg instanceof ScalarConstantPtg) {

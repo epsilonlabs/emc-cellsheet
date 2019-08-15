@@ -11,10 +11,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Model Type representing a Node in a {@link Cell} value's Abstract Syntax
@@ -73,7 +70,7 @@ public interface Ast extends HasId {
     /**
      * Get the parent of this node
      *
-     * @return the parent of this AST or {@code null} if this node is the root or unassigned
+     * @return the parent of this AST or {@code null} if this node is the root
      */
     Ast getParent();
 
@@ -100,12 +97,12 @@ public interface Ast extends HasId {
 
     /**
      * Sets the token of this node using a token's string value. Will perform
-     * construction using {@link TokenFactory#getToken(String)}
+     * construction using {@link Tokens#getToken(String)}
      *
      * @param token the new string value of the new token
      */
     default void setToken(String token) {
-        setToken(TokenFactory.getInstance().getToken(token));
+        setToken(Tokens.getToken(token));
     }
 
     /**
@@ -114,7 +111,9 @@ public interface Ast extends HasId {
      * @return string value of this node's token.
      */
     default String getTokenValue() {
-        return getToken().getValue();
+        return Optional.ofNullable(getToken())
+                .orElse(Tokens.nothing())
+                .getValue();
     }
 
     /**
@@ -266,7 +265,7 @@ public interface Ast extends HasId {
      * @return {@code true} if this node is the root node in the whole AST
      */
     default boolean isRoot() {
-        return getPosition() == UNASSIGNED;
+        return getParent() == null;
     }
 
     /**
@@ -284,16 +283,6 @@ public interface Ast extends HasId {
                     + getPosition();
         }
         return getParent().getId() + "/" + getPosition();
-    }
-
-    @Override
-    default CellsheetType getType() {
-        return CellsheetType.AST;
-    }
-
-    @Override
-    default Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.AST, CellsheetType.HAS_ID);
     }
 
     /**

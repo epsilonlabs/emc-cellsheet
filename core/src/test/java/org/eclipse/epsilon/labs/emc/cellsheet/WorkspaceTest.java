@@ -39,7 +39,6 @@ public class WorkspaceTest {
 
     @Test
     public void getElementById_should_return_self_when_given_workspace_id() {
-        System.out.println(workspace.getId());
         Object element = workspace.getElementById(workspace.getId());
         assertThat(element).isInstanceOf(Workspace.class).isSameAs(workspace);
     }

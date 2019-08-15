@@ -12,7 +12,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 import com.google.common.primitives.Doubles;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Token;
-import org.eclipse.epsilon.labs.emc.cellsheet.TokenFactory;
+import org.eclipse.epsilon.labs.emc.cellsheet.Tokens;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -20,11 +20,11 @@ public class Number extends Operand {
 
     public Number(String token) {
         checkArgument(Doubles.tryParse(token) != null);
-        this.token = TokenFactory.getInstance().getToken(token);
+        this.token = Tokens.getToken(token);
     }
 
     public Number(double token) {
-        this.token = TokenFactory.getInstance().getToken(String.valueOf(token));
+        this.token = Tokens.getToken(String.valueOf(token));
     }
 
     public Number(Token token) {
