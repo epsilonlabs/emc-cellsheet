@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -164,7 +163,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
     }
 
     public FormulaParsingWorkbook getFpw() {
-        checkArgument(delegate != null,"Delegate not initialised");
+        checkArgument(delegate != null, "Delegate not initialised");
         if (delegateFpw == null) {
             if (delegate instanceof HSSFWorkbook)
                 delegateFpw = HSSFEvaluationWorkbook.create((HSSFWorkbook) delegate);

@@ -1,15 +1,12 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
-import org.eclipse.epsilon.labs.emc.cellsheet.ast.*;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Number;
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.*;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -87,7 +84,7 @@ public class PoiCellTest {
         assertThat(root.getToken().getValue()).isEqualTo("SUM");
         assertThat(root.getChildren()).hasSize(1);
 
-        Ast child = (Ast) root.getChildren().get(0);
+        Ast child = root.getChildren().get(0);
         assertThat(child).isNotNull().isInstanceOf(Range.class);
         assertThat(child.getToken().getValue()).isEqualTo("A1:A5");
     }

@@ -21,11 +21,11 @@ import static com.google.common.base.Preconditions.checkState;
 public class PoiAstFactory {
     private static PoiAstFactory ourInstance = new PoiAstFactory();
 
-    public static PoiAstFactory getInstance() {
-        return ourInstance;
+    private PoiAstFactory() {
     }
 
-    private PoiAstFactory() {
+    public static PoiAstFactory getInstance() {
+        return ourInstance;
     }
 
     public Ast of(String formula, PoiCell cell) {

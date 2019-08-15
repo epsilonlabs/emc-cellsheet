@@ -9,7 +9,8 @@ public class DepthFirstPreOrderVisitor implements Ast.Visitor {
 
     private final List<Ast.Visitor> visitors = new LinkedList<>();
 
-    private DepthFirstPreOrderVisitor() {}
+    private DepthFirstPreOrderVisitor() {
+    }
 
     @Override
     public void visit(Ast ast) throws Exception {
