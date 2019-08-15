@@ -9,6 +9,12 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+/**
+ * Model Type representing a Cell with a Boolean value
+ *
+ * @author Jonathan Co
+ * @since 3.0.0
+ */
 public interface BooleanCell extends Cell<Boolean> {
 
     @Override

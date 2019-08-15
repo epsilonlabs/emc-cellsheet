@@ -13,6 +13,15 @@ import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.AstEval;
 import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
 
+/**
+ * Evaluator for ASTs
+ * <p>
+ * Implementations should be specific to a particular formula evaluator
+ * </p>
+ *
+ * @author Jonathan Co
+ * @since 3.0.0
+ */
 public interface AstEvaluator {
 
     default AstEval evaluate(Cell cell) {

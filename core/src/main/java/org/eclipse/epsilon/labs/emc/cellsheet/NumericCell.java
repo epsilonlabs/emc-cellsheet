@@ -9,6 +9,12 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+/**
+ * Model Type representing a Cell with a Numeric value
+ *
+ * @author Jonathan Co
+ * @since 3.0.0
+ */
 public interface NumericCell extends Cell<Double> {
 
     @Override

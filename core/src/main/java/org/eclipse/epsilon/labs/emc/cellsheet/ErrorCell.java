@@ -9,6 +9,12 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+/**
+ * Model Type representing a Cell with an Error value
+ *
+ * @author Jonathan Co
+ * @since 3.0.0
+ */
 public interface ErrorCell extends Cell<String> {
 
     @Override

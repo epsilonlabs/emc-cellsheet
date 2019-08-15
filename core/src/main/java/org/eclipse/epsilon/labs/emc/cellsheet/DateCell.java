@@ -11,6 +11,12 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import java.util.Date;
 
+/**
+ * Model Type representing a Cell with a Date value
+ *
+ * @author Jonathan Co
+ * @since 3.0.0
+ */
 public interface DateCell extends Cell<Date> {
 
     @Override

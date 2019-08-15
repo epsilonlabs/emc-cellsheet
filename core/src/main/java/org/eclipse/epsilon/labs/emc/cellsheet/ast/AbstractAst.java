@@ -22,7 +22,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
+/**
+ * Common implementation of {@link Ast}
+ *
+ * @author Jonathan Co
+ * @since 3.0.0
+ */
 public abstract class AbstractAst implements Ast {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractAst.class);
@@ -127,6 +134,7 @@ public abstract class AbstractAst implements Ast {
 
     @Override
     public AstEval evaluate() {
+        checkState(cell != null, "Context cell is null, needed for evaluation");
         return evaluator.evaluate(this);
     }
 
@@ -162,10 +170,13 @@ public abstract class AbstractAst implements Ast {
                 .toString();
     }
 
-    public void accept(Visitor visitor) throws Exception {
-        visitor.visit(this);
-    }
-
+    /**
+     * Decorated {@link ArrayList} that modifies child nodes as they are added
+     * or removed by the list
+     *
+     * @author Jonathan Co
+     * @since 3.0.0
+     */
     class InternalAstList extends ForwardingList<Ast> {
 
         final List<Ast> delegate = new ArrayList<>(0);

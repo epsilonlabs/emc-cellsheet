@@ -9,6 +9,14 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+/**
+ * Model Type representing a Blank Cell
+ * <p>
+ * A Blank Cell is defined as a cell with no value but may have formatting
+ * associated with it. Value is defined as any non-empty string or number.
+ * Therefore whitespace is a non-empty value.
+ * </p>
+ */
 public interface BlankCell extends Cell<Void> {
 
     @Override
