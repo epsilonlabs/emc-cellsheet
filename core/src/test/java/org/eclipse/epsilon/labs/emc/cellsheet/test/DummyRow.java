@@ -9,10 +9,12 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.test;
 
+import com.google.common.collect.ImmutableList;
 import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
 import org.eclipse.epsilon.labs.emc.cellsheet.Row;
 import org.eclipse.epsilon.labs.emc.cellsheet.Sheet;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,6 +22,7 @@ public class DummyRow implements Row {
 
     Sheet sheet;
     int rowIndex;
+    List<DummyCell> cells = new ArrayList<>();
 
     @Override
     public Sheet getSheet() {
@@ -36,10 +39,13 @@ public class DummyRow implements Row {
 
     @Override
     public Cell getCell(int colIndex) {
-        DummyCell cell = new DummyCell();
-        cell.setRow(this);
-        cell.setColIndex(colIndex);
-        return cell;
+        while (cells.size() < colIndex + 1) {
+            DummyCell cell = new DummyCell();
+            cell.setRow(this);
+            cell.setColIndex(colIndex);
+            cells.add(cell);
+        }
+        return cells.get(colIndex);
     }
 
     @Override
@@ -53,11 +59,11 @@ public class DummyRow implements Row {
 
     @Override
     public List<Cell> getCells() {
-        throw new UnsupportedOperationException();
+        return ImmutableList.copyOf(cells);
     }
 
     @Override
     public Iterator<Cell> iterator() {
-        throw new UnsupportedOperationException();
+        return getCells().iterator();
     }
 }

@@ -9,12 +9,14 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.test;
 
+import com.google.common.collect.ImmutableList;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.labs.emc.cellsheet.Book;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellFormat;
 import org.eclipse.epsilon.labs.emc.cellsheet.Sheet;
 import org.eclipse.epsilon.labs.emc.cellsheet.Workspace;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class DummyBook implements Book {
 
     Workspace workspace;
     String bookName;
+    List<DummySheet> sheets = new ArrayList<>();
 
     @Override
     public Workspace getWorkspace() {
@@ -40,10 +43,13 @@ public class DummyBook implements Book {
 
     @Override
     public Sheet getSheet(int sheetIndex) {
-        DummySheet sheet = new DummySheet();
-        sheet.setBook(this);
-        sheet.setSheetIndex(sheetIndex);
-        return sheet;
+        while (sheets.size() < sheetIndex + 1) {
+            DummySheet sheet = new DummySheet();
+            sheet.setBook(this);
+            sheet.setSheetIndex(sheetIndex);
+            sheets.add(sheet);
+        }
+        return sheets.get(sheetIndex);
     }
 
     @Override
@@ -83,11 +89,11 @@ public class DummyBook implements Book {
 
     @Override
     public List<Sheet> getSheets() {
-        throw new UnsupportedOperationException();
+        return ImmutableList.copyOf(sheets);
     }
 
     @Override
     public Iterator<Sheet> iterator() {
-        throw new UnsupportedOperationException();
+        return getSheets().iterator();
     }
 }
