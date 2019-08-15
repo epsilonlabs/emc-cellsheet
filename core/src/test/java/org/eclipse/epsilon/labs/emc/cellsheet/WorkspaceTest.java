@@ -1,6 +1,5 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
 import org.junit.Before;
 import org.junit.Test;

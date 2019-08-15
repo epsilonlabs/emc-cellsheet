@@ -15,11 +15,11 @@ public class PoiAstEvaluator implements AstEvaluator {
     private static PoiAstEvaluator ourInstance = new PoiAstEvaluator();
 
 
-    public static PoiAstEvaluator getInstance() {
-        return ourInstance;
+    private PoiAstEvaluator() {
     }
 
-    private PoiAstEvaluator() {
+    public static PoiAstEvaluator getInstance() {
+        return ourInstance;
     }
 
     @Override

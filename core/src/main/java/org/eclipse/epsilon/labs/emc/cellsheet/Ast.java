@@ -2,7 +2,6 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 
-import javax.swing.text.html.Option;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;

@@ -3,7 +3,10 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 import com.google.common.net.UrlEscapers;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public interface Book extends HasA1 {
 

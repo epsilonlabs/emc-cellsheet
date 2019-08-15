@@ -21,6 +21,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SuppressWarnings("unchecked")
 public class PoiAstFactoryConversionTest {
 
+    private Ptg ptg;
+    private Class astClazz;
+    private String expectedValue;
+    public PoiAstFactoryConversionTest(Ptg ptg, Class astClazz, String expectedValue) {
+        this.ptg = ptg;
+        this.astClazz = astClazz;
+        this.expectedValue = expectedValue;
+    }
+
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
@@ -47,19 +56,9 @@ public class PoiAstFactoryConversionTest {
                         {UnaryPlusPtg.instance, Plus.class, Plus.TOKEN.getValue()},
                         {UnionPtg.instance, Union.class, Union.TOKEN.getValue()},
                         {IntersectionPtg.instance, Intersection.class, Intersection.TOKEN.getValue()},
-                {FuncVarPtg.create("VLOOKUP", 3), Function.class, "VLOOKUP"}
+                        {FuncVarPtg.create("VLOOKUP", 3), Function.class, "VLOOKUP"}
                 }
         );
-    }
-
-    private Ptg ptg;
-    private Class astClazz;
-    private String expectedValue;
-
-    public PoiAstFactoryConversionTest(Ptg ptg, Class astClazz, String expectedValue) {
-        this.ptg = ptg;
-        this.astClazz = astClazz;
-        this.expectedValue = expectedValue;
     }
 
     @Test
