@@ -49,7 +49,7 @@ public abstract class AbstractAst implements Ast {
     }
 
     protected AbstractAst(String token) {
-        this(TokenFactory.getInstance().getToken(token));
+        this(Tokens.getToken(token));
     }
 
     @Override

@@ -83,8 +83,16 @@ public class AbstractAstTest {
     }
 
     @Test
+    public void getTokenValue_should_return_token_value() {
+        String tokenValue = "this is some token value";
+        assertThat(root.getTokenValue()).isNotEqualTo(tokenValue);
+        root.setToken(tokenValue);
+        assertThat(root.getTokenValue()).isEqualTo(tokenValue);
+    }
+
+    @Test
     public void getRoot_should_return_self_when_ast_is_root() {
-        assertThat(root.getRoot()).isEqualTo(root);
+        assertThat(root.getRoot()).isEqualTo(root).isSameAs(root);
     }
 
     @Test
@@ -249,9 +257,34 @@ public class AbstractAstTest {
         assertThat(child.getPosition()).isEqualTo(0);
         assertThat(root.getChildren().get(0)).isEqualTo(child);
     }
+    
+    @Test
+    public void isRoot_should_return_true_when_root() {
+        assertThat(root.isRoot()).isTrue();
+    }
 
     @Test
-    public void getKinds_should_contain_correct_types() {
-        assertThat(root.getKinds()).containsExactlyInAnyOrder(CellsheetType.AST, CellsheetType.HAS_ID);
+    public void isRoot_should_return_false_when_is_child() {
+        Ast a = new DummyAst();
+        root.addChild(a);
+        assertThat(a.isRoot()).isFalse();
+    }
+
+    @Test
+    public void isLeaf_should_return_true_when_no_children() {
+        assertThat(root.isLeaf()).isTrue();
+    }
+
+    @Test
+    public void isRoot_should_return_false_when_has_children() {
+        root.addChild(new DummyAst());
+        assertThat(root.isLeaf()).isFalse();
+    }
+
+    @Test
+    public void accept_should_execute_visitor() throws Exception {
+        assertThat(root.getTokenValue()).isNotEqualTo("Visited");
+        root.accept(a -> a.setToken("Visited"));
+        assertThat(root.getTokenValue()).isEqualTo("Visited");
     }
 }

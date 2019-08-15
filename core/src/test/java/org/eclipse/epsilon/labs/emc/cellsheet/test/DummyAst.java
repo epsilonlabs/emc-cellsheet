@@ -10,7 +10,11 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.test;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AbstractAst;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 public class DummyAst extends AbstractAst {
 
@@ -23,5 +27,15 @@ public class DummyAst extends AbstractAst {
             child.setPosition(position);
         }
         return child;
+    }
+
+    @Override
+    public CellsheetType getType() {
+        return CellsheetType.UNKNOWN;
+    }
+
+    @Override
+    public Set<CellsheetType> getKinds() {
+        return EnumSet.of(CellsheetType.UNKNOWN, CellsheetType.AST, CellsheetType.HAS_ID);
     }
 }
