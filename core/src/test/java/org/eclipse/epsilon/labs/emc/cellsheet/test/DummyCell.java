@@ -10,8 +10,10 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.test;
 
 import com.google.common.collect.ForwardingList;
+import com.google.common.collect.ImmutableList;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,6 +21,7 @@ public class DummyCell implements Cell {
 
     Row row;
     int colIndex;
+    List<Ast> asts = new DummyAstList();
 
     @Override
     public Row getRow() {
@@ -45,12 +48,12 @@ public class DummyCell implements Cell {
 
     @Override
     public List<Ast> getAsts() {
-        return new DummyAstList();
+        return asts;
     }
 
     @Override
     public Iterator<HasId> iterator() {
-        throw new UnsupportedOperationException();
+        return ImmutableList.<HasId>copyOf(getAsts()).iterator();
     }
 
     @Override
@@ -59,18 +62,22 @@ public class DummyCell implements Cell {
     }
 
     class DummyAstList extends ForwardingList<Ast> {
+        private final List<Ast> delegate = new ArrayList<>();
 
         @Override
         public Ast get(int index) {
-            DummyAst ast = new DummyAst();
-            ast.setCell(DummyCell.this);
-            ast.setPosition(index);
-            return ast;
+            while (delegate.size() < index + 1) {
+                DummyAst ast = new DummyAst();
+                ast.setPosition(index);
+                ast.setCell(DummyCell.this);
+                delegate.add(ast);
+            }
+            return delegate.get(index);
         }
 
         @Override
         protected List<Ast> delegate() {
-            throw new UnsupportedOperationException();
+            return delegate;
         }
     }
 }
