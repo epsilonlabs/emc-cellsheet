@@ -73,7 +73,7 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     public Collection<HasId> getAllOfType(CellsheetType type) throws EolModelElementTypeNotFoundException {
         checkNotNull(type);
-        return getAllOfKind(type.getTypeName());
+        return getAllOfType(type.getTypeName());
     }
 
     @Override
