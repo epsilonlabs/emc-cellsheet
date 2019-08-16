@@ -9,11 +9,15 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class WorkspaceTest {
 
@@ -83,4 +87,132 @@ public class WorkspaceTest {
         Object element = workspace.getElementById(ast.getId());
         assertThat(element).isInstanceOf(Ast.class).isEqualToComparingFieldByFieldRecursively(ast);
     }
+
+    @Test
+    public void getBooks_should_return_all_books() {
+        assertThat(workspace.getBooks()).containsExactly(book);
+    }
+
+    @Test
+    public void getToken_should_return_token_when_given_tokenstr() {
+        String tokenValue = "Some token value";
+        Token expected = Tokens.getToken(tokenValue);
+        assertThat(workspace.getToken(tokenValue)).isEqualTo(expected);
+    }
+
+    @Test
+    public void createInstance_should_throw_unsupported_op_exception() {
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> workspace.createInstance(""));
+    }
+
+    @Test
+    public void dispose_should_clear_all_values() {
+        assertThat(workspace.getBooks()).isNotEmpty();
+        workspace.dispose();
+        assertThat(workspace.getBooks()).isEmpty();
+    }
+
+    @Test
+    public void delete_should_throw_unsupported_op_exception() {
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> workspace.deleteElement(null));
+    }
+
+    @Test
+    public void getCacheKeyForType_should_return_CELL_for_Cell_str() throws Exception {
+        assertThat(workspace.getCacheKeyForType("Cell"))
+                .isEqualTo(CellsheetType.CELL);
+    }
+
+    @Test
+    public void getCacheKeyForType_should_throw_exception_when_given_bad_value() {
+        assertThatExceptionOfType(EolModelElementTypeNotFoundException.class)
+                .isThrownBy(() -> workspace.getCacheKeyForType("NotAType"));
+    }
+
+    @Test
+    public void getAllTypeNamesOf_should_return_all_kinds_of_book() {
+        assertThat(workspace.getAllTypeNamesOf(book))
+                .containsExactlyInAnyOrder("Book", "HasA1", "HasId");
+    }
+
+    @Test
+    public void getEnumerationValue_should_throw_unsupported_op_exception() {
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> workspace.getEnumerationValue(null, null));
+    }
+
+    @Test
+    public void getTypeNameOf_should_return_book_when_given_Book() {
+        assertThat(workspace.getTypeNameOf(book)).isEqualTo(book.getType().getTypeName());
+    }
+
+    @Test
+    public void getElementId_should_return_correct_id_when_given_book() {
+        assertThat(book.getId()).isEqualTo(book.getId());
+    }
+
+    @Test
+    public void getElementId_should_return_null_when_given_non_model_element() {
+        assertThat(workspace.getElementId(new Object())).isNull();
+    }
+
+    @Test
+    public void setElementId_should_throw_unsupported_op_exception() {
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> workspace.setElementId(null, null));
+    }
+
+    @Test
+    public void owns_should_return_true_for_owned_book() {
+        assertThat(workspace.owns(book)).isTrue();
+    }
+
+    @Test
+    public void owns_should_return_false_for_other_book() {
+        assertThat(workspace.owns(when(mock(Book.class).getId()).thenReturn("cellsheet://Other/9").getMock())).isFalse();
+    }
+
+    @Test
+    public void isInstantiable_should_throw_unsupported_op_exception() {
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> workspace.isInstantiable(null));
+    }
+
+    @Test
+    public void hasType_should_return_true_when_given_valid_type() {
+        assertThat(workspace.hasType("Book")).isTrue();
+    }
+
+    @Test
+    public void hasType_should_return_false_when_given_invalid_type() {
+        assertThat(workspace.hasType("NotAType")).isFalse();
+    }
+
+    @Test
+    public void store_should_throw_unsupported_op_exception() {
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> workspace.store());
+    }
+
+    @Test
+    public void store_should_throw_unsupported_op_exception_when_given_string() {
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> workspace.store(""));
+    }
+
+    @Test
+    public void getType_should_return_WORKSPACE() {
+        assertThat(workspace.getType()).isEqualTo(CellsheetType.WORKSPACE);
+    }
+
+    @Test
+    public void getKinds_should_return_WORKSPACE_HASID() {
+        assertThat(workspace.getKinds()).containsExactlyInAnyOrder(
+                CellsheetType.WORKSPACE,
+                CellsheetType.HAS_ID);
+    }
+
+
 }

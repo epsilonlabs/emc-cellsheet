@@ -160,16 +160,17 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     @Override
     protected Object getCacheKeyForType(String typeName) throws EolModelElementTypeNotFoundException {
-        CellsheetType type = CellsheetType.fromTypeName(typeName);
-        if (type == null)
+        if (!hasType(typeName))
             throw new EolModelElementTypeNotFoundException(name, typeName);
-        return type;
+        return CellsheetType.fromTypeName(typeName);
     }
 
     @Override
     protected Collection<String> getAllTypeNamesOf(Object instance) {
         if (instance instanceof HasId) {
-            return ((HasId) instance).getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.toList());
+            return ((HasId) instance).getKinds().stream()
+                    .map(CellsheetType::getTypeName)
+                    .collect(Collectors.toList());
         }
         return null;
     }
@@ -197,6 +198,10 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     @Override
     public boolean owns(Object instance) {
+        if (instance instanceof HasId) {
+            // May need to change to getWorkspace
+            return getElementById(((HasId) instance).getId()) != null;
+        }
         return false;
     }
 

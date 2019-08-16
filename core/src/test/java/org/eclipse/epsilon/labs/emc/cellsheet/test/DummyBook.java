@@ -84,7 +84,6 @@ public class DummyBook implements Book {
 
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException();
     }
 
     @Override

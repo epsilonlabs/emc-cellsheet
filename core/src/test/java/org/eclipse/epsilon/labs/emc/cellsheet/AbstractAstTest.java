@@ -257,7 +257,7 @@ public class AbstractAstTest {
         assertThat(child.getPosition()).isEqualTo(0);
         assertThat(root.getChildren().get(0)).isEqualTo(child);
     }
-    
+
     @Test
     public void isRoot_should_return_true_when_root() {
         assertThat(root.isRoot()).isTrue();
