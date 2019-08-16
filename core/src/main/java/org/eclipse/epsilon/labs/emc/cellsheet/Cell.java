@@ -34,7 +34,6 @@ import java.util.*;
  * </p>
  *
  * @param <T> the type of value contained in this cell
- *
  * @author Jonathan Co
  * @since 3.0.0
  */

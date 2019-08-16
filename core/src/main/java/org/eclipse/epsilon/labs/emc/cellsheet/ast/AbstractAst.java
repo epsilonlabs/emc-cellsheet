@@ -217,7 +217,8 @@ public abstract class AbstractAst implements Ast {
 
         void reindex() {
             if (delegate.isEmpty()) return;
-            for (int i = 0, n = delegate.size(); i < n; i++) delegate.get(i).setPosition(i);
+            for (int i = 0, n = delegate.size(); i < n; i++)
+                delegate.get(i).setPosition(i);
         }
 
         void resetParent(Ast ast) {

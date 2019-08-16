@@ -32,7 +32,8 @@ public interface Sheet extends HasA1 {
 
     @Override
     default String getA1() {
-        if (getBook() == null || getSheetName() == null) return HasA1.super.getA1();
+        if (getBook() == null || getSheetName() == null)
+            return HasA1.super.getA1();
         return getBook().getA1() + "'" + getSheetName() + "'";
     }
 

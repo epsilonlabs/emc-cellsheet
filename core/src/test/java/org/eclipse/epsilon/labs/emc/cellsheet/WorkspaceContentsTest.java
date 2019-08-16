@@ -161,4 +161,5 @@ public class WorkspaceContentsTest {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> workspace.getAllOfType((CellsheetType) null));
     }
+
 }

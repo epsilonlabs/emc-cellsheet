@@ -11,7 +11,9 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Model Type representing a Node in a {@link Cell} value's Abstract Syntax
