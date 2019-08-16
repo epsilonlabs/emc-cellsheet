@@ -12,8 +12,9 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.ForwardingDeque;
-import com.google.common.collect.Queues;
+import com.google.common.collect.ForwardingIterator;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import com.google.common.net.UrlEscapers;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
@@ -25,6 +26,7 @@ import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,6 +35,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class Workspace extends CachedModel<HasId> implements HasId {
 
@@ -40,20 +43,15 @@ public class Workspace extends CachedModel<HasId> implements HasId {
     public static final String PROPERTY_MODEL_URIS = "modelUri";
 
     private static Logger logger = LoggerFactory.getLogger(Workspace.class);
-    protected Map<String, Token> tokens = new HashMap<>();
     protected Map<String, Book> books = new HashMap<>();
     private Set<CellsheetBackend> backendRegistry = new HashSet<>();
 
     public Token getToken(String value) {
-        return tokens.get(value);
+        return Tokens.getToken(value);
     }
 
-    public void addToken(Token token) {
-        tokens.put(token.getValue(), token);
-    }
-
-    public Map<String, Book> getBooks() {
-        return books;
+    public List<Book> getBooks() {
+        return new ArrayList<>(books.values());
     }
 
     public void addBook(Book book) {
@@ -62,66 +60,44 @@ public class Workspace extends CachedModel<HasId> implements HasId {
     }
 
     @Override
+    @Nonnull
     public Iterator<Book> iterator() {
         return books.values().iterator();
     }
 
     @Override
     protected Collection<HasId> allContentsFromModel() {
-        List<HasId> list = new ArrayList<>();
+        AllContentsIterator it = new AllContentsIterator(this);
+        return Lists.newArrayList(it);
+    }
 
-        final Deque<Iterator> iterators = new ForwardingDeque<Iterator>() {
-            final Deque<Iterator> delegate = Queues.newArrayDeque();
-
-            @Override
-            public boolean offer(Iterator o) {
-                if (o == null) return false;
-                return delegate.offer(o);
-            }
-
-            @Override
-            protected Deque<Iterator> delegate() {
-                return delegate;
-            }
-        };
-
-        Iterator it;
-        HasId current;
-        iterators.add(iterator());
-
-        while (iterator().hasNext()) {
-            it = iterators.pop();
-            while (it.hasNext()) {
-                current = (HasId) it.next();
-                list.add(current);
-                iterators.offer(current.iterator());
-            }
-        }
-
-        return list;
+    public Collection<HasId> getAllOfType(CellsheetType type) throws EolModelElementTypeNotFoundException {
+        checkNotNull(type);
+        return getAllOfKind(type.getTypeName());
     }
 
     @Override
     protected Collection<HasId> getAllOfTypeFromModel(String typeName) throws EolModelElementTypeNotFoundException {
+        if (!hasType(typeName))
+            throw new EolModelElementTypeNotFoundException(getName(), typeName);
         CellsheetType type = CellsheetType.fromTypeName(typeName);
-        if (type == null) {
-            throw new EolModelElementTypeNotFoundException(name, typeName);
-        }
-        return allContents()
-                .stream()
-                .filter(i -> i.getType() == type)
+        return allContents().stream()
+                .filter(input -> input.getType() == type)
                 .collect(Collectors.toList());
+    }
+
+    public Collection<HasId> getAllOfKind(CellsheetType kind) throws EolModelElementTypeNotFoundException {
+        checkNotNull(kind);
+        return getAllOfKind(kind.getTypeName());
     }
 
     @Override
     protected Collection<HasId> getAllOfKindFromModel(String kindName) throws EolModelElementTypeNotFoundException {
+        if (!hasType(kindName))
+            throw new EolModelElementTypeNotFoundException(getName(), kindName);
         CellsheetType kind = CellsheetType.fromTypeName(kindName);
-        if (kind == null) {
-            throw new EolModelElementTypeNotFoundException(name, kindName);
-        }
-        return allContents()
-                .stream()
-                .filter(i -> i.getKinds().contains(kind))
+        return allContents().stream()
+                .filter(input -> input.getKinds().contains(kind))
                 .collect(Collectors.toList());
     }
 
@@ -185,7 +161,8 @@ public class Workspace extends CachedModel<HasId> implements HasId {
     @Override
     protected Object getCacheKeyForType(String typeName) throws EolModelElementTypeNotFoundException {
         CellsheetType type = CellsheetType.fromTypeName(typeName);
-        if (type == null) throw new EolModelElementTypeNotFoundException(name, typeName);
+        if (type == null)
+            throw new EolModelElementTypeNotFoundException(name, typeName);
         return type;
     }
 
@@ -289,7 +266,8 @@ public class Workspace extends CachedModel<HasId> implements HasId {
                 throw new IllegalArgumentException(String.format("Non-Cellsheet ID given %s", id));
             // Check workspace
             String workspacePart = URLDecoder.decode(uri.getAuthority(), "UTF-8");
-            if (!workspacePart.equals(getName())) return null; // Not an ID for this workspace
+            if (!workspacePart.equals(getName()))
+                return null; // Not an ID for this workspace
             if (Strings.isNullOrEmpty(uri.getPath())) return this;
             it = Arrays.stream(uri.getPath().split("/")).iterator();
             it.next();
@@ -356,5 +334,28 @@ public class Workspace extends CachedModel<HasId> implements HasId {
         Ast ast = (Ast) cell.getAsts().get(astIdx);
         while (it.hasNext()) ast = ast.childAt(Integer.valueOf(it.next()));
         return ast;
+    }
+
+    class AllContentsIterator extends ForwardingIterator<HasId> {
+
+        private Iterator<HasId> delegate;
+
+        AllContentsIterator(Workspace workspace) {
+            this.delegate = Iterators.singletonIterator(workspace);
+        }
+
+        @Override
+        public HasId next() {
+            HasId next = super.next();
+            Iterator<HasId> toAdd = Iterators.unmodifiableIterator(next.iterator());
+            if (toAdd.hasNext())
+                this.delegate = Iterators.concat(delegate, toAdd);
+            return next;
+        }
+
+        @Override
+        protected Iterator<HasId> delegate() {
+            return delegate;
+        }
     }
 }

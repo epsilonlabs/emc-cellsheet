@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -20,7 +21,9 @@ public interface CellFormat extends HasId {
     String getValue();
 
     @Override
-    Iterator<Void> iterator();
+    default Iterator<HasId> iterator() {
+        return Collections.emptyIterator();
+    }
 
     @Override
     default String getId() {
