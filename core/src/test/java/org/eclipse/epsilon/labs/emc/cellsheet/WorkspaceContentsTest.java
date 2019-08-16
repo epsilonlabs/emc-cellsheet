@@ -11,6 +11,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 
 public class WorkspaceContentsTest {
@@ -130,10 +131,34 @@ public class WorkspaceContentsTest {
     }
 
     @Test
-    public void getAllOf_type_should_return_all_rows_when_given_Cell() throws Exception {
-        Collection<HasId> allCells = workspace.getAllOfType(CellsheetType.CELL);
-        assertThat(allCells)
-                .hasSize(cells.size())
-                .containsExactlyInAnyOrderElementsOf(cells);
+    public void getAllOfKind_should_throw_exception_when_given_invalid_typename() {
+        assertThatExceptionOfType(EolModelElementTypeNotFoundException.class)
+                .isThrownBy(() -> workspace.getAllOfKind("NotAType"));
+    }
+
+    @Test
+    public void getAllOfKind_should_throw_exception_when_given_invalid_null_type() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> workspace.getAllOfKind((CellsheetType) null));
+    }
+
+    @Test
+    public void getAllOfType_should_return_all_rows_when_given_Row() throws Exception {
+        Collection<HasId> allRows = workspace.getAllOfType(CellsheetType.ROW);
+        assertThat(allRows)
+                .hasSize(rows.size())
+                .containsExactlyInAnyOrderElementsOf(rows);
+    }
+
+    @Test
+    public void getAllOfType_should_throw_exception_when_given_invalid_typename() {
+        assertThatExceptionOfType(EolModelElementTypeNotFoundException.class)
+                .isThrownBy(() -> workspace.getAllOfType("NotAType"));
+    }
+
+    @Test
+    public void getAllOfType_should_throw_exception_when_given_invalid_null_type() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> workspace.getAllOfType((CellsheetType) null));
     }
 }
