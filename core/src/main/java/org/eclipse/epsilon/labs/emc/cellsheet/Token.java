@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import com.google.common.base.Objects;
+
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -65,6 +67,19 @@ public class Token implements HasId {
 
     @Override
     public String getId() {
-        return "TOKEN ID NOT IMPLEMENTED";
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Token token = (Token) o;
+        return Objects.equal(getValue(), token.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getValue());
     }
 }

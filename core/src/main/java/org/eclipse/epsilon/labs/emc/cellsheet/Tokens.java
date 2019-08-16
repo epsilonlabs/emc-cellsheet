@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Tokens {
-    
+
     private static Map<String, Token> tokens = new HashMap<>();
 
     public static Token getToken(String value) {
