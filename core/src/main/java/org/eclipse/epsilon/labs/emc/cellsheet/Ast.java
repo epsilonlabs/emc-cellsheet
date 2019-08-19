@@ -280,9 +280,8 @@ public interface Ast extends HasId {
     @Override
     default String getId() {
         if (getParent() == null) {
-            return (getCell() == null ? HasId.super.getId() : getCell().getId())
-                    + "/asts/"
-                    + getPosition();
+            if (getCell() == null) return HasId.super.getId();
+            return getCell().getId() + "/asts/" + getPosition();
         }
         return getParent().getId() + "/" + getPosition();
     }

@@ -54,9 +54,9 @@ public interface Book extends HasA1 {
 
     @Override
     default String getId() {
-        return (getWorkspace() == null ? HasA1.super.getId() : getWorkspace().getId())
-                + "/"
-                + UrlEscapers.urlPathSegmentEscaper().escape(getBookName());
+        return getWorkspace() == null
+                ? HasA1.super.getId()
+                : (getWorkspace().getId() + "/" + UrlEscapers.urlPathSegmentEscaper().escape(getBookName()));
     }
 
     @Override
