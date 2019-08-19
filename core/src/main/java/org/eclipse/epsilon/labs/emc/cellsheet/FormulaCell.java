@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import javax.annotation.Nonnull;
+
 /**
  * Model Type representing a Cell with a Formula value
  *
@@ -22,6 +24,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
  */
 public interface FormulaCell extends Cell<String> {
 
+    @Nonnull
     @Override
     default CellsheetType getType() {
         return CellsheetType.FORMULA_CELL;

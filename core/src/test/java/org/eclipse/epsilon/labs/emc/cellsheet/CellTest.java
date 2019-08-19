@@ -50,7 +50,7 @@ public class CellTest {
         assertThat(cell.getKinds().toArray()).containsExactlyInAnyOrder(
                 CellsheetType.BLANK_CELL,
                 CellsheetType.CELL,
-                CellsheetType.HAS_ID,
+                CellsheetType.CELLSHEET_ELEMENT,
                 CellsheetType.HAS_A1);
     }
 }

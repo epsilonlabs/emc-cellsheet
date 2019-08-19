@@ -51,7 +51,7 @@ public class BookTest {
     public void getKinds_should_return_correct_types() {
         assertThat(book.getKinds().toArray()).containsExactlyInAnyOrder(
                 CellsheetType.BOOK,
-                CellsheetType.HAS_ID,
+                CellsheetType.CELLSHEET_ELEMENT,
                 CellsheetType.HAS_A1);
     }
 

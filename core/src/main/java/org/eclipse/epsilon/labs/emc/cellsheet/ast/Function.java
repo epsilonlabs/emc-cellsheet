@@ -12,6 +12,8 @@ package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 
+import javax.annotation.Nonnull;
+
 public class Function extends Operation {
 
     public Function(Token token) {
@@ -22,6 +24,7 @@ public class Function extends Operation {
         super(token);
     }
 
+    @Nonnull
     @Override
     public CellsheetType getType() {
         return CellsheetType.FUNCTION;

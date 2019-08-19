@@ -29,6 +29,7 @@ import org.eclipse.epsilon.labs.emc.cellsheet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
@@ -113,6 +114,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         return ImmutableList.copyOf(iterator());
     }
 
+    @Nonnull
     @Override
     public Iterator<Sheet> iterator() {
         return Iterators.transform(

@@ -13,6 +13,7 @@ import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AbstractAst;
 
+import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -29,13 +30,15 @@ public class DummyAst extends AbstractAst {
         return children.get(position);
     }
 
+    @Nonnull
     @Override
     public CellsheetType getType() {
         return CellsheetType.UNKNOWN;
     }
 
+    @Nonnull
     @Override
     public Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.UNKNOWN, CellsheetType.AST, CellsheetType.HAS_ID);
+        return EnumSet.of(CellsheetType.UNKNOWN, CellsheetType.AST, CellsheetType.CELLSHEET_ELEMENT);
     }
 }

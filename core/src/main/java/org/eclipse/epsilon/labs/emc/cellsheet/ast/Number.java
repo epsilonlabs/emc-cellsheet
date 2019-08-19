@@ -14,6 +14,8 @@ import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 import org.eclipse.epsilon.labs.emc.cellsheet.Tokens;
 
+import javax.annotation.Nonnull;
+
 import static com.google.common.base.Preconditions.checkArgument;
 
 public class Number extends Operand {
@@ -38,6 +40,7 @@ public class Number extends Operand {
         super.setToken(token);
     }
 
+    @Nonnull
     @Override
     public CellsheetType getType() {
         return CellsheetType.NUMBER;

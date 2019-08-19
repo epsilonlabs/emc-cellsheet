@@ -12,6 +12,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 
+import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -29,8 +30,9 @@ public abstract class Operand extends AbstractAst {
         super(token);
     }
 
+    @Nonnull
     @Override
     public Set<CellsheetType> getKinds() {
-        return EnumSet.of(getType(), CellsheetType.OPERAND, CellsheetType.AST, CellsheetType.HAS_ID);
+        return EnumSet.of(getType(), CellsheetType.OPERAND, CellsheetType.AST, CellsheetType.CELLSHEET_ELEMENT);
     }
 }

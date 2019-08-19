@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import javax.annotation.Nonnull;
 import java.util.Date;
 
 /**
@@ -19,6 +20,7 @@ import java.util.Date;
  */
 public interface DateCell extends Cell<Date> {
 
+    @Nonnull
     @Override
     default CellsheetType getType() {
         return CellsheetType.DATE_CELL;

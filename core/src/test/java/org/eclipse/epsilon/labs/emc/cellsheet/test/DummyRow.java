@@ -14,6 +14,7 @@ import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
 import org.eclipse.epsilon.labs.emc.cellsheet.Row;
 import org.eclipse.epsilon.labs.emc.cellsheet.Sheet;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -62,6 +63,7 @@ public class DummyRow implements Row {
         return ImmutableList.copyOf(cells);
     }
 
+    @Nonnull
     @Override
     public Iterator<Cell> iterator() {
         return getCells().iterator();

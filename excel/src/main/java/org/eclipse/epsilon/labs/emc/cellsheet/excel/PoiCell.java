@@ -12,6 +12,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 import com.google.common.base.MoreObjects;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -64,8 +65,9 @@ public abstract class PoiCell<T> implements Cell<T>, PoiDelegate<org.apache.poi.
         return asts.get(0);
     }
 
+    @Nonnull
     @Override
-    public Iterator<HasId> iterator() {
+    public Iterator<CellsheetElement> iterator() {
         throw new UnsupportedOperationException();
     }
 

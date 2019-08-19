@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 public enum CellsheetType {
 
-    HAS_ID("HasId"),
+    CELLSHEET_ELEMENT("CellsheetElement"),
     HAS_A1("HasA1"),
 
     WORKSPACE("Workspace"),
