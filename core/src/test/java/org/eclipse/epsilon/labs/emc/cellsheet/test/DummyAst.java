@@ -19,6 +19,10 @@ import java.util.Set;
 
 public class DummyAst extends AbstractAst {
 
+    public DummyAst() {
+        this.evaluator = new DummyAstEvaluator();
+    }
+
     @Override
     public Ast childAt(int position) {
         while (children.size() < position + 1) {

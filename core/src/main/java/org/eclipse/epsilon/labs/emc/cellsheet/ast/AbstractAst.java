@@ -22,8 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Common implementation of {@link Ast}
@@ -136,7 +135,7 @@ public abstract class AbstractAst implements Ast {
 
     @Override
     public AstEval evaluate() {
-        checkState(cell != null, "Context cell is null, needed for evaluation");
+        checkNotNull(cell, "Context cell is null, needed for evaluation");
         return evaluator.evaluate(this);
     }
 
