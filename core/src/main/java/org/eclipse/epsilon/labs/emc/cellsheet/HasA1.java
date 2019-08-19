@@ -43,9 +43,4 @@ public interface HasA1 extends CellsheetElement {
         return UNASSIGNED;
     }
 
-    @Nonnull
-    @Override
-    default Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.HAS_A1, CellsheetType.CELLSHEET_ELEMENT);
-    }
 }
