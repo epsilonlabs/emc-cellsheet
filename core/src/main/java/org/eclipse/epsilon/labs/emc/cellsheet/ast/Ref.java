@@ -16,6 +16,10 @@ import javax.annotation.Nonnull;
 
 public class Ref extends Operand {
 
+    public Ref(String token) {
+        super(token);
+    }
+
     public Ref(Token token) {
         super(token);
     }
