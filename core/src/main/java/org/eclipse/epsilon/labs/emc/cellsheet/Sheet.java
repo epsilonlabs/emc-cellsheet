@@ -39,9 +39,9 @@ public interface Sheet extends HasA1 {
 
     @Override
     default String getId() {
-        return (getBook() == null ? HasA1.super.getId() : getBook().getId())
-                + "/"
-                + getSheetIndex();
+        return getBook() == null
+                ? HasA1.super.getId()
+                : (getBook().getId() + "/" + getSheetIndex());
     }
 
     @Override

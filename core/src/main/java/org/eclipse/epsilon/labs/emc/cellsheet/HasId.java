@@ -15,10 +15,18 @@ import java.util.Set;
 
 public interface HasId extends Iterable {
 
-    String UNASSIGNED = ".";
-
+    /**
+     * Returns a URI style String that can be used to uniquely identify
+     * the model element instance.
+     *
+     * {@code null} will be returned if the model element is not associated with
+     * a model i.e. the element is dangling
+     *
+     * @return Unique identifier for this model element or {@code null} if the
+     * model element is not associated with a dangling model.
+     */
     default String getId() {
-        return UNASSIGNED;
+        return null;
     }
 
     CellsheetType getType();

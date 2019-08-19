@@ -227,8 +227,7 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     @Override
     public String getId() {
-        return "cellsheet://"
-                + (getName() == null ? "." : UrlEscapers.urlPathSegmentEscaper().escape(getName()));
+        return name == null ? HasId.super.getId() : "cellsheet://" + UrlEscapers.urlPathSegmentEscaper().escape(getName());
     }
 
     @Override
@@ -259,7 +258,7 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     @Override
     public Object getElementById(String id) {
-
+        if (id == null) return null;
         /*
          * Validation checks
          */

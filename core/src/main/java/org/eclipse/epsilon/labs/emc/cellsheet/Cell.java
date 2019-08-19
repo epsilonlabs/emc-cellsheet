@@ -139,9 +139,8 @@ public interface Cell<T> extends HasA1 {
 
     @Override
     default String getId() {
-        return (getRow() == null ? HasA1.super.getId() : getRow().getId())
-                + "/"
-                + getColIndex();
+        if (getRow() == null || getColIndex() < 0) HasA1.super.getId();
+        return getRow().getId() + "/" + getColIndex();
     }
 
     @Override

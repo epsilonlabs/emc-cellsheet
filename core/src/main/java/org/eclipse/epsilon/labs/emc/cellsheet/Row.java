@@ -43,9 +43,8 @@ public interface Row extends HasA1 {
 
     @Override
     default String getId() {
-        return (getSheet() == null ? HasA1.super.getId() : getSheet().getId())
-                + "/"
-                + getRowIndex();
+        if (getSheet() == null || getRowIndex() < 0) return HasA1.super.getId();
+        return getSheet().getId() + "/" + getRowIndex();
     }
 
     @Override
