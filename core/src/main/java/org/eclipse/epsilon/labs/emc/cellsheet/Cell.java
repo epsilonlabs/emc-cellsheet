@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import com.google.common.collect.Iterables;
+
 import javax.annotation.Nonnull;
 import java.util.*;
 
@@ -41,30 +43,36 @@ import java.util.*;
 public interface Cell<T> extends HasA1 {
 
     /**
-     * @return the book this cell is located in
+     * Returns the parent {@link Book} of this cell
+     *
+     * @return the parent book
      */
-    default Book getBook() {
-        return getRow().getBook();
-    }
+    Book getBook();
 
     /**
-     * @return the sheet this cell is located in
+     * Returns the parent {@link Sheet} of this cell
+     *
+     * @return the parent sheet
      */
-    default Sheet getSheet() {
-        return getRow().getSheet();
-    }
+    Sheet getSheet();
 
     /**
-     * @return the row this cell is located in
+     * Returns the parent {@link Row} of this cell
+     *
+     * @return the parent row
      */
     Row getRow();
 
     /**
+     * Returns the 0-based column index of this cell
+     *
      * @return 0-based column index of this cell
      */
     int getColIndex();
 
     /**
+     * Returns the alpha column index of this cell
+     *
      * @return alpha column index of this cell
      */
     default String getA1ColIndex() {
@@ -72,6 +80,8 @@ public interface Cell<T> extends HasA1 {
     }
 
     /**
+     * Returns the 0-based row index of this cell
+     *
      * @return 0-based row index of this cell
      */
     default int getRowIndex() {
@@ -79,6 +89,8 @@ public interface Cell<T> extends HasA1 {
     }
 
     /**
+     * Returns the 1-based row index of this cell
+     *
      * @return 1-based row index of this cell
      */
     default int getA1RowIndex() {
@@ -86,11 +98,16 @@ public interface Cell<T> extends HasA1 {
     }
 
     /**
+     * Returns the raw value of this cell
+     *
      * @return raw value of this cell
      */
     T getValue();
 
     /**
+     * Returns any AST associated with this cell.
+     * <p>The first element of the returned list will always be the root AST</p>
+     *
      * @return the ASTs associated with this cell
      */
     List<Ast> getAsts();
@@ -103,10 +120,16 @@ public interface Cell<T> extends HasA1 {
     }
 
     /**
-     * Associate a user defined AST to this cell. The returned int can be used
-     * to retrieve this AST later
+     * Associate an AST with this Cell.
+     * <p>
+     * All AST's associated with a cell are indexed using an int. Index 0 is
+     * always the root AST that should reflect the AST of the current cell
+     * value. ASTs at index > 0 will be model specific (i.e. the result of
+     * applying some visitor analysis)
+     * </p>
      *
-     * @param ast
+     * @param ast the AST to associate with this cell
+     * @return Index that this ast was added to
      */
     default int addAst(Ast ast) {
         getAsts().add(ast);
@@ -134,8 +157,7 @@ public interface Cell<T> extends HasA1 {
 
     @Override
     default String getA1() {
-        if (getRow() == null || getSheet() == null)
-            return HasA1.super.getA1();
+        if (getRow() == null) return HasA1.super.getA1();
         return getSheet().getA1() + "!" + getA1ColIndex() + getA1RowIndex();
     }
 

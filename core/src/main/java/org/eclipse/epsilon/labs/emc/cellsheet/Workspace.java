@@ -34,7 +34,6 @@ import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class Workspace extends CachedModel<CellsheetElement> implements CellsheetElement {
@@ -262,10 +261,8 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
     @Override
     public Object getElementById(String id) {
         if (id == null) return null;
-        /*
-         * Validation checks
-         */
-        checkArgument(!Strings.isNullOrEmpty(id), "ID must not be null or empty, given {}", id);
+
+        // Validation Checks
         final Iterator<String> it;
         try {
             URI uri = new URI(id);

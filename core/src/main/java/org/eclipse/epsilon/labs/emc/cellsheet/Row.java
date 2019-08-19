@@ -39,7 +39,7 @@ public interface Row extends HasA1 {
 
     @Override
     default String getA1() {
-        if (getSheet() == null || getRowIndex() < 0) return HasA1.super.getA1();
+        if (getSheet() == null) return HasA1.super.getA1();
         return getSheet().getA1() + "!$A" + getA1RowIndex();
     }
 

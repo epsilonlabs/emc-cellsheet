@@ -23,8 +23,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class WorkspaceTest {
 
@@ -100,6 +99,23 @@ public class WorkspaceTest {
     }
 
     @Test
+    public void getElementById_should_return_null_when_given_null() {
+        assertThat(workspace.getElementId(null)).isNull();
+    }
+
+    @Test
+    public void getElementById_should_throw_IAException_when_given_wrong_scheme() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> workspace.getElementById("http://Workspace%201"));
+    }
+
+    @Test
+    public void getElementById_should_throw_URISyntaxtException_when_given_bad_uri() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> workspace.getElementById("cellsheet://Workspace 1"));
+    }
+
+    @Test
     public void getElementById_should_return_self_when_given_workspace_id() {
         Object element = workspace.getElementById(workspace.getId());
         assertThat(element).isInstanceOf(Workspace.class).isSameAs(workspace);
@@ -144,6 +160,26 @@ public class WorkspaceTest {
         Ast ast = ((Ast) book.getSheet(52).getRow(100).getCell(34).getAsts().get(45)).childAt(23);
         Object element = workspace.getElementById(ast.getId());
         assertThat(element).isInstanceOf(Ast.class).isEqualToComparingFieldByFieldRecursively(ast);
+    }
+
+    @Test
+    public void getElementById_should_null_when_given_id_of_another_model() {
+        assertThat(workspace.getElementById("cellsheet://Workspace%202/Another.xlsx")).isNull();
+    }
+
+    @Test
+    public void getElementById_should_throw_IAException_when_given_bad_id() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> workspace.getElementById(book.getId() + "/notright"));
+    }
+
+    @Test
+    public void getElementById_should_throw_IAException_when_given_bad_cell_part_id() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> workspace.getElementById(
+                        book.getSheet(0)
+                                .getRow(0)
+                                .getCell(0).getId() + "/asts"));
     }
 
     @Test
