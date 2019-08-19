@@ -10,7 +10,6 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import javax.annotation.Nonnull;
-import java.lang.reflect.ParameterizedType;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;

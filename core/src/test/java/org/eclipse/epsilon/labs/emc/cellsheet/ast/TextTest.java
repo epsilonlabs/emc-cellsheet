@@ -11,7 +11,6 @@ package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -11,8 +11,8 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AbstractAst;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAst;
-import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAstEvaluator;
+import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
 import org.junit.Before;
 import org.junit.Test;
 
