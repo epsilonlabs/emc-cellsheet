@@ -15,7 +15,7 @@ import org.eclipse.epsilon.labs.emc.cellsheet.Tokens;
 
 import javax.annotation.Nonnull;
 
-public class Negation extends InfixOperator {
+public class Negation extends PrefixOperator {
 
     public static final Token TOKEN = Tokens.getToken("-");
 

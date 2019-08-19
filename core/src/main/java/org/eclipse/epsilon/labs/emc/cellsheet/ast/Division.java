@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 
 public class Division extends InfixOperator {
 
-    public static final Token TOKEN = Tokens.getToken("&");
+    public static final Token TOKEN = Tokens.getToken("/");
 
     public Division() {
         super(TOKEN);
