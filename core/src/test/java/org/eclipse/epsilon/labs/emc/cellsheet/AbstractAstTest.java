@@ -12,6 +12,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AbstractAst;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAst;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
+import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAstEvaluator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -295,5 +296,32 @@ public class AbstractAstTest {
         assertThat(root.getTokenValue()).isNotEqualTo("Visited");
         root.accept(a -> a.setToken("Visited"));
         assertThat(root.getTokenValue()).isEqualTo("Visited");
+    }
+
+    @Test
+    public void evaluate_should_throw_exception_when_cell_is_null() {
+        root.setCell(null);
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> root.evaluate());
+    }
+
+    @Test
+    public void evaluate_should_call_evaluator() {
+        assertThat(root.evaluate().getText()).isEqualTo(DummyAstEvaluator.EVAL_RESULT);
+    }
+
+    @Test
+    public void getFormula_should_return_formula_for_functions() {
+        root.setToken("VLOOKUP");
+        root.childAt(0).setToken("A1");
+        root.childAt(1).setToken("B1:T6");
+        root.childAt(2).setToken("2");
+        assertThat(root.getFormula()).isNotNull().isEqualTo("VLOOKUP(A1,B1:T6,2)");
+    }
+
+    @Test
+    public void getFormula_should_return_formula_for_values() {
+        root.setToken("5");
+        assertThat(root.getFormula()).isNotNull().isEqualTo("5");
     }
 }
