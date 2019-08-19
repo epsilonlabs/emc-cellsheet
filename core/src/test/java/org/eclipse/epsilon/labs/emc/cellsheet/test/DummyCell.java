@@ -25,6 +25,16 @@ public class DummyCell implements Cell {
     List<Ast> asts = new DummyAstList();
 
     @Override
+    public Book getBook() {
+        return row.getBook();
+    }
+
+    @Override
+    public Sheet getSheet() {
+        return row.getSheet();
+    }
+
+    @Override
     public Row getRow() {
         return row;
     }
