@@ -59,13 +59,9 @@ public interface Sheet extends HasA1 {
         return EnumSet.of(getType(), CellsheetType.HAS_A1, CellsheetType.CELLSHEET_ELEMENT);
     }
 
-    interface Builder<T extends Sheet, B extends Builder<T, B>> {
+    interface Builder<T extends Sheet, B extends Builder<T, B>> extends CellsheetBuilder {
 
         B self();
-
-        default String getClassName() {
-            return ((Class<?>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1]).getName();
-        }
 
         B withBook(Book book);
 

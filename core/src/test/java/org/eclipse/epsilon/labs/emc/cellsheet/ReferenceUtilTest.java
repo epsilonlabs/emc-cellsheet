@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

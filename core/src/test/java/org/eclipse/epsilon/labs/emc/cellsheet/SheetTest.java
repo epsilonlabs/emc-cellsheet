@@ -34,12 +34,22 @@ public class SheetTest {
     }
 
     @Test
-    public void getA1_should_return_correct_a1() {
+    public void getId_should_return_unassigned_when_dangling() {
+        assertThat(sheet.getId()).isEqualTo(CellsheetElement.UNASSIGNED);
+    }
+
+    @Test
+    public void getA1_should_return_a1() {
         Book book = mock(Book.class);
         when(book.getA1()).thenReturn("[Example Workbook 1.xlsx]");
         when(sheet.getBook()).thenReturn(book);
         when(sheet.getSheetName()).thenReturn("Example Sheet 1");
         assertThat(sheet.getA1()).isEqualTo("[Example Workbook 1.xlsx]'Example Sheet 1'");
+    }
+
+    @Test
+    public void getA1_should_return_unassigned_when_dangling() {
+        assertThat(sheet.getA1()).isEqualTo(HasA1.UNASSIGNED);
     }
 
     @Test

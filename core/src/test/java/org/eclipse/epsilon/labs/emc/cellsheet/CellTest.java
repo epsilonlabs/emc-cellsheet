@@ -9,39 +9,52 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
+import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyCell;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Answers;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class CellTest {
 
-    @Mock(answer = Answers.CALLS_REAL_METHODS)
-    private Cell cell;
+    DummyCell cell;
 
-    @Test
-    public void getId_should_return_id() {
-        Row row = mock(Row.class);
-        when(row.getId()).thenReturn("cellsheet://Workspace%1/Example%20Book%201.xlsx/0/0");
-        when(cell.getRow()).thenReturn(row);
-        assertThat(cell.getId()).isEqualTo("cellsheet://Workspace%1/Example%20Book%201.xlsx/0/0/0");
+    @Before
+    public void setUp() {
+        Workspace ws = new Workspace();
+        ws.setName("Default Dummy Workspace 1");
+        ws.addBook(new DummyBook());
+        cell = (DummyCell) ws.getBooks().get(0)
+                .getSheet(0)
+                .getRow(0)
+                .getCell(0);
     }
 
     @Test
-    public void getA1_should_return_correct_a1() {
-        Row row = mock(Row.class);
-        Sheet sheet = mock(Sheet.class);
-        when(row.getA1RowIndex()).thenCallRealMethod();
-        when(sheet.getA1()).thenReturn("[Example Workbook 1.xlsx]'Example Sheet 1'");
-        when(cell.getRow()).thenReturn(row);
-        when(cell.getSheet()).thenReturn(sheet);
-        assertThat(cell.getA1()).isEqualTo("[Example Workbook 1.xlsx]'Example Sheet 1'!A1");
+    public void getId_should_return_id() {
+        assertThat(cell.getId()).isEqualTo("cellsheet://Default%20Dummy%20Workspace%201/Default%20Dummy%20Book%201.xlsx/0/0/0");
+    }
+
+    @Test
+    public void getId_should_return_unassigned_when_dangling() {
+        cell.setRow(null);
+        assertThat(cell.getId()).isEqualTo(CellsheetElement.UNASSIGNED);
+    }
+
+    @Test
+    public void getA1_should_return_a1() {
+        assertThat(cell.getA1()).isEqualTo("[Default Dummy Book 1.xlsx]'Default Dummy Sheet 0'!A1");
+    }
+
+    @Test
+    public void getA1_should_return_unassigned_when_dangling() {
+        cell.setRow(null);
+        assertThat(cell.getA1()).isEqualTo(HasA1.UNASSIGNED);
     }
 
     @Test

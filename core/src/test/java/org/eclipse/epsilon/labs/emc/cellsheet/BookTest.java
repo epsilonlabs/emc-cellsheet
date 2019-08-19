@@ -28,7 +28,7 @@ public class BookTest {
     Book book;
 
     @Test
-    public void getId_should_return_correct_id() {
+    public void getId_should_return_id() {
         Workspace workspace = mock(Workspace.class);
         when(workspace.getId()).thenReturn("cellsheet://Workspace%201");
         when(book.getWorkspace()).thenReturn(workspace);
@@ -37,9 +37,19 @@ public class BookTest {
     }
 
     @Test
-    public void getA1_should_return_correct_a1() {
+    public void getId_should_return_unassigned_when_dangling() {
+        assertThat(book.getId()).isEqualTo(CellsheetElement.UNASSIGNED);
+    }
+
+    @Test
+    public void getA1_should_return_a1() {
         stubName();
         assertThat(book.getA1()).isEqualTo("[Example Book 1.xlsx]");
+    }
+
+    @Test
+    public void getA1_should_return_unassigned_when_dangling() {
+        assertThat(book.getA1()).isEqualTo(HasA1.UNASSIGNED);
     }
 
     @Test

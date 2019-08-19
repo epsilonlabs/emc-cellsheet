@@ -23,9 +23,15 @@ import java.util.List;
 
 public class DummyBook implements Book {
 
+    public static final String DEFAULT_NAME = "Default Dummy Book 1.xlsx";
+
     Workspace workspace;
     String bookName;
     List<DummySheet> sheets = new ArrayList<>();
+
+    public DummyBook() {
+        this.bookName = DEFAULT_NAME;
+    }
 
     @Override
     public Workspace getWorkspace() {

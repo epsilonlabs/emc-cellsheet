@@ -11,6 +11,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AbstractAst;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAst;
+import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,36 +26,44 @@ public class AbstractAstTest {
 
     @Before
     public void setUp() throws Exception {
-        root = new DummyAst();
+        Workspace ws = new Workspace();
+        ws.setName("Default Dummy Workspace 1");
+        ws.addBook(new DummyBook());
+        root = (AbstractAst) ws.getBooks().get(0)
+                .getSheet(0)
+                .getRow(0)
+                .getCell(0)
+                .getRoot();
     }
 
     @Test
-    public void getCell_should_return_null_when_root() {
-        assertThat(root.getCell()).isNull();
-        assertThat(root.getPosition()).isEqualTo(Ast.UNASSIGNED);
+    public void getId_should_return_id_when_is_root() {
+        assertThat(root.getId()).isEqualTo("cellsheet://Default%20Dummy%20Workspace%201/Default%20Dummy%20Book%201.xlsx/0/0/0/asts/0");
     }
 
     @Test
-    public void getCell_should_return_root_ast_cell_when_child() {
+    public void getId_should_return_unassigned_when_dangling() {
+        assertThat(new DummyAst().getId()).isEqualTo(CellsheetElement.UNASSIGNED);
+    }
+
+    @Test
+    public void getCell_should_return_root_cell_when_child() {
         AbstractAst child = new DummyAst();
         assertThat(child.getParent()).isNull();
         assertThat(child.getCell()).isNull();
 
-        root.addChild(child);
-        assertThat(root.getCell()).isNull();
-        assertThat(root.getChildren()).contains(child);
-        assertThat(child.getCell()).isNull();
-        assertThat(child.getParent()).isNotNull().isEqualTo(root);
+        assertThat(root.isRoot()).isTrue();
+        assertThat(root.getCell()).isNotNull();
 
-        Cell cell = mock(Cell.class);
-        root.setCell(cell);
-        assertThat(root.getCell()).isNotNull().isEqualTo(cell);
-        assertThat(child.getCell()).isNotNull().isEqualTo(cell);
+        root.addChild(child);
+        assertThat(root.getChildren()).contains(child);
+        assertThat(child.getParent()).isNotNull().isEqualTo(root);
+        assertThat(child.getCell()).isSameAs(root.getCell());
     }
 
     @Test
     public void setCell_should_set_cell() {
-        assertThat(root.getCell()).isNull();
+        assertThat(root.getCell()).isNotNull();
         Cell cell = mock(Cell.class);
         root.setCell(cell);
         assertThat(root.getCell()).isNotNull().isEqualTo(cell);
@@ -244,8 +253,8 @@ public class AbstractAstTest {
     }
 
     @Test
-    public void getPosition_should_return_ROOT_value_when_root() {
-        assertThat(root.getPosition()).isEqualTo(Ast.UNASSIGNED);
+    public void getPosition_should_return_cell_position_value_when_root() {
+        assertThat(root.getPosition()).isEqualTo(0);
     }
 
     @Test
