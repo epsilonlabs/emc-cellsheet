@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 public class IntersectionTest {
 
     private Ast ast = new Intersection();
