@@ -134,7 +134,7 @@ public interface Cell<T> extends HasA1 {
 
     @Override
     default String getA1() {
-        if (getSheet() == null || getRow() == null || getColIndex() < 0)
+        if (getRow() == null || getSheet() == null)
             return HasA1.super.getA1();
         return getSheet().getA1() + "!" + getA1ColIndex() + getA1RowIndex();
     }
@@ -142,7 +142,7 @@ public interface Cell<T> extends HasA1 {
     @Nonnull
     @Override
     default String getId() {
-        if (getRow() == null || getColIndex() < 0) HasA1.super.getId();
+        if (getRow() == null) return HasA1.super.getId();
         return getRow().getId() + "/" + getColIndex();
     }
 

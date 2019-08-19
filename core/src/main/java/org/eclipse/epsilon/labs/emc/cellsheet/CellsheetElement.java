@@ -27,6 +27,11 @@ import java.util.Set;
 public interface CellsheetElement extends Iterable {
 
     /**
+     * The default identifier to use when a model element is dangling.
+     */
+    String UNASSIGNED = null;
+
+    /**
      * Returns a URI style String that can be used to uniquely identify
      * the model element instance.
      * <p>
@@ -38,7 +43,7 @@ public interface CellsheetElement extends Iterable {
      * model element is not associated with a dangling model.
      */
     default String getId() {
-        return null;
+        return UNASSIGNED;
     }
 
     @Nonnull

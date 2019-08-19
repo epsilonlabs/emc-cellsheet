@@ -26,7 +26,7 @@ public class RowTest {
     private Row row;
 
     @Test
-    public void getId_should_return_correct_id() {
+    public void getId_should_return_id() {
         Sheet sheet = mock(Sheet.class);
         when(sheet.getId()).thenReturn("cellsheet://Workspace%201/Example%20Book%201.xlsx/0");
         when(row.getSheet()).thenReturn(sheet);
@@ -34,11 +34,21 @@ public class RowTest {
     }
 
     @Test
-    public void getA1_should_return_correct_a1() {
+    public void getId_should_return_unassigned_when_dangling() {
+        assertThat(row.getId()).isEqualTo(CellsheetElement.UNASSIGNED);
+    }
+
+    @Test
+    public void getA1_should_return_a1() {
         Sheet sheet = mock(Sheet.class);
         when(sheet.getA1()).thenReturn("[Example Workbook 1.xlsx]'Example Sheet 1'");
         when(row.getSheet()).thenReturn(sheet);
         assertThat(row.getA1()).isEqualTo("[Example Workbook 1.xlsx]'Example Sheet 1'!$A1");
+    }
+
+    @Test
+    public void getA1_should_return_unassigned_when_dangling() {
+        assertThat(row.getA1()).isEqualTo(HasA1.UNASSIGNED);
     }
 
     @Test

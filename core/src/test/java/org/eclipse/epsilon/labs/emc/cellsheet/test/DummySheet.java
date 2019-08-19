@@ -10,7 +10,6 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.test;
 
 import com.google.common.collect.ImmutableList;
-import org.eclipse.epsilon.labs.emc.cellsheet.Book;
 import org.eclipse.epsilon.labs.emc.cellsheet.Row;
 import org.eclipse.epsilon.labs.emc.cellsheet.Sheet;
 
@@ -21,16 +20,17 @@ import java.util.List;
 
 public class DummySheet implements Sheet {
 
-    Book book;
+    DummyBook book;
     int sheetIndex;
+    String sheetName;
     List<DummyRow> rows = new ArrayList<>();
 
     @Override
-    public Book getBook() {
+    public DummyBook getBook() {
         return book;
     }
 
-    public void setBook(Book book) {
+    public void setBook(DummyBook book) {
         this.book = book;
     }
 
@@ -47,7 +47,11 @@ public class DummySheet implements Sheet {
 
     @Override
     public String getSheetName() {
-        return "Dummy Sheet " + sheetIndex;
+        return "Default Dummy Sheet " + sheetIndex;
+    }
+
+    public void setSheetName(String sheetName) {
+        this.sheetName = sheetName;
     }
 
     @Override
