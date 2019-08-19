@@ -12,6 +12,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 import com.google.common.net.UrlEscapers;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 
+import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +44,7 @@ public interface Book extends HasA1 {
 
     List<Sheet> getSheets();
 
+    @Nonnull
     @Override
     Iterator<Sheet> iterator();
 
@@ -52,6 +54,7 @@ public interface Book extends HasA1 {
         return "[" + getBookName() + "]";
     }
 
+    @Nonnull
     @Override
     default String getId() {
         return getWorkspace() == null
@@ -59,14 +62,16 @@ public interface Book extends HasA1 {
                 : (getWorkspace().getId() + "/" + UrlEscapers.urlPathSegmentEscaper().escape(getBookName()));
     }
 
+    @Nonnull
     @Override
     default CellsheetType getType() {
         return CellsheetType.BOOK;
     }
 
+    @Nonnull
     @Override
     default Set<CellsheetType> getKinds() {
-        return EnumSet.of(getType(), CellsheetType.HAS_A1, CellsheetType.HAS_ID);
+        return EnumSet.of(getType(), CellsheetType.HAS_A1, CellsheetType.CELLSHEET_ELEMENT);
     }
 
     interface Builder<T extends Book, B extends Builder<T, B>> extends CellsheetBuilder {

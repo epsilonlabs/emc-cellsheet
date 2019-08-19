@@ -16,6 +16,7 @@ import org.eclipse.epsilon.labs.emc.cellsheet.CellFormat;
 import org.eclipse.epsilon.labs.emc.cellsheet.Sheet;
 import org.eclipse.epsilon.labs.emc.cellsheet.Workspace;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -91,6 +92,7 @@ public class DummyBook implements Book {
         return ImmutableList.copyOf(sheets);
     }
 
+    @Nonnull
     @Override
     public Iterator<Sheet> iterator() {
         return getSheets().iterator();

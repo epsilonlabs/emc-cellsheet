@@ -12,6 +12,10 @@ package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 
+import javax.annotation.Nonnull;
+import java.util.EnumSet;
+import java.util.Set;
+
 public class Noop extends AbstractAst {
 
     public Noop() {
@@ -26,8 +30,15 @@ public class Noop extends AbstractAst {
         super(token);
     }
 
+    @Nonnull
     @Override
     public CellsheetType getType() {
         return CellsheetType.NOOP;
+    }
+
+    @Nonnull
+    @Override
+    public Set<CellsheetType> getKinds() {
+        return EnumSet.of(getType(), CellsheetType.CELLSHEET_ELEMENT, CellsheetType.AST, CellsheetType.NOOP);
     }
 }

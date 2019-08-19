@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.ParameterizedType;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ public interface Sheet extends HasA1 {
 
     List<Row> getRows();
 
+    @Nonnull
     @Override
     Iterator<Row> iterator();
 
@@ -37,6 +39,7 @@ public interface Sheet extends HasA1 {
         return getBook().getA1() + "'" + getSheetName() + "'";
     }
 
+    @Nonnull
     @Override
     default String getId() {
         return getBook() == null
@@ -44,14 +47,16 @@ public interface Sheet extends HasA1 {
                 : (getBook().getId() + "/" + getSheetIndex());
     }
 
+    @Nonnull
     @Override
     default CellsheetType getType() {
         return CellsheetType.SHEET;
     }
 
+    @Nonnull
     @Override
     default Set<CellsheetType> getKinds() {
-        return EnumSet.of(getType(), CellsheetType.HAS_A1, CellsheetType.HAS_ID);
+        return EnumSet.of(getType(), CellsheetType.HAS_A1, CellsheetType.CELLSHEET_ELEMENT);
     }
 
     interface Builder<T extends Sheet, B extends Builder<T, B>> {

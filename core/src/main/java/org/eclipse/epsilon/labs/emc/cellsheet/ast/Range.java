@@ -12,6 +12,8 @@ package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 
+import javax.annotation.Nonnull;
+
 public class Range extends Operand {
 
     public Range(Token token) {
@@ -22,6 +24,7 @@ public class Range extends Operand {
         super(token);
     }
 
+    @Nonnull
     @Override
     public CellsheetType getType() {
         return CellsheetType.RANGE;

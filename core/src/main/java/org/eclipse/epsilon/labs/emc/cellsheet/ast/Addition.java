@@ -13,6 +13,8 @@ import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 import org.eclipse.epsilon.labs.emc.cellsheet.Tokens;
 
+import javax.annotation.Nonnull;
+
 public class Addition extends InfixOperator {
 
     public static final Token TOKEN = Tokens.getToken("+");
@@ -26,6 +28,7 @@ public class Addition extends InfixOperator {
         throw new UnsupportedOperationException();
     }
 
+    @Nonnull
     @Override
     public CellsheetType getType() {
         return CellsheetType.ADDITION;

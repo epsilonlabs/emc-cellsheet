@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import javax.annotation.Nonnull;
+
 /**
  * Model Type representing a Cell with a Boolean value
  *
@@ -17,6 +19,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
  */
 public interface BooleanCell extends Cell<Boolean> {
 
+    @Nonnull
     @Override
     default CellsheetType getType() {
         return CellsheetType.BOOLEAN_CELL;

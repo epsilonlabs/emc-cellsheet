@@ -13,6 +13,7 @@ import com.google.common.collect.ForwardingList;
 import com.google.common.collect.ImmutableList;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,11 +52,13 @@ public class DummyCell implements Cell {
         return asts;
     }
 
+    @Nonnull
     @Override
-    public Iterator<HasId> iterator() {
-        return ImmutableList.<HasId>copyOf(getAsts()).iterator();
+    public Iterator<CellsheetElement> iterator() {
+        return ImmutableList.<CellsheetElement>copyOf(getAsts()).iterator();
     }
 
+    @Nonnull
     @Override
     public CellsheetType getType() {
         return CellsheetType.BLANK_CELL;

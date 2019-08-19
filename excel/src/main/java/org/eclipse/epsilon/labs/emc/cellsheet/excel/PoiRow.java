@@ -20,6 +20,7 @@ import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Row;
 import org.eclipse.epsilon.labs.emc.cellsheet.Sheet;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -93,6 +94,7 @@ public class PoiRow implements Row, PoiDelegate<org.apache.poi.ss.usermodel.Row>
         return rowIndex;
     }
 
+    @Nonnull
     @Override
     public Iterator<Cell> iterator() {
         return Iterators.transform(

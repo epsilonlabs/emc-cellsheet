@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import javax.annotation.Nonnull;
+
 /**
  * Model Type representing a Cell with a Text value
  *
@@ -17,6 +19,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
  */
 public interface TextCell extends Cell<String> {
 
+    @Nonnull
     @Override
     default CellsheetType getType() {
         return CellsheetType.TEXT_CELL;

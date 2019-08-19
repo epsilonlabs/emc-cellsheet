@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -125,9 +126,10 @@ public interface Cell<T> extends HasA1 {
         return getAsts().get(position);
     }
 
+    @Nonnull
     @Override
-    default Iterator<HasId> iterator() {
-        return Collections.<HasId>unmodifiableList(getAsts()).iterator();
+    default Iterator<CellsheetElement> iterator() {
+        return Collections.<CellsheetElement>unmodifiableList(getAsts()).iterator();
     }
 
     @Override
@@ -137,15 +139,17 @@ public interface Cell<T> extends HasA1 {
         return getSheet().getA1() + "!" + getA1ColIndex() + getA1RowIndex();
     }
 
+    @Nonnull
     @Override
     default String getId() {
         if (getRow() == null || getColIndex() < 0) HasA1.super.getId();
         return getRow().getId() + "/" + getColIndex();
     }
 
+    @Nonnull
     @Override
     default Set<CellsheetType> getKinds() {
-        return EnumSet.of(getType(), CellsheetType.CELL, CellsheetType.HAS_A1, CellsheetType.HAS_ID);
+        return EnumSet.of(getType(), CellsheetType.CELL, CellsheetType.HAS_A1, CellsheetType.CELLSHEET_ELEMENT);
     }
 
     /**

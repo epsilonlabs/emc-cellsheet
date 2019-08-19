@@ -11,12 +11,13 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import com.google.common.base.Objects;
 
+import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class Token implements HasId {
+public class Token implements CellsheetElement {
 
     private Workspace workspace;
     private String value;
@@ -50,21 +51,25 @@ public class Token implements HasId {
         usedBy.add(ast);
     }
 
+    @Nonnull
     @Override
     public Iterator<Ast> iterator() {
         return usedBy.iterator();
     }
 
+    @Nonnull
     @Override
     public CellsheetType getType() {
         return CellsheetType.TOKEN;
     }
 
+    @Nonnull
     @Override
     public Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.TOKEN, CellsheetType.HAS_ID);
+        return EnumSet.of(CellsheetType.TOKEN, CellsheetType.CELLSHEET_ELEMENT);
     }
 
+    @Nonnull
     @Override
     public String getId() {
         throw new UnsupportedOperationException();

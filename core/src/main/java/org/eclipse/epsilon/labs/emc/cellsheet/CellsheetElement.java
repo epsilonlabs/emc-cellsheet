@@ -9,18 +9,30 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import java.util.EnumSet;
+import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
-public interface HasId extends Iterable {
+/**
+ * Supertype for all model types in a Cellsheet model.
+ * <p>
+ * All concrete model types must implement this interface and adhere to the
+ * con
+ * </p>
+ *
+ * @author Jonathan Co
+ * @since 3.0.0
+ */
+public interface CellsheetElement extends Iterable {
 
     /**
      * Returns a URI style String that can be used to uniquely identify
      * the model element instance.
-     *
+     * <p>
      * {@code null} will be returned if the model element is not associated with
      * a model i.e. the element is dangling
+     * </p>
      *
      * @return Unique identifier for this model element or {@code null} if the
      * model element is not associated with a dangling model.
@@ -29,12 +41,28 @@ public interface HasId extends Iterable {
         return null;
     }
 
+    @Nonnull
+    @Override
+    default Iterator<? extends CellsheetElement> iterator() {
+        return Collections.emptyIterator();
+    }
+
+    /**
+     * Returns the concrete Type of this model element
+     *
+     * @return the concrete Type
+     */
+    @Nonnull
     CellsheetType getType();
 
-    @Override
-    Iterator<? extends HasId> iterator();
+    /**
+     * Returns all supertypes associated with this model element. The set
+     * returned will always contain the value returned by {@link #getType()}
+     * and {@link CellsheetType#CELLSHEET_ELEMENT}
+     *
+     * @return the supertypes of this element
+     */
+    @Nonnull
+    Set<CellsheetType> getKinds();
 
-    default Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.HAS_ID);
-    }
 }

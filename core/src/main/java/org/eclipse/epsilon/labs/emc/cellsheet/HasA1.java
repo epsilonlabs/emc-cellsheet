@@ -9,10 +9,11 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.Set;
 
-public interface HasA1 extends HasId {
+public interface HasA1 extends CellsheetElement {
 
     String UNASSIGNED = "*unassigned*";
 
@@ -20,8 +21,9 @@ public interface HasA1 extends HasId {
         return UNASSIGNED;
     }
 
+    @Nonnull
     @Override
     default Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.HAS_A1, CellsheetType.HAS_ID);
+        return EnumSet.of(CellsheetType.HAS_A1, CellsheetType.CELLSHEET_ELEMENT);
     }
 }

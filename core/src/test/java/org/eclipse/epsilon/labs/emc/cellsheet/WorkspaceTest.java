@@ -192,7 +192,7 @@ public class WorkspaceTest {
     @Test
     public void getAllTypeNamesOf_should_return_all_kinds_of_book() {
         assertThat(workspace.getAllTypeNamesOf(book))
-                .containsExactlyInAnyOrder("Book", "HasA1", "HasId");
+                .containsExactlyInAnyOrder("Book", "HasA1", "CellsheetElement");
     }
 
     @Test
@@ -269,12 +269,12 @@ public class WorkspaceTest {
     public void getKinds_should_return_WORKSPACE_HASID() {
         assertThat(workspace.getKinds()).containsExactlyInAnyOrder(
                 CellsheetType.WORKSPACE,
-                CellsheetType.HAS_ID);
+                CellsheetType.CELLSHEET_ELEMENT);
     }
 
     @Test
     public void allContents_should_return_all_contents() {
-        Collection<HasId> allContents = workspace.allContents();
+        Collection<CellsheetElement> allContents = workspace.allContents();
         assertThat(allContents).hasSize(EXPECTED_COUNT);
         assertThat(allContents.stream()
                 .filter(Workspace.class::isInstance)
@@ -310,9 +310,9 @@ public class WorkspaceTest {
 
     @Test
     public void getAllOfKind_should_return_all_HasA1s_when_given_HasA1() throws Exception {
-        Collection<HasId> expected = ImmutableList.copyOf(
+        Collection<CellsheetElement> expected = ImmutableList.copyOf(
                 Iterables.concat(books, sheets, rows, cells));
-        Collection<HasId> allHasA1 = workspace.getAllOfKind(CellsheetType.HAS_A1);
+        Collection<CellsheetElement> allHasA1 = workspace.getAllOfKind(CellsheetType.HAS_A1);
         assertThat(allHasA1)
                 .hasSize(expected.size())
                 .containsExactlyInAnyOrderElementsOf(expected);
@@ -332,7 +332,7 @@ public class WorkspaceTest {
 
     @Test
     public void getAllOfType_should_return_all_rows_when_given_Row() throws Exception {
-        Collection<HasId> allRows = workspace.getAllOfType(CellsheetType.ROW);
+        Collection<CellsheetElement> allRows = workspace.getAllOfType(CellsheetType.ROW);
         assertThat(allRows)
                 .hasSize(rows.size())
                 .containsExactlyInAnyOrderElementsOf(rows);

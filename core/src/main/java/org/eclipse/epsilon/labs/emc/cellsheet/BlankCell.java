@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import javax.annotation.Nonnull;
+
 /**
  * Model Type representing a Blank Cell
  * <p>
@@ -24,6 +26,7 @@ public interface BlankCell extends Cell<Void> {
         return null;
     }
 
+    @Nonnull
     @Override
     default CellsheetType getType() {
         return CellsheetType.BLANK_CELL;

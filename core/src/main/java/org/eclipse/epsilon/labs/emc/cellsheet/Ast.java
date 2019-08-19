@@ -11,6 +11,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +48,7 @@ import java.util.Optional;
  * @author Jonathan Co
  * @since 3.0.0
  */
-public interface Ast extends HasId {
+public interface Ast extends CellsheetElement {
 
     /**
      * Position value indicating the AST is dangling and is not assigned to a parent or cell.
@@ -236,6 +237,7 @@ public interface Ast extends HasId {
      */
     Ast removeChild(Ast child);
 
+    @Nonnull
     @Override
     Iterator<Ast> iterator();
 
@@ -277,10 +279,11 @@ public interface Ast extends HasId {
         return getChildren().isEmpty();
     }
 
+    @Nonnull
     @Override
     default String getId() {
         if (getParent() == null) {
-            if (getCell() == null) return HasId.super.getId();
+            if (getCell() == null) return CellsheetElement.super.getId();
             return getCell().getId() + "/asts/" + getPosition();
         }
         return getParent().getId() + "/" + getPosition();

@@ -50,7 +50,7 @@ public class RowTest {
     public void getKinds_should_return_correct_types() {
         assertThat(row.getKinds().toArray()).containsExactlyInAnyOrder(
                 CellsheetType.ROW,
-                CellsheetType.HAS_ID,
+                CellsheetType.CELLSHEET_ELEMENT,
                 CellsheetType.HAS_A1);
     }
 }

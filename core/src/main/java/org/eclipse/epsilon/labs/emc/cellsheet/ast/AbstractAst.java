@@ -15,6 +15,7 @@ import org.eclipse.epsilon.labs.emc.cellsheet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -127,6 +128,7 @@ public abstract class AbstractAst implements Ast {
         this.position = position;
     }
 
+    @Nonnull
     @Override
     public Iterator<Ast> iterator() {
         return children.iterator();

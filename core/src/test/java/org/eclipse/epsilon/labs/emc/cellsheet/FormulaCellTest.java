@@ -33,7 +33,7 @@ public class FormulaCellTest {
         assertThat(cell.getKinds().toArray()).containsExactlyInAnyOrder(
                 CellsheetType.FORMULA_CELL,
                 CellsheetType.CELL,
-                CellsheetType.HAS_ID,
+                CellsheetType.CELLSHEET_ELEMENT,
                 CellsheetType.HAS_A1);
     }
 }

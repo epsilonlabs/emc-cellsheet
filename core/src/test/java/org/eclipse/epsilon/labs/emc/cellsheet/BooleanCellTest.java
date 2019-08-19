@@ -33,7 +33,7 @@ public class BooleanCellTest {
         assertThat(cell.getKinds().toArray()).containsExactlyInAnyOrder(
                 CellsheetType.BOOLEAN_CELL,
                 CellsheetType.CELL,
-                CellsheetType.HAS_ID,
+                CellsheetType.CELLSHEET_ELEMENT,
                 CellsheetType.HAS_A1);
     }
 }

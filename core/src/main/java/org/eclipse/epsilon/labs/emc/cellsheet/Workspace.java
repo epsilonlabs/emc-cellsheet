@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class Workspace extends CachedModel<HasId> implements HasId {
+public class Workspace extends CachedModel<CellsheetElement> implements CellsheetElement {
 
     public static final String PROPERTY_EXTENSION = "backendRegistry";
     public static final String PROPERTY_MODEL_URIS = "modelUri";
@@ -66,18 +66,18 @@ public class Workspace extends CachedModel<HasId> implements HasId {
     }
 
     @Override
-    protected Collection<HasId> allContentsFromModel() {
+    protected Collection<CellsheetElement> allContentsFromModel() {
         AllContentsIterator it = new AllContentsIterator(this);
         return Lists.newArrayList(it);
     }
 
-    public Collection<HasId> getAllOfType(CellsheetType type) throws EolModelElementTypeNotFoundException {
+    public Collection<CellsheetElement> getAllOfType(CellsheetType type) throws EolModelElementTypeNotFoundException {
         checkNotNull(type);
         return getAllOfType(type.getTypeName());
     }
 
     @Override
-    protected Collection<HasId> getAllOfTypeFromModel(String typeName) throws EolModelElementTypeNotFoundException {
+    protected Collection<CellsheetElement> getAllOfTypeFromModel(String typeName) throws EolModelElementTypeNotFoundException {
         if (!hasType(typeName))
             throw new EolModelElementTypeNotFoundException(getName(), typeName);
         CellsheetType type = CellsheetType.fromTypeName(typeName);
@@ -86,13 +86,13 @@ public class Workspace extends CachedModel<HasId> implements HasId {
                 .collect(Collectors.toList());
     }
 
-    public Collection<HasId> getAllOfKind(CellsheetType kind) throws EolModelElementTypeNotFoundException {
+    public Collection<CellsheetElement> getAllOfKind(CellsheetType kind) throws EolModelElementTypeNotFoundException {
         checkNotNull(kind);
         return getAllOfKind(kind.getTypeName());
     }
 
     @Override
-    protected Collection<HasId> getAllOfKindFromModel(String kindName) throws EolModelElementTypeNotFoundException {
+    protected Collection<CellsheetElement> getAllOfKindFromModel(String kindName) throws EolModelElementTypeNotFoundException {
         if (!hasType(kindName))
             throw new EolModelElementTypeNotFoundException(getName(), kindName);
         CellsheetType kind = CellsheetType.fromTypeName(kindName);
@@ -102,7 +102,7 @@ public class Workspace extends CachedModel<HasId> implements HasId {
     }
 
     @Override
-    protected HasId createInstanceInModel(String type) throws EolModelElementTypeNotFoundException, EolNotInstantiableModelElementTypeException {
+    protected CellsheetElement createInstanceInModel(String type) throws EolModelElementTypeNotFoundException, EolNotInstantiableModelElementTypeException {
         throw new UnsupportedOperationException();
     }
 
@@ -167,8 +167,8 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     @Override
     protected Collection<String> getAllTypeNamesOf(Object instance) {
-        if (instance instanceof HasId) {
-            return ((HasId) instance).getKinds().stream()
+        if (instance instanceof CellsheetElement) {
+            return ((CellsheetElement) instance).getKinds().stream()
                     .map(CellsheetType::getTypeName)
                     .collect(Collectors.toList());
         }
@@ -182,13 +182,13 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     @Override
     public String getTypeNameOf(Object instance) {
-        return instance instanceof HasId ? ((HasId) instance).getType().getTypeName() : null;
+        return instance instanceof CellsheetElement ? ((CellsheetElement) instance).getType().getTypeName() : null;
     }
 
 
     @Override
     public String getElementId(Object instance) {
-        return instance instanceof HasId ? ((HasId) instance).getId() : null;
+        return instance instanceof CellsheetElement ? ((CellsheetElement) instance).getId() : null;
     }
 
     @Override
@@ -198,9 +198,9 @@ public class Workspace extends CachedModel<HasId> implements HasId {
 
     @Override
     public boolean owns(Object instance) {
-        if (instance instanceof HasId) {
+        if (instance instanceof CellsheetElement) {
             // May need to change to getWorkspace
-            return getElementById(((HasId) instance).getId()) != null;
+            return getElementById(((CellsheetElement) instance).getId()) != null;
         }
         return false;
     }
@@ -225,19 +225,22 @@ public class Workspace extends CachedModel<HasId> implements HasId {
         throw new UnsupportedOperationException();
     }
 
+    @Nonnull
     @Override
     public String getId() {
-        return name == null ? HasId.super.getId() : "cellsheet://" + UrlEscapers.urlPathSegmentEscaper().escape(getName());
+        return name == null ? CellsheetElement.super.getId() : "cellsheet://" + UrlEscapers.urlPathSegmentEscaper().escape(getName());
     }
 
+    @Nonnull
     @Override
     public CellsheetType getType() {
         return CellsheetType.WORKSPACE;
     }
 
+    @Nonnull
     @Override
     public Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.WORKSPACE, CellsheetType.HAS_ID);
+        return EnumSet.of(CellsheetType.WORKSPACE, CellsheetType.CELLSHEET_ELEMENT);
     }
 
     public void registerBookFactory(CellsheetBackend backend) {
@@ -340,25 +343,25 @@ public class Workspace extends CachedModel<HasId> implements HasId {
         return ast;
     }
 
-    class AllContentsIterator extends ForwardingIterator<HasId> {
+    class AllContentsIterator extends ForwardingIterator<CellsheetElement> {
 
-        private Iterator<HasId> delegate;
+        private Iterator<CellsheetElement> delegate;
 
         AllContentsIterator(Workspace workspace) {
             this.delegate = Iterators.singletonIterator(workspace);
         }
 
         @Override
-        public HasId next() {
-            HasId next = super.next();
-            Iterator<HasId> toAdd = Iterators.unmodifiableIterator(next.iterator());
+        public CellsheetElement next() {
+            CellsheetElement next = super.next();
+            Iterator<CellsheetElement> toAdd = Iterators.unmodifiableIterator(next.iterator());
             if (toAdd.hasNext())
                 this.delegate = Iterators.concat(delegate, toAdd);
             return next;
         }
 
         @Override
-        protected Iterator<HasId> delegate() {
+        protected Iterator<CellsheetElement> delegate() {
             return delegate;
         }
     }
