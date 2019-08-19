@@ -59,7 +59,6 @@ public class CellTest {
 
     @Test
     public void getKinds_should_return_correct_types() {
-        when(cell.getType()).thenReturn(CellsheetType.BLANK_CELL);
         assertThat(cell.getKinds().toArray()).containsExactlyInAnyOrder(
                 CellsheetType.BLANK_CELL,
                 CellsheetType.CELL,
