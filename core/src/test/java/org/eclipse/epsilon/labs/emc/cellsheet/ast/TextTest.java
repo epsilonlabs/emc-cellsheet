@@ -30,7 +30,7 @@ public class TextTest {
     }
 
     @Test
-    public void getType_should_return_REF() {
+    public void getType_should_return_TEXT() {
         Ast ast = new Text("Hello World");
         assertThat(ast.getType()).isEqualTo(CellsheetType.TEXT);
     }

@@ -23,6 +23,10 @@ public class DummyAst extends AbstractAst {
         this.evaluator = new DummyAstEvaluator();
     }
 
+    public DummyAst(String token) {
+        super(token);
+    }
+
     @Override
     public Ast childAt(int position) {
         while (children.size() < position + 1) {
@@ -32,6 +36,11 @@ public class DummyAst extends AbstractAst {
             addChild(ast);
         }
         return children.get(position);
+    }
+
+    @Override
+    public String getFormula() {
+        throw new UnsupportedOperationException();
     }
 
     @Nonnull

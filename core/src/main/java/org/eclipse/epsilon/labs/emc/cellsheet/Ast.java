@@ -258,10 +258,15 @@ public interface Ast extends CellsheetElement {
     void setEvaluator(AstEvaluator evaluator);
 
     /**
-     * Reconstruct the formula represented by this AST using this node as the
-     * root
+     * Returns an evaluable formula derived from the subtree with this node as
+     * the root
+     * <p>
+     * The constructed formula may not necessarily reflect the same concrete
+     * structure of the original formula but will be semantically equivalent.
+     * i.e. 1+2/3 == (1+(2/3))
+     * </p>
      *
-     * @return the formula at this node
+     * @return the formula.
      */
     String getFormula();
 

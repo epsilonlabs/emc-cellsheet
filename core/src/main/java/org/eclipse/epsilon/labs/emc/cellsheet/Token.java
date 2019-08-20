@@ -87,4 +87,9 @@ public class Token implements CellsheetElement {
     public int hashCode() {
         return Objects.hashCode(getValue());
     }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

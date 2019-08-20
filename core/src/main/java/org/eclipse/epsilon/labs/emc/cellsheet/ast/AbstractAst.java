@@ -147,11 +147,13 @@ public abstract class AbstractAst implements Ast {
 
     @Override
     public String getFormula() {
-        if (getChildren().isEmpty()) return token.getValue();
+        if (isRoot() && cell != null) {
+            return cell.getValue().toString();
+        }
         try {
-            ToFormulaAstVisitor toFormulaAstVisitor = new ToFormulaAstVisitor();
-            toFormulaAstVisitor.visit(this);
-            return toFormulaAstVisitor.toString();
+            FormulaBuilderVisitor formulaBuilderVisitor = new FormulaBuilderVisitor();
+            formulaBuilderVisitor.visit(this);
+            return formulaBuilderVisitor.toString();
         } catch (Exception e) {
             logger.error("Error reconstructing formula in AST {}", this);
             throw new AssertionError(e);
@@ -161,12 +163,12 @@ public abstract class AbstractAst implements Ast {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
+                .add("token", getTokenValue())
+                .add("isRoot", isRoot())
                 .add("id", getId())
                 .add("cell", getCell())
                 .add("parent", getParent())
-                .add("isRoot", isRoot())
                 .add("position", position)
-                .add("token", getTokenValue())
                 .add("type", getType().getTypeName())
                 .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
                 .toString();
