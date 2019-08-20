@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Number;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,9 +28,16 @@ public class PoiCellTest {
 
     @Before
     public void setUp() throws Exception {
-        book = new PoiBook(WorkbookFactory.create(true));
-        book.setBookName(PoiCellTest.class.getSimpleName() + " Book.xlsx");
+        book = new PoiBook.Builder().withBookName(PoiCellTest.class.getSimpleName() + " Book.xlsx").build();
+        book.load();
         delegateCell = book.getDelegate().createSheet("Test Sheet 1").createRow(0).createCell(0);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        book.dispose();
+        book = null;
+        delegateCell = null;
     }
 
     @Test
