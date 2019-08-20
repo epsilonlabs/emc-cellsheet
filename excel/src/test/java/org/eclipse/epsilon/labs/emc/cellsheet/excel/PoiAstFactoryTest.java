@@ -10,10 +10,11 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Function;
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.Number;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Range;
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.Ref;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +39,23 @@ public class PoiAstFactoryTest {
         book.dispose();
         book = null;
         delegate = null;
+    }
+
+    @Test
+    public void of_should_return_correct_ast_given_function_with_multi_args() {
+        Ast ast = getAst("VLOOKUP(A5,B1:C5,1)");
+
+        assertThat(ast).isInstanceOf(Function.class);
+        assertThat(ast.getTokenValue()).isEqualTo("VLOOKUP");
+
+        assertThat(ast.childAt(0)).isInstanceOf(Ref.class);
+        assertThat(ast.childAt(0).getTokenValue()).isEqualTo("A5");
+
+        assertThat(ast.childAt(1)).isInstanceOf(Range.class);
+        assertThat(ast.childAt(1).getTokenValue()).isEqualTo("B1:C5");
+
+        assertThat(ast.childAt(2)).isInstanceOf(Number.class);
+        assertThat(ast.childAt(2).getTokenValue()).isEqualTo("1");
     }
 
     @Test
@@ -83,4 +101,5 @@ public class PoiAstFactoryTest {
         delegate.setCellFormula(formula);
         return PoiAstFactory.getInstance().of(book.getSheet(0).getRow(0).getCell(0));
     }
+
 }

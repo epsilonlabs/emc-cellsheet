@@ -9,9 +9,13 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.AstEval;
 import org.eclipse.epsilon.labs.emc.cellsheet.Workspace;
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.Division;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SuppressWarnings("unchecked")
 public class PoiAstEvaluatorTest {
 
-    private PoiCell cell;
     private Cell delegate;
     private PoiBook book;
     private Workspace workspace;
@@ -47,54 +50,55 @@ public class PoiAstEvaluatorTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         book.dispose();
         book = null;
-        cell = null;
         workspace = null;
     }
 
     @Test
-    public void evaluate_given_text_cell_should_return_text() {
-        String text = "This is the text to return";
-        delegate.setCellValue(text);
-        cell = book.getSheet(0).getRow(0).getCell(0);
-        assertThat(cell).isNotNull().isInstanceOf(PoiTextCell.class);
-        AstEval result = cell.getRoot().evaluate();
-
-        assertThat(result.isText()).isTrue();
-        assertThat(result.isNumber()).isFalse();
-        assertThat(result.isError()).isFalse();
-        assertThat(result.getText()).isEqualTo(text);
+    public void evaluate_should_return_string_given_text_literal() {
+        Ast ast = getAst("\"This is the text to return\"");
+        AstEval result = ast.evaluate();
+        assertThat(result.getText()).isEqualTo("This is the text to return");
     }
 
     @Test
-    public void evaluate_given_sumA1E5_should_return_25() {
-        delegate.setCellFormula("SUM(Values!A1:E5)");
-        cell = book.getSheet(0).getRow(0).getCell(0);
-        assertThat(cell).isNotNull().isInstanceOf(PoiFormulaCell.class);
-        AstEval result = cell.getRoot().evaluate();
+    public void evaluate_should_return_correct_number_given_sum_function() {
+        Ast ast = getAst("SUM(Values!A1:E5)");
+        AstEval result = ast.evaluate();
         assertThat(result.getNumber()).isEqualTo(25);
     }
 
     @Test
-    public void evaluate_given_text_should_return_text() {
-        delegate.setCellFormula("TEXT(0.285,\"0.0%\")");
-        cell = book.getSheet(0).getRow(0).getCell(0);
-        assertThat(cell).isNotNull().isInstanceOf(PoiFormulaCell.class);
-        AstEval result = cell.getRoot().evaluate();
+    public void evaluate_should_return_correct_string_given_TEXT_function() {
+        Ast ast = getAst("TEXT(0.285,\"0.0%\")");
+        AstEval result = ast.evaluate();
         assertThat(result.getText()).isEqualTo("28.5%");
     }
 
     @Test
-    public void evaluate_given_ref_should_return_ref_id() {
-        delegate.getRow().createCell(1).setCellValue("Hello World");
-        delegate.setCellFormula("B1");
-        cell = book.getSheet(0).getRow(0).getCell(0);
+    public void evaluate_should_return_ref_result_given_ref_function() {
+        String refValue = "This is a ref";
+        delegate.getRow().createCell(1).setCellValue(refValue);
 
-        assertThat(cell).isNotNull().isInstanceOf(PoiFormulaCell.class);
-        AstEval result = cell.getRoot().evaluate();
-        assertThat(result.getText()).isEqualTo(book.getSheet(0).getRow(0).getCell(1).getId());
+        Ast ast = getAst("B1");
+        AstEval result = ast.evaluate();
+        assertThat(result.getRef().getId()).isEqualTo(book.getSheet(0).getRow(0).getCell(1).getId());
+        assertThat(result.getText()).isEqualTo(refValue);
     }
 
+    @Test
+    public void evaluate_should_return_correct_result_given_child_ast() {
+        Ast ast = getAst("1+6/3");
+        Ast child = ast.childAt(1);
+        assertThat(child).isInstanceOf(Division.class);
+        AstEval result = child.evaluate();
+        assertThat(result.getNumber()).isEqualTo(2);
+    }
+
+    private Ast getAst(String formula) {
+        delegate.setCellFormula(formula);
+        return PoiAstFactory.getInstance().of(book.getSheet(0).getRow(0).getCell(0));
+    }
 }

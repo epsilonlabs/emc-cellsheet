@@ -12,49 +12,67 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class AstEvalTest {
 
     @Test
-    public void constructor_should_succeed_when_given_string_only() {
+    public void constructor_should_succeed_for_text_eval() {
         String value = "Some string to put in";
-        AstEval eval = new AstEval(value);
+        AstEval eval = AstEvalFactory.text(value);
         assertThat(eval.getText()).isEqualTo(value);
-        assertThat(eval.getNumber()).isEqualTo(0.0);
         assertThat(eval.isText()).isTrue();
         assertThat(eval.isNumber()).isFalse();
+        assertThat(eval.isBoolean()).isFalse();
+        assertThat(eval.isRef()).isFalse();
         assertThat(eval.isError()).isFalse();
+
     }
 
     @Test
-    public void constructor_should_succeed_when_given_string_and_error() {
-        String value = "An error string";
-        AstEval eval = new AstEval(value, true);
-        assertThat(eval.getText()).isEqualTo(value);
-        assertThat(eval.getNumber()).isEqualTo(0.0);
-        assertThat(eval.isText()).isFalse();
-        assertThat(eval.isNumber()).isFalse();
-        assertThat(eval.isError()).isTrue();
-    }
-
-    @Test
-    public void constructor_should_succeed_when_given_double() {
+    public void constructor_should_succeed_for_number_eval() {
         double value = 123.456;
-        AstEval eval = new AstEval(value);
-        assertThat(eval.getText()).isEqualTo("123.456");
+        AstEval eval = AstEvalFactory.number(value);
         assertThat(eval.getNumber()).isEqualTo(value);
         assertThat(eval.isText()).isFalse();
         assertThat(eval.isNumber()).isTrue();
+        assertThat(eval.isBoolean()).isFalse();
+        assertThat(eval.isRef()).isFalse();
         assertThat(eval.isError()).isFalse();
     }
 
     @Test
-    public void constructor_should_succeed_when_given_null_string() {
-        AstEval eval = new AstEval(null);
-        assertThat(eval.getText()).isEqualTo("");
-        assertThat(eval.getNumber()).isEqualTo(0.0);
-        assertThat(eval.isText()).isTrue();
+    public void constructor_should_succeed_for_boolean_eval() {
+        AstEval eval = AstEvalFactory.bool(false);
+        assertThat(eval.getBoolean()).isFalse();
+        assertThat(eval.isText()).isFalse();
         assertThat(eval.isNumber()).isFalse();
+        assertThat(eval.isBoolean()).isTrue();
+        assertThat(eval.isRef()).isFalse();
         assertThat(eval.isError()).isFalse();
+    }
+
+    @Test
+    public void constructor_should_succeed_for_ref_eval() {
+        Cell value = mock(Cell.class);
+        AstEval eval = AstEvalFactory.ref(value);
+        assertThat(eval.getRef()).isEqualTo(value);
+        assertThat(eval.isText()).isFalse();
+        assertThat(eval.isNumber()).isFalse();
+        assertThat(eval.isBoolean()).isFalse();
+        assertThat(eval.isRef()).isTrue();
+        assertThat(eval.isError()).isFalse();
+    }
+
+    @Test
+    public void constructor_should_succeed_for_error_eval() {
+        String value = "#N/A";
+        AstEval eval = AstEvalFactory.error(value);
+        assertThat(eval.getError()).isEqualTo(value);
+        assertThat(eval.isText()).isFalse();
+        assertThat(eval.isNumber()).isFalse();
+        assertThat(eval.isBoolean()).isFalse();
+        assertThat(eval.isRef()).isFalse();
+        assertThat(eval.isError()).isTrue();
     }
 }
