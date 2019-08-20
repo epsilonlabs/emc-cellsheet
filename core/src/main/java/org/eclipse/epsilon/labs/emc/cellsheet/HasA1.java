@@ -9,10 +9,6 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import javax.annotation.Nonnull;
-import java.util.EnumSet;
-import java.util.Set;
-
 /**
  * Supertype for elements that have a traditional A1 identifier
  * <p>

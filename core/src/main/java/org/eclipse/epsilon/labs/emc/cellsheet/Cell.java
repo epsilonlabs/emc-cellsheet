@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import com.google.common.collect.Iterables;
-
 import javax.annotation.Nonnull;
 import java.util.*;
 
