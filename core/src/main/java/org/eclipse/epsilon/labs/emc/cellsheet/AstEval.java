@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import java.util.Optional;
-
 /**
  * Model Type representing the result from evaluating an AST
  *
@@ -19,96 +17,74 @@ import java.util.Optional;
  */
 public class AstEval {
 
-    /**
-     * Empty evaluation
-     */
-    public static final AstEval EMPTY = new AstEval();
+    public static final AstEval EMPTY = new AstEval(null, null, null, null, null);
 
-    private Optional<String> text = Optional.empty();
-    private Optional<Double> number = Optional.empty();
-    private boolean isError = false;
+    private final String text;
+    private final Double number;
+    private final Boolean bool;
+    private final Cell ref;
+    private final String error;
 
-    /**
-     * Private constructor for empty evals, use {@link #EMPTY} instead
-     */
-    private AstEval() {
-        this.text = Optional.of("");
+    AstEval(String text, Double number, Boolean bool, Cell ref, String error) {
+        this.text = text;
+        this.number = number;
+        this.bool = bool;
+        this.ref = ref;
+        this.error = error;
     }
 
-    /**
-     * Constructor for eval holding a double
-     *
-     * @param value the value
-     */
-    public AstEval(double value) {
-        this.number = Optional.of(value);
-    }
-
-    /**
-     * Constructor a text result the could represent an error
-     *
-     * @param value   the value as a string
-     * @param isError if the string represents an error
-     */
-    public AstEval(String value, boolean isError) {
-        this.text = Optional.of(value == null ? "" : value);
-        this.isError = isError;
-    }
-
-    /**
-     * Constructor a text result
-     *
-     * @param value the value
-     */
-    public AstEval(String value) {
-        this(value, false);
-    }
-
-    /**
-     * Retrieve the value as a string. If {@link #isNumber} is {@code true} then
-     * performs a conversion.
-     *
-     * @return the held value as a string
-     */
     public String getText() {
-        return toString();
+        if (isRef() && ref.getType() == CellsheetType.TEXT_CELL)
+            return ((TextCell) ref).getValue();
+        return text;
     }
 
-    /**
-     * Retrieve the numeric value or 0.0 if {@link #isNumber()} is {@code false}
-     *
-     * @return the double value or 0.0 if {@link #isNumber()} is {@code false}
-     */
-    public double getNumber() {
-        return number.orElse(0.0);
+    public Double getNumber() {
+        if (isRef() && ref.getType() == CellsheetType.NUMERIC_CELL)
+            return ((NumericCell) ref).getValue();
+        return number;
     }
 
-    /**
-     * @return {@code true} if this is not an error or number
-     */
+    public Boolean getBoolean() {
+        return bool == null ? false : bool;
+    }
+
+    public Cell getRef() {
+        return ref;
+    }
+
+    public String getError() {
+        return error;
+    }
+
     public boolean isText() {
-        return !isError && text.isPresent();
+        return text != null;
     }
 
-    /**
-     * @return {@code true} if this is not an error or text
-     */
     public boolean isNumber() {
-        return number.isPresent();
+        return number != null;
     }
 
-    /**
-     * @return {@code true} if this is an error
-     */
+    public boolean isBoolean() {
+        return bool != null;
+    }
+
+    public boolean isRef() {
+        return ref != null;
+    }
+
     public boolean isError() {
-        return isError;
+        return error != null;
     }
 
     @Override
     public String toString() {
-        return number.isPresent()
-                ? Double.toString(number.get())
-                : text.orElse("");
+        if (isText()) return text;
+        if (isNumber()) return number.toString();
+        if (isBoolean()) return bool.toString();
+        if (isRef()) return ref.getId();
+        if (isError()) return error;
+        return "";
     }
 
 }

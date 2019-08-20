@@ -136,7 +136,7 @@ public abstract class AbstractAst implements Ast {
 
     @Override
     public AstEval evaluate() {
-        checkNotNull(cell, "Context cell is null, needed for evaluation");
+        checkNotNull(getCell(), "Context cell is null, needed for evaluation");
         return evaluator.evaluate(this);
     }
 
