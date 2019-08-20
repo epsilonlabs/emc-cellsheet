@@ -48,26 +48,37 @@ public class PoiBookTest {
     }
 
     @Test
-    public void load_given_an_existing_delegate_should_do_nothing() throws Exception {
-        book.load();
-        assertThat(book.getDelegate()).isSameAs(delegate);
-    }
-
-    @Test
-    public void load_given_modelUri_is_set_and_delegate_is_not_should_load() throws Exception {
+    public void load_should_load_book_given_modelUri_and_name() throws Exception {
         File file = new File(URLDecoder.decode(Resources.getResource("Sales Planning.xlsx").getFile(), "UTF-8"));
-
-        book.setModelUri(file.getAbsolutePath());
-        book.setDelegate(null);
-        assertThat(book.getDelegate()).isNull();
+        PoiBook book = new PoiBook.Builder().withModelUri(file.getAbsolutePath()).withBookName(PoiBookTest.class.getSimpleName()).build();
         book.load();
         assertThat(book.getDelegate()).isNotNull();
+        assertThat(book.getBookName()).isEqualTo(PoiBookTest.class.getSimpleName());
     }
 
     @Test
-    public void load_given_no_modelUri_or_delegate_should_throw_exception() {
-        book.setDelegate(null);
-        assertThatIllegalArgumentException().isThrownBy(() -> book.load());
+    public void load_should_load_book_and_set_default_name_given_modelUri_and_no_set_name() throws Exception {
+        File file = new File(URLDecoder.decode(Resources.getResource("Sales Planning.xlsx").getFile(), "UTF-8"));
+        PoiBook book = new PoiBook.Builder().withModelUri(file.getAbsolutePath()).build();
+        book.load();
+        assertThat(book.getDelegate()).isNotNull();
+        assertThat(book.getBookName()).isEqualTo("Sales Planning.xlsx");
+    }
+
+    @Test
+    public void load_should_create_in_memory_book_with_default_name_when_model_uri_and_bookname_not_set() throws Exception {
+        PoiBook book = new PoiBook.Builder().build();
+        book.load();
+        assertThat(book.getDelegate()).isNotNull();
+        assertThat(book.getBookName()).isNotBlank();
+    }
+
+    @Test
+    public void load_should_create_in_memory_book_given_name() throws Exception {
+        PoiBook book = new PoiBook.Builder().withBookName(PoiBookTest.class.getSimpleName()).build();
+        book.load();
+        assertThat(book.getDelegate()).isNotNull();
+        assertThat(book.getBookName()).isEqualTo(PoiBookTest.class.getSimpleName());
     }
 
     @Test

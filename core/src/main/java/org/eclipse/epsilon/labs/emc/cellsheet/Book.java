@@ -80,6 +80,8 @@ public interface Book extends HasA1 {
 
         B withWorkspace(Workspace workspace);
 
+        B withBookName(String bookName);
+
         B withModelUri(String modelUri);
 
         T build();

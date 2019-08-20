@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Function;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Range;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,8 +28,16 @@ public class PoiAstFactoryTest {
 
     @Before
     public void setUp() throws Exception {
-        book = new PoiBook(WorkbookFactory.create(true));
+        book = new PoiBook.Builder().build();
+        book.load();
         delegate = book.getDelegate().createSheet("Sheet 1").createRow(0).createCell(0);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        book.dispose();
+        book = null;
+        delegate = null;
     }
 
     @Test

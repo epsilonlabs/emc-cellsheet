@@ -9,11 +9,10 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 import org.eclipse.epsilon.labs.emc.cellsheet.AstEval;
+import org.eclipse.epsilon.labs.emc.cellsheet.Workspace;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,11 +24,16 @@ public class PoiAstEvaluatorTest {
     private PoiCell cell;
     private Cell delegate;
     private PoiBook book;
+    private Workspace workspace;
 
     @Before
     public void setUp() throws Exception {
-        book = new PoiBook(WorkbookFactory.create(true));
-        book.setBookName(PoiAstEvaluatorTest.class.getSimpleName() + " Book.xlsx");
+        workspace = new Workspace();
+        workspace.setName(PoiAstEvaluator.class.getSimpleName() + "Workspace");
+        book = new PoiBook.Builder().withWorkspace(workspace).withBookName(PoiAstEvaluatorTest.class.getSimpleName() + " Book.xlsx").build();
+        workspace.addBook(book);
+        workspace.load();
+
         delegate = book.getDelegate().createSheet("Sheet 1").createRow(0).createCell(0);
 
         // Setup values
@@ -40,6 +44,14 @@ public class PoiAstEvaluatorTest {
                 row.createCell(j).setCellValue(1);
             }
         }
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        book.dispose();
+        book = null;
+        cell = null;
+        workspace = null;
     }
 
     @Test

@@ -10,6 +10,7 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
@@ -33,6 +34,7 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -48,13 +50,6 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
     private Workspace workspace;
     private String modelUri;
     private String bookName;
-
-    public PoiBook() {
-    }
-
-    public PoiBook(Workbook delegate) {
-        this.delegate = delegate;
-    }
 
     @Override
     public Workspace getWorkspace() {
@@ -130,24 +125,28 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
 
     @Override
     public void load() throws EolModelLoadingException {
-        logger.debug("Loading PoiBook...");
-        logger.debug("bookName: " + getBookName());
-        logger.debug("modelUri: " + getModelUri());
+        logger.debug("Loading PoiBook with [modelUri: {}, bookName: {}]", modelUri, bookName);
 
-        if (delegate != null) {
-            logger.debug("...POI Delegate already set bypassing load()");
-            return;
+        final File file = Strings.isNullOrEmpty(modelUri) ? null : new File(modelUri);
+        if (Strings.isNullOrEmpty(bookName)) {
+            bookName = file == null
+                    ? "PoiBook" + Integer.toHexString(System.identityHashCode(this)) + ".xlsx"
+                    : file.getName();
+            logger.debug("Derived bookName: [{}]", bookName);
         }
 
-        checkArgument(modelUri != null, "No modelUri set");
-
         try {
-            setDelegate(WorkbookFactory.create(new File(getModelUri())));
-            delegate.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            if (file == null) {
+                logger.debug("No modelUri set, creating in-memory XSSF-based book");
+                delegate = WorkbookFactory.create(true);
+            } else {
+                delegate = WorkbookFactory.create(file);
+            }
         } catch (Exception e) {
             throw new EolModelLoadingException(e, workspace);
         }
 
+        delegate.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
         logger.debug("...Loading Finished");
     }
 
@@ -158,6 +157,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
                 delegate.close();
                 delegate = null;
                 delegateFpw = null;
+                delegateEvaluator = null;
             } catch (Exception e) {
                 throw new IllegalStateException(e);
             }
@@ -216,6 +216,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
     public static class Builder implements Book.Builder<PoiBook, Builder> {
 
         Workspace workspace;
+        String bookName;
         String modelUri;
 
         @Override
@@ -230,6 +231,12 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         }
 
         @Override
+        public Builder withBookName(String bookName) {
+            this.bookName = bookName;
+            return self();
+        }
+
+        @Override
         public Builder withModelUri(String modelUri) {
             this.modelUri = modelUri;
             return self();
@@ -238,9 +245,9 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         @Override
         public PoiBook build() {
             PoiBook poiBook = new PoiBook();
-            poiBook.workspace = workspace;
-            poiBook.setModelUri(modelUri);
-            poiBook.setBookName(new File(modelUri).getName());
+            poiBook.setWorkspace(workspace);
+            poiBook.modelUri = modelUri;
+            poiBook.bookName = bookName;
             return poiBook;
         }
     }
