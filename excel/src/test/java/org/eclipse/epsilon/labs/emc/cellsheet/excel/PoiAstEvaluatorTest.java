@@ -77,4 +77,24 @@ public class PoiAstEvaluatorTest {
         assertThat(result.getNumber()).isEqualTo(25);
     }
 
+    @Test
+    public void evaluate_given_text_should_return_text() {
+        delegate.setCellFormula("TEXT(0.285,\"0.0%\")");
+        cell = book.getSheet(0).getRow(0).getCell(0);
+        assertThat(cell).isNotNull().isInstanceOf(PoiFormulaCell.class);
+        AstEval result = cell.getRoot().evaluate();
+        assertThat(result.getText()).isEqualTo("28.5%");
+    }
+
+    @Test
+    public void evaluate_given_ref_should_return_ref_id() {
+        delegate.getRow().createCell(1).setCellValue("Hello World");
+        delegate.setCellFormula("B1");
+        cell = book.getSheet(0).getRow(0).getCell(0);
+
+        assertThat(cell).isNotNull().isInstanceOf(PoiFormulaCell.class);
+        AstEval result = cell.getRoot().evaluate();
+        assertThat(result.getText()).isEqualTo(book.getSheet(0).getRow(0).getCell(1).getId());
+    }
+
 }

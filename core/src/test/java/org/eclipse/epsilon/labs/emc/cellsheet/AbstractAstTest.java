@@ -309,19 +309,4 @@ public class AbstractAstTest {
     public void evaluate_should_call_evaluator() {
         assertThat(root.evaluate().getText()).isEqualTo(DummyAstEvaluator.EVAL_RESULT);
     }
-
-    @Test
-    public void getFormula_should_return_formula_for_functions() {
-        root.setToken("VLOOKUP");
-        root.childAt(0).setToken("A1");
-        root.childAt(1).setToken("B1:T6");
-        root.childAt(2).setToken("2");
-        assertThat(root.getFormula()).isNotNull().isEqualTo("VLOOKUP(A1,B1:T6,2)");
-    }
-
-    @Test
-    public void getFormula_should_return_formula_for_values() {
-        root.setToken("5");
-        assertThat(root.getFormula()).isNotNull().isEqualTo("5");
-    }
 }
