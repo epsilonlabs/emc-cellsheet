@@ -1,15 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
-import org.eclipse.epsilon.labs.emc.cellsheet.ast.*;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Number;
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,9 +28,16 @@ public class PoiCellTest {
 
     @Before
     public void setUp() throws Exception {
-        book = new PoiBook();
-        book.setDelegate(WorkbookFactory.create(true));
+        book = new PoiBook.Builder().withBookName(PoiCellTest.class.getSimpleName() + " Book.xlsx").build();
+        book.load();
         delegateCell = book.getDelegate().createSheet("Test Sheet 1").createRow(0).createCell(0);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        book.dispose();
+        book = null;
+        delegateCell = null;
     }
 
     @Test
@@ -36,7 +50,7 @@ public class PoiCellTest {
 
         Ast root = cell.getRoot();
         assertThat(root).isNotNull().isInstanceOf(Text.class);
-        assertThat(root.getToken().getValue()).isEqualTo(value);
+        assertThat(root.getTokenValue()).isEqualTo(value);
     }
 
     @Test
@@ -57,7 +71,7 @@ public class PoiCellTest {
         assertThat(cell).isInstanceOf(PoiBlankCell.class);
 
         Ast root = cell.getRoot();
-        assertThat(root).isNotNull().isInstanceOf(Nothing.class);
+        assertThat(root).isNotNull();
         assertThat(root.getToken().getValue()).isBlank();
     }
 
@@ -87,7 +101,7 @@ public class PoiCellTest {
         assertThat(root.getToken().getValue()).isEqualTo("SUM");
         assertThat(root.getChildren()).hasSize(1);
 
-        Ast child = (Ast) root.getChildren().get(0);
+        Ast child = root.getChildren().get(0);
         assertThat(child).isNotNull().isInstanceOf(Range.class);
         assertThat(child.getToken().getValue()).isEqualTo("A1:A5");
     }

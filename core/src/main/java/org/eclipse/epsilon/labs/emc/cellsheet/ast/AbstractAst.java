@@ -1,122 +1,76 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-import com.google.common.graph.*;
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.ForwardingList;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class AbstractAst implements Ast<AbstractAst> {
+/**
+ * Common implementation of {@link Ast}
+ *
+ * @author Jonathan Co
+ * @since 3.0.0
+ */
+public abstract class AbstractAst implements Ast {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractAst.class);
 
     protected Cell cell;
     protected Token token;
+    protected Ast parent = null;
+    protected List<Ast> children = new InternalAstList();
+    protected int position = UNASSIGNED;
     protected AstEvaluator evaluator;
-    protected MutableValueGraph<AbstractAst, Integer> graph;
 
     protected AbstractAst() {
-        this.graph = ValueGraphBuilder.directed().allowsSelfLoops(false).build();
     }
 
     protected AbstractAst(Token token) {
-        this();
         this.token = token;
     }
 
     protected AbstractAst(String token) {
-        this(TokenFactory.getInstance().getToken(token));
-    }
-
-    @Override
-    public AbstractAst getParent() {
-        if (!graph.nodes().contains(this)) return null;
-
-        Set<AbstractAst> parents = graph.predecessors(this);
-        return Iterables.getOnlyElement(parents, null);
-    }
-
-    @Override
-    public List<AbstractAst> getChildren() {
-        if (graph.nodes().contains(this))
-            return graph.successors(this).stream()
-                    .sorted(Comparator.comparingInt(AbstractAst::getPosition))
-                    .collect(ImmutableList.toImmutableList());
-        return Collections.emptyList();
-    }
-
-    @Override
-    public AbstractAst childAt(int position) {
-        return Iterables.get(getChildren(), position, null);
-    }
-
-    @Override
-    public int addChild(AbstractAst child) {
-        int position = graph.nodes().contains(this) ? graph.successors(this).size() : 0;
-        addChild(position, child);
-        return position;
-    }
-
-    @Override
-    public void addChild(int position, AbstractAst child) {
-        checkState(child.getParent() == null, "Child already in another structure, do a copy instead");
-        graph.addNode(this);
-        graph.addNode(child);
-
-        // Shift any other children if needed
-        List<AbstractAst> children = getChildren();
-        if (children.stream().anyMatch(v -> v.getPosition() == position)) {
-            children.stream()
-                    .filter(v -> v.getPosition() >= position)
-                    .forEach(v -> v.setPosition(v.getPosition() + 1));
-        }
-
-        // Add all contents from child
-        graph.putEdgeValue(this, child, position);
-        for (EndpointPair<AbstractAst> edge : child.graph.edges()) {
-            graph.putEdgeValue(edge, child.graph.edgeValue(edge).orElseThrow(IllegalStateException::new));
-            edge.source().graph = graph;
-            edge.target().graph = graph;
-        }
-        child.graph = graph;
-    }
-
-    @Override
-    public AbstractAst removeChild(int position) {
-        checkElementIndex(position, graph.outDegree(this));
-
-        List<AbstractAst> children = getChildren();
-
-        // Shift any siblings
-        children.stream()
-                .filter(v -> v.getPosition() > position)
-                .forEach(v -> v.setPosition(v.getPosition() - 1));
-
-        // Delete successors of the child
-        AbstractAst toRemove = children.get(position);
-        checkArgument(toRemove.getPosition() == position);
-
-        Iterable<AbstractAst> toRemoveChildren = Traverser.forTree(graph).depthFirstPreOrder(Collections.singleton(toRemove));
-        MutableValueGraph<AbstractAst, Integer> newGraph = Graphs.inducedSubgraph(graph, toRemoveChildren);
-
-        for (AbstractAst node : toRemoveChildren) {
-            node.graph = newGraph;
-        }
-        graph.removeNode(toRemove);
-        toRemove.graph = newGraph;
-
-        return toRemove;
+        this(Tokens.getToken(token));
     }
 
     @Override
     public Cell getCell() {
-        return getParent() == null ? cell : getParent().getCell();
+        return parent == null ? cell : parent.getCell();
     }
 
     @Override
     public void setCell(Cell cell) {
         this.cell = cell;
+    }
+
+    @Override
+    public Ast getParent() {
+        return parent;
+    }
+
+    @Override
+    public void setParent(Ast parent) {
+        this.parent = parent;
     }
 
     @Override
@@ -130,30 +84,59 @@ public abstract class AbstractAst implements Ast<AbstractAst> {
     }
 
     @Override
+    public Ast getRoot() {
+        return parent == null ? this : parent.getRoot();
+    }
+
+    @Override
+    public List<Ast> getChildren() {
+        return Collections.unmodifiableList(children);
+    }
+
+    @Override
+    public Ast childAt(int position) {
+        return children.get(position);
+    }
+
+    @Override
+    public void addChild(Ast child) {
+        children.add(child);
+    }
+
+    @Override
+    public void addChild(int position, Ast child) {
+        children.add(position, child);
+    }
+
+    @Override
+    public Ast removeChild(int position) {
+        return children.remove(position);
+    }
+
+    @Override
+    public Ast removeChild(Ast child) {
+        return children.remove(child.getPosition());
+    }
+
+    @Override
     public int getPosition() {
-        if (getParent() == null) return -1;
-        return graph.edgeValue(getParent(), this).orElse(-1);
+        return position;
     }
 
     @Override
     public void setPosition(int position) {
-        checkArgument(position > 0, "Position must be > 0");
-        if (getParent() == null) return;
-        graph.putEdgeValue(getParent(), this, position);
+        this.position = position;
     }
 
+    @Nonnull
     @Override
-    public Iterator<AbstractAst> iterator() {
-        return getChildren().iterator();
+    public Iterator<Ast> iterator() {
+        return children.iterator();
     }
 
     @Override
     public AstEval evaluate() {
-        return evaluator.evaluate(this);
-    }
-
-    @Override
-    public AstEval evaluate(AstEvaluator evaluator) {
+        checkNotNull(getCell(), "Context cell is null, needed for evaluation");
         return evaluator.evaluate(this);
     }
 
@@ -164,15 +147,88 @@ public abstract class AbstractAst implements Ast<AbstractAst> {
 
     @Override
     public String getFormula() {
-        if (getChildren().isEmpty()) return token.getValue();
-        ToFormulaAstVisitor toFormulaAstVisitor = new ToFormulaAstVisitor();
-        toFormulaAstVisitor.visit(this);
-        return toFormulaAstVisitor.toString();
+        if (isRoot() && cell != null) {
+            return cell.getValue().toString();
+        }
+        try {
+            FormulaBuilderVisitor formulaBuilderVisitor = new FormulaBuilderVisitor();
+            formulaBuilderVisitor.visit(this);
+            return formulaBuilderVisitor.toString();
+        } catch (Exception e) {
+            logger.error("Error reconstructing formula in AST {}", this);
+            throw new AssertionError(e);
+        }
     }
 
-    public void accept(Visitor<AbstractAst> visitor) {
-        visitor.visit(this);
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("token", getTokenValue())
+                .add("isRoot", isRoot())
+                .add("id", getId())
+                .add("cell", getCell())
+                .add("parent", getParent())
+                .add("position", position)
+                .add("type", getType().getTypeName())
+                .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
+                .toString();
     }
 
+    /**
+     * Decorated {@link ArrayList} that modifies child nodes as they are added
+     * or removed by the list
+     *
+     * @author Jonathan Co
+     * @since 3.0.0
+     */
+    class InternalAstList extends ForwardingList<Ast> {
+
+        final List<Ast> delegate = new ArrayList<>(0);
+
+        @Override
+        public boolean add(Ast ast) {
+            checkArgument(!delegate.contains(ast), "AST already present at index {}", ast.getPosition());
+            if (ast.getParent() != null && !ast.getParent().equals(AbstractAst.this))
+                ast.getParent().removeChild(ast);
+            reindex();
+            ast.setParent(AbstractAst.this);
+            ast.setPosition(delegate.size());
+            return super.add(ast);
+        }
+
+        @Override
+        public void add(int index, Ast ast) {
+            checkArgument(!delegate.contains(ast), "AST already present at index {}", ast.getPosition());
+            super.add(index, ast);
+            if (ast.getParent() != null && !ast.getParent().equals(AbstractAst.this))
+                ast.getParent().removeChild(ast);
+            ast.setParent(AbstractAst.this);
+            reindex();
+        }
+
+        @Override
+        public Ast remove(int index) {
+            Ast removed = super.remove(index);
+            resetParent(removed);
+            reindex();
+            return removed;
+        }
+
+        @Override
+        protected List<Ast> delegate() {
+            return delegate;
+        }
+
+        void reindex() {
+            if (delegate.isEmpty()) return;
+            for (int i = 0, n = delegate.size(); i < n; i++)
+                delegate.get(i).setPosition(i);
+        }
+
+        void resetParent(Ast ast) {
+            ast.setParent(null);
+            ast.setPosition(Ast.UNASSIGNED);
+        }
+    }
 
 }

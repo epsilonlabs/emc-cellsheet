@@ -13,10 +13,8 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getStringValue <em>String Value</em>}</li>
+ *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getText <em>Text</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getNumberValue <em>Number Value</em>}</li>
- *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsString <em>Is String</em>}</li>
- *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsNumber <em>Is Number</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsError <em>Is Error</em>}</li>
  * </ul>
  *
@@ -26,38 +24,38 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface AstEval extends EObject {
 	/**
-	 * Returns the value of the '<em><b>String Value</b></em>' attribute.
+	 * Returns the value of the '<em><b>Text</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>String Value</em>' attribute.
-	 * @see #setStringValue(String)
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getAstEval_StringValue()
+	 * @return the value of the '<em>Text</em>' attribute.
+	 * @see #setText(String)
+	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getAstEval_Text()
 	 * @model
 	 * @generated
 	 */
-	String getStringValue();
+	String getText();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getStringValue <em>String Value</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getText <em>Text</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>String Value</em>' attribute.
-	 * @see #getStringValue()
+	 * @param value the new value of the '<em>Text</em>' attribute.
+	 * @see #getText()
 	 * @generated
 	 */
-	void setStringValue(String value);
+	void setText(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Number Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Number Value</em>' attribute.
-	 * @see #setNumberValue(double)
+	 * @see #setNumberValue(Double)
 	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getAstEval_NumberValue()
 	 * @model
 	 * @generated
 	 */
-	double getNumberValue();
+	Double getNumberValue();
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#getNumberValue <em>Number Value</em>}' attribute.
@@ -67,53 +65,7 @@ public interface AstEval extends EObject {
 	 * @see #getNumberValue()
 	 * @generated
 	 */
-	void setNumberValue(double value);
-
-	/**
-	 * Returns the value of the '<em><b>Is String</b></em>' attribute.
-	 * The default value is <code>"false"</code>.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Is String</em>' attribute.
-	 * @see #setIsString(boolean)
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getAstEval_IsString()
-	 * @model default="false"
-	 * @generated
-	 */
-	boolean isIsString();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsString <em>Is String</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Is String</em>' attribute.
-	 * @see #isIsString()
-	 * @generated
-	 */
-	void setIsString(boolean value);
-
-	/**
-	 * Returns the value of the '<em><b>Is Number</b></em>' attribute.
-	 * The default value is <code>"false"</code>.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Is Number</em>' attribute.
-	 * @see #setIsNumber(boolean)
-	 * @see org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage#getAstEval_IsNumber()
-	 * @model default="false"
-	 * @generated
-	 */
-	boolean isIsNumber();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.epsilon.labs.emf.cellsheet.AstEval#isIsNumber <em>Is Number</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Is Number</em>' attribute.
-	 * @see #isIsNumber()
-	 * @generated
-	 */
-	void setIsNumber(boolean value);
+	void setNumberValue(Double value);
 
 	/**
 	 * Returns the value of the '<em><b>Is Error</b></em>' attribute.

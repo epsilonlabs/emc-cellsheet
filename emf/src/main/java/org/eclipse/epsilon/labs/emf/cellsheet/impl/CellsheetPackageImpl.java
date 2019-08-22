@@ -937,7 +937,7 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
-	public EAttribute getAstEval_StringValue() {
+	public EAttribute getAstEval_Text() {
 		return (EAttribute)astEvalEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -957,28 +957,8 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 	 * @generated
 	 */
 	@Override
-	public EAttribute getAstEval_IsString() {
-		return (EAttribute)astEvalEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EAttribute getAstEval_IsNumber() {
-		return (EAttribute)astEvalEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
 	public EAttribute getAstEval_IsError() {
-		return (EAttribute)astEvalEClass.getEStructuralFeatures().get(4);
+		return (EAttribute)astEvalEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1480,10 +1460,8 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 		createEReference(tokenEClass, TOKEN__USED_BY);
 
 		astEvalEClass = createEClass(AST_EVAL);
-		createEAttribute(astEvalEClass, AST_EVAL__STRING_VALUE);
+		createEAttribute(astEvalEClass, AST_EVAL__TEXT);
 		createEAttribute(astEvalEClass, AST_EVAL__NUMBER_VALUE);
-		createEAttribute(astEvalEClass, AST_EVAL__IS_STRING);
-		createEAttribute(astEvalEClass, AST_EVAL__IS_NUMBER);
 		createEAttribute(astEvalEClass, AST_EVAL__IS_ERROR);
 
 		astEClass = createEClass(AST);
@@ -1715,10 +1693,8 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 		initEReference(getToken_UsedBy(), this.getAst(), this.getAst_Token(), "usedBy", null, 0, -1, Token.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(astEvalEClass, AstEval.class, "AstEval", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getAstEval_StringValue(), ecorePackage.getEString(), "stringValue", null, 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAstEval_NumberValue(), ecorePackage.getEDouble(), "numberValue", null, 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAstEval_IsString(), ecorePackage.getEBoolean(), "isString", "false", 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAstEval_IsNumber(), ecorePackage.getEBoolean(), "isNumber", "false", 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAstEval_Text(), ecorePackage.getEString(), "text", null, 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAstEval_NumberValue(), ecorePackage.getEDoubleObject(), "numberValue", null, 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getAstEval_IsError(), ecorePackage.getEBoolean(), "isError", "false", 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(astEClass, Ast.class, "Ast", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

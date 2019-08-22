@@ -1,12 +1,23 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Token;
-import org.eclipse.epsilon.labs.emc.cellsheet.TokenFactory;
+import org.eclipse.epsilon.labs.emc.cellsheet.Tokens;
 
-public class Negation extends InfixOperator {
+import javax.annotation.Nonnull;
 
-    public static final Token TOKEN = TokenFactory.getInstance().getToken("-");
+public class Negation extends PrefixOperator {
+
+    public static final Token TOKEN = Tokens.getToken("-");
 
     public Negation() {
         super(TOKEN);
@@ -17,6 +28,7 @@ public class Negation extends InfixOperator {
         throw new UnsupportedOperationException();
     }
 
+    @Nonnull
     @Override
     public CellsheetType getType() {
         return CellsheetType.NEGATION;

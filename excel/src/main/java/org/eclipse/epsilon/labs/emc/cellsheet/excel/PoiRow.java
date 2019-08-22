@@ -1,16 +1,29 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FormulaError;
 import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
+import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Row;
 import org.eclipse.epsilon.labs.emc.cellsheet.Sheet;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -30,6 +43,8 @@ public class PoiRow implements Row, PoiDelegate<org.apache.poi.ss.usermodel.Row>
 
         PoiCell.Builder builder;
         org.apache.poi.ss.usermodel.Cell raw = getDelegate().getCell(colIndex);
+
+        if (raw == null) return null;
 
         switch (raw.getCellType()) {
             case NUMERIC:
@@ -79,12 +94,24 @@ public class PoiRow implements Row, PoiDelegate<org.apache.poi.ss.usermodel.Row>
         return rowIndex;
     }
 
+    @Nonnull
     @Override
     public Iterator<Cell> iterator() {
         return Iterators.transform(
                 getDelegate().cellIterator(),
                 c -> getCell(c.getColumnIndex())
         );
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", getId())
+                .add("sheet", sheet)
+                .add("rowIndex", rowIndex)
+                .add("type", getType().getTypeName())
+                .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
+                .toString();
     }
 
     @Override

@@ -1,6 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import java.lang.reflect.ParameterizedType;
+import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,36 +27,40 @@ public interface Sheet extends HasA1 {
 
     List<Row> getRows();
 
+    @Nonnull
     @Override
     Iterator<Row> iterator();
 
     @Override
     default String getA1() {
+        if (getBook() == null || getSheetName() == null)
+            return HasA1.super.getA1();
         return getBook().getA1() + "'" + getSheetName() + "'";
     }
 
+    @Nonnull
     @Override
     default String getId() {
-        return getBook().getId() + "/" + getSheetIndex();
+        return getBook() == null
+                ? HasA1.super.getId()
+                : (getBook().getId() + "/" + getSheetIndex());
     }
 
+    @Nonnull
     @Override
     default CellsheetType getType() {
         return CellsheetType.SHEET;
     }
 
+    @Nonnull
     @Override
     default Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.SHEET, CellsheetType.HAS_A1, CellsheetType.HAS_ID);
+        return EnumSet.of(getType(), CellsheetType.HAS_A1, CellsheetType.CELLSHEET_ELEMENT);
     }
 
-    interface Builder<T extends Sheet, B extends Builder<T, B>> {
+    interface Builder<T extends Sheet, B extends Builder<T, B>> extends CellsheetBuilder {
 
         B self();
-
-        default String getClassName() {
-            return ((Class<?>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1]).getName();
-        }
 
         B withBook(Book book);
 

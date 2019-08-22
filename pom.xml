@@ -59,17 +59,6 @@
         </repository>
     </distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>oss-sonatype-snapshots</id>
-            <name>oss-sonatype-snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <modules>
         <module>core</module>
         <module>excel</module>
@@ -91,7 +80,7 @@
 
         <gpg.executable>gpg</gpg.executable>
 
-        <epsilon.version>1.6.0-SNAPSHOT</epsilon.version>
+        <epsilon.version>1.5.1</epsilon.version>
         <guava.version>28.0-jre</guava.version>
         <junit.version>4.12</junit.version>
         <mockito.version>2.28.2</mockito.version>
@@ -220,6 +209,19 @@
                         <phase>test</phase>
                         <goals>
                             <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -384,19 +386,6 @@
             </properties>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
                     <!-- Generate 'test-jar's beside source 'jar's -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

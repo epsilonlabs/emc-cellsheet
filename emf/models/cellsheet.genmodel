@@ -74,10 +74,8 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cellsheet.ecore#//Token/usedBy"/>
     </genClasses>
     <genClasses ecoreClass="cellsheet.ecore#//AstEval">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//AstEval/stringValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//AstEval/text"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//AstEval/numberValue"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//AstEval/isString"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//AstEval/isNumber"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cellsheet.ecore#//AstEval/isError"/>
     </genClasses>
     <genClasses image="false" ecoreClass="cellsheet.ecore#//Ast">

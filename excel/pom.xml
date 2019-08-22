@@ -87,6 +87,28 @@
                     </instructions>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>org/eclipse/epsilon/labs/emc/cellsheet/poi/FormulaParseException.*</exclude>
+                                <exclude>org/eclipse/epsilon/labs/emc/cellsheet/poi/FormulaParser.*</exclude>
+                                <exclude>org/eclipse/epsilon/labs/emc/cellsheet/poi/OperandClassTransformer.*</exclude>
+                                <exclude>org/eclipse/epsilon/labs/emc/cellsheet/poi/ParseNode.*</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

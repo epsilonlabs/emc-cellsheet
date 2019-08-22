@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import org.apache.poi.ss.formula.ptg.*;
@@ -18,7 +27,17 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests that individual PTGs are converted correctly into their AST equivalents
  */
 @RunWith(Parameterized.class)
+@SuppressWarnings("unchecked")
 public class PoiAstFactoryConversionTest {
+
+    private Ptg ptg;
+    private Class astClazz;
+    private String expectedValue;
+    public PoiAstFactoryConversionTest(Ptg ptg, Class astClazz, String expectedValue) {
+        this.ptg = ptg;
+        this.astClazz = astClazz;
+        this.expectedValue = expectedValue;
+    }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
@@ -46,25 +65,15 @@ public class PoiAstFactoryConversionTest {
                         {UnaryPlusPtg.instance, Plus.class, Plus.TOKEN.getValue()},
                         {UnionPtg.instance, Union.class, Union.TOKEN.getValue()},
                         {IntersectionPtg.instance, Intersection.class, Intersection.TOKEN.getValue()},
-                {FuncVarPtg.create("VLOOKUP", 3), Function.class, "VLOOKUP"}
+                        {FuncVarPtg.create("VLOOKUP", 3), Function.class, "VLOOKUP"}
                 }
         );
-    }
-
-    private Ptg ptg;
-    private Class astClazz;
-    private String expectedValue;
-
-    public PoiAstFactoryConversionTest(Ptg ptg, Class astClazz, String expectedValue) {
-        this.ptg = ptg;
-        this.astClazz = astClazz;
-        this.expectedValue = expectedValue;
     }
 
     @Test
     public void of_given_ptg_should_correctly_convert_ptg_to_ast() {
         Ast ast = PoiAstFactory.getInstance().of(ptg);
         assertThat(ast).isNotNull().isInstanceOf(astClazz);
-        assertThat(ast.getToken().getValue()).isEqualTo(expectedValue);
+        assertThat(ast.getTokenValue()).isEqualTo(expectedValue);
     }
 }

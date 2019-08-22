@@ -88,10 +88,8 @@ class Token {
 }
 
 class AstEval {
-	attr String stringValue;
-	attr double numberValue;
-	attr boolean isString = false;
-	attr boolean isNumber = false;
+	attr String text;
+	attr Double numberValue;
 	attr boolean isError = false;
 }
 

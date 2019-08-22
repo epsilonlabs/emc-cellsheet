@@ -1,8 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import com.google.common.net.UrlEscapers;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 
+import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -20,8 +30,6 @@ public interface Book extends HasA1 {
 
     Sheet getSheet(String sheetName);
 
-
-
     String getBookName();
 
     void setBookName(String bookName);
@@ -36,27 +44,34 @@ public interface Book extends HasA1 {
 
     List<Sheet> getSheets();
 
+    @Nonnull
     @Override
     Iterator<Sheet> iterator();
 
     @Override
     default String getA1() {
-        return "[" + getBookName() +"]";
+        if (getBookName() == null) return HasA1.super.getA1();
+        return "[" + getBookName() + "]";
     }
 
+    @Nonnull
     @Override
     default String getId() {
-        return getWorkspace().getId() + UrlEscapers.urlPathSegmentEscaper().escape(getBookName());
+        return getWorkspace() == null
+                ? HasA1.super.getId()
+                : (getWorkspace().getId() + "/" + UrlEscapers.urlPathSegmentEscaper().escape(getBookName()));
     }
 
+    @Nonnull
     @Override
     default CellsheetType getType() {
         return CellsheetType.BOOK;
     }
 
+    @Nonnull
     @Override
     default Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.BOOK, CellsheetType.HAS_A1, CellsheetType.HAS_ID);
+        return EnumSet.of(getType(), CellsheetType.HAS_A1, CellsheetType.CELLSHEET_ELEMENT);
     }
 
     interface Builder<T extends Book, B extends Builder<T, B>> extends CellsheetBuilder {
@@ -64,6 +79,8 @@ public interface Book extends HasA1 {
         B self();
 
         B withWorkspace(Workspace workspace);
+
+        B withBookName(String bookName);
 
         B withModelUri(String modelUri);
 

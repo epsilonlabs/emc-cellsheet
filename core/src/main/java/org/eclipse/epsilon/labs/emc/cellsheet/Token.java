@@ -1,8 +1,23 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import java.util.*;
+import com.google.common.base.Objects;
 
-public class Token implements HasId {
+import javax.annotation.Nonnull;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+public class Token implements CellsheetElement {
 
     private Workspace workspace;
     private String value;
@@ -36,23 +51,45 @@ public class Token implements HasId {
         usedBy.add(ast);
     }
 
+    @Nonnull
     @Override
     public Iterator<Ast> iterator() {
         return usedBy.iterator();
     }
 
+    @Nonnull
     @Override
     public CellsheetType getType() {
         return CellsheetType.TOKEN;
     }
 
+    @Nonnull
     @Override
     public Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.TOKEN, CellsheetType.HAS_ID);
+        return EnumSet.of(CellsheetType.TOKEN, CellsheetType.CELLSHEET_ELEMENT);
+    }
+
+    @Nonnull
+    @Override
+    public String getId() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public String getId() {
-        return "TOKEN ID NOT IMPLEMENTED";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Token token = (Token) o;
+        return Objects.equal(getValue(), token.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getValue());
+    }
+
+    @Override
+    public String toString() {
+        return value;
     }
 }

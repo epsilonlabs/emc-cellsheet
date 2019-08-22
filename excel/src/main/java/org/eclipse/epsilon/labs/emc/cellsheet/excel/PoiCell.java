@@ -1,11 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
+import com.google.common.base.MoreObjects;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -49,13 +60,14 @@ public abstract class PoiCell<T> implements Cell<T>, PoiDelegate<org.apache.poi.
     @Override
     public Ast getRoot() {
         if (asts.isEmpty()) {
-            asts.add(PoiAstFactory.getInstance().of(this));
+            addAst(PoiAstFactory.getInstance().of(this));
         }
         return asts.get(0);
     }
 
+    @Nonnull
     @Override
-    public Iterator<HasId> iterator() {
+    public Iterator<CellsheetElement> iterator() {
         throw new UnsupportedOperationException();
     }
 
@@ -64,10 +76,22 @@ public abstract class PoiCell<T> implements Cell<T>, PoiDelegate<org.apache.poi.
         return row.getDelegate().getCell(colIndex);
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", getId())
+                .add("row", row)
+                .add("colIndex", colIndex)
+                .add("value", getValue())
+                .add("type", getType().getTypeName())
+                .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
+                .toString();
+    }
+
     public static abstract class Builder<T extends PoiCell<V>, V, B> implements Cell.Builder<T, V, Builder<T, V, B>> {
         protected V value;
-        protected PoiRow row;
-        protected int colIndex;
+        PoiRow row;
+        int colIndex;
 
         @Override
         public Builder<T, V, B> withRow(Row row) {
