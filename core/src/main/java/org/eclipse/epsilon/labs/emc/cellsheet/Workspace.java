@@ -252,7 +252,6 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
                 .add("id", getId())
                 .add("name", getName())
                 .add("cached", isCachingEnabled())
-                .add("concurrent", isConcurrent())
                 .add("type", getType().getTypeName())
                 .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
                 .toString();
