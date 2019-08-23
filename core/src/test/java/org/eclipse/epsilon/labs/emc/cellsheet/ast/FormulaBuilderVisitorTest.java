@@ -29,19 +29,16 @@ public class FormulaBuilderVisitorTest {
      */
     @Test
     public void visit_should_rebuild_formula_with_text() throws Exception {
-        Ast root = new Function("TEXT");
-        root.addChild(new Number(0.285));
-        root.addChild(new Text("0.0%"));
-        visitor.visit(root);
-
-        assertThat(visitor.toString()).isEqualTo("TEXT(0.285,\"0.0%\")");
+        Ast ast = new Function("TEXT");
+        ast.addChild(new Number(0.285));
+        ast.addChild(new Text("0.0%"));
+        assertThat(visitor.visit(ast)).hasValue("TEXT(0.285,\"0.0%\")");
     }
 
     @Test
     public void visit_should_rebuild_formula_when_given_numeric_operand() throws Exception {
         Ast ast = new Number(123.456);
-        visitor.visit(ast);
-        assertThat(visitor.toString()).isEqualTo("123.456");
+        assertThat(visitor.visit(ast)).hasValue("123.456");
     }
 
     @Test
@@ -50,8 +47,7 @@ public class FormulaBuilderVisitorTest {
         ast.addChild(new Ref("A1"));
         ast.addChild(new Range("B1:C5"));
         ast.addChild(new Number(1));
-        visitor.visit(ast);
-        assertThat(visitor.toString()).isEqualTo("VLOOKUP(A1,B1:C5,1)");
+        assertThat(visitor.visit(ast)).hasValue("VLOOKUP(A1,B1:C5,1)");
     }
 
     @Test
@@ -66,8 +62,7 @@ public class FormulaBuilderVisitorTest {
         child.addChild(new Range("E1:F5"));
         child.addChild(new Number(2));
 
-        visitor.visit(ast);
-        assertThat(visitor.toString()).isEqualTo("VLOOKUP(A5,B1:C5,HLOOKUP(D1,E1:F5,2))");
+        assertThat(visitor.visit(ast)).hasValue("VLOOKUP(A5,B1:C5,HLOOKUP(D1,E1:F5,2))");
     }
 
     @Test
@@ -75,15 +70,13 @@ public class FormulaBuilderVisitorTest {
         Ast ast = new Addition();
         ast.addChild(new Number(1));
         ast.addChild(new Number(2));
-        visitor.visit(ast);
-        assertThat(visitor.toString()).isEqualTo("(1+2)");
+        assertThat(visitor.visit(ast)).hasValue("(1+2)");
     }
 
     @Test
     public void visit_should_build_prefix_formula() throws Exception {
         Ast ast = new Percent();
         ast.addChild(new Number(1));
-        visitor.visit(ast);
-        assertThat(visitor.toString()).isEqualTo("1%");
+        assertThat(visitor.visit(ast)).hasValue("1%");
     }
 }

@@ -300,14 +300,14 @@ public interface Ast extends CellsheetElement {
      * @param visitor the visitor to visit this node
      * @throws Exception thrown by visitor during operation
      */
-    default void accept(Visitor visitor) throws Exception {
-        visitor.visit(this);
+    default <T> Optional<T> accept(Visitor<T> visitor) throws Exception {
+        return visitor.visit(this);
     }
 
     /**
      * Defines an AST visitor
      */
-    interface Visitor {
+    interface Visitor<T> {
 
         /**
          * Operation to invoke on the AST visited
@@ -315,7 +315,7 @@ public interface Ast extends CellsheetElement {
          * @param ast the Ast node being visited
          * @throws Exception thrown during execution
          */
-        void visit(Ast ast) throws Exception;
+        Optional<T> visit(Ast ast) throws Exception;
 
     }
 }

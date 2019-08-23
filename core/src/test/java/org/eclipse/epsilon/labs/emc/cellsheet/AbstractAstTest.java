@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -294,7 +295,10 @@ public class AbstractAstTest {
     @Test
     public void accept_should_execute_visitor() throws Exception {
         assertThat(root.getTokenValue()).isNotEqualTo("Visited");
-        root.accept(a -> a.setToken("Visited"));
+        root.accept(a -> {
+            a.setToken("Visited");
+            return Optional.empty();
+        });
         assertThat(root.getTokenValue()).isEqualTo("Visited");
     }
 

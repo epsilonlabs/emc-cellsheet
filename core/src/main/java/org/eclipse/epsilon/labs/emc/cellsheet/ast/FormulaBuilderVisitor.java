@@ -17,6 +17,7 @@ import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -27,7 +28,7 @@ import static com.google.common.base.Preconditions.checkState;
  * @author Jonathan Co
  * @since 3.0.0
  */
-public class FormulaBuilderVisitor implements Ast.Visitor {
+public class FormulaBuilderVisitor implements Ast.Visitor<String> {
 
     private static final EnumSet<CellsheetType> SUPERTYPES = EnumSet.of(
             CellsheetType.INFIX_OPERATOR,
@@ -41,7 +42,7 @@ public class FormulaBuilderVisitor implements Ast.Visitor {
     private final StringBuilder sb = new StringBuilder();
 
     @Override
-    public void visit(Ast ast) throws Exception {
+    public Optional<String> visit(Ast ast) throws Exception {
         if (ast.isLeaf()) {
             switch (ast.getType()) {
                 case TEXT:
@@ -57,7 +58,7 @@ public class FormulaBuilderVisitor implements Ast.Visitor {
                     sb.append(ast.getTokenValue());
                     break;
             }
-            return;
+            return Optional.of(sb.toString());
         }
 
         CellsheetType supertype = getSupertype(ast);
@@ -114,11 +115,8 @@ public class FormulaBuilderVisitor implements Ast.Visitor {
                         supertype,
                         ast));
         }
-    }
 
-    @Override
-    public String toString() {
-        return sb.toString();
+        return Optional.of(sb.toString());
     }
 
     /**
