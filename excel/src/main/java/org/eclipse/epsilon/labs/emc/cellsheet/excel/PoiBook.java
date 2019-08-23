@@ -34,7 +34,6 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -127,20 +126,12 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
     public void load() throws EolModelLoadingException {
         logger.debug("Loading PoiBook with [modelUri: {}, bookName: {}]", modelUri, bookName);
 
-        final File file = Strings.isNullOrEmpty(modelUri) ? null : new File(modelUri);
-        if (Strings.isNullOrEmpty(bookName)) {
-            bookName = file == null
-                    ? "PoiBook" + Integer.toHexString(System.identityHashCode(this)) + ".xlsx"
-                    : file.getName();
-            logger.debug("Derived bookName: [{}]", bookName);
-        }
-
         try {
-            if (file == null) {
+            if (modelUri == null) {
                 logger.debug("No modelUri set, creating in-memory XSSF-based book");
                 delegate = WorkbookFactory.create(true);
             } else {
-                delegate = WorkbookFactory.create(file);
+                delegate = WorkbookFactory.create(new File(modelUri));
             }
         } catch (Exception e) {
             throw new EolModelLoadingException(e, workspace);
@@ -215,6 +206,8 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
      */
     public static class Builder implements Book.Builder<PoiBook, Builder> {
 
+        private static Logger logger = LoggerFactory.getLogger(PoiBook.Builder.class);
+
         Workspace workspace;
         String bookName;
         String modelUri;
@@ -248,6 +241,20 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
             poiBook.setWorkspace(workspace);
             poiBook.modelUri = modelUri;
             poiBook.bookName = bookName;
+
+            if (bookName == null) {
+                if (modelUri == null) {
+                    poiBook.bookName = "PoiBook"
+                            + Integer.toHexString(System.identityHashCode(this))
+                            + ".xlsx";
+                } else {
+                    poiBook.bookName = new File(modelUri).getName();
+                }
+                logger.debug("No explicit bookName set, deriving bookName: [{}]", poiBook.bookName);
+            } else {
+                poiBook.bookName = bookName;
+            }
+
             return poiBook;
         }
     }

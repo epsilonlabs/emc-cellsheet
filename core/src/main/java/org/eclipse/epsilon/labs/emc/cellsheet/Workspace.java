@@ -10,11 +10,11 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ForwardingIterator;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import com.google.common.net.UrlEscapers;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
@@ -34,16 +34,23 @@ import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 public class Workspace extends CachedModel<CellsheetElement> implements CellsheetElement {
 
-    public static final String PROPERTY_EXTENSION = "backendRegistry";
-    public static final String PROPERTY_MODEL_URIS = "modelUri";
+    public static final String PROPERTY_MODEL_URI = "modelUri";
 
     private static Logger logger = LoggerFactory.getLogger(Workspace.class);
+
+    protected Map<String, BookProvider> providerRegistry = new HashMap<>();
     protected Map<String, Book> books = new HashMap<>();
-    private Set<CellsheetBackend> backendRegistry = new HashSet<>();
+
+    public Workspace() {
+    }
+
+    public Workspace(String name) {
+        this.name = name;
+    }
 
     public Token getToken(String value) {
         return Tokens.getToken(value);
@@ -108,34 +115,37 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
     @Override
     public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
         super.load(properties, resolver);
+        checkState(!providerRegistry.isEmpty(), "No BookProvider's registered");
 
-        if (backendRegistry.isEmpty())
-            throw new IllegalStateException("No CellSheetBackend registered");
-
-        // Create Books
-        String modelUrisProp = properties.getProperty(PROPERTY_MODEL_URIS);
-        if (modelUrisProp == null)
-            throw new IllegalArgumentException("No " + PROPERTY_MODEL_URIS + " specified");
-
-        List<String> modelUris = Splitter.on(",").trimResults().splitToList(modelUrisProp);
+        // Get the model uris to load. If none are specified then by default add
+        // in a null value and create a new one by default.
+        String[] modelUris = properties.hasProperty(PROPERTY_MODEL_URI)
+                ? properties.getProperty(PROPERTY_MODEL_URI).split(";")
+                : new String[]{null};
 
         for (String uri : modelUris) {
-            CellsheetBackend backend = backendRegistry
-                    .stream()
-                    .filter(f -> f.isApplicable(uri))
-                    .findFirst()
-                    .orElse(null);
+            final BookProvider provider;
 
-            if (backend == null)
-                throw new IllegalArgumentException("No CellSheetBackend registered applicable for model URI: " + uri);
-            Book book = backend.getBuilder()
-                    .withWorkspace(this)
-                    .withModelUri(uri)
-                    .build();
+            if (uri == null) {
+                provider = providerRegistry.get(null);
+                checkState(providerRegistry.containsKey(null),
+                        "No backend with 'supportsDefault()==true' registered");
+                logger.debug("No modelUri property set, using default provider '{}'", provider.getClass().getCanonicalName());
+            } else {
+                String ext = Files.getFileExtension(uri);
+                checkArgument(!Strings.isNullOrEmpty(ext),
+                        "Unknown extension given for '%s'",
+                        uri);
+                provider = providerRegistry.get(ext);
+                checkState(providerRegistry.containsKey(ext),
+                        "No backend registered for extension %s",
+                        ext);
+            }
+
+            Book book = provider.buildBook(uri, this);
             addBook(book);
         }
 
-        // Do the loading
         load();
     }
 
@@ -242,8 +252,20 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
         return EnumSet.of(CellsheetType.WORKSPACE, CellsheetType.CELLSHEET_ELEMENT);
     }
 
-    public void registerBookFactory(CellsheetBackend backend) {
-        backendRegistry.add(backend);
+    @SuppressWarnings("unchecked")
+    public void registerProvider(BookProvider backend) {
+        if (backend.supportsDefault())
+            providerRegistry.putIfAbsent(null, backend);
+        backend.getExtensions().forEach(e -> registerProvider((String) e, backend));
+    }
+
+    public void registerProvider(String extension, BookProvider backend) {
+        if (providerRegistry.containsKey(extension)) {
+            throw new IllegalStateException(String.format("Extension '.%s' already registered with %s",
+                    extension,
+                    providerRegistry.get(extension).getClass().getCanonicalName()));
+        }
+        providerRegistry.put(extension, backend);
     }
 
     @Override
