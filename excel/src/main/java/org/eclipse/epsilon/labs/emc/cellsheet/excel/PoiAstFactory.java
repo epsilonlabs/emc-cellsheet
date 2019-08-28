@@ -22,7 +22,6 @@ import org.eclipse.epsilon.labs.emc.cellsheet.poi.PtgHelper;
 import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedHashMap;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
@@ -44,14 +43,14 @@ public class PoiAstFactory {
                 cell.getSheet().getSheetIndex(),
                 cell.getRowIndex());
 
+
         Deque<Ast> stack = new ArrayDeque<>();
 
-        LinkedHashMap<Ptg, String> ptgs = parser.getPtgs();
-        for (Ptg ptg : ptgs.keySet()) {
-            Ast current = of(ptg, ptgs.get(ptg));
+        for (Ptg ptg : parser.getPtgs()) {
+            Ast current = of(ptg, parser.getTokenValue(ptg));
             current.setEvaluator(PoiAstEvaluator.getInstance());
 
-            if (current instanceof Unknown) continue;
+            if (current instanceof Unknown || current instanceof Noop) continue;
 
             if (ptg instanceof OperationPtg) {
                 for (int i = ((OperationPtg) ptg).getNumberOfOperands(); i > 0; i--) {
@@ -60,23 +59,29 @@ public class PoiAstFactory {
             }
             stack.push(current);
         }
-        checkState(stack.size() == 1, "Left over Asts during construction");
+        checkState(stack.size() == 1, "Left over Asts during construction [formula: %s, cell: %s]", formula, cell);
         stack.peek().setCell(cell);
         return stack.pop();
     }
 
     public Ast of(PoiCell cell) {
         // Delegate to formula parser if we already know it's a formula
-        if (cell instanceof PoiFormulaCell) return of(((PoiFormulaCell) cell).getValue(), cell);
+        if (cell instanceof PoiFormulaCell)
+            return of(((PoiFormulaCell) cell).getValue(), cell);
 
 
         Ast ast = null;
         if (cell instanceof PoiBlankCell) ast = new Text("");
-        if (cell instanceof PoiBooleanCell) ast = new Logical(((PoiBooleanCell) cell).getValue());
-        if (cell instanceof PoiTextCell) ast = new Text(((PoiTextCell) cell).getValue());
-        if (cell instanceof PoiNumericCell) ast = new Number(((PoiNumericCell) cell).getValue());
-        if (cell instanceof PoiDateCell) ast = new Text(cell.getValue().toString());
-        if (cell instanceof PoiErrorCell) ast = new Error(((PoiErrorCell) cell).getValue());
+        if (cell instanceof PoiBooleanCell)
+            ast = new Logical(((PoiBooleanCell) cell).getValue());
+        if (cell instanceof PoiTextCell)
+            ast = new Text(((PoiTextCell) cell).getValue());
+        if (cell instanceof PoiNumericCell)
+            ast = new Number(((PoiNumericCell) cell).getValue());
+        if (cell instanceof PoiDateCell)
+            ast = new Text(cell.getValue().toString());
+        if (cell instanceof PoiErrorCell)
+            ast = new Error(((PoiErrorCell) cell).getValue());
 
         checkArgument(ast != null, "Failed to build AST for %s", cell.toString());
         ast.setCell(cell);
@@ -94,9 +99,11 @@ public class PoiAstFactory {
 
         // OPERANDS
         if (ptg instanceof OperandPtg || ptg instanceof ScalarConstantPtg) {
-            if (ptg instanceof IntPtg || ptg instanceof NumberPtg) ast = new Number(token);
+            if (ptg instanceof IntPtg || ptg instanceof NumberPtg)
+                ast = new Number(token);
             if (ptg instanceof StringPtg) ast = new Text(token);
-            if (ptg instanceof BoolPtg) ast = new Logical(((BoolPtg) ptg).getValue());
+            if (ptg instanceof BoolPtg)
+                ast = new Logical(((BoolPtg) ptg).getValue());
             if (ptg instanceof AreaI) ast = new Range(token);
             if (ptg instanceof RefPtgBase) ast = new Ref(token);
         }
@@ -162,7 +169,8 @@ public class PoiAstFactory {
         if (ptg instanceof IntersectionPtg) ast = new Intersection();
 
         // OPERATIONS
-        if (PtgHelper.isSumPtg(ptg) || ptg instanceof AbstractFunctionPtg) ast = new Function(token);
+        if (PtgHelper.isSumPtg(ptg) || ptg instanceof AbstractFunctionPtg)
+            ast = new Function(token);
 
         // NOOPS and UNKNOWNS
         if (ptg instanceof AttrPtg

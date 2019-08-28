@@ -21,17 +21,21 @@ import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.excel.PoiBook;
 import org.eclipse.epsilon.labs.emc.cellsheet.excel.PoiCell;
 
-import java.util.*;
+import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Extension of Apache POI {@link FormulaParser} that maintains additional metadata
  *
  * @author Jonathan Co
  */
-public class PoiCellsheetFormulaParser extends FormulaParser {
+public class PoiCellsheetFormulaParser extends FormulaParser implements Iterable<Ptg> {
 
-    private Map<Ptg, String> ptgToNamedRange = new HashMap<>();
-    private LinkedHashMap<Ptg, String> ptgs = new LinkedHashMap<>();
+    private Ptg[] ptgs;
+    private Map<Ptg, String> tokenMap = new IdentityHashMap<>();
 
     /**
      * Create the formula parser, with the string that is to be
@@ -71,22 +75,37 @@ public class PoiCellsheetFormulaParser extends FormulaParser {
         ParseNode result = super.parseRangeExpression();
         int end = _pointer;
         if (result.getToken() instanceof OperandPtg) {
-            ptgToNamedRange.put(result.getToken(), _formulaString.substring(start - 1, end - 1));
+            tokenMap.put(result.getToken(), _formulaString.substring(start - 1, end - 1));
         }
         return result;
     }
 
-    public LinkedHashMap<Ptg, String> getPtgs() {
-        if (_rootNode == null) parse();
-        if (ptgs.isEmpty()) {
-            final Iterator<Ptg> it = Arrays.asList(getRPNPtg(FormulaType.CELL)).iterator();
-            Ptg ptg;
-            while (it.hasNext()) {
-                ptg = it.next();
-                if (PtgHelper.isSumPtg(ptg)) ptg = FuncVarPtg.SUM;
-                ptgs.put(ptg, ptgToNamedRange.getOrDefault(ptg, PtgHelper.valueOf(ptg)));
+    @Override
+    protected void parse() {
+        if (_rootNode == null) {
+            super.parse();
+            ptgs = getRPNPtg(FormulaType.CELL);
+            for (int i = 0; i < ptgs.length; i++) {
+                if (PtgHelper.isSumPtg(ptgs[i])) ptgs[i] = FuncVarPtg.SUM;
             }
         }
+    }
+
+    public String getTokenValue(Ptg ptg) {
+        parse();
+        return tokenMap.getOrDefault(ptg, PtgHelper.valueOf(ptg));
+    }
+
+    public Ptg[] getPtgs() {
+        parse();
         return ptgs;
     }
+
+    @Nonnull
+    @Override
+    public Iterator<Ptg> iterator() {
+        parse();
+        return Arrays.stream(ptgs).iterator();
+    }
+
 }

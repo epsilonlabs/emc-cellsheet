@@ -11,15 +11,16 @@ package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import com.google.common.collect.Iterables;
 import com.google.common.io.Resources;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.eclipse.epsilon.common.util.StringProperties;
-import org.eclipse.epsilon.labs.emc.cellsheet.Book;
-import org.eclipse.epsilon.labs.emc.cellsheet.Workspace;
+import org.eclipse.epsilon.labs.emc.cellsheet.*;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -77,6 +78,47 @@ public class PoiWorkspaceTest {
                 .hasSize(2)
                 .extracting("modelUri")
                 .containsExactlyInAnyOrder(uris.toArray());
+    }
+
+    @Test
+    public void allContents_should_return_all_contents_when_given_real_book() throws Exception {
+        props.setProperty(Workspace.PROPERTY_MODEL_URI, getModelUriFromResource("Sales Planning.xlsx"));
+        workspace.load(props);
+        workspace.allContents();
+    }
+
+    @Test
+    public void allContents_should_return_all_contents_available() throws Exception {
+        // Set up book
+        PoiBook book = new PoiBook.Builder().build();
+        workspace = new Workspace();
+        workspace.setName("AllContents");
+        workspace.addBook(book);
+        workspace.load();
+
+        Workbook delegate = book.getDelegate();
+        delegate.createSheet("Sheet 1")
+                .createRow(0)
+                .createCell(0)
+                .setCellFormula("1+2");
+
+        // Checks
+        Collection<CellsheetElement> elements = workspace.allContents();
+        Sheet sheet = book.getSheet(0);
+        Row row = sheet.getRow(0);
+        Cell cell = row.getCell(0);
+        Ast root = cell.getRoot();
+        Ast childA = root.childAt(0);
+        Ast childB = root.childAt(1);
+
+        assertThat(elements).hasSize(8).containsExactlyInAnyOrder(workspace,
+                book,
+                sheet,
+                row,
+                cell,
+                root,
+                childA,
+                childB);
     }
 
     private String getModelUriFromResource(String resourceName) throws UnsupportedEncodingException {
