@@ -63,6 +63,7 @@
         <module>core</module>
         <module>excel</module>
         <module>emf</module>
+<!--        <module>emf</module>-->
     </modules>
 
     <properties>
