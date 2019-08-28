@@ -21,7 +21,6 @@ import org.junit.Test;
 import java.io.File;
 import java.net.URLDecoder;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;

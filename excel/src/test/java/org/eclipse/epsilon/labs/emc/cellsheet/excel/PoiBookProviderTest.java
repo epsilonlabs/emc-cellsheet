@@ -11,7 +11,6 @@ package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.BookProvider;
 import org.eclipse.epsilon.labs.emc.cellsheet.Workspace;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

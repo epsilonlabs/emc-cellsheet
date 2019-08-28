@@ -10,7 +10,6 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Number;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.*;

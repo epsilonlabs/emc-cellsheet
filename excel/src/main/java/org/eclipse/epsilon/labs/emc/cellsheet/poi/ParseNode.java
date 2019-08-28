@@ -28,7 +28,6 @@ import org.apache.poi.ss.formula.ptg.*;
  * <p>
  * This is a modification of the original {@code org.apache.poi.ss.formula.ParseNode}
  * that removes private and final modifiers
- *
  */
 public final class ParseNode {
 

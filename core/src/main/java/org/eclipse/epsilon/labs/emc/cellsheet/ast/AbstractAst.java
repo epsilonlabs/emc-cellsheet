@@ -187,7 +187,7 @@ public abstract class AbstractAst implements Ast {
 
         @Override
         public boolean add(Ast ast) {
-            checkArgument(!delegate.contains(ast), "AST already present at index {}", ast.getPosition());
+            checkArgument(!delegate.contains(ast), "AST already present at index %s", ast.getPosition());
             if (ast.getParent() != null && !ast.getParent().equals(AbstractAst.this))
                 ast.getParent().removeChild(ast);
             reindex();
@@ -198,7 +198,7 @@ public abstract class AbstractAst implements Ast {
 
         @Override
         public void add(int index, Ast ast) {
-            checkArgument(!delegate.contains(ast), "AST already present at index {}", ast.getPosition());
+            checkArgument(!delegate.contains(ast), "AST already present at index %s", ast.getPosition());
             super.add(index, ast);
             if (ast.getParent() != null && !ast.getParent().equals(AbstractAst.this))
                 ast.getParent().removeChild(ast);

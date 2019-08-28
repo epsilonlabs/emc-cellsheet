@@ -33,6 +33,7 @@ public class PoiAstFactoryConversionTest {
     private Ptg ptg;
     private Class astClazz;
     private String expectedValue;
+
     public PoiAstFactoryConversionTest(Ptg ptg, Class astClazz, String expectedValue) {
         this.ptg = ptg;
         this.astClazz = astClazz;

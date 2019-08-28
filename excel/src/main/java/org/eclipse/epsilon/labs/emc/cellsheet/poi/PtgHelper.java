@@ -40,10 +40,13 @@ public class PtgHelper {
      */
     public static String valueOf(final Ptg ptg) {
         if (ptg instanceof ScalarConstantPtg) {
-            if (ptg instanceof IntPtg) return String.valueOf(((IntPtg) ptg).getValue());
-            if (ptg instanceof NumberPtg) return String.valueOf(((NumberPtg) ptg).getValue());
+            if (ptg instanceof IntPtg)
+                return String.valueOf(((IntPtg) ptg).getValue());
+            if (ptg instanceof NumberPtg)
+                return String.valueOf(((NumberPtg) ptg).getValue());
             if (ptg instanceof StringPtg) return ((StringPtg) ptg).getValue();
-            if (ptg instanceof BoolPtg) return String.valueOf(((BoolPtg) ptg).getValue());
+            if (ptg instanceof BoolPtg)
+                return String.valueOf(((BoolPtg) ptg).getValue());
         }
 
         try {
