@@ -48,22 +48,10 @@
         <url>https://circleci.com/gh/epsilonlabs/emc-cellsheet</url>
     </ciManagement>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
-    </distributionManagement>
-
     <modules>
         <module>core</module>
         <module>excel</module>
         <module>emf</module>
-<!--        <module>emf</module>-->
     </modules>
 
     <properties>
@@ -79,6 +67,7 @@
         <argLine/>
         <argLine.global/>
 
+        <gpg.version>1.6</gpg.version>
         <gpg.executable>gpg</gpg.executable>
 
         <epsilon.version>1.5.1</epsilon.version>
@@ -174,8 +163,6 @@
     </dependencyManagement>
 
     <build>
-        <defaultGoal>package</defaultGoal>
-
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
@@ -196,6 +183,33 @@
 
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-help-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>show-profiles</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>active-profiles</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.4</version>
@@ -214,20 +228,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
 
         <pluginManagement>
@@ -359,7 +359,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.6</version>
+                    <version>${gpg.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -367,39 +367,29 @@
 
     <profiles>
         <profile>
-            <id>ci</id>
-            <properties>
-                <surefire.useSystemClassLoader>false</surefire.useSystemClassLoader>
-            </properties>
-            <activation>
-                <property>
-                    <name>env.CI</name>
-                    <value>true</value>
-                </property>
-            </activation>
-        </profile>
-
-        <!-- A profile to deploy artifacts on OSS Sonartype -->
-        <profile>
-            <id>ossrh</id>
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
+            <id>sources</id>
             <build>
                 <plugins>
-                    <!-- Generate 'test-jar's beside source 'jar's -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jar-plugin</artifactId>
+                        <artifactId>maven-source-plugin</artifactId>
                         <executions>
                             <execution>
+                                <id>attach-sources</id>
                                 <goals>
-                                    <goal>test-jar</goal>
+                                    <goal>jar-no-fork</goal>
                                 </goals>
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
 
+        <profile>
+            <id>javadoc</id>
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -412,7 +402,15 @@
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
 
+        <!-- Deployment Profiles -->
+        <profile>
+            <id>sign</id>
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -433,7 +431,48 @@
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
 
+        <profile>
+            <!-- Profile for local nexus server deployment -->
+            <id>local</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>nexus-local</id>
+                    <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.8</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <!-- This is the id of the server in settings.xml -->
+                            <serverId>nexus-local</serverId>
+                            <nexusUrl>http://localhost:8081/nexus/</nexusUrl>
+                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!-- Profile for OSSRH Nexus deployment on CI -->
+            <id>ossrh</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
