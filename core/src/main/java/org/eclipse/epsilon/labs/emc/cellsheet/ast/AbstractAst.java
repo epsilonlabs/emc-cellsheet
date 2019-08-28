@@ -10,6 +10,7 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.collect.ForwardingList;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
 import org.slf4j.Logger;
@@ -42,6 +43,8 @@ public abstract class AbstractAst implements Ast {
     protected int position = UNASSIGNED;
     protected AstEvaluator evaluator;
 
+    protected String id;
+
     protected AbstractAst() {
     }
 
@@ -61,6 +64,7 @@ public abstract class AbstractAst implements Ast {
     @Override
     public void setCell(Cell cell) {
         this.cell = cell;
+        this.id = null;
     }
 
     @Override
@@ -71,6 +75,7 @@ public abstract class AbstractAst implements Ast {
     @Override
     public void setParent(Ast parent) {
         this.parent = parent;
+        this.id = null;
     }
 
     @Override
@@ -126,6 +131,7 @@ public abstract class AbstractAst implements Ast {
     @Override
     public void setPosition(int position) {
         this.position = position;
+        this.id = null;
     }
 
     @Nonnull
@@ -160,6 +166,20 @@ public abstract class AbstractAst implements Ast {
         }
     }
 
+    @Nonnull
+    @Override
+    public String getId() {
+        if (id == null) {
+            id = Ast.super.getId();
+            for (Ast child : children) {
+                if (child instanceof AbstractAst) {
+                    ((AbstractAst) child).id = null;
+                }
+            }
+        }
+        return id;
+    }
+
     @Override
     public String toString() {
         MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper(this);
@@ -174,6 +194,22 @@ public abstract class AbstractAst implements Ast {
                 .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
                 .omitNullValues()
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractAst that = (AbstractAst) o;
+        return getPosition() == that.getPosition() &&
+                Objects.equal(getToken(), that.getToken()) &&
+                Objects.equal(getId(), that.getId()) &&
+                Objects.equal(getChildren(), that.getChildren());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getToken(), getId(), getChildren(), getPosition());
     }
 
     /**
