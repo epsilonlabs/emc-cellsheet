@@ -10,11 +10,13 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import com.google.common.base.MoreObjects;
-import org.eclipse.epsilon.labs.emc.cellsheet.*;
+import com.google.common.base.Objects;
+import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
+import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
+import org.eclipse.epsilon.labs.emc.cellsheet.Row;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,21 +56,15 @@ public abstract class PoiCell<T> implements Cell<T>, PoiDelegate<org.apache.poi.
 
     @Override
     public List<Ast> getAsts() {
+        if (asts.isEmpty()) {
+            asts.add(PoiAstFactory.getInstance().of(this));
+        }
         return asts;
     }
 
     @Override
     public Ast getRoot() {
-        if (asts.isEmpty()) {
-            addAst(PoiAstFactory.getInstance().of(this));
-        }
-        return asts.get(0);
-    }
-
-    @Nonnull
-    @Override
-    public Iterator<CellsheetElement> iterator() {
-        throw new UnsupportedOperationException();
+        return getAsts().get(0);
     }
 
     @Override
