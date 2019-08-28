@@ -10,7 +10,7 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Strings;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
@@ -124,11 +124,16 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
 
     @Override
     public void load() throws EolModelLoadingException {
-        logger.debug("Loading PoiBook with [modelUri: {}, bookName: {}]", modelUri, bookName);
+        if (delegate != null) {
+            logger.debug("PoiBook already loaded, skipping");
+            return;
+        }
+
+        logger.info("Loading PoiBook with [modelUri: {}, bookName: {}]", modelUri, bookName);
 
         try {
             if (modelUri == null) {
-                logger.debug("No modelUri set, creating in-memory XSSF-based book");
+                logger.info("No modelUri set, creating in-memory XSSF-based book");
                 delegate = WorkbookFactory.create(true);
             } else {
                 delegate = WorkbookFactory.create(new File(modelUri));
@@ -138,7 +143,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         }
 
         delegate.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-        logger.debug("...Loading Finished");
+        logger.info("...Loading Finished");
     }
 
     @Override
@@ -192,13 +197,36 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", getId())
-                .add("workspace", workspace)
+                .add("workspace", workspace.getId())
                 .add("bookName", bookName)
                 .add("modelUri", modelUri)
                 .add("delegate", delegate)
                 .add("type", getType().getTypeName())
                 .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PoiBook poiBook = (PoiBook) o;
+        return Objects.equal(getDelegate(), poiBook.getDelegate()) &&
+                Objects.equal(delegateFpw, poiBook.delegateFpw) &&
+                Objects.equal(delegateEvaluator, poiBook.delegateEvaluator) &&
+                Objects.equal(getWorkspace(), poiBook.getWorkspace()) &&
+                Objects.equal(getModelUri(), poiBook.getModelUri()) &&
+                Objects.equal(getBookName(), poiBook.getBookName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getDelegate(),
+                delegateFpw,
+                delegateEvaluator,
+                getWorkspace(),
+                getModelUri(),
+                getBookName());
     }
 
     /**

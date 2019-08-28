@@ -9,8 +9,13 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import com.google.common.collect.ImmutableList;
+
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Abstract Model Type representing a single cell in a workbook.
@@ -150,7 +155,7 @@ public interface Cell<T> extends HasA1 {
     @Nonnull
     @Override
     default Iterator<CellsheetElement> iterator() {
-        return Collections.<CellsheetElement>unmodifiableList(getAsts()).iterator();
+        return ImmutableList.<CellsheetElement>copyOf(getAsts()).iterator();
     }
 
     @Override

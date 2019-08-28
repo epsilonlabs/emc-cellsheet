@@ -80,12 +80,27 @@ public abstract class PoiCell<T> implements Cell<T>, PoiDelegate<org.apache.poi.
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", getId())
-                .add("row", row)
+                .add("row", row.getId())
                 .add("colIndex", colIndex)
                 .add("value", getValue())
                 .add("type", getType().getTypeName())
                 .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PoiCell<?> poiCell = (PoiCell<?>) o;
+        return getColIndex() == poiCell.getColIndex() &&
+                Objects.equal(getValue(), poiCell.getValue()) &&
+                Objects.equal(getRow(), poiCell.getRow());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getValue(), getRow(), getColIndex());
     }
 
     public static abstract class Builder<T extends PoiCell<V>, V, B> implements Cell.Builder<T, V, Builder<T, V, B>> {

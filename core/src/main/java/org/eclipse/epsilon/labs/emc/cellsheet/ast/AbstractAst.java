@@ -162,15 +162,17 @@ public abstract class AbstractAst implements Ast {
 
     @Override
     public String toString() {
+        MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper(this);
         return MoreObjects.toStringHelper(this)
                 .add("token", getTokenValue())
                 .add("isRoot", isRoot())
                 .add("id", getId())
-                .add("cell", getCell())
-                .add("parent", getParent())
+                .add("cell", getCell() == null ? null : getCell().getId())
+                .add("parent", getParent() == null ? null : getParent().getId())
                 .add("position", position)
                 .add("type", getType().getTypeName())
                 .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
+                .omitNullValues()
                 .toString();
     }
 

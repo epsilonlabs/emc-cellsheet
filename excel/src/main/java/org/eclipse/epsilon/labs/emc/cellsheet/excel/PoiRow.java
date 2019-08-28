@@ -11,6 +11,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -107,7 +108,7 @@ public class PoiRow implements Row, PoiDelegate<org.apache.poi.ss.usermodel.Row>
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", getId())
-                .add("sheet", sheet)
+                .add("sheet", sheet.getId())
                 .add("rowIndex", rowIndex)
                 .add("type", getType().getTypeName())
                 .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
@@ -117,6 +118,20 @@ public class PoiRow implements Row, PoiDelegate<org.apache.poi.ss.usermodel.Row>
     @Override
     public org.apache.poi.ss.usermodel.Row getDelegate() {
         return sheet.getDelegate().getRow(rowIndex);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PoiRow poiRow = (PoiRow) o;
+        return getRowIndex() == poiRow.getRowIndex() &&
+                Objects.equal(getSheet(), poiRow.getSheet());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getSheet(), getRowIndex());
     }
 
     public static class Builder implements Row.Builder<PoiRow, Builder> {

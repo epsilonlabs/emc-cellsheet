@@ -10,6 +10,7 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import org.eclipse.epsilon.labs.emc.cellsheet.Book;
@@ -85,6 +86,21 @@ public class PoiSheet implements Sheet, PoiDelegate<org.apache.poi.ss.usermodel.
                 .add("type", getType().getTypeName())
                 .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PoiSheet poiSheet = (PoiSheet) o;
+        return getSheetIndex() == poiSheet.getSheetIndex() &&
+                Objects.equal(getBook(), poiSheet.getBook()) &&
+                Objects.equal(getSheetName(), poiSheet.getSheetName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getBook(), getSheetName(), getSheetIndex());
     }
 
     public static class Builder implements Sheet.Builder<PoiSheet, Builder> {
