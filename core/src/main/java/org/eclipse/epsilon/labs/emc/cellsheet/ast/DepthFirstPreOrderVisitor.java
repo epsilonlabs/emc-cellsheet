@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class DepthFirstPreOrderVisitor<T> implements Ast.Visitor<T> {
+public class DepthFirstPreOrderVisitor implements Ast.Visitor<Void> {
 
     private final List<Ast.Visitor> visitors = new LinkedList<>();
 
@@ -23,14 +23,14 @@ public class DepthFirstPreOrderVisitor<T> implements Ast.Visitor<T> {
     }
 
     @Override
-    public Optional<T> visit(Ast ast) throws Exception {
+    public Void visit(Ast ast) throws Exception {
         for (Ast.Visitor v : visitors) {
             ast.accept(v);
         }
         for (Ast child : ast.getChildren()) {
             child.accept(this);
         }
-        return Optional.empty();
+        return null;
     }
 
     public static class DepthFirstPreOrderVisitorBuilder {

@@ -157,9 +157,7 @@ public abstract class AbstractAst implements Ast {
             return cell.getValue().toString();
         }
         try {
-            return new FormulaBuilderVisitor()
-                    .visit(this)
-                    .orElseThrow(AssertionError::new);
+            return new FormulaBuilderVisitor().visit(this);
         } catch (Exception e) {
             logger.error("Error reconstructing formula in AST {}", this);
             throw new AssertionError(e);

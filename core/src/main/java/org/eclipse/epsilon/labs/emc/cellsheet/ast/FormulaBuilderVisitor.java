@@ -42,7 +42,7 @@ public class FormulaBuilderVisitor implements Ast.Visitor<String> {
     private final StringBuilder sb = new StringBuilder();
 
     @Override
-    public Optional<String> visit(Ast ast) throws Exception {
+    public String visit(Ast ast) throws Exception {
         if (ast.isLeaf()) {
             switch (ast.getType()) {
                 case TEXT:
@@ -58,7 +58,7 @@ public class FormulaBuilderVisitor implements Ast.Visitor<String> {
                     sb.append(ast.getTokenValue());
                     break;
             }
-            return Optional.of(sb.toString());
+            return sb.toString();
         }
 
         CellsheetType supertype = getSupertype(ast);
@@ -116,7 +116,7 @@ public class FormulaBuilderVisitor implements Ast.Visitor<String> {
                         ast));
         }
 
-        return Optional.of(sb.toString());
+        return sb.toString();
     }
 
     /**
