@@ -17,7 +17,6 @@ import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 
 import java.util.EnumSet;
 import java.util.Iterator;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 

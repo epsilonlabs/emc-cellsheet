@@ -12,10 +12,10 @@ package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 import org.apache.poi.ss.formula.WorkbookEvaluator;
 import org.apache.poi.ss.formula.eval.*;
 import org.apache.poi.ss.util.CellReference;
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.AstEval;
 import org.eclipse.epsilon.labs.emc.cellsheet.AstEvalFactory;
 import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
+import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 
 import static com.google.common.base.Preconditions.checkArgument;

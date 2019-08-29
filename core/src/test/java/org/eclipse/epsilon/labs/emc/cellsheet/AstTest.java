@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.ast.AbstractAst;
+
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAst;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAstEvaluator;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
@@ -22,16 +22,16 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class AbstractAstTest {
+public class AstTest {
 
-    private AbstractAst root;
+    private Ast root;
 
     @Before
     public void setUp() throws Exception {
         Workspace ws = new Workspace();
         ws.setName("Default Dummy Workspace 1");
         ws.addBook(new DummyBook());
-        root = (AbstractAst) ws.getBooks().get(0)
+        root = ws.getBooks().get(0)
                 .getSheet(0)
                 .getRow(0)
                 .getCell(0)
@@ -50,7 +50,7 @@ public class AbstractAstTest {
 
     @Test
     public void getCell_should_return_root_cell_when_child() {
-        AbstractAst child = new DummyAst();
+        Ast child = new DummyAst();
         assertThat(child.getParent()).isNull();
         assertThat(child.getCell()).isNull();
 
@@ -78,7 +78,7 @@ public class AbstractAstTest {
 
     @Test
     public void getParent_should_return_parent_when_ast_is_a_child() {
-        AbstractAst child = new DummyAst();
+        Ast child = new DummyAst();
         assertThat(child.getChildren()).isEmpty();
         assertThat(child.getParent()).isNull();
 
@@ -108,7 +108,7 @@ public class AbstractAstTest {
 
     @Test
     public void getRoot_should_return_root_when_ast_is_child() {
-        AbstractAst child = new DummyAst();
+        Ast child = new DummyAst();
         assertThat(child.getRoot()).isEqualTo(child);
         assertThat(child.getPosition()).isEqualTo(Ast.UNASSIGNED);
         assertThat(root.getChildren()).isEmpty();
@@ -131,8 +131,8 @@ public class AbstractAstTest {
 
     @Test
     public void getChildren_should_return_children_in_order() {
-        AbstractAst a = new DummyAst();
-        AbstractAst b = new DummyAst();
+        Ast a = new DummyAst();
+        Ast b = new DummyAst();
         assertThat(root.getChildren()).isEmpty();
 
         root.addChild(a);
@@ -146,9 +146,9 @@ public class AbstractAstTest {
 
     @Test
     public void childAt_should_return_child_at_given_index() {
-        AbstractAst a = new DummyAst();
-        AbstractAst b = new DummyAst();
-        AbstractAst c = new DummyAst();
+        Ast a = new DummyAst();
+        Ast b = new DummyAst();
+        Ast c = new DummyAst();
         root.addChild(a);
         root.addChild(b);
         root.addChild(c);
@@ -162,7 +162,7 @@ public class AbstractAstTest {
     public void addChild_should_add_ast_to_children_given_ast_and_no_other_children() {
         assertThat(root.getChildren()).isEmpty();
 
-        AbstractAst child = new DummyAst();
+        Ast child = new DummyAst();
         assertThat(child.getParent()).isNull();
         assertThat(child.getPosition()).isEqualTo(Ast.UNASSIGNED);
         assertThat(child.getRoot()).isEqualTo(child);
@@ -176,8 +176,8 @@ public class AbstractAstTest {
 
     @Test
     public void addChild_should_remove_old_parent() {
-        AbstractAst otherRoot = new DummyAst();
-        AbstractAst child = new DummyAst();
+        Ast otherRoot = new DummyAst();
+        Ast child = new DummyAst();
         otherRoot.addChild(child);
         assertThat(otherRoot.getChildren()).containsExactly(child);
         assertThat(root.getChildren()).isEmpty();
@@ -191,9 +191,9 @@ public class AbstractAstTest {
 
     @Test
     public void addChild_should_shift_siblings_given_insertion_index_and_existing_children() {
-        AbstractAst a = new DummyAst();
-        AbstractAst b = new DummyAst();
-        AbstractAst c = new DummyAst();
+        Ast a = new DummyAst();
+        Ast b = new DummyAst();
+        Ast c = new DummyAst();
 
         root.addChild(a);
         root.addChild(b);
@@ -210,10 +210,10 @@ public class AbstractAstTest {
 
     @Test
     public void addChild_should_remove_old_parent_when_given_index() {
-        AbstractAst otherRoot = new DummyAst();
-        AbstractAst a = new DummyAst();
-        AbstractAst b = new DummyAst();
-        AbstractAst c = new DummyAst();
+        Ast otherRoot = new DummyAst();
+        Ast a = new DummyAst();
+        Ast b = new DummyAst();
+        Ast c = new DummyAst();
 
         root.addChild(a);
         otherRoot.addChild(b);
@@ -234,9 +234,9 @@ public class AbstractAstTest {
 
     @Test
     public void removeChild_should_remove_child_at_given_index() {
-        AbstractAst a = new DummyAst();
-        AbstractAst b = new DummyAst();
-        AbstractAst c = new DummyAst();
+        Ast a = new DummyAst();
+        Ast b = new DummyAst();
+        Ast c = new DummyAst();
         root.addChild(a);
         root.addChild(b);
         root.addChild(c);
@@ -261,7 +261,7 @@ public class AbstractAstTest {
 
     @Test
     public void getPosition_should_return_same_position_as_contained_in_list() {
-        AbstractAst child = new DummyAst();
+        Ast child = new DummyAst();
         assertThat(child.getPosition()).isEqualTo(Ast.UNASSIGNED);
 
         root.addChild(child);

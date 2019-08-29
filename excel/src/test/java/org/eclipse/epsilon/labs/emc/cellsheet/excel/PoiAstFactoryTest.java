@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
-import com.google.common.io.Resources;
-import org.apache.commons.math3.analysis.function.Add;
 import org.apache.poi.ss.usermodel.Cell;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Number;
@@ -18,9 +16,6 @@ import org.eclipse.epsilon.labs.emc.cellsheet.ast.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
-import java.net.URLDecoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

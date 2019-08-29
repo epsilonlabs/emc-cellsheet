@@ -9,15 +9,14 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.test;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.ast.AbstractAst;
+import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class DummyAst extends AbstractAst {
+public class DummyAst extends Ast {
 
     public DummyAst() {
         this.evaluator = new DummyAstEvaluator();

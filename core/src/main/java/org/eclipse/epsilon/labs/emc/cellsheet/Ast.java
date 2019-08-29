@@ -9,12 +9,20 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+import com.google.common.collect.ForwardingList;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.FormulaBuilderVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Model Type representing a Node in a {@link Cell} value's Abstract Syntax
@@ -38,7 +46,7 @@ import java.util.Optional;
  * <p>Token - The actual token/value of the AST</p>
  *
  * <p>Position - The position of this node relative to it's parent or
- * cell if the node is the root. See {@link Ast#getPosition()}</p>
+ * cell if the node is the root. See {@link #getPosition()}</p>
  *
  * <p>
  * Unless specified operations that modify the children of a node will
@@ -48,19 +56,43 @@ import java.util.Optional;
  * @author Jonathan Co
  * @since 3.0.0
  */
-public interface Ast extends CellsheetElement {
+public abstract class Ast implements CellsheetElement {
 
     /**
      * Position value indicating the AST is dangling and is not assigned to a parent or cell.
      */
-    int UNASSIGNED = -1;
+    public static final int UNASSIGNED = -1;
+
+    private static final Logger logger = LoggerFactory.getLogger(Ast.class);
+
+    protected Cell cell;
+    protected Token token;
+    protected Ast parent = null;
+    protected List<Ast> children = new InternalAstList();
+    protected int position = UNASSIGNED;
+    protected AstEvaluator evaluator;
+
+    protected String id;
+
+    protected Ast() {
+    }
+
+    protected Ast(Token token) {
+        this.token = token;
+    }
+
+    protected Ast(String token) {
+        this(Tokens.getToken(token));
+    }
 
     /**
      * Retrieve the Cell this node is applicable to if any
      *
      * @return the Cell this node is applicable to or {@code null}
      */
-    Cell getCell();
+    public Cell getCell() {
+        return parent == null ? cell : parent.getCell();
+    }
 
     /**
      * Sets the Cell this node is applicable to. Note this does not modify the
@@ -68,35 +100,47 @@ public interface Ast extends CellsheetElement {
      *
      * @param cell new applicable cell, can be {@code null}
      */
-    void setCell(Cell cell);
+    public void setCell(Cell cell) {
+        this.cell = cell;
+        this.id = null;
+    }
 
     /**
      * Get the parent of this node
      *
      * @return the parent of this AST or {@code null} if this node is the root
      */
-    Ast getParent();
+    public Ast getParent() {
+        return parent;
+    }
 
     /**
      * Set the parent of this node
      *
      * @param parent the new parent, can be {@code null}
      */
-    void setParent(Ast parent);
+    public void setParent(Ast parent) {
+        this.parent = parent;
+        this.id = null;
+    }
 
     /**
      * Get the token object associated with this node.
      *
      * @return the token
      */
-    Token getToken();
+    public Token getToken() {
+        return token;
+    }
 
     /**
      * Set a new token
      *
      * @param token the new value
      */
-    void setToken(Token token);
+    public void setToken(Token token) {
+        this.token = token;
+    }
 
     /**
      * Sets the token of this node using a token's string value. Will perform
@@ -104,7 +148,7 @@ public interface Ast extends CellsheetElement {
      *
      * @param token the new string value of the new token
      */
-    default void setToken(String token) {
+    public void setToken(String token) {
         setToken(Tokens.getToken(token));
     }
 
@@ -113,7 +157,7 @@ public interface Ast extends CellsheetElement {
      *
      * @return string value of this node's token.
      */
-    default String getTokenValue() {
+    public String getTokenValue() {
         return Optional.ofNullable(getToken())
                 .orElse(Tokens.nothing())
                 .getValue();
@@ -125,7 +169,99 @@ public interface Ast extends CellsheetElement {
      *
      * @return the root of the AST structure
      */
-    Ast getRoot();
+    public Ast getRoot() {
+        return parent == null ? this : parent.getRoot();
+    }
+
+    /**
+     * Retrieve an immutable list of this node's children
+     *
+     * @return an immutable list of children
+     */
+    public List<Ast> getChildren() {
+        return Collections.unmodifiableList(children);
+    }
+
+    /**
+     * Retrieve the child at the given position
+     *
+     * @param position the position of the child
+     * @return the child at given position
+     * @throws IndexOutOfBoundsException if position is out of range
+     */
+    public Ast childAt(int position) {
+        return children.get(position);
+    }
+
+    /**
+     * Add the child to the next valid position.
+     * <p>This operation modifies the children to ensure consistency in the
+     * structure.
+     * </p>
+     *
+     * @param child the child to add
+     */
+    public void addChild(Ast child) {
+        children.add(child);
+    }
+
+    /**
+     * Insert the child node at the given position.
+     * <p>This operation modifies the children to ensure consistency in the
+     * structure. Shifts existing children right (increment position by 1) if
+     * required.
+     * </p>
+     *
+     * @param position the position to insert at
+     * @param child    the child to insert
+     * @throws IndexOutOfBoundsException if position is out of range
+     */
+    public void addChild(int position, Ast child) {
+        children.add(position, child);
+    }
+
+    /**
+     * Remove the child at the given position.
+     * <p>This operation modifies the children to ensure consistency in the
+     * structure. Shifts existing children left (decrement position by 1) if
+     * required
+     * </p>
+     *
+     * @param position the position to remove
+     * @return the child removed
+     * @throws IndexOutOfBoundsException if position is out of range
+     */
+    public Ast removeChild(int position) {
+        return children.remove(position);
+    }
+
+    /**
+     * Remove the given child
+     * <p>This operation modifies the children to ensure consistency in the
+     * structure. Shifts existing children left (decrement position by 1) if
+     * required
+     * </p>
+     *
+     * @param child the child to remove
+     * @return the child removed
+     */
+    public Ast removeChild(Ast child) {
+        return children.remove(child.getPosition());
+    }
+
+    /**
+     * @return {@code true} if this node is the root node in the whole AST
+     */
+    public boolean isRoot() {
+        return getParent() == null;
+    }
+
+    /**
+     * @return {@code true} if this node has no children
+     */
+    public boolean isLeaf() {
+        return getChildren().isEmpty();
+    }
 
     /**
      * Retrieve the position of the AST based on the following criteria:
@@ -162,7 +298,9 @@ public interface Ast extends CellsheetElement {
      *
      * @return the position of this node in the AST structure
      */
-    int getPosition();
+    public int getPosition() {
+        return position;
+    }
 
     /**
      * Set the new position of this node. See {@link #getPosition()} for semantics
@@ -171,91 +309,37 @@ public interface Ast extends CellsheetElement {
      *
      * @param position the new position of this node
      */
-    void setPosition(int position);
-
-    /**
-     * Retrieve an immutable list of this node's children
-     *
-     * @return an immutable list of children
-     */
-    List<Ast> getChildren();
-
-    /**
-     * Retrieve the child at the given position
-     *
-     * @param position the position of the child
-     * @return the child at given position
-     * @throws IndexOutOfBoundsException if position is out of range
-     */
-    Ast childAt(int position);
-
-    /**
-     * Insert the child node at the given position.
-     * <p>This operation modifies the children to ensure consistency in the
-     * structure. Shifts existing children right (increment position by 1) if
-     * required.
-     * </p>
-     *
-     * @param position the position to insert at
-     * @param child    the child to insert
-     * @throws IndexOutOfBoundsException if position is out of range
-     */
-    void addChild(int position, Ast child);
-
-    /**
-     * Add the child to the next valid position.
-     * <p>This operation modifies the children to ensure consistency in the
-     * structure.
-     * </p>
-     *
-     * @param child the child to add
-     */
-    void addChild(Ast child);
-
-    /**
-     * Remove the child at the given position.
-     * <p>This operation modifies the children to ensure consistency in the
-     * structure. Shifts existing children left (decrement position by 1) if
-     * required
-     * </p>
-     *
-     * @param position the position to remove
-     * @return the child removed
-     * @throws IndexOutOfBoundsException if position is out of range
-     */
-    Ast removeChild(int position);
-
-    /**
-     * Remove the given child
-     * <p>This operation modifies the children to ensure consistency in the
-     * structure. Shifts existing children left (decrement position by 1) if
-     * required
-     * </p>
-     *
-     * @param child the child to remove
-     * @return the child removed
-     */
-    Ast removeChild(Ast child);
+    public void setPosition(int position) {
+        this.position = position;
+        this.id = null;
+    }
 
     @Nonnull
     @Override
-    Iterator<Ast> iterator();
+    public Iterator<Ast> iterator() {
+        return children.iterator();
+    }
 
     /**
      * Reconstructs a formula using the current node as the root and evaluates
-     * that formula. Requires that {@link Ast#getCell()} be set
+     * that formula. Requires that {@link #getCell()} be set
      *
      * @return the result of evaluation
      * @throws IllegalStateException cell is not set
      */
-    AstEval evaluate();
+    public AstEval evaluate() {
+        checkNotNull(getCell(), "Context cell is null, needed for evaluation");
+        return evaluator.evaluate(this);
+    }
 
     /**
      * Set the evaluator to use to evaluate this AST
      *
      * @param evaluator the new evaluator
      */
-    void setEvaluator(AstEvaluator evaluator);
+    public void setEvaluator(AstEvaluator evaluator) {
+        this.evaluator = evaluator;
+    }
 
     /**
      * Returns an evaluable formula derived from the subtree with this node as
@@ -268,25 +352,31 @@ public interface Ast extends CellsheetElement {
      *
      * @return the formula.
      */
-    String getFormula();
-
-    /**
-     * @return {@code true} if this node is the root node in the whole AST
-     */
-    default boolean isRoot() {
-        return getParent() == null;
-    }
-
-    /**
-     * @return {@code true} if this node has no children
-     */
-    default boolean isLeaf() {
-        return getChildren().isEmpty();
+    public String getFormula() {
+        if (isRoot() && cell != null) {
+            return cell.getValue().toString();
+        }
+        try {
+            return new FormulaBuilderVisitor().visit(this);
+        } catch (Exception e) {
+            logger.error("Error reconstructing formula in AST {}", this);
+            throw new AssertionError(e);
+        }
     }
 
     @Nonnull
     @Override
-    default String getId() {
+    public String getId() {
+        if (id == null) {
+            id = buildId();
+            for (Ast child : children) {
+                child.id = null;
+            }
+        }
+        return id;
+    }
+
+    private String buildId() {
         if (getParent() == null) {
             if (getCell() == null) return CellsheetElement.super.getId();
             return getCell().getId() + "/asts/" + getPosition();
@@ -294,20 +384,46 @@ public interface Ast extends CellsheetElement {
         return getParent().getId() + "/" + getPosition();
     }
 
-    /**
-     * Allows Visitor functions to operate on this node
-     *
-     * @param visitor the visitor to visit this node
-     * @throws Exception thrown by visitor during operation
-     */
-    default <T> T accept(Visitor<T> visitor) throws Exception {
+    public <T> T accept(Visitor<T> visitor) throws Exception {
         return visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper(this);
+        return MoreObjects.toStringHelper(this)
+                .add("token", getTokenValue())
+                .add("isRoot", isRoot())
+                .add("id", getId())
+                .add("cell", getCell() == null ? null : getCell().getId())
+                .add("parent", getParent() == null ? null : getParent().getId())
+                .add("position", position)
+                .add("type", getType().getTypeName())
+                .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
+                .omitNullValues()
+                .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ast that = (Ast) o;
+        return getPosition() == that.getPosition() &&
+                Objects.equal(getToken(), that.getToken()) &&
+                Objects.equal(getId(), that.getId()) &&
+                Objects.equal(getChildren(), that.getChildren());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getToken(), getId(), getChildren(), getPosition());
     }
 
     /**
      * Defines an AST visitor
      */
-    interface Visitor<T> {
+    public interface Visitor<T> {
 
         /**
          * Operation to invoke on the AST visited
@@ -316,6 +432,63 @@ public interface Ast extends CellsheetElement {
          * @throws Exception thrown during execution
          */
         T visit(Ast ast) throws Exception;
-
     }
+
+    /**
+     * Decorated {@link ArrayList} that modifies child nodes as they are added
+     * or removed by the list
+     *
+     * @author Jonathan Co
+     * @since 3.0.0
+     */
+    class InternalAstList extends ForwardingList<Ast> {
+
+        final List<Ast> delegate = new ArrayList<>(0);
+
+        @Override
+        public boolean add(Ast ast) {
+            checkArgument(!delegate.contains(ast), "AST already present at index %s", ast.getPosition());
+            if (ast.getParent() != null && !ast.getParent().equals(Ast.this))
+                ast.getParent().removeChild(ast);
+            reindex();
+            ast.setParent(Ast.this);
+            ast.setPosition(delegate.size());
+            return super.add(ast);
+        }
+
+        @Override
+        public void add(int index, Ast ast) {
+            checkArgument(!delegate.contains(ast), "AST already present at index %s", ast.getPosition());
+            super.add(index, ast);
+            if (ast.getParent() != null && !ast.getParent().equals(Ast.this))
+                ast.getParent().removeChild(ast);
+            ast.setParent(Ast.this);
+            reindex();
+        }
+
+        @Override
+        public Ast remove(int index) {
+            Ast removed = super.remove(index);
+            resetParent(removed);
+            reindex();
+            return removed;
+        }
+
+        @Override
+        protected List<Ast> delegate() {
+            return delegate;
+        }
+
+        void reindex() {
+            if (delegate.isEmpty()) return;
+            for (int i = 0, n = delegate.size(); i < n; i++)
+                delegate.get(i).setPosition(i);
+        }
+
+        void resetParent(Ast ast) {
+            ast.setParent(null);
+            ast.setPosition(UNASSIGNED);
+        }
+    }
+
 }
