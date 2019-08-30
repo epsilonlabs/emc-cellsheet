@@ -10,16 +10,15 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 
 import javax.annotation.Nonnull;
 
 /**
- * AST Node representing a text operand in a spreadsheet function.
+ * AST Node representing a of operand in a spreadsheet function.
  * <p>
  * No check is performed to determine if the token value given is wrapped in
  * double quotes ("). when used as an argument in a function, the string returned
- * by {@link #getTokenValue()} needs to be manually wrapped´
+ * by {@link #getToken()} ()} needs to be manually wrapped´
  * </p>
  *
  * @author Jonathan Co
@@ -33,15 +32,6 @@ public class Text extends Operand {
      * @param token token as a string
      */
     public Text(String token) {
-        super(token);
-    }
-
-    /**
-     * Constructor that accepts a pre-built token
-     *
-     * @param token a pre-built token
-     */
-    public Text(Token token) {
         super(token);
     }
 

@@ -9,10 +9,10 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.test;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.AstEval;
-import org.eclipse.epsilon.labs.emc.cellsheet.AstEvalFactory;
-import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstEval;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstEvals;
+import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 
 public class DummyAstEvaluator implements AstEvaluator {
@@ -21,11 +21,11 @@ public class DummyAstEvaluator implements AstEvaluator {
 
     @Override
     public AstEval evaluate(Ast ast) {
-        return AstEvalFactory.text(EVAL_RESULT);
+        return AstEvals.of(EVAL_RESULT);
     }
 
     @Override
     public AstEval evaluate(String formula, Cell cell) {
-        return AstEvalFactory.text(EVAL_RESULT);
+        return AstEvals.of(EVAL_RESULT);
     }
 }

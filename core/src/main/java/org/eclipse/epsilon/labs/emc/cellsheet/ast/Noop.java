@@ -9,23 +9,14 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class Noop extends Ast {
-
-    public Noop() {
-        super();
-    }
-
-    public Noop(Token token) {
-        super(token);
-    }
+public class Noop extends AstPayload {
 
     public Noop(String token) {
         super(token);
@@ -40,6 +31,6 @@ public class Noop extends Ast {
     @Nonnull
     @Override
     public Set<CellsheetType> getKinds() {
-        return EnumSet.of(getType(), CellsheetType.CELLSHEET_ELEMENT, CellsheetType.AST, CellsheetType.NOOP);
+        return EnumSet.of(getType(), CellsheetType.AST_PAYLOAD, CellsheetType.CELLSHEET_ELEMENT);
     }
 }

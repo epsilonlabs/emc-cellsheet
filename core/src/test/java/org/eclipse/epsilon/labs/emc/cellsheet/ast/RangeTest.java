@@ -9,40 +9,33 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
-import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType.*;
 
 public class RangeTest {
 
     @Test
     public void constructor_should_succeed_given_string() {
-        Ast ast = new Range("A1:B5");
-        assertThat(ast.getTokenValue()).isEqualTo("A1:B5");
-    }
-
-    @Test
-    public void constructor_should_succeed_given_token() {
-        Ast ast = new Range(new Token("A1:B5"));
-        assertThat(ast.getTokenValue()).isEqualTo("A1:B5");
+        AstPayload payload = new Range("A1:B5");
+        assertThat(payload.getToken()).isEqualTo("A1:B5");
     }
 
     @Test
     public void getType_should_return_RANGE() {
-        Ast ast = new Range("A1:B5");
-        assertThat(ast.getType()).isEqualTo(CellsheetType.RANGE);
+        AstPayload payload = new Range("A1:B5");
+        assertThat(payload.getType()).isEqualTo(RANGE);
     }
 
     @Test
     public void getKind_should_return_correct_types() {
-        Ast ast = new Range("A1:B5");
-        assertThat(ast.getKinds()).containsExactlyInAnyOrder(
-                CellsheetType.RANGE,
-                CellsheetType.OPERAND,
-                CellsheetType.CELLSHEET_ELEMENT,
-                CellsheetType.AST);
+        AstPayload payload = new Range("A1:B5");
+        assertThat(payload.getKinds()).containsExactlyInAnyOrder(
+                RANGE,
+                OPERAND,
+                AST_PAYLOAD,
+                CELLSHEET_ELEMENT);
     }
 }

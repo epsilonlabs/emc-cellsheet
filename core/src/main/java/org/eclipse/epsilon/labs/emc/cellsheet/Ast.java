@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -43,7 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * can be {@code null} if the AST is dangling. The cell is used as a context
  * when evaluating the AST as a function.</p>
  *
- * <p>Token - The actual token/value of the AST</p>
+ * <p>Payload - The actual token and metadata held at this node</p>
  *
  * <p>Position - The position of this node relative to it's parent or
  * cell if the node is the root. See {@link #getPosition()}</p>
@@ -56,7 +55,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Jonathan Co
  * @since 3.0.0
  */
-public abstract class Ast implements CellsheetElement {
+public class Ast implements CellsheetElement {
 
     /**
      * Position value indicating the AST is dangling and is not assigned to a parent or cell.
@@ -64,25 +63,20 @@ public abstract class Ast implements CellsheetElement {
     public static final int UNASSIGNED = -1;
 
     private static final Logger logger = LoggerFactory.getLogger(Ast.class);
-
-    protected Cell cell;
-    protected Token token;
-    protected Ast parent = null;
-    protected List<Ast> children = new InternalAstList();
-    protected int position = UNASSIGNED;
-    protected AstEvaluator evaluator;
-
     protected String id;
+    private Cell cell;
+    private AstPayload payload;
+    private Ast parent = null;
+    private List<Ast> children = new InternalAstList();
+    private int position = UNASSIGNED;
+    private AstEvaluator evaluator;
 
-    protected Ast() {
+    public Ast() {
+        this(null);
     }
 
-    protected Ast(Token token) {
-        this.token = token;
-    }
-
-    protected Ast(String token) {
-        this(Tokens.getToken(token));
+    public Ast(AstPayload payload) {
+        this.payload = payload;
     }
 
     /**
@@ -125,31 +119,21 @@ public abstract class Ast implements CellsheetElement {
     }
 
     /**
-     * Get the token object associated with this node.
+     * Get the payload object associated with this node.
      *
-     * @return the token
+     * @return the payload
      */
-    public Token getToken() {
-        return token;
+    public AstPayload getPayload() {
+        return payload;
     }
 
     /**
-     * Set a new token
+     * Set a new payload
      *
-     * @param token the new value
+     * @param payload the new payload
      */
-    public void setToken(Token token) {
-        this.token = token;
-    }
-
-    /**
-     * Sets the token of this node using a token's string value. Will perform
-     * construction using {@link Tokens#getToken(String)}
-     *
-     * @param token the new string value of the new token
-     */
-    public void setToken(String token) {
-        setToken(Tokens.getToken(token));
+    public void setPayload(AstPayload payload) {
+        this.payload = payload;
     }
 
     /**
@@ -157,10 +141,8 @@ public abstract class Ast implements CellsheetElement {
      *
      * @return string value of this node's token.
      */
-    public String getTokenValue() {
-        return Optional.ofNullable(getToken())
-                .orElse(Tokens.nothing())
-                .getValue();
+    public String getToken() {
+        return payload == null ? null : payload.getToken();
     }
 
     /**
@@ -200,9 +182,25 @@ public abstract class Ast implements CellsheetElement {
      * </p>
      *
      * @param child the child to add
+     * @return the child added
      */
-    public void addChild(Ast child) {
+    public Ast addChild(Ast child) {
         children.add(child);
+        return child;
+    }
+
+    /**
+     * Create a new child with the given payload and add to the next valid
+     * position.
+     * <p>This operation modifies the children to ensure consistency in the
+     * structure.
+     * </p>
+     *
+     * @param payload payload of the new child
+     * @return the child added
+     */
+    public Ast addChild(AstPayload payload) {
+        return addChild(new Ast(payload));
     }
 
     /**
@@ -214,10 +212,28 @@ public abstract class Ast implements CellsheetElement {
      *
      * @param position the position to insert at
      * @param child    the child to insert
+     * @return the inserted child
      * @throws IndexOutOfBoundsException if position is out of range
      */
-    public void addChild(int position, Ast child) {
+    public Ast addChild(int position, Ast child) {
         children.add(position, child);
+        return child;
+    }
+
+    /**
+     * Create a new child with the given payload and insert at the given position.
+     * <p>This operation modifies the children to ensure consistency in the
+     * structure. Shifts existing children right (increment position by 1) if
+     * required.
+     * </p>
+     *
+     * @param position the position to insert at
+     * @param payload    the child to insert
+     * @return the inserted child
+     * @throws IndexOutOfBoundsException if position is out of range
+     */
+    public Ast addChild(int position, AstPayload payload) {
+        return addChild(position, new Ast(payload));
     }
 
     /**
@@ -327,18 +343,9 @@ public abstract class Ast implements CellsheetElement {
      * @return the result of evaluation
      * @throws IllegalStateException cell is not set
      */
-    public AstEval evaluate() {
+    public AstEval evaluate(AstEvaluator evaluator) {
         checkNotNull(getCell(), "Context cell is null, needed for evaluation");
         return evaluator.evaluate(this);
-    }
-
-    /**
-     * Set the evaluator to use to evaluate this AST
-     *
-     * @param evaluator the new evaluator
-     */
-    public void setEvaluator(AstEvaluator evaluator) {
-        this.evaluator = evaluator;
     }
 
     /**
@@ -390,16 +397,13 @@ public abstract class Ast implements CellsheetElement {
 
     @Override
     public String toString() {
-        MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper(this);
         return MoreObjects.toStringHelper(this)
-                .add("token", getTokenValue())
+                .add("token", getToken())
                 .add("isRoot", isRoot())
                 .add("id", getId())
                 .add("cell", getCell() == null ? null : getCell().getId())
                 .add("parent", getParent() == null ? null : getParent().getId())
                 .add("position", position)
-                .add("type", getType().getTypeName())
-                .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
                 .omitNullValues()
                 .toString();
     }
@@ -410,14 +414,26 @@ public abstract class Ast implements CellsheetElement {
         if (o == null || getClass() != o.getClass()) return false;
         Ast that = (Ast) o;
         return getPosition() == that.getPosition() &&
-                Objects.equal(getToken(), that.getToken()) &&
+                Objects.equal(getPayload(), that.getPayload()) &&
                 Objects.equal(getId(), that.getId()) &&
                 Objects.equal(getChildren(), that.getChildren());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getToken(), getId(), getChildren(), getPosition());
+        return Objects.hashCode(getPayload(), getId(), getChildren(), getPosition());
+    }
+
+    @Nonnull
+    @Override
+    public CellsheetType getType() {
+        return CellsheetType.AST;
+    }
+
+    @Nonnull
+    @Override
+    public Set<CellsheetType> getKinds() {
+        return EnumSet.of(CellsheetType.AST, CellsheetType.CELLSHEET_ELEMENT);
     }
 
     /**

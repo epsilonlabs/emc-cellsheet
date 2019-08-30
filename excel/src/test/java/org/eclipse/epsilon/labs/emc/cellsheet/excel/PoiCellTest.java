@@ -40,7 +40,7 @@ public class PoiCellTest {
     }
 
     @Test
-    public void getRoot_given_a_PoiTextCell_should_return_Text_Ast() {
+    public void getRoot_given_a_PoiTextCell_should_return_Ast_with_Text_payload() {
         String value = "This is some value";
         delegateCell.setCellValue(value);
 
@@ -48,8 +48,9 @@ public class PoiCellTest {
         assertThat(cell).isInstanceOf(PoiTextCell.class);
 
         Ast root = cell.getRoot();
-        assertThat(root).isNotNull().isInstanceOf(Text.class);
-        assertThat(root.getTokenValue()).isEqualTo(value);
+        assertThat(root).isNotNull();
+        assertThat(root.getPayload()).isInstanceOf(Text.class);
+        assertThat(root.getToken()).isEqualTo(value);
     }
 
     @Test
@@ -60,8 +61,9 @@ public class PoiCellTest {
         assertThat(cell).isInstanceOf(PoiBooleanCell.class);
 
         Ast root = cell.getRoot();
-        assertThat(root).isNotNull().isInstanceOf(Logical.class);
-        assertThat(root.getToken().getValue()).isEqualTo("FALSE");
+        assertThat(root).isNotNull();
+        assertThat(root.getPayload()).isInstanceOf(Logical.class);
+        assertThat(root.getToken()).isEqualTo("FALSE");
     }
 
     @Test
@@ -71,7 +73,8 @@ public class PoiCellTest {
 
         Ast root = cell.getRoot();
         assertThat(root).isNotNull();
-        assertThat(root.getToken().getValue()).isBlank();
+        assertThat(root.getPayload()).isInstanceOf(Text.class);
+        assertThat(root.getToken()).isBlank();
     }
 
     @Test
@@ -83,8 +86,9 @@ public class PoiCellTest {
         assertThat(cell).isInstanceOf(PoiNumericCell.class);
 
         Ast root = cell.getRoot();
-        assertThat(root).isNotNull().isInstanceOf(Number.class);
-        assertThat(root.getToken().getValue()).isEqualTo(String.valueOf(value));
+        assertThat(root).isNotNull();
+        assertThat(root.getPayload()).isNotNull().isInstanceOf(Number.class);
+        assertThat(root.getToken()).isEqualTo(String.valueOf(value));
     }
 
     @Test
@@ -96,12 +100,14 @@ public class PoiCellTest {
         assertThat(cell).isInstanceOf(PoiFormulaCell.class);
 
         Ast root = cell.getRoot();
-        assertThat(root).isNotNull().isInstanceOf(Function.class);
-        assertThat(root.getToken().getValue()).isEqualTo("SUM");
+        assertThat(root).isNotNull();
+        assertThat(root.getPayload()).isInstanceOf(Function.class);
+        assertThat(root.getToken()).isEqualTo("SUM");
         assertThat(root.getChildren()).hasSize(1);
 
         Ast child = root.getChildren().get(0);
-        assertThat(child).isNotNull().isInstanceOf(Range.class);
-        assertThat(child.getToken().getValue()).isEqualTo("A1:A5");
+        assertThat(child).isNotNull();
+        assertThat(child.getPayload()).isInstanceOf(Range.class);
+        assertThat(child.getToken()).isEqualTo("A1:A5");
     }
 }

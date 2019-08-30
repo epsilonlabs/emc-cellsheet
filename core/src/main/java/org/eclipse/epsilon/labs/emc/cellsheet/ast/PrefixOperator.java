@@ -9,23 +9,14 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.Set;
 
-public abstract class PrefixOperator extends Ast {
-
-    protected PrefixOperator() {
-        super();
-    }
-
-    protected PrefixOperator(Token token) {
-        super(token);
-    }
+public abstract class PrefixOperator extends AstPayload {
 
     protected PrefixOperator(String token) {
         super(token);
@@ -34,6 +25,6 @@ public abstract class PrefixOperator extends Ast {
     @Nonnull
     @Override
     public Set<CellsheetType> getKinds() {
-        return EnumSet.of(getType(), CellsheetType.PREFIX_OPERATOR, CellsheetType.AST, CellsheetType.CELLSHEET_ELEMENT);
+        return EnumSet.of(getType(), CellsheetType.PREFIX_OPERATOR, CellsheetType.AST_PAYLOAD, CellsheetType.CELLSHEET_ELEMENT);
     }
 }

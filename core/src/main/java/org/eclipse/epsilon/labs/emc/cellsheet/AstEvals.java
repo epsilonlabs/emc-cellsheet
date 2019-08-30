@@ -14,29 +14,35 @@ import com.google.common.base.Strings;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class AstEvalFactory {
+/**
+ * Static utility methods for constructing and manipulating {@link AstEval}s.
+ *
+ * @author Jonathan Co
+ * @since 3.0.0
+ */
+public class AstEvals {
 
-    private AstEvalFactory() {
+    private AstEvals() {
     }
 
     public static AstEval empty() {
         return AstEval.EMPTY;
     }
 
-    public static AstEval text(String text) {
+    public static AstEval of(String text) {
         checkArgument(!Strings.isNullOrEmpty(text));
         return new AstEval(text, null, null, null, null);
     }
 
-    public static AstEval number(double number) {
+    public static AstEval of(double number) {
         return new AstEval(null, number, null, null, null);
     }
 
-    public static AstEval bool(boolean bool) {
+    public static AstEval of(boolean bool) {
         return new AstEval(null, null, bool, null, null);
     }
 
-    public static AstEval ref(Cell ref) {
+    public static AstEval of(Cell ref) {
         checkNotNull(ref);
         return new AstEval(null, null, null, ref, null);
     }

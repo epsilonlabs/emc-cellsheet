@@ -11,11 +11,13 @@ package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import org.apache.poi.ss.formula.ptg.*;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
-import org.eclipse.epsilon.labs.emc.cellsheet.Tokens;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayloads;
+import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Error;
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.Logical;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Number;
-import org.eclipse.epsilon.labs.emc.cellsheet.ast.*;
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.Text;
 import org.eclipse.epsilon.labs.emc.cellsheet.poi.PoiCellsheetFormulaParser;
 import org.eclipse.epsilon.labs.emc.cellsheet.poi.PtgHelper;
 
@@ -23,34 +25,31 @@ import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType.*;
 
-public class PoiAstFactory {
-    private static PoiAstFactory ourInstance = new PoiAstFactory();
+public class PoiAstBuilder {
 
-    private PoiAstFactory() {
+    private PoiAstBuilder() {
     }
 
-    public static PoiAstFactory getInstance() {
-        return ourInstance;
-    }
-
-    public Ast of(String formula, PoiCell cell) {
+    public static Ast of(String formula, PoiCell cell) {
         PoiCellsheetFormulaParser parser = new PoiCellsheetFormulaParser(
                 formula,
                 cell.getBook().getFpw(),
                 cell.getSheet().getSheetIndex(),
                 cell.getRowIndex());
 
-
         Deque<Ast> stack = new ArrayDeque<>();
-
         for (Ptg ptg : parser.getPtgs()) {
-            Ast current = of(ptg, parser.getTokenValue(ptg));
-            current.setEvaluator(PoiAstEvaluator.getInstance());
+            CellsheetType type = getCellsheetType(ptg);
 
-            if (current instanceof Unknown || current instanceof Noop) continue;
+            if (type == UNKNOWN || type == NOOP) continue;
+
+            String token = parser.getTokenValue(ptg);
+            AstPayload payload = AstPayloads.of(type, token);
+            Ast current = new Ast(payload);
 
             if (ptg instanceof OperationPtg) {
                 for (int i = ((OperationPtg) ptg).getNumberOfOperands(); i > 0; i--) {
@@ -59,53 +58,70 @@ public class PoiAstFactory {
             }
             stack.push(current);
         }
+
         checkState(stack.size() == 1, "Left over Asts during construction [formula: %s, cell: %s]", formula, cell);
-        stack.peek().setCell(cell);
-        return stack.pop();
+
+        Ast ast = stack.pop();
+        ast.setCell(cell);
+        return ast;
     }
 
-    public Ast of(PoiCell cell) {
+    public static Ast of(PoiCell cell) {
         // Delegate to formula parser if we already know it's a formula
         if (cell instanceof PoiFormulaCell)
             return of(((PoiFormulaCell) cell).getValue(), cell);
 
+        AstPayload payload = null;
 
-        Ast ast = null;
-        if (cell instanceof PoiBlankCell) ast = new Text("");
+        if (cell instanceof PoiBlankCell)
+            payload = new Text("");
+
         if (cell instanceof PoiBooleanCell)
-            ast = new Logical(((PoiBooleanCell) cell).getValue());
-        if (cell instanceof PoiTextCell)
-            ast = new Text(((PoiTextCell) cell).getValue());
-        if (cell instanceof PoiNumericCell)
-            ast = new Number(((PoiNumericCell) cell).getValue());
-        if (cell instanceof PoiDateCell)
-            ast = new Text(cell.getValue().toString());
-        if (cell instanceof PoiErrorCell)
-            ast = new Error(((PoiErrorCell) cell).getValue());
+            payload = new Logical(((PoiBooleanCell) cell).getValue());
 
-        checkArgument(ast != null, "Failed to build AST for %s", cell.toString());
+        if (cell instanceof PoiTextCell)
+            payload = new Text(((PoiTextCell) cell).getValue());
+
+        if (cell instanceof PoiNumericCell)
+            payload = new Number(((PoiNumericCell) cell).getValue());
+
+        if (cell instanceof PoiDateCell)
+            payload = new Text(cell.getValue().toString());
+
+        if (cell instanceof PoiErrorCell)
+            payload = new Error(((PoiErrorCell) cell).getValue());
+
+        checkNotNull(payload);
+
+        Ast ast = new Ast(payload);
         ast.setCell(cell);
-        ast.setEvaluator(PoiAstEvaluator.getInstance());
         return ast;
     }
 
-    public Ast of(Ptg ptg) {
+    public static Ast of(Ptg ptg, String token) {
+        CellsheetType type = getCellsheetType(ptg);
+        if (token == null) {
+            token = PtgHelper.valueOf(ptg);
+        }
+
+        AstPayload payload = AstPayloads.of(type, token);
+        Ast ast = new Ast(payload);
+        return ast;
+    }
+
+    public static Ast of(Ptg ptg) {
         return of(ptg, null);
     }
 
-    protected Ast of(Ptg ptg, String value) {
-        Ast ast = null;
-        Token token = Tokens.getToken(value == null ? PtgHelper.valueOf(ptg) : value);
-
+    public static CellsheetType getCellsheetType(Ptg ptg) {
         // OPERANDS
         if (ptg instanceof OperandPtg || ptg instanceof ScalarConstantPtg) {
             if (ptg instanceof IntPtg || ptg instanceof NumberPtg)
-                ast = new Number(token);
-            if (ptg instanceof StringPtg) ast = new Text(token);
-            if (ptg instanceof BoolPtg)
-                ast = new Logical(((BoolPtg) ptg).getValue());
-            if (ptg instanceof AreaI) ast = new Range(token);
-            if (ptg instanceof RefPtgBase) ast = new Ref(token);
+                return NUMBER;
+            if (ptg instanceof StringPtg) return TEXT;
+            if (ptg instanceof BoolPtg) return LOGICAL;
+            if (ptg instanceof AreaI) return RANGE;
+            if (ptg instanceof RefPtgBase) return REF;
         }
 
         // OPERATORS
@@ -115,73 +131,58 @@ public class PoiAstFactory {
                 method.setAccessible(true);
                 switch ((Byte) method.invoke(ptg)) {
                     case 0x03: // Add
-                        ast = new Addition();
-                        break;
+                        return ADDITION;
                     case 0x08: // Concat
-                        ast = new Concatenation();
-                        break;
+                        return CONCATENATION;
                     case 0x06: // Divide
-                        ast = new Division();
-                        break;
+                        return DIVISION;
                     case 0x0b: // Equal
-                        ast = new EQ();
-                        break;
+                        return EQ;
                     case 0x0c: // GreaterEqual
-                        ast = new GTE();
-                        break;
+                        return GTE;
                     case 0x0D: // GreaterThan
-                        ast = new GT();
-                        break;
+                        return GT;
                     case 0x0a: // LessEqual
-                        ast = new LTE();
-                        break;
+                        return LTE;
                     case 0x09: // LessThan
-                        ast = new LT();
-                        break;
+                        return LT;
                     case 0x05: // Multiply
-                        ast = new Multiplication();
-                        break;
+                        return MULTIPLICATION;
                     case 0x0e: // NotEqual
-                        ast = new NEQ();
-                        break;
+                        return NEQ;
                     case 0x14: // Percent
-                        ast = new Percent();
-                        break;
+                        return PERCENT;
                     case 0x07: // Power
-                        ast = new Exponentiation();
-                        break;
+                        return EXPONENTIATION;
                     case 0x04: // Subtract
-                        ast = new Subtraction();
-                        break;
+                        return SUBTRACTION;
                     case 0x13: // UnaryMinus
-                        ast = new Negation();
-                        break;
+                        return NEGATION;
                     case 0x12: // UnaryPlus
-                        ast = new Plus();
-                        break;
+                        return PLUS;
                 }
             } catch (Exception e) {
                 throw new IllegalStateException(e);
             }
         }
 
-        if (ptg instanceof UnionPtg) ast = new Union();
-        if (ptg instanceof IntersectionPtg) ast = new Intersection();
+        if (ptg instanceof UnionPtg) return UNION;
+        if (ptg instanceof IntersectionPtg) return INTERSECTION;
 
         // OPERATIONS
         if (PtgHelper.isSumPtg(ptg) || ptg instanceof AbstractFunctionPtg)
-            ast = new Function(token);
+            return FUNCTION;
 
-        // NOOPS and UNKNOWNS
+        // NOOPS
         if (ptg instanceof AttrPtg
                 || ptg instanceof ControlPtg
                 || ptg instanceof MemAreaPtg
                 || ptg instanceof MemErrPtg
                 || ptg instanceof MemFuncPtg)
-            ast = new Noop(token);
+            return NOOP;
 
-        if (ast == null) ast = new Unknown(token);
-        ast.setEvaluator(PoiAstEvaluator.getInstance());
-        return ast;
+        // UNKNOWNS
+        return UNKNOWN;
     }
+
 }

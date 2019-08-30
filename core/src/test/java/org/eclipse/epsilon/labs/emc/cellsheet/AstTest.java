@@ -10,6 +10,7 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.Text;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAst;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAstEvaluator;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
@@ -89,16 +90,8 @@ public class AstTest {
 
     @Test
     public void getToken_should_return_token() {
-        root.setToken("Hello World");
-        assertThat(root.getToken().getValue()).isEqualTo("Hello World");
-    }
-
-    @Test
-    public void getTokenValue_should_return_token_value() {
-        String tokenValue = "this is some token value";
-        assertThat(root.getTokenValue()).isNotEqualTo(tokenValue);
-        root.setToken(tokenValue);
-        assertThat(root.getTokenValue()).isEqualTo(tokenValue);
+        root.setPayload(new Text("Hello World"));
+        assertThat(root.getToken()).isEqualTo("Hello World");
     }
 
     @Test
@@ -294,23 +287,23 @@ public class AstTest {
 
     @Test
     public void accept_should_execute_visitor() throws Exception {
-        assertThat(root.getTokenValue()).isNotEqualTo("Visited");
+        assertThat(root.getToken()).isNotEqualTo("Visited");
         root.accept(a -> {
-            a.setToken("Visited");
+            a.setPayload(new Text("Visited"));
             return Optional.empty();
         });
-        assertThat(root.getTokenValue()).isEqualTo("Visited");
+        assertThat(root.getToken()).isEqualTo("Visited");
     }
 
     @Test
     public void evaluate_should_throw_exception_when_cell_is_null() {
         root.setCell(null);
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> root.evaluate());
+                .isThrownBy(() -> root.evaluate(new DummyAstEvaluator()));
     }
 
     @Test
     public void evaluate_should_call_evaluator() {
-        assertThat(root.evaluate().getText()).isEqualTo(DummyAstEvaluator.EVAL_RESULT);
+        assertThat(root.evaluate(new DummyAstEvaluator()).getText()).isEqualTo(DummyAstEvaluator.EVAL_RESULT);
     }
 }

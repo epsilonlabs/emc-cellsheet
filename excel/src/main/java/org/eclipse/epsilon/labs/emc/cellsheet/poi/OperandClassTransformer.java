@@ -134,7 +134,7 @@ final class OperandClassTransformer {
             // Need to process the argument of SUM with transformFunctionNode below
             // so make a dummy FuncVarPtg for that call.
             token = FuncVarPtg.SUM;
-            // Note - the tAttrSum token (node.getToken()) is a base
+            // Note - the tAttrSum token (node.getPayload()) is a base
             // token so does not need to have its operand class set
         }
         if (token instanceof ValueOperatorPtg || token instanceof ControlPtg
@@ -160,7 +160,7 @@ final class OperandClassTransformer {
         }
         if (children.length > 0) {
             if (token == RangePtg.instance) {
-                // TODO is any token transformation required under the various ref operators?
+                // TODO is any token transformation required under the various of operators?
                 return;
             }
             throw new IllegalStateException("Node should not have any children");

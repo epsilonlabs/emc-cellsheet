@@ -10,17 +10,12 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 
 import javax.annotation.Nonnull;
 
 public class Ref extends Operand {
 
     public Ref(String token) {
-        super(token);
-    }
-
-    public Ref(Token token) {
         super(token);
     }
 

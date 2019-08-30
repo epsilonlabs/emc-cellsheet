@@ -85,7 +85,7 @@ public interface CellsheetPackage extends EPackage {
 	int ESTRING_TO_TOKEN_ENTRY__VALUE = 1;
 
 	/**
-	 * The number of structural features of the '<em>EString To Token Entry</em>' class.
+	 * The of of structural features of the '<em>EString To Token Entry</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -113,7 +113,7 @@ public interface CellsheetPackage extends EPackage {
 	int HAS_A1__A1 = 0;
 
 	/**
-	 * The number of structural features of the '<em>Has A1</em>' class.
+	 * The of of structural features of the '<em>Has A1</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -141,7 +141,7 @@ public interface CellsheetPackage extends EPackage {
 	int HAS_ID__ID = 0;
 
 	/**
-	 * The number of structural features of the '<em>Has Id</em>' class.
+	 * The of of structural features of the '<em>Has Id</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -178,7 +178,7 @@ public interface CellsheetPackage extends EPackage {
 	int WORKSPACE__TOKENS = 1;
 
 	/**
-	 * The number of structural features of the '<em>Workspace</em>' class.
+	 * The of of structural features of the '<em>Workspace</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -251,7 +251,7 @@ public interface CellsheetPackage extends EPackage {
 	int BOOK__BOOKNAME = HAS_ID_FEATURE_COUNT + 4;
 
 	/**
-	 * The number of structural features of the '<em>Book</em>' class.
+	 * The of of structural features of the '<em>Book</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -324,7 +324,7 @@ public interface CellsheetPackage extends EPackage {
 	int SHEET__SHEET_INDEX = HAS_ID_FEATURE_COUNT + 4;
 
 	/**
-	 * The number of structural features of the '<em>Sheet</em>' class.
+	 * The of of structural features of the '<em>Sheet</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -388,7 +388,7 @@ public interface CellsheetPackage extends EPackage {
 	int ROW__ROW_INDEX = HAS_ID_FEATURE_COUNT + 3;
 
 	/**
-	 * The number of structural features of the '<em>Row</em>' class.
+	 * The of of structural features of the '<em>Row</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -461,7 +461,7 @@ public interface CellsheetPackage extends EPackage {
 	int CELL__ROOT = HAS_ID_FEATURE_COUNT + 4;
 
 	/**
-	 * The number of structural features of the '<em>Cell</em>' class.
+	 * The of of structural features of the '<em>Cell</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -543,7 +543,7 @@ public interface CellsheetPackage extends EPackage {
 	int BLANK_CELL__VALUE = CELL_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Blank Cell</em>' class.
+	 * The of of structural features of the '<em>Blank Cell</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -625,7 +625,7 @@ public interface CellsheetPackage extends EPackage {
 	int TEXT_CELL__VALUE = CELL_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Text Cell</em>' class.
+	 * The of of structural features of the '<em>Text Cell</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -707,7 +707,7 @@ public interface CellsheetPackage extends EPackage {
 	int NUMERIC_CELL__VALUE = CELL_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Numeric Cell</em>' class.
+	 * The of of structural features of the '<em>Numeric Cell</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -789,7 +789,7 @@ public interface CellsheetPackage extends EPackage {
 	int BOOLEAN_CELL__VALUE = CELL_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Boolean Cell</em>' class.
+	 * The of of structural features of the '<em>Boolean Cell</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -871,7 +871,7 @@ public interface CellsheetPackage extends EPackage {
 	int DATE_CELL__VALUE = CELL_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Date Cell</em>' class.
+	 * The of of structural features of the '<em>Date Cell</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -953,7 +953,7 @@ public interface CellsheetPackage extends EPackage {
 	int FORMULA_CELL__VALUE = CELL_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Formula Cell</em>' class.
+	 * The of of structural features of the '<em>Formula Cell</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -990,7 +990,7 @@ public interface CellsheetPackage extends EPackage {
 	int TOKEN__USED_BY = 1;
 
 	/**
-	 * The number of structural features of the '<em>Token</em>' class.
+	 * The of of structural features of the '<em>Token</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1036,7 +1036,7 @@ public interface CellsheetPackage extends EPackage {
 	int AST_EVAL__IS_ERROR = 2;
 
 	/**
-	 * The number of structural features of the '<em>Ast Eval</em>' class.
+	 * The of of structural features of the '<em>Ast Eval</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1091,7 +1091,7 @@ public interface CellsheetPackage extends EPackage {
 	int AST__RESULT = 3;
 
 	/**
-	 * The number of structural features of the '<em>Ast</em>' class.
+	 * The of of structural features of the '<em>Ast</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1146,7 +1146,7 @@ public interface CellsheetPackage extends EPackage {
 	int OPERAND__RESULT = AST__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Operand</em>' class.
+	 * The of of structural features of the '<em>Operand</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1201,7 +1201,7 @@ public interface CellsheetPackage extends EPackage {
 	int OPERATION__RESULT = AST__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Operation</em>' class.
+	 * The of of structural features of the '<em>Operation</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1256,7 +1256,7 @@ public interface CellsheetPackage extends EPackage {
 	int PREFIX_OPERATOR__RESULT = AST__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Prefix Operator</em>' class.
+	 * The of of structural features of the '<em>Prefix Operator</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1311,7 +1311,7 @@ public interface CellsheetPackage extends EPackage {
 	int INFIX_OPERATOR__RESULT = AST__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Infix Operator</em>' class.
+	 * The of of structural features of the '<em>Infix Operator</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1366,7 +1366,7 @@ public interface CellsheetPackage extends EPackage {
 	int POSTFIX_OPERATOR__RESULT = AST__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Postfix Operator</em>' class.
+	 * The of of structural features of the '<em>Postfix Operator</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1421,7 +1421,7 @@ public interface CellsheetPackage extends EPackage {
 	int UNKNOWN__RESULT = AST__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Unknown</em>' class.
+	 * The of of structural features of the '<em>Unknown</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1476,7 +1476,7 @@ public interface CellsheetPackage extends EPackage {
 	int NOOP__RESULT = AST__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Noop</em>' class.
+	 * The of of structural features of the '<em>Noop</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1531,7 +1531,7 @@ public interface CellsheetPackage extends EPackage {
 	int TEXT__RESULT = OPERAND__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Text</em>' class.
+	 * The of of structural features of the '<em>Text</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1586,7 +1586,7 @@ public interface CellsheetPackage extends EPackage {
 	int NUMBER__RESULT = OPERAND__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Number</em>' class.
+	 * The of of structural features of the '<em>Number</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1641,7 +1641,7 @@ public interface CellsheetPackage extends EPackage {
 	int LOGICAL__RESULT = OPERAND__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Logical</em>' class.
+	 * The of of structural features of the '<em>Logical</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1696,7 +1696,7 @@ public interface CellsheetPackage extends EPackage {
 	int ERROR__RESULT = OPERAND__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Error</em>' class.
+	 * The of of structural features of the '<em>Error</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1751,7 +1751,7 @@ public interface CellsheetPackage extends EPackage {
 	int REF__RESULT = OPERAND__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Ref</em>' class.
+	 * The of of structural features of the '<em>Ref</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1806,7 +1806,7 @@ public interface CellsheetPackage extends EPackage {
 	int RANGE__RESULT = OPERAND__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Range</em>' class.
+	 * The of of structural features of the '<em>Range</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1861,7 +1861,7 @@ public interface CellsheetPackage extends EPackage {
 	int RELATIVE_REF__RESULT = REF__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Relative Ref</em>' class.
+	 * The of of structural features of the '<em>Relative Ref</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1916,7 +1916,7 @@ public interface CellsheetPackage extends EPackage {
 	int RELATIVE_RANGE__RESULT = REF__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Relative Range</em>' class.
+	 * The of of structural features of the '<em>Relative Range</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1971,7 +1971,7 @@ public interface CellsheetPackage extends EPackage {
 	int FUNCTION__RESULT = OPERATION__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Function</em>' class.
+	 * The of of structural features of the '<em>Function</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2026,7 +2026,7 @@ public interface CellsheetPackage extends EPackage {
 	int PLUS__RESULT = PREFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Plus</em>' class.
+	 * The of of structural features of the '<em>Plus</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2081,7 +2081,7 @@ public interface CellsheetPackage extends EPackage {
 	int NEGATION__RESULT = PREFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Negation</em>' class.
+	 * The of of structural features of the '<em>Negation</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2136,7 +2136,7 @@ public interface CellsheetPackage extends EPackage {
 	int PERCENT__RESULT = POSTFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Percent</em>' class.
+	 * The of of structural features of the '<em>Percent</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2191,7 +2191,7 @@ public interface CellsheetPackage extends EPackage {
 	int EXPONENTIATION__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Exponentiation</em>' class.
+	 * The of of structural features of the '<em>Exponentiation</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2246,7 +2246,7 @@ public interface CellsheetPackage extends EPackage {
 	int MULTIPLICATION__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Multiplication</em>' class.
+	 * The of of structural features of the '<em>Multiplication</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2301,7 +2301,7 @@ public interface CellsheetPackage extends EPackage {
 	int DIVISION__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Division</em>' class.
+	 * The of of structural features of the '<em>Division</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2356,7 +2356,7 @@ public interface CellsheetPackage extends EPackage {
 	int ADDITION__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Addition</em>' class.
+	 * The of of structural features of the '<em>Addition</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2411,7 +2411,7 @@ public interface CellsheetPackage extends EPackage {
 	int SUBTRACTION__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Subtraction</em>' class.
+	 * The of of structural features of the '<em>Subtraction</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2466,7 +2466,7 @@ public interface CellsheetPackage extends EPackage {
 	int CONCATENATION__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Concatenation</em>' class.
+	 * The of of structural features of the '<em>Concatenation</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2521,7 +2521,7 @@ public interface CellsheetPackage extends EPackage {
 	int EQ__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>EQ</em>' class.
+	 * The of of structural features of the '<em>EQ</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2576,7 +2576,7 @@ public interface CellsheetPackage extends EPackage {
 	int LT__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>LT</em>' class.
+	 * The of of structural features of the '<em>LT</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2631,7 +2631,7 @@ public interface CellsheetPackage extends EPackage {
 	int GT__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>GT</em>' class.
+	 * The of of structural features of the '<em>GT</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2686,7 +2686,7 @@ public interface CellsheetPackage extends EPackage {
 	int LTE__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>LTE</em>' class.
+	 * The of of structural features of the '<em>LTE</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2741,7 +2741,7 @@ public interface CellsheetPackage extends EPackage {
 	int GTE__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>GTE</em>' class.
+	 * The of of structural features of the '<em>GTE</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2796,7 +2796,7 @@ public interface CellsheetPackage extends EPackage {
 	int NEQ__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>NEQ</em>' class.
+	 * The of of structural features of the '<em>NEQ</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2851,7 +2851,7 @@ public interface CellsheetPackage extends EPackage {
 	int INTERSECTION__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Intersection</em>' class.
+	 * The of of structural features of the '<em>Intersection</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2906,7 +2906,7 @@ public interface CellsheetPackage extends EPackage {
 	int UNION__RESULT = INFIX_OPERATOR__RESULT;
 
 	/**
-	 * The number of structural features of the '<em>Union</em>' class.
+	 * The of of structural features of the '<em>Union</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -2952,7 +2952,7 @@ public interface CellsheetPackage extends EPackage {
 	int CELL_FORMAT__VALUE = HAS_ID_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of structural features of the '<em>Cell Format</em>' class.
+	 * The of of structural features of the '<em>Cell Format</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated

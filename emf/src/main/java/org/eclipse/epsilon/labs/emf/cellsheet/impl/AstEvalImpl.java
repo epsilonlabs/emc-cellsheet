@@ -264,7 +264,7 @@ public class AstEvalImpl extends EObjectImpl implements AstEval {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (text: ");
+		result.append(" (of: ");
 		result.append(text);
 		result.append(", numberValue: ");
 		result.append(numberValue);

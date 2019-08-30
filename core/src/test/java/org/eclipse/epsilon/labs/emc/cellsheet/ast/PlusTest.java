@@ -9,39 +9,33 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
-import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType.*;
 
 public class PlusTest {
 
-    private Ast ast = new Plus();
+    private AstPayload payload = new Plus();
 
     @Test
     public void getToken_should_return_correct_token() {
-        assertThat(ast.getTokenValue()).isEqualTo("+");
+        assertThat(payload.getToken()).isEqualTo("+");
     }
 
     @Test
     public void getType_should_return_PLUS() {
-        assertThat(ast.getType()).isEqualTo(CellsheetType.PLUS);
+        assertThat(payload.getType()).isEqualTo(PLUS);
     }
 
     @Test
     public void getKind_should_return_correct_types() {
-        assertThat(ast.getKinds()).containsExactlyInAnyOrder(
-                CellsheetType.PLUS,
-                CellsheetType.PREFIX_OPERATOR,
-                CellsheetType.CELLSHEET_ELEMENT,
-                CellsheetType.AST);
+        assertThat(payload.getKinds()).containsExactlyInAnyOrder(
+                PLUS,
+                PREFIX_OPERATOR,
+                AST_PAYLOAD,
+                CELLSHEET_ELEMENT);
     }
 
-    @Test
-    public void setToken() {
-        assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> ast.setToken(""));
-    }
 }

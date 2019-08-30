@@ -37,6 +37,8 @@ public enum CellsheetType {
     CELL_FORMAT("CellFormat"),
 
     AST("Ast"),
+
+    AST_PAYLOAD("AstPayload"),
     NOOP("Noop"),
     OPERAND("Operand"),
     OPERATION("Operation"),

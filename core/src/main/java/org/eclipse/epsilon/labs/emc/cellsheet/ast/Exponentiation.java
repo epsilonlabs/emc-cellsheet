@@ -10,22 +10,15 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
-import org.eclipse.epsilon.labs.emc.cellsheet.Tokens;
 
 import javax.annotation.Nonnull;
 
 public class Exponentiation extends InfixOperator {
 
-    public static final Token TOKEN = Tokens.getToken("^");
+    public static final String TOKEN = "^";
 
     public Exponentiation() {
         super(TOKEN);
-    }
-
-    @Override
-    public void setToken(Token token) {
-        throw new UnsupportedOperationException();
     }
 
     @Nonnull

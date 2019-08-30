@@ -9,23 +9,14 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class Unknown extends Ast {
-
-    public Unknown() {
-        super();
-    }
-
-    public Unknown(Token token) {
-        super(token);
-    }
+public class Unknown extends AstPayload {
 
     public Unknown(String token) {
         super(token);
@@ -40,6 +31,6 @@ public class Unknown extends Ast {
     @Nonnull
     @Override
     public Set<CellsheetType> getKinds() {
-        return EnumSet.of(getType(), CellsheetType.CELLSHEET_ELEMENT, CellsheetType.AST);
+        return EnumSet.of(getType(), CellsheetType.CELLSHEET_ELEMENT, CellsheetType.AST_PAYLOAD);
     }
 }

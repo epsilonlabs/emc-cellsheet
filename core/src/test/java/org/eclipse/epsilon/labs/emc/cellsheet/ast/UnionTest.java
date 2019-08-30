@@ -9,39 +9,33 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class UnionTest {
 
-    private Ast ast = new Union();
+    private AstPayload pay = new Union();
 
     @Test
     public void getToken_should_return_correct_token() {
-        assertThat(ast.getTokenValue()).isEqualTo(",");
+        assertThat(pay.getToken()).isEqualTo(",");
     }
 
     @Test
     public void getType_should_return_UNION() {
-        assertThat(ast.getType()).isEqualTo(CellsheetType.UNION);
+        assertThat(pay.getType()).isEqualTo(CellsheetType.UNION);
     }
 
     @Test
     public void getKind_should_return_correct_types() {
-        assertThat(ast.getKinds()).containsExactlyInAnyOrder(
+        assertThat(pay.getKinds()).containsExactlyInAnyOrder(
                 CellsheetType.UNION,
                 CellsheetType.INFIX_OPERATOR,
-                CellsheetType.CELLSHEET_ELEMENT,
-                CellsheetType.AST);
+                CellsheetType.AST_PAYLOAD,
+                CellsheetType.CELLSHEET_ELEMENT);
     }
 
-    @Test
-    public void setToken() {
-        assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> ast.setToken(""));
-    }
 }

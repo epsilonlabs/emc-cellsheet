@@ -9,39 +9,33 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class LTETest {
 
-    private Ast ast = new LTE();
+    private AstPayload payload = new LTE();
 
     @Test
     public void getToken_should_return_correct_token() {
-        assertThat(ast.getTokenValue()).isEqualTo("<=");
+        assertThat(payload.getToken()).isEqualTo("<=");
     }
 
     @Test
     public void getType_should_return_LTE() {
-        assertThat(ast.getType()).isEqualTo(CellsheetType.LTE);
+        assertThat(payload.getType()).isEqualTo(CellsheetType.LTE);
     }
 
     @Test
     public void getKind_should_return_correct_types() {
-        assertThat(ast.getKinds()).containsExactlyInAnyOrder(
+        assertThat(payload.getKinds()).containsExactlyInAnyOrder(
                 CellsheetType.LTE,
                 CellsheetType.INFIX_OPERATOR,
-                CellsheetType.CELLSHEET_ELEMENT,
-                CellsheetType.AST);
+                CellsheetType.AST_PAYLOAD,
+                CellsheetType.CELLSHEET_ELEMENT);
     }
 
-    @Test
-    public void setToken() {
-        assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> ast.setToken(""));
-    }
 }

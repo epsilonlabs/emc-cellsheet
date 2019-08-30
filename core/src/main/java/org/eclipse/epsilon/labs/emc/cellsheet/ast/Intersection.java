@@ -10,21 +10,15 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 
 import javax.annotation.Nonnull;
 
 public class Intersection extends InfixOperator {
 
-    public static final Token TOKEN = new Token(" ");
+    public static final String TOKEN = " ";
 
     public Intersection() {
         super(TOKEN);
-    }
-
-    @Override
-    public void setToken(Token token) {
-        throw new UnsupportedOperationException();
     }
 
     @Nonnull

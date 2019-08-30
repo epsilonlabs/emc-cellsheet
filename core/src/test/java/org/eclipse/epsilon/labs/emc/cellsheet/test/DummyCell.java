@@ -12,7 +12,6 @@ package org.eclipse.epsilon.labs.emc.cellsheet.test;
 import com.google.common.collect.ForwardingList;
 import com.google.common.collect.ImmutableList;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

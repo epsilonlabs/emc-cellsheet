@@ -189,13 +189,6 @@ public class WorkspaceTest {
     }
 
     @Test
-    public void getToken_should_return_token_when_given_tokenstr() {
-        String tokenValue = "Some token value";
-        Token expected = Tokens.getToken(tokenValue);
-        assertThat(workspace.getToken(tokenValue)).isEqualTo(expected);
-    }
-
-    @Test
     public void createInstance_should_throw_unsupported_op_exception() {
         assertThatExceptionOfType(UnsupportedOperationException.class)
                 .isThrownBy(() -> workspace.createInstance(""));

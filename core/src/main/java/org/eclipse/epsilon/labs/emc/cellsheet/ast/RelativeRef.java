@@ -10,13 +10,12 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 
 import javax.annotation.Nonnull;
 
 public class RelativeRef extends Operand {
 
-    public RelativeRef(Token token) {
+    public RelativeRef(String token) {
         super(token);
     }
 

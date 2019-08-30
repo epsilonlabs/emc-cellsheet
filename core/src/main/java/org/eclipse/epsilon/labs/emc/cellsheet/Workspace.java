@@ -52,10 +52,6 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
         this.name = name;
     }
 
-    public Token getToken(String value) {
-        return Tokens.getToken(value);
-    }
-
     /**
      * Returns the book with the given name or {@code null} if it does
      * not exist.

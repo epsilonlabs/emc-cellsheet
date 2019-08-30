@@ -11,10 +11,10 @@ package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Row;
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public abstract class PoiCell<T> implements Cell<T>, PoiDelegate<org.apache.poi.
     @Override
     public List<Ast> getAsts() {
         if (asts.isEmpty()) {
-            asts.add(PoiAstFactory.getInstance().of(this));
+            asts.add(PoiAstBuilder.of(this));
         }
         return asts;
     }

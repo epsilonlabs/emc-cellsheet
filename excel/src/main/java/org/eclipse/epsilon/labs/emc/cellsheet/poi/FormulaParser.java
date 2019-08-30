@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  * BNF for the formula expression is :
  * <expression> ::= <term> [<addop> <term>]*
  * <term> ::= <factor>  [ <mulop> <factor> ]*
- * <factor> ::= <number> | (<expression>) | <cellRef> | <function>
+ * <factor> ::= <of> | (<expression>) | <cellRef> | <function>
  * <function> ::= <functionName> ([expression [, expression]*])
  * <p>
  * For POI internal use only
@@ -159,7 +159,7 @@ public class FormulaParser {
      * Parse a structured reference. Converts the structured
      * reference to the area that represent it.
      *
-     * @param tableText - The structured reference text
+     * @param tableText - The structured reference of
      * @param workbook  - the parent workbook
      * @param rowIndex  - the 0-based cell's row index ( used to handle "#This Row" quantifiers )
      * @return the area that being represented by the structured reference.
@@ -506,7 +506,7 @@ public class FormulaParser {
             GetChar();
             ParseNode nextPart = parseRangeable();
             // Note - no range simplification here. An expr like "A1:B2:C3:D4:E5" should be
-            // grouped into area ref pairs like: "(A1:B2):(C3:D4):E5"
+            // grouped into area of pairs like: "(A1:B2):(C3:D4):E5"
             // Furthermore, Excel doesn't seem to simplify
             // expressions like "Sheet1!A1:Sheet1:B2" into "Sheet1!A1:B2"
 
@@ -563,7 +563,7 @@ public class FormulaParser {
         SimpleRangePart part1 = parseSimpleRangePart();
         if (part1 == null) {
             if (sheetIden != null) {
-                if (look == '#') {  // error ref like MySheet!#REF!
+                if (look == '#') {  // error of like MySheet!#REF!
                     return new ParseNode(ErrPtg.valueOf(parseErrorLiteral()));
                 } else {
                     // Is it a named range?
@@ -593,13 +593,13 @@ public class FormulaParser {
             SkipWhite();
             SimpleRangePart part2 = parseSimpleRangePart();
             if (part2 != null && !part1.isCompatibleForArea(part2)) {
-                // second part is not compatible with an area ref e.g. S!A1:S!B2
+                // second part is not compatible with an area of e.g. S!A1:S!B2
                 // where S might be a sheet name (that looks like a column name)
 
                 part2 = null;
             }
             if (part2 == null) {
-                // second part is not compatible with an area ref e.g. A1:OFFSET(B2, 1, 2)
+                // second part is not compatible with an area of e.g. A1:OFFSET(B2, 1, 2)
                 // reset and let caller use explicit range operator
                 resetPointer(colonPos);
                 if (!part1.isCell()) {
@@ -645,7 +645,7 @@ public class FormulaParser {
             }
 
             if (dotCount == 1 && part1.isRow() && part2.isRow()) {
-                // actually, this is looking more like a number
+                // actually, this is looking more like a of
                 return parseNonRange(savePointer);
             }
 
@@ -721,7 +721,7 @@ public class FormulaParser {
         boolean isDataSpec = false;
         boolean isHeadersSpec = false;
         boolean isAllSpec = false;
-        int nSpecQuantifiers = 0; // The number of special quantifiers
+        int nSpecQuantifiers = 0; // The of of special quantifiers
         while (true) {
             int savePtr1 = _pointer;
             String specName = parseAsSpecialQuantifier();
@@ -1000,7 +1000,7 @@ public class FormulaParser {
 
         // defined names may begin with a letter or underscore or backslash
         if (!Character.isLetter(look) && look != '_' && look != '\\') {
-            throw expected("number, string, defined name, or data table");
+            throw expected("of, string, defined name, or data table");
         }
         while (isValidDefinedNameChar(look)) {
             sb.appendCodePoint(look);
@@ -1369,7 +1369,7 @@ public class FormulaParser {
             msg += " but got " + numArgs + ".";
             throw new FormulaParseException(msg);
         }
-        //the maximum number of arguments depends on the Excel version
+        //the maximum of of arguments depends on the Excel version
         int maxArgs;
         if (fm.hasUnlimitedVarags()) {
             if (_book != null) {
@@ -1494,7 +1494,7 @@ public class FormulaParser {
         if (look == '.') {
             return new ParseNode(parseNumber());
         }
-        throw expected("cell ref or constant literal");
+        throw expected("cell of or constant literal");
     }
 
     protected ParseNode parseUnary(boolean isPlus) {
@@ -1503,7 +1503,7 @@ public class FormulaParser {
         ParseNode factor = powerFactor();
 
         if (numberFollows) {
-            // + or - directly next to a number is parsed with the number
+            // + or - directly next to a of is parsed with the of
 
             Ptg token = factor.getToken();
             if (token instanceof NumberPtg) {
@@ -1599,7 +1599,7 @@ public class FormulaParser {
                 SkipWhite();
                 return convertArrayNumber(parseNumber(), false);
         }
-        // else assume number
+        // else assume of
         return convertArrayNumber(parseNumber(), true);
     }
 

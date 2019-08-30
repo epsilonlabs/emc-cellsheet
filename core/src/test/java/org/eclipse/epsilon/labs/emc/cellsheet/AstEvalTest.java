@@ -19,7 +19,7 @@ public class AstEvalTest {
     @Test
     public void constructor_should_succeed_for_text_eval() {
         String value = "Some string to put in";
-        AstEval eval = AstEvalFactory.text(value);
+        AstEval eval = AstEvals.of(value);
         assertThat(eval.getText()).isEqualTo(value);
         assertThat(eval.isText()).isTrue();
         assertThat(eval.isNumber()).isFalse();
@@ -32,7 +32,7 @@ public class AstEvalTest {
     @Test
     public void constructor_should_succeed_for_number_eval() {
         double value = 123.456;
-        AstEval eval = AstEvalFactory.number(value);
+        AstEval eval = AstEvals.of(value);
         assertThat(eval.getNumber()).isEqualTo(value);
         assertThat(eval.isText()).isFalse();
         assertThat(eval.isNumber()).isTrue();
@@ -43,7 +43,7 @@ public class AstEvalTest {
 
     @Test
     public void constructor_should_succeed_for_boolean_eval() {
-        AstEval eval = AstEvalFactory.bool(false);
+        AstEval eval = AstEvals.of(false);
         assertThat(eval.getBoolean()).isFalse();
         assertThat(eval.isText()).isFalse();
         assertThat(eval.isNumber()).isFalse();
@@ -55,7 +55,7 @@ public class AstEvalTest {
     @Test
     public void constructor_should_succeed_for_ref_eval() {
         Cell value = mock(Cell.class);
-        AstEval eval = AstEvalFactory.ref(value);
+        AstEval eval = AstEvals.of(value);
         assertThat(eval.getRef()).isEqualTo(value);
         assertThat(eval.isText()).isFalse();
         assertThat(eval.isNumber()).isFalse();
@@ -67,7 +67,7 @@ public class AstEvalTest {
     @Test
     public void constructor_should_succeed_for_error_eval() {
         String value = "#N/A";
-        AstEval eval = AstEvalFactory.error(value);
+        AstEval eval = AstEvals.error(value);
         assertThat(eval.getError()).isEqualTo(value);
         assertThat(eval.isText()).isFalse();
         assertThat(eval.isNumber()).isFalse();

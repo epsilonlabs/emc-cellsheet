@@ -10,8 +10,6 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
-import org.eclipse.epsilon.labs.emc.cellsheet.Tokens;
 
 import javax.annotation.Nonnull;
 
@@ -19,22 +17,22 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 public class Logical extends Operand {
 
-    public static final Token TRUE = Tokens.getToken("TRUE");
-    public static final Token FALSE = Tokens.getToken("FALSE");
+    public static final String TRUE = "TRUE";
+    public static final String FALSE = "FALSE";
 
     public Logical(boolean value) {
-        super(value ? TRUE : FALSE);
+        super(Boolean.toString(value).toUpperCase());
     }
 
-    public Logical(Token token) {
-        checkArgument(token.equals(TRUE) || token.equals(FALSE));
-        this.token = token;
+    public Logical(String token) {
+        super(checkString(token));
     }
 
-    @Override
-    public void setToken(Token token) {
-        checkArgument(token.equals(TRUE) || token.equals(FALSE));
-        super.setToken(token);
+    private static String checkString(String token) {
+        checkArgument(token.equalsIgnoreCase(TRUE) || token.equalsIgnoreCase(FALSE),
+                "Token must be TRUE or FALSE, given %s",
+                token);
+        return token.toUpperCase();
     }
 
     @Nonnull
