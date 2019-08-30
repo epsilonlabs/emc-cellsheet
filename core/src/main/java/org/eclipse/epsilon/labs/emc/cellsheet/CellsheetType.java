@@ -36,8 +36,8 @@ public enum CellsheetType {
     TOKEN("Token"),
     CELL_FORMAT("CellFormat"),
 
-    AST("AST"),
-    NOOP("NoOp"),
+    AST("Ast"),
+    NOOP("Noop"),
     OPERAND("Operand"),
     OPERATION("Operation"),
     PREFIX_OPERATOR("PrefixOperator"),
