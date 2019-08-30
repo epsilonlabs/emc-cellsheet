@@ -43,7 +43,7 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
     private static Logger logger = LoggerFactory.getLogger(Workspace.class);
 
     protected Map<String, BookProvider> providerRegistry = new HashMap<>();
-    protected Map<String, Book> books = new HashMap<>();
+    protected Map<String, Book> books = new LinkedHashMap<>();
 
     public Workspace() {
     }
@@ -56,10 +56,32 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
         return Tokens.getToken(value);
     }
 
+    /**
+     * Returns the book with the given name or {@code null} if it does
+     * not exist.
+     *
+     * @param bookName the name of the book
+     * @return book with the given name or {@code null} if none exists
+     */
+    public Book getBook(String bookName) {
+        return books.get(bookName);
+    }
+
+    /**
+     * Returns all the books in this workspace. Returned books will be insertion
+     * order based.
+     *
+     * @return all books in this workspace
+     */
     public List<Book> getBooks() {
         return new ArrayList<>(books.values());
     }
 
+    /**
+     * Add a book to this workspace
+     *
+     * @param book the book to add
+     */
     public void addBook(Book book) {
         books.put(book.getBookName(), book);
         book.setWorkspace(this);
