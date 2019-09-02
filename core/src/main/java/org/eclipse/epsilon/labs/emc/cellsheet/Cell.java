@@ -12,9 +12,9 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,6 +44,8 @@ import java.util.Set;
  * @since 3.0.0
  */
 public interface Cell<T> extends HasA1 {
+
+    String ROOT_AST_KEY = "root";
 
     /**
      * Returns the parent {@link Book} of this cell
@@ -113,44 +115,41 @@ public interface Cell<T> extends HasA1 {
      *
      * @return the ASTs associated with this cell
      */
-    List<Ast> getAsts();
+    Collection<Ast> getAsts();
 
     /**
      * @return the default AST derived from the value of this cell
      */
-    default Ast getRoot() {
-        return getAst(0);
-    }
+    Ast getRoot();
 
     /**
-     * Associate an AST with this Cell.
+     * Associate an Ast with this Cell and the given key removing any previous
+     * cell association
      * <p>
-     * All AST's associated with a cell are indexed using an int. Index 0 is
-     * always the root AST that should reflect the AST of the current cell
-     * value. ASTs at index > 0 will be model specific (i.e. the result of
-     * applying some visitor analysis)
+     * All Asts are mapped with a key for later retrieval. The default Ast
+     * corresponding to the default value of this cell is always mapped with
+     * the {@value #ROOT_AST_KEY}
      * </p>
      *
-     * @param ast the AST to associate with this cell
-     * @return Index that this ast was added to
+     * @param key the key to associate this ast to
+     * @param ast the AST to associate with this cell. Must be a root Ast
      */
-    default int addAst(Ast ast) {
-        getAsts().add(ast);
-        ast.setPosition(getAsts().size() - 1);
-        ast.setCell(this);
-        return ast.getPosition();
-    }
+    void putAst(String key, Ast ast);
+
+    Ast removeAst(Ast ast);
+
+    Ast removeAst(String key);
 
     /**
-     * Retrieve the AST at the given position
+     * Retrieve the Ast with the given key
      *
-     * @param position the position
-     * @return the AST
+     * @param key the key
+     * @return the Ast or {@code null} if no such mapping exists
      * @throws IndexOutOfBoundsException if the position is out of bounds
      */
-    default Ast getAst(int position) {
-        return getAsts().get(position);
-    }
+    Ast getAst(String key);
+
+    String getAstKey(Ast ast);
 
     @Nonnull
     @Override
@@ -199,4 +198,5 @@ public interface Cell<T> extends HasA1 {
 
         T build();
     }
+
 }

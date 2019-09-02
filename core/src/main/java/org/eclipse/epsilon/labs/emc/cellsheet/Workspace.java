@@ -373,8 +373,7 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
     }
 
     private Ast resolveAstIdPath(Cell cell, Iterator<String> it) throws NumberFormatException {
-        int astIdx = Integer.valueOf(it.next());
-        Ast ast = (Ast) cell.getAsts().get(astIdx);
+        Ast ast = cell.getAst(it.next());
         while (it.hasNext()) ast = ast.childAt(Integer.valueOf(it.next()));
         return ast;
     }

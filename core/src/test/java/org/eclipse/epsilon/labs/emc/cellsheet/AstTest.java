@@ -10,9 +10,10 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.Addition;
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.Text;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAst;
-import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAstEvaluator;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,82 +22,69 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class AstTest {
 
-    private Ast root;
+    private Ast ast;
 
     @Before
-    public void setUp() throws Exception {
-        Workspace ws = new Workspace();
-        ws.setName("Default Dummy Workspace 1");
-        ws.addBook(new DummyBook());
-        root = ws.getBooks().get(0)
-                .getSheet(0)
-                .getRow(0)
-                .getCell(0)
-                .getRoot();
+    public void setUp() {
+        Workspace workspace = new Workspace();
+        workspace.setName(AstTest.class.getSimpleName() + " Workspace");
+        workspace.addBook(new DummyBook());
+        Cell cell = workspace.getBooks().get(0).getSheet(0).getRow(0).getCell(0);
+        ast = cell.getRoot();
+    }
+
+    @Test
+    public void constructor_should_return_set_default_payload() {
+        Ast ast = new Ast();
+        AstPayload payload = ast.getPayload();
+        assertThat(payload).isEqualTo(AstPayloads.empty());
     }
 
     @Test
     public void getId_should_return_id_when_is_root() {
-        assertThat(root.getId()).isEqualTo("cellsheet://Default%20Dummy%20Workspace%201/Default%20Dummy%20Book%201.xlsx/0/0/0/asts/0");
+        assertThat(ast.getId()).isEqualTo("cellsheet://AstTest%20Workspace/Default%20Dummy%20Book%201.xlsx/0/0/0/asts/root");
     }
 
     @Test
     public void getId_should_return_unassigned_when_dangling() {
-        assertThat(new DummyAst().getId()).isEqualTo(CellsheetElement.UNASSIGNED);
+        Ast ast = new Ast();
+        assertThat(ast.getId()).isEqualTo(CellsheetElement.UNASSIGNED);
     }
 
     @Test
     public void getCell_should_return_root_cell_when_child() {
-        Ast child = new DummyAst();
-        assertThat(child.getParent()).isNull();
-        assertThat(child.getCell()).isNull();
-
-        assertThat(root.isRoot()).isTrue();
-        assertThat(root.getCell()).isNotNull();
-
-        root.addChild(child);
-        assertThat(root.getChildren()).contains(child);
-        assertThat(child.getParent()).isNotNull().isEqualTo(root);
-        assertThat(child.getCell()).isSameAs(root.getCell());
-    }
-
-    @Test
-    public void setCell_should_set_cell() {
-        assertThat(root.getCell()).isNotNull();
-        Cell cell = mock(Cell.class);
-        root.setCell(cell);
-        assertThat(root.getCell()).isNotNull().isEqualTo(cell);
+        Ast child = new Ast();
+        ast.addChild(child);
+        assertThat(child.getCell()).isSameAs(ast.getCell());
     }
 
     @Test
     public void getParent_should_return_null_when_ast_is_root() {
-        assertThat(root.getParent()).isNull();
+        assertThat(ast.getParent()).isNull();
     }
 
     @Test
     public void getParent_should_return_parent_when_ast_is_a_child() {
-        Ast child = new DummyAst();
-        assertThat(child.getChildren()).isEmpty();
-        assertThat(child.getParent()).isNull();
+        Ast child = new Ast();
 
-        root.addChild(child);
-        assertThat(root.getChildren()).contains(child);
-        assertThat(child.getParent()).isNotNull().isEqualTo(root);
+        ast.addChild(child);
+        assertThat(ast.getChildren()).contains(child);
+        assertThat(child.getParent()).isNotNull().isEqualTo(ast);
     }
 
     @Test
-    public void getToken_should_return_token() {
-        root.setPayload(new Text("Hello World"));
-        assertThat(root.getToken()).isEqualTo("Hello World");
+    public void getToken_should_return_payload_token() {
+        ast.setPayload(new Text("Hello World"));
+        assertThat(ast.getToken()).isEqualTo("Hello World");
     }
 
     @Test
     public void getRoot_should_return_self_when_ast_is_root() {
-        assertThat(root.getRoot()).isEqualTo(root).isSameAs(root);
+        assertThat(ast.getRoot()).isEqualTo(ast).isSameAs(ast);
     }
 
     @Test
@@ -104,34 +92,34 @@ public class AstTest {
         Ast child = new DummyAst();
         assertThat(child.getRoot()).isEqualTo(child);
         assertThat(child.getPosition()).isEqualTo(Ast.UNASSIGNED);
-        assertThat(root.getChildren()).isEmpty();
+        assertThat(ast.getChildren()).isEmpty();
 
-        root.addChild(child);
-        assertThat(child.getRoot()).isEqualTo(root);
-        assertThat(root.getChildren()).contains(child);
-        assertThat(root.getRoot()).isEqualTo(child.getRoot());
+        ast.addChild(child);
+        assertThat(child.getRoot()).isEqualTo(ast);
+        assertThat(ast.getChildren()).contains(child);
+        assertThat(ast.getRoot()).isEqualTo(child.getRoot());
     }
 
     @Test
     public void getChildren_should_return_empty_given_defaults() {
-        assertThat(root.getChildren()).isEmpty();
+        assertThat(ast.getChildren()).isEmpty();
     }
 
     @Test
     public void getChildren_should_return_immutable_list() {
-        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> root.getChildren().clear());
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> ast.getChildren().clear());
     }
 
     @Test
     public void getChildren_should_return_children_in_order() {
         Ast a = new DummyAst();
         Ast b = new DummyAst();
-        assertThat(root.getChildren()).isEmpty();
+        assertThat(ast.getChildren()).isEmpty();
 
-        root.addChild(a);
-        root.addChild(b);
+        ast.addChild(a);
+        ast.addChild(b);
 
-        List<Ast> children = root.getChildren();
+        List<Ast> children = ast.getChildren();
         assertThat(children).containsExactly(a, b);
         assertThat(children).contains(a, atIndex(0));
         assertThat(children).contains(b, atIndex(1));
@@ -142,29 +130,29 @@ public class AstTest {
         Ast a = new DummyAst();
         Ast b = new DummyAst();
         Ast c = new DummyAst();
-        root.addChild(a);
-        root.addChild(b);
-        root.addChild(c);
+        ast.addChild(a);
+        ast.addChild(b);
+        ast.addChild(c);
 
-        assertThat(root.childAt(0)).isEqualTo(a);
-        assertThat(root.childAt(1)).isEqualTo(b);
-        assertThat(root.childAt(2)).isEqualTo(c);
+        assertThat(ast.childAt(0)).isEqualTo(a);
+        assertThat(ast.childAt(1)).isEqualTo(b);
+        assertThat(ast.childAt(2)).isEqualTo(c);
     }
 
     @Test
     public void addChild_should_add_ast_to_children_given_ast_and_no_other_children() {
-        assertThat(root.getChildren()).isEmpty();
+        assertThat(ast.getChildren()).isEmpty();
 
         Ast child = new DummyAst();
         assertThat(child.getParent()).isNull();
         assertThat(child.getPosition()).isEqualTo(Ast.UNASSIGNED);
         assertThat(child.getRoot()).isEqualTo(child);
 
-        root.addChild(child);
-        assertThat(root.getChildren()).contains(child);
-        assertThat(root.childAt(0)).isEqualTo(child);
-        assertThat(child.getParent()).isEqualTo(root);
-        assertThat(child.getRoot()).isEqualTo(root);
+        ast.addChild(child);
+        assertThat(ast.getChildren()).contains(child);
+        assertThat(ast.childAt(0)).isEqualTo(child);
+        assertThat(child.getParent()).isEqualTo(ast);
+        assertThat(child.getRoot()).isEqualTo(ast);
     }
 
     @Test
@@ -173,13 +161,13 @@ public class AstTest {
         Ast child = new DummyAst();
         otherRoot.addChild(child);
         assertThat(otherRoot.getChildren()).containsExactly(child);
-        assertThat(root.getChildren()).isEmpty();
+        assertThat(ast.getChildren()).isEmpty();
         assertThat(child.getParent()).isEqualTo(otherRoot);
 
-        root.addChild(child);
+        ast.addChild(child);
         assertThat(otherRoot.getChildren()).isEmpty();
-        assertThat(root.getChildren()).containsExactly(child);
-        assertThat(child.getParent()).isEqualTo(root);
+        assertThat(ast.getChildren()).containsExactly(child);
+        assertThat(child.getParent()).isEqualTo(ast);
     }
 
     @Test
@@ -188,14 +176,14 @@ public class AstTest {
         Ast b = new DummyAst();
         Ast c = new DummyAst();
 
-        root.addChild(a);
-        root.addChild(b);
-        assertThat(root.getChildren()).containsExactly(a, b).doesNotContain(c);
+        ast.addChild(a);
+        ast.addChild(b);
+        assertThat(ast.getChildren()).containsExactly(a, b).doesNotContain(c);
         assertThat(a.getPosition()).isEqualTo(0);
         assertThat(b.getPosition()).isEqualTo(1);
 
-        root.addChild(1, c);
-        assertThat(root.getChildren())
+        ast.addChild(1, c);
+        assertThat(ast.getChildren())
                 .containsExactly(a, c, b)
                 .extracting("position")
                 .containsExactly(0, 1, 2);
@@ -203,26 +191,27 @@ public class AstTest {
 
     @Test
     public void addChild_should_remove_old_parent_when_given_index() {
-        Ast otherRoot = new DummyAst();
-        Ast a = new DummyAst();
-        Ast b = new DummyAst();
-        Ast c = new DummyAst();
+        Ast other = new Ast();
+        Ast a = new Ast();
+        Ast b = new Ast();
+        Ast c = new Ast();
 
-        root.addChild(a);
-        otherRoot.addChild(b);
-        otherRoot.addChild(c);
-        assertThat(a.getParent()).isEqualTo(root);
-        assertThat(b.getParent()).isEqualTo(otherRoot);
-        assertThat(c.getParent()).isEqualTo(otherRoot);
+        ast.addChild(a);
+        other.addChild(b);
+        other.addChild(c);
+        assertThat(a.getParent()).isEqualTo(ast);
+        assertThat(b.getParent()).isEqualTo(other);
+        assertThat(c.getParent()).isEqualTo(other);
 
-        otherRoot.addChild(0, a);
-        assertThat(otherRoot.getChildren())
+        other.addChild(0, a);
+        assertThat(other.getChildren())
                 .containsExactly(a, b, c)
                 .extracting("position", "parent")
                 .containsExactly(
-                        tuple(0, otherRoot),
-                        tuple(1, otherRoot),
-                        tuple(2, otherRoot));
+                        tuple(0, other),
+                        tuple(1, other),
+                        tuple(2, other));
+        assertThat(a.getParent()).isNotEqualTo(ast);
     }
 
     @Test
@@ -230,16 +219,16 @@ public class AstTest {
         Ast a = new DummyAst();
         Ast b = new DummyAst();
         Ast c = new DummyAst();
-        root.addChild(a);
-        root.addChild(b);
-        root.addChild(c);
-        assertThat(root.getChildren())
+        ast.addChild(a);
+        ast.addChild(b);
+        ast.addChild(c);
+        assertThat(ast.getChildren())
                 .containsExactly(a, b, c)
                 .extracting("position")
                 .containsExactly(0, 1, 2);
 
-        root.removeChild(1);
-        assertThat(root.getChildren())
+        ast.removeChild(1);
+        assertThat(ast.getChildren())
                 .containsExactly(a, c)
                 .doesNotContain(b)
                 .extracting("position")
@@ -249,7 +238,7 @@ public class AstTest {
 
     @Test
     public void getPosition_should_return_cell_position_value_when_root() {
-        assertThat(root.getPosition()).isEqualTo(0);
+        assertThat(ast.getPosition()).isEqualTo(0);
     }
 
     @Test
@@ -257,53 +246,61 @@ public class AstTest {
         Ast child = new DummyAst();
         assertThat(child.getPosition()).isEqualTo(Ast.UNASSIGNED);
 
-        root.addChild(child);
+        ast.addChild(child);
         assertThat(child.getPosition()).isEqualTo(0);
-        assertThat(root.getChildren().get(0)).isEqualTo(child);
+        assertThat(ast.getChildren().get(0)).isEqualTo(child);
     }
 
     @Test
     public void isRoot_should_return_true_when_root() {
-        assertThat(root.isRoot()).isTrue();
+        assertThat(ast.isRoot()).isTrue();
     }
 
     @Test
     public void isRoot_should_return_false_when_is_child() {
         Ast a = new DummyAst();
-        root.addChild(a);
+        ast.addChild(a);
         assertThat(a.isRoot()).isFalse();
     }
 
     @Test
-    public void isLeaf_should_return_true_when_no_children() {
-        assertThat(root.isLeaf()).isTrue();
+    public void isRoot_should_return_false_when_has_children() {
+        ast.addChild(new DummyAst());
+        assertThat(ast.isLeaf()).isFalse();
     }
 
     @Test
-    public void isRoot_should_return_false_when_has_children() {
-        root.addChild(new DummyAst());
-        assertThat(root.isLeaf()).isFalse();
+    public void isLeaf_should_return_true_when_no_children() {
+        assertThat(ast.isLeaf()).isTrue();
     }
 
     @Test
     public void accept_should_execute_visitor() throws Exception {
-        assertThat(root.getToken()).isNotEqualTo("Visited");
-        root.accept(a -> {
+        assertThat(ast.getToken()).isNotEqualTo("Visited");
+        ast.accept(a -> {
             a.setPayload(new Text("Visited"));
             return Optional.empty();
         });
-        assertThat(root.getToken()).isEqualTo("Visited");
+        assertThat(ast.getToken()).isEqualTo("Visited");
     }
 
     @Test
     public void evaluate_should_throw_exception_when_cell_is_null() {
-        root.setCell(null);
+        Ast ast = new Ast();
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> root.evaluate(new DummyAstEvaluator()));
+                .isThrownBy(() -> ast.evaluate(mock(AstEvaluator.class)));
     }
 
     @Test
     public void evaluate_should_call_evaluator() {
-        assertThat(root.evaluate(new DummyAstEvaluator()).getText()).isEqualTo(DummyAstEvaluator.EVAL_RESULT);
+        AstEvaluator evaluator = mock(AstEvaluator.class);
+        ast.evaluate(evaluator);
+        verify(evaluator, atLeast(1)).evaluate(ast);
+    }
+
+    @Test
+    public void getPayloadType_should_return_payload_type() {
+        ast.setPayload(new Addition());
+        assertThat(ast.getPayloadType()).isEqualTo(CellsheetType.ADDITION);
     }
 }

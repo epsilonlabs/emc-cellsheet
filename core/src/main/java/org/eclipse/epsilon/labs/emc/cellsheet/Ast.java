@@ -63,12 +63,14 @@ public class Ast implements CellsheetElement {
     public static final int UNASSIGNED = -1;
 
     private static final Logger logger = LoggerFactory.getLogger(Ast.class);
-    protected String id;
-    private Cell cell;
-    private AstPayload payload;
-    private Ast parent = null;
-    private List<Ast> children = new InternalAstList();
-    private int position = UNASSIGNED;
+
+    Cell cell;
+    Ast parent = null;
+    List<Ast> children = new InternalAstList();
+    int position = UNASSIGNED;
+    String id;
+    AstPayload payload;
+
 
     public Ast() {
         this(AstPayloads.empty());
@@ -87,15 +89,9 @@ public class Ast implements CellsheetElement {
         return parent == null ? cell : parent.getCell();
     }
 
-    /**
-     * Sets the Cell this node is applicable to. Note this does not modify the
-     * cell itself, manual addition to the cell's AST tracker may be required
-     *
-     * @param cell new applicable cell, can be {@code null}
-     */
-    public void setCell(Cell cell) {
-        this.cell = cell;
-        this.id = null;
+    public String getCellKey() {
+        Cell cell = getCell();
+        return cell == null ? null : cell.getAstKey(this);
     }
 
     /**
@@ -397,11 +393,13 @@ public class Ast implements CellsheetElement {
      * @return the ID for this Ast
      */
     private String buildId() {
-        if (getParent() == null) {
-            if (getCell() == null) return CellsheetElement.super.getId();
-            return getCell().getId() + "/asts/" + getPosition();
+        Ast parent = getParent();
+        if (parent == null) {
+            Cell cell = getCell();
+            if (cell == null) return CellsheetElement.super.getId();
+            return cell.getId() + "/asts/" + getCellKey();
         }
-        return getParent().getId() + "/" + getPosition();
+        return parent.getId() + "/" + getPosition();
     }
 
     /**
@@ -436,13 +434,12 @@ public class Ast implements CellsheetElement {
         Ast that = (Ast) o;
         return getPosition() == that.getPosition() &&
                 Objects.equal(getPayload(), that.getPayload()) &&
-                Objects.equal(getId(), that.getId()) &&
                 Objects.equal(getChildren(), that.getChildren());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getPayload(), getId(), getChildren(), getPosition());
+        return Objects.hashCode( getPosition(), getPayload(), getChildren());
     }
 
     @Nonnull
@@ -495,7 +492,7 @@ public class Ast implements CellsheetElement {
 
         @Override
         public void add(int index, Ast ast) {
-            checkArgument(!delegate.contains(ast), "AST already present at index %s", ast.getPosition());
+            while (index > delegate.size()) delegate.add(null);
             super.add(index, ast);
             if (ast.getParent() != null && !ast.getParent().equals(Ast.this))
                 ast.getParent().removeChild(ast);

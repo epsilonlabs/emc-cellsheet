@@ -151,14 +151,14 @@ public class WorkspaceTest {
 
     @Test
     public void getElementById_should_return_Ast_when_given_ast_id() {
-        Ast ast = (Ast) book.getSheet(52).getRow(100).getCell(34).getAsts().get(45);
+        Ast ast = (Ast) book.getSheet(52).getRow(100).getCell(34).getRoot();
         Object element = workspace.getElementById(ast.getId());
         assertThat(element).isInstanceOf(Ast.class).isEqualToComparingFieldByFieldRecursively(ast);
     }
 
     @Test
     public void getElementById_should_return_Ast_when_given_ast_child_id() {
-        Ast ast = ((Ast) book.getSheet(52).getRow(100).getCell(34).getAsts().get(45)).childAt(23);
+        Ast ast = ((Ast) book.getSheet(52).getRow(100).getCell(34).getRoot()).childAt(23);
         Object element = workspace.getElementById(ast.getId());
         assertThat(element).isInstanceOf(Ast.class).isEqualToComparingFieldByFieldRecursively(ast);
     }

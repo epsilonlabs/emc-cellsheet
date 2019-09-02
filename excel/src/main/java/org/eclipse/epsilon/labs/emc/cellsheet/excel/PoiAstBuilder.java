@@ -62,7 +62,6 @@ public class PoiAstBuilder {
         checkState(stack.size() == 1, "Left over Asts during construction [formula: %s, cell: %s]", formula, cell);
 
         Ast ast = stack.pop();
-        ast.setCell(cell);
         return ast;
     }
 
@@ -94,7 +93,6 @@ public class PoiAstBuilder {
         checkNotNull(payload);
 
         Ast ast = new Ast(payload);
-        ast.setCell(cell);
         return ast;
     }
 
