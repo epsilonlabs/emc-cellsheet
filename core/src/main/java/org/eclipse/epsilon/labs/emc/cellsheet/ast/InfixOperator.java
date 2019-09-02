@@ -27,4 +27,9 @@ public abstract class InfixOperator extends AstPayload {
     public Set<CellsheetType> getKinds() {
         return EnumSet.of(getType(), CellsheetType.INFIX_OPERATOR, CellsheetType.AST_PAYLOAD, CellsheetType.CELLSHEET_ELEMENT);
     }
+
+    @Override
+    public CellsheetType getSuperType() {
+        return CellsheetType.INFIX_OPERATOR;
+    }
 }

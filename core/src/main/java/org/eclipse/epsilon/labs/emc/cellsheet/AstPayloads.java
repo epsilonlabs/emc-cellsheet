@@ -27,11 +27,31 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class AstPayloads {
 
+    // Table of payloads
     static final Table<CellsheetType, String, AstPayload> PAYLOADS = HashBasedTable.create();
 
+    /**
+     * Singleton constructor
+     */
     private AstPayloads() {
     }
 
+    /**
+     * Returns a default empty payload
+     *
+     * @return default empty payload
+     */
+    public static AstPayload empty() {
+        return of(CellsheetType.UNKNOWN, "");
+    }
+
+    /**
+     * Returns a payload of the given type and token
+     *
+     * @param type  type of payload
+     * @param token token of the payload
+     * @return the payload of given type and token
+     */
     public static AstPayload of(CellsheetType type, String token) {
         checkNotNull(type, "CellsheetType cannot be null");
 
@@ -130,6 +150,13 @@ public class AstPayloads {
         return payload;
     }
 
+    /**
+     * Returns a payload of the given type. Can only be used for payloads
+     * with fixed token values such as infix operators
+     *
+     * @param type type of payload
+     * @return the payload of the given type
+     */
     public static AstPayload of(CellsheetType type) {
         switch (type) {
             case PLUS:

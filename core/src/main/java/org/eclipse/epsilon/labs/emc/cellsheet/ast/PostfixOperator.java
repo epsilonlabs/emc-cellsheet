@@ -27,4 +27,9 @@ public abstract class PostfixOperator extends AstPayload {
     public Set<CellsheetType> getKinds() {
         return EnumSet.of(getType(), CellsheetType.POSTFIX_OPERATOR, CellsheetType.AST_PAYLOAD, CellsheetType.CELLSHEET_ELEMENT);
     }
+
+    @Override
+    public CellsheetType getSuperType() {
+        return CellsheetType.POSTFIX_OPERATOR;
+    }
 }

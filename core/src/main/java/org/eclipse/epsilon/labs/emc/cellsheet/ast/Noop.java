@@ -33,4 +33,10 @@ public class Noop extends AstPayload {
     public Set<CellsheetType> getKinds() {
         return EnumSet.of(getType(), CellsheetType.AST_PAYLOAD, CellsheetType.CELLSHEET_ELEMENT);
     }
+
+    @Override
+    public CellsheetType getSuperType() {
+        return CellsheetType.NOOP;
+    }
+
 }

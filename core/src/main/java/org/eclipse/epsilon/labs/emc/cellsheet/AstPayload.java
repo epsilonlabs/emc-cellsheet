@@ -11,7 +11,11 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import com.google.common.base.MoreObjects;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.UUID;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Model Type representing a the payload held within an {@link Ast}
@@ -25,23 +29,44 @@ import java.util.Objects;
  */
 public abstract class AstPayload implements CellsheetElement {
 
-    protected final String token;
+    public static final String SCHEME = "cellsheet-payload://";
 
+    protected final String token;
+    protected final String uuid;
+
+    /**
+     * Super constructor for subclasses, will automatically set the ID of this
+     * token as well.
+     *
+     * @param token
+     */
     protected AstPayload(String token) {
+        checkNotNull(token);
         this.token = token.intern();
+        this.uuid = tokenToUUID(token);
     }
 
-
+    /**
+     * Returns the token value of this payload
+     *
+     * @return the token value
+     */
     public String getToken() {
         return token;
     }
 
     @Override
     public String getId() {
-        return "cellsheet-payloads://"
-                + getType().getTypeName().toLowerCase()
-                + "/" + token.hashCode();
+        return SCHEME + getType().getTypeName().toLowerCase() + "/" + uuid;
     }
+
+    /**
+     * Returns supertype of this Payload
+     * <p>Useful for categorising payloads</p>
+     *
+     * @return the supertype of this payload
+     */
+    public abstract CellsheetType getSuperType();
 
     @Override
     public boolean equals(Object o) {
@@ -64,6 +89,19 @@ public abstract class AstPayload implements CellsheetElement {
                 .add("token", token)
                 .add("id", getId())
                 .toString();
+    }
+
+    /**
+     * Convert a token into a UUID
+     *
+     * @param token the token to convert, must not be {@code null}
+     * @return UUID from given token
+     */
+    public static String tokenToUUID(String token) {
+        checkNotNull(token);
+        byte[] bytes = token.getBytes(StandardCharsets.UTF_8);
+        UUID uuid = UUID.nameUUIDFromBytes(bytes);
+        return uuid.toString();
     }
 
 }

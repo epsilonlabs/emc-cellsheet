@@ -27,4 +27,9 @@ public abstract class PrefixOperator extends AstPayload {
     public Set<CellsheetType> getKinds() {
         return EnumSet.of(getType(), CellsheetType.PREFIX_OPERATOR, CellsheetType.AST_PAYLOAD, CellsheetType.CELLSHEET_ELEMENT);
     }
+
+    @Override
+    public CellsheetType getSuperType() {
+        return CellsheetType.PREFIX_OPERATOR;
+    }
 }

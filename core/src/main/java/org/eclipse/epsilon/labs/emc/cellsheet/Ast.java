@@ -69,10 +69,9 @@ public class Ast implements CellsheetElement {
     private Ast parent = null;
     private List<Ast> children = new InternalAstList();
     private int position = UNASSIGNED;
-    private AstEvaluator evaluator;
 
     public Ast() {
-        this(null);
+        this(AstPayloads.empty());
     }
 
     public Ast(AstPayload payload) {
@@ -134,6 +133,15 @@ public class Ast implements CellsheetElement {
      */
     public void setPayload(AstPayload payload) {
         this.payload = payload;
+    }
+
+    /**
+     * Returns the Payload type.
+     *
+     * @return the payload type
+     */
+    public CellsheetType getPayloadType() {
+        return payload.getType();
     }
 
     /**
@@ -228,7 +236,7 @@ public class Ast implements CellsheetElement {
      * </p>
      *
      * @param position the position to insert at
-     * @param payload    the child to insert
+     * @param payload  the child to insert
      * @return the inserted child
      * @throws IndexOutOfBoundsException if position is out of range
      */
@@ -383,6 +391,11 @@ public class Ast implements CellsheetElement {
         return id;
     }
 
+    /**
+     * Builds the ID for this Ast from scratch.
+     *
+     * @return the ID for this Ast
+     */
     private String buildId() {
         if (getParent() == null) {
             if (getCell() == null) return CellsheetElement.super.getId();
@@ -391,6 +404,14 @@ public class Ast implements CellsheetElement {
         return getParent().getId() + "/" + getPosition();
     }
 
+    /**
+     * Accepts and runs a {@link Visitor} on this Ast node returning the result.
+     *
+     * @param visitor the visitor to run
+     * @param <T>     return type of the visitor function
+     * @return the result from running the visitor
+     * @throws Exception thrown by visitor
+     */
     public <T> T accept(Visitor<T> visitor) throws Exception {
         return visitor.visit(this);
     }

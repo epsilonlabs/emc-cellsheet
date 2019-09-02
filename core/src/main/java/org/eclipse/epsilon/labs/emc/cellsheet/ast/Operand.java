@@ -27,4 +27,9 @@ public abstract class Operand extends AstPayload {
     public Set<CellsheetType> getKinds() {
         return EnumSet.of(getType(), CellsheetType.OPERAND, CellsheetType.AST_PAYLOAD, CellsheetType.CELLSHEET_ELEMENT);
     }
+
+    @Override
+    public CellsheetType getSuperType() {
+        return CellsheetType.OPERAND;
+    }
 }

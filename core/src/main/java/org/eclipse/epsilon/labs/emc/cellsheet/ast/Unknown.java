@@ -33,4 +33,10 @@ public class Unknown extends AstPayload {
     public Set<CellsheetType> getKinds() {
         return EnumSet.of(getType(), CellsheetType.CELLSHEET_ELEMENT, CellsheetType.AST_PAYLOAD);
     }
+
+    @Override
+    public CellsheetType getSuperType() {
+        return CellsheetType.UNKNOWN;
+    }
+
 }
