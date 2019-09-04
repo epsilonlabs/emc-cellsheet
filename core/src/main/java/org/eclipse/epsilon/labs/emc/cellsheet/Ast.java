@@ -10,7 +10,6 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.ForwardingList;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.FormulaBuilderVisitor;
@@ -432,14 +431,26 @@ public class Ast implements CellsheetElement {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ast that = (Ast) o;
-        return getPosition() == that.getPosition() &&
-                Objects.equal(getPayload(), that.getPayload()) &&
-                Objects.equal(getChildren(), that.getChildren());
+
+        // Parent cell
+        if (!Objects.equals(getCell(), that.getCell())) return false;
+
+        // Parent node
+        if (parent != null) {
+            Ast thatParent = that.parent;
+            if (thatParent == null) return false;
+            if (parent.position != thatParent.position) return false;
+            if (!parent.payload.equals(thatParent.payload)) return false;
+        }
+
+        // Associated cell and parent are equals. Compare self
+        return position == that.position &&
+                Objects.equals(payload, that.payload);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode( getPosition(), getPayload(), getChildren());
+        return Objects.hash(getCell(), parent, position, payload);
     }
 
     @Nonnull
