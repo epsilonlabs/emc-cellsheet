@@ -33,7 +33,6 @@ public enum CellsheetType {
     FORMULA_CELL("FormulaCell"),
     ERROR_CELL("ErrorCell"),
 
-    TOKEN("Token"),
     CELL_FORMAT("CellFormat"),
 
     AST("Ast"),
