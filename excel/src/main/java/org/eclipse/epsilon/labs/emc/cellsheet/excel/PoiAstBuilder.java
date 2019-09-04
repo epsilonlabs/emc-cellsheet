@@ -37,7 +37,7 @@ public class PoiAstBuilder {
     public static Ast of(String formula, PoiCell cell) {
         PoiCellsheetFormulaParser parser = new PoiCellsheetFormulaParser(
                 formula,
-                cell.getBook().getFpw(),
+                cell.getBook(),
                 cell.getSheet().getSheetIndex(),
                 cell.getRowIndex());
 

@@ -15,8 +15,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.AstEval;
 import org.eclipse.epsilon.labs.emc.cellsheet.Workspace;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,21 +25,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SuppressWarnings("unchecked")
 public class PoiAstEvaluatorTest {
 
+    private static PoiBook book;
     private Cell delegate;
-    private PoiBook book;
     private Workspace workspace;
 
-    @Before
-    public void setUp() throws Exception {
-        workspace = new Workspace();
-        workspace.setName(PoiAstEvaluator.class.getSimpleName() + "Workspace");
-        book = new PoiBook.Builder().withWorkspace(workspace).withBookName(PoiAstEvaluatorTest.class.getSimpleName() + " Book.xlsx").build();
-        workspace.addBook(book);
-        workspace.load();
-
-        delegate = book.getDelegate().createSheet("Sheet 1").createRow(0).createCell(0);
-
-        // Setup values
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        book = new PoiBook.Builder().build();
+        book.load();
+        book.getDelegate().createSheet("Sheet 1").createRow(0).createCell(0);
         Sheet valueSheet = book.getDelegate().createSheet("Values");
         for (int i = 0; i < 5; i++) {
             Row row = valueSheet.createRow(i);
@@ -48,11 +43,15 @@ public class PoiAstEvaluatorTest {
         }
     }
 
-    @After
-    public void tearDown() {
+    @AfterClass
+    public static void tearDownClass() {
         book.dispose();
-        book = null;
-        workspace = null;
+    }
+
+    @Before
+    public void setUp() {
+        delegate = book.getSheet(0).getRow(0).getCell(0).getDelegate();
+        delegate.setCellFormula(null);
     }
 
     @Test
@@ -97,6 +96,6 @@ public class PoiAstEvaluatorTest {
 
     private Ast getAst(String formula) {
         delegate.setCellFormula(formula);
-        return PoiAstBuilder.of(book.getSheet(0).getRow(0).getCell(0));
+        return book.getSheet(0).getRow(0).getCell(0).getRoot();
     }
 }
