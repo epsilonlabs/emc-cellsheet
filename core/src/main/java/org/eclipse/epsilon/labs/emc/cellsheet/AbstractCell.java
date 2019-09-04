@@ -33,149 +33,99 @@ public abstract class AbstractCell<T> implements Cell<T> {
     protected int colIndex;
     final AstMap asts = new AstMap();
 
-    /**
-     * Returns the parent {@link Book} of this cell
-     *
-     * @return the parent book
-     */
+    @Override
     public Book getBook() {
         return row.getBook();
     }
 
-    /**
-     * Returns the parent {@link Sheet} of this cell
-     *
-     * @return the parent sheet
-     */
+    @Override
     public Sheet getSheet() {
         return row.getSheet();
     }
 
-    /**
-     * Returns the parent {@link Row} of this cell
-     *
-     * @return the parent row
-     */
+    @Override
     public Row getRow() {
         return row;
     }
 
-    /**
-     * Returns the 0-based column index of this cell
-     *
-     * @return 0-based column index of this cell
-     */
+    @Override
     public int getColIndex() {
         return colIndex;
     }
 
-    /**
-     * Returns the alpha column index of this cell
-     *
-     * @return alpha column index of this cell
-     */
+    @Override
     public String getA1ColIndex() {
         return ReferenceUtil.indexToA1(getColIndex());
     }
 
-    /**
-     * Returns the 0-based row index of this cell
-     *
-     * @return 0-based row index of this cell
-     */
+    @Override
     public int getRowIndex() {
         return getRow().getRowIndex();
     }
 
-    /**
-     * Returns the 1-based row index of this cell
-     *
-     * @return 1-based row index of this cell
-     */
+    @Override
     public int getA1RowIndex() {
         return getRow().getA1RowIndex();
     }
 
-    /**
-     * Returns the raw value of this cell
-     *
-     * @return raw value of this cell
-     */
+    @Override
     public T getValue() {
         return value;
     }
 
-    /**
-     * Returns any AST associated with this cell.
-     * <p>The first element of the returned collection will always be the root AST</p>
-     *
-     * @return the ASTs associated with this cell
-     */
+    @Override
     public Collection<Ast> getAsts() {
-        return asts.values();
+        return getInternalAsts().values();
     }
 
-    /**
-     * Returns the default Ast derived from the value of this cell
-     *
-     * @return the default AST derived from the value of this cell
-     */
+    @Override
     public Ast getRoot() {
-        return asts.computeIfAbsent(Cell.ROOT_AST_KEY, k -> buildRoot());
+        return getInternalAsts().get(Cell.ROOT_AST_KEY);
     }
 
     protected abstract Ast buildRoot();
 
-    /**
-     * Associate an Ast with this Cell and the given key removing any previous
-     * cell association
-     * <p>
-     * All Asts are mapped with a key for later retrieval. The default Ast
-     * corresponding to the default value of this cell is always mapped with
-     * the {@value #ROOT_AST_KEY}
-     * </p>
-     *
-     * @param key the key to associate this ast to
-     * @param ast the AST to associate with this cell. Must be a root Ast
-     */
     @Override
     public void putAst(String key, Ast ast) {
         checkArgument(!ROOT_AST_KEY.equals(key), ROOT_AST_KEY + " is a reserved key");
         if (ast.getCell() != null) ast.getCell().removeAst(ast);
-        asts.put(key, ast);
+        getInternalAsts().put(key, ast);
     }
 
     @Override
     public Ast removeAst(Ast ast) {
-        return asts.remove(ast.getCellKey());
+        return getInternalAsts().remove(ast.getCellKey());
     }
 
     @Override
     public Ast removeAst(String key) {
-        return asts.remove(key);
+        return getInternalAsts().remove(key);
     }
 
-    /**
-     * Retrieve the Ast with the given key
-     *
-     * @param key the key
-     * @return the Ast or {@code null} if no such mapping exists
-     * @throws IndexOutOfBoundsException if the position is out of bounds
-     */
+    @Override
     public Ast getAst(String key) {
-        return asts.get(key);
+        return getInternalAsts().get(key);
     }
 
     @Override
     public String getAstKey(Ast ast) {
-        return asts.delegate.inverse().get(ast);
+        return getInternalAsts().delegate.inverse().get(ast);
+    }
+
+    private AstMap getInternalAsts() {
+        if (!asts.containsKey(Cell.ROOT_AST_KEY)) {
+            asts.put(Cell.ROOT_AST_KEY, buildRoot());
+        }
+        return asts;
     }
 
     @Nonnull
     @Override
     public Iterator<CellsheetElement> iterator() {
-        return ImmutableList.<CellsheetElement>copyOf(asts.values()).iterator();
+        return ImmutableList.<CellsheetElement>copyOf(getAsts()).iterator();
     }
+
+
 
     private class AstMap extends ForwardingMap<String, Ast> {
 
