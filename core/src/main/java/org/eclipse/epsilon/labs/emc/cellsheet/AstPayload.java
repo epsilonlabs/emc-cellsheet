@@ -29,7 +29,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class AstPayload implements CellsheetElement {
 
-    public static final String SCHEME = "cellsheet-payload://";
+    public static final String SCHEME = "cellsheet-payload";
 
     protected final String token;
     protected final String uuid;
@@ -47,6 +47,19 @@ public abstract class AstPayload implements CellsheetElement {
     }
 
     /**
+     * Convert a token into a UUID
+     *
+     * @param token the token to convert, must not be {@code null}
+     * @return UUID from given token
+     */
+    public static String tokenToUUID(String token) {
+        checkNotNull(token);
+        byte[] bytes = token.getBytes(StandardCharsets.UTF_8);
+        UUID uuid = UUID.nameUUIDFromBytes(bytes);
+        return uuid.toString();
+    }
+
+    /**
      * Returns the token value of this payload
      *
      * @return the token value
@@ -57,7 +70,7 @@ public abstract class AstPayload implements CellsheetElement {
 
     @Override
     public String getId() {
-        return SCHEME + getType().getTypeName().toLowerCase() + "/" + uuid;
+        return SCHEME + "://" + getType().getTypeName().toLowerCase() + "/" + uuid;
     }
 
     /**
@@ -89,19 +102,6 @@ public abstract class AstPayload implements CellsheetElement {
                 .add("token", token)
                 .add("id", getId())
                 .toString();
-    }
-
-    /**
-     * Convert a token into a UUID
-     *
-     * @param token the token to convert, must not be {@code null}
-     * @return UUID from given token
-     */
-    public static String tokenToUUID(String token) {
-        checkNotNull(token);
-        byte[] bytes = token.getBytes(StandardCharsets.UTF_8);
-        UUID uuid = UUID.nameUUIDFromBytes(bytes);
-        return uuid.toString();
     }
 
 }

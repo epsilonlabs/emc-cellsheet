@@ -12,10 +12,11 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ForwardingIterator;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.net.UrlEscapers;
+import com.google.common.primitives.Ints;
 import org.eclipse.epsilon.common.util.StringProperties;
 import org.eclipse.epsilon.eol.exceptions.EolRuntimeException;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelElementTypeNotFoundException;
@@ -27,10 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,12 +37,17 @@ import static com.google.common.base.Preconditions.*;
 
 public class Workspace extends CachedModel<CellsheetElement> implements CellsheetElement {
 
+    public static final String SCHEME = "cellsheet";
     public static final String PROPERTY_MODEL_URI = "modelUri";
+
+    private static final Set<String> ALLOWED_SCHEMES = ImmutableSet.of(SCHEME, AstPayload.SCHEME);
 
     private static Logger logger = LoggerFactory.getLogger(Workspace.class);
 
     protected Map<String, BookProvider> providerRegistry = new HashMap<>();
     protected Map<String, Book> books = new LinkedHashMap<>();
+
+    private String id = null;
 
     public Workspace() {
     }
@@ -84,6 +88,12 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
     }
 
     @Override
+    public void setName(String name) {
+        super.setName(name);
+        this.id = null;
+    }
+
+    @Override
     @Nonnull
     public Iterator<Book> iterator() {
         return books.values().iterator();
@@ -91,8 +101,7 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
 
     @Override
     protected Collection<CellsheetElement> allContentsFromModel() {
-        AllContentsIterator it = new AllContentsIterator(this);
-        return Lists.newArrayList(it);
+        return new AllContentsCollection(this);
     }
 
     public Collection<CellsheetElement> getAllOfType(CellsheetType type) throws EolModelElementTypeNotFoundException {
@@ -255,7 +264,11 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
     @Nonnull
     @Override
     public String getId() {
-        return name == null ? CellsheetElement.super.getId() : "cellsheet://" + UrlEscapers.urlPathSegmentEscaper().escape(getName());
+        if (id == null) {
+            if (name == null) return CellsheetElement.super.getId();
+            id = SCHEME + "://" + UrlEscapers.urlPathSegmentEscaper().escape(getName());
+        }
+        return id;
     }
 
     @Nonnull
@@ -301,81 +314,162 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
     public Object getElementById(String id) {
         if (id == null) return null;
 
-        // Validation Checks
-        final Iterator<String> it;
         try {
             URI uri = new URI(id);
-            if (!uri.getScheme().equals("cellsheet"))
-                throw new IllegalArgumentException(String.format("Non-Cellsheet ID given %s", id));
-            // Check workspace
-            String workspacePart = URLDecoder.decode(uri.getAuthority(), "UTF-8");
-            if (!workspacePart.equals(getName()))
-                return null; // Not an ID for this workspace
-            if (Strings.isNullOrEmpty(uri.getPath())) return this;
-            it = Arrays.stream(uri.getPath().split("/")).iterator();
-            it.next();
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(String.format("Malformed ID given %s", id), e);
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError("UTF-8 not supported");
-        }
-
-        /*
-         * Processing
-         */
-        String part;
-        try {
-            // Book
-            Book book;
-            part = URLDecoder.decode(it.next(), "UTF-8");
-            book = books.get(part);
-            if (book == null) return null;
-            if (!it.hasNext()) return book;
-
-            // Sheet
-            Sheet sheet;
-            part = it.next();
-            sheet = book.getSheet(Integer.valueOf(part));
-            if (sheet == null) return null;
-            if (!it.hasNext()) return sheet;
-
-            // Row
-            Row row;
-            part = it.next();
-            row = sheet.getRow(Integer.valueOf(part));
-            if (row == null) return null;
-            if (!it.hasNext()) return row;
-
-            // Cell
-            Cell cell;
-            part = it.next();
-            cell = row.getCell(Integer.valueOf(part));
-            if (cell == null) return null;
-            if (!it.hasNext()) return cell;
-
-            // Cell parts
-            part = it.next();
-            if (!it.hasNext())
-                throw new IllegalArgumentException(String.format("Malformed ID given %s, missing cell parts", id));
-            switch (part) {
-                case "asts":
-                    return resolveAstIdPath(cell, it);
-                case "cellFormat":
+            String scheme = uri.getScheme();
+            checkArgument(ALLOWED_SCHEMES.contains(scheme),
+                    "Scheme must be one of [%s], given",
+                    String.join(",", ALLOWED_SCHEMES),
+                    id);
+            switch (scheme) {
+                case SCHEME:
+                    return resolveCellsheetId(uri);
+                case AstPayload.SCHEME:
+                    return resolveAstPayloadId(uri);
                 default:
-                    throw new UnsupportedOperationException(String.format("[%s] cell part is not supported yet", part));
+                    throw new AssertionError();
             }
 
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError("UTF-8 not supported");
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(String.format("Malformed ID given %s", id), e);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(String.format("Malformed ID given [%s]", id), e);
         }
     }
 
-    private Ast resolveAstIdPath(Cell cell, Iterator<String> it) throws NumberFormatException {
-        Ast ast = cell.getAst(it.next());
-        while (it.hasNext()) ast = ast.childAt(Integer.valueOf(it.next()));
-        return ast;
+    private Object resolveCellsheetId(URI uri) {
+        // Check if part of this workspace
+        if (!Objects.equals(getName(), uri.getAuthority()))
+            return null;
+
+        if (Strings.isNullOrEmpty(uri.getPath())) return this;
+
+        String[] uriParts = uri.getPath().split("/");
+        Iterator<String> it = Arrays.stream(uriParts).iterator();
+        it.next(); // Skip one as first entry is always empty
+
+        // Process the ID
+        Integer idx; // holder for index variables
+        Book book;
+        Sheet sheet;
+        Row row;
+        Cell cell;
+        Ast ast;
+
+        // Book part
+        book = books.get(it.next());
+        if (book == null) return null;
+        if (!it.hasNext()) return book;
+
+        // Sheet part
+        idx = Ints.tryParse(it.next());
+        checkNotNull(idx, "Sheet index must be an integer [%s]", id);
+        sheet = book.getSheet(idx);
+        if (sheet == null) return null;
+        if (!it.hasNext()) return sheet;
+
+        // Row
+        idx = Ints.tryParse(it.next());
+        checkNotNull(idx, "Row index must be an integer [%s]", id);
+        row = sheet.getRow(idx);
+        if (row == null) return null;
+        if (!it.hasNext()) return row;
+
+        // Cell
+        idx = Ints.tryParse(it.next());
+        checkNotNull(idx, "Cell index must be an integer [%s]", id);
+        cell = row.getCell(idx);
+        if (cell == null) return null;
+        if (!it.hasNext()) return cell;
+
+        // Cell parts
+        String cellPart = it.next();
+        switch (cellPart) {
+            case "asts":
+                checkArgument(it.hasNext(), "Missing AST key in ID [%s]", id);
+                String astKey = it.next();
+                ast = cell.getAst(astKey);
+                while (it.hasNext())
+                    ast = ast.childAt(Integer.valueOf(it.next()));
+                return ast;
+            case "format": // TODO: not supporting cell formats fully atm
+            default:
+                throw new IllegalArgumentException(String.format("Unrecognised cell part given [%s]", id));
+        }
+
+    }
+
+    private AstPayload resolveAstPayloadId(URI uri) throws NumberFormatException {
+        String[] uriParts = uri.getPath().split("/");
+        checkArgument(uriParts.length == 2, "Malformed ID given %s", id);
+
+        CellsheetType type = CellsheetType.fromTypeName(uriParts[0]);
+        String uuid = uriParts[1];
+        checkArgument(type != null, "Malformed ID given %s", id);
+
+        return AstPayloads.fromUuid(type, id);
+    }
+
+    class AllContentsCollection extends AbstractCollection<CellsheetElement> {
+
+        private final Workspace workspace;
+
+        private AllContentsCollection(Workspace workspace) {
+            this.workspace = workspace;
+        }
+
+        @Override
+        public int size() {
+            return Iterators.size(iterator());
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return false;
+        }
+
+        @Override
+        public Iterator<CellsheetElement> iterator() {
+            return new AllContentsIterator(workspace);
+        }
+
+        @Override
+        public boolean add(CellsheetElement cellsheetElement) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends CellsheetElement> c) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     class AllContentsIterator extends ForwardingIterator<CellsheetElement> {

@@ -28,10 +28,10 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public abstract class AbstractCell<T> implements Cell<T> {
 
+    final AstMap asts = new AstMap();
     protected T value;
     protected Row row;
     protected int colIndex;
-    final AstMap asts = new AstMap();
 
     @Override
     public Book getBook() {
@@ -124,7 +124,6 @@ public abstract class AbstractCell<T> implements Cell<T> {
     public Iterator<CellsheetElement> iterator() {
         return ImmutableList.<CellsheetElement>copyOf(getAsts()).iterator();
     }
-
 
 
     private class AstMap extends ForwardingMap<String, Ast> {

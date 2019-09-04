@@ -27,7 +27,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class AstPayloads {
 
-    // Table of payloads
+    // Table of payloads mapped by Type and UUID
     static final Table<CellsheetType, String, AstPayload> PAYLOADS = HashBasedTable.create();
 
     /**
@@ -45,6 +45,10 @@ public class AstPayloads {
         return of(CellsheetType.UNKNOWN, "");
     }
 
+    public static AstPayload fromUuid(CellsheetType type, String uuid) {
+        return PAYLOADS.get(type, uuid);
+    }
+
     /**
      * Returns a payload of the given type and token
      *
@@ -55,7 +59,8 @@ public class AstPayloads {
     public static AstPayload of(CellsheetType type, String token) {
         checkNotNull(type, "CellsheetType cannot be null");
 
-        AstPayload payload = PAYLOADS.get(type, token);
+        String uuid = AstPayload.tokenToUUID(token);
+        AstPayload payload = PAYLOADS.get(type, uuid);
         if (payload == null) {
             switch (type) {
                 case NOOP:
@@ -145,7 +150,7 @@ public class AstPayloads {
                 default:
                     throw new IllegalArgumentException("Cannot create payload of type " + type);
             }
-            PAYLOADS.put(type, token, payload);
+            PAYLOADS.put(type, uuid, payload);
         }
         return payload;
     }
