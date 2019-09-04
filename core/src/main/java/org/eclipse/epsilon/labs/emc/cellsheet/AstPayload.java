@@ -68,6 +68,15 @@ public abstract class AstPayload implements CellsheetElement {
         return token;
     }
 
+    /**
+     * Returns the UUID value derived from the token
+     *
+     * @return the UUID
+     */
+    public String getUuid() {
+        return uuid;
+    }
+
     @Override
     public String getId() {
         return SCHEME + "://" + getType().getTypeName().toLowerCase() + "/" + uuid;
