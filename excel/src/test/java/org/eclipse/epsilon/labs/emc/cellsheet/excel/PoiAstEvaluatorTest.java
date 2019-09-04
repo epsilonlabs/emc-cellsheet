@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -56,9 +56,9 @@ public class PoiAstEvaluatorTest {
 
     @Test
     public void evaluate_should_return_string_given_text_literal() {
-        Ast ast = getAst("\"This is the of to return\"");
+        Ast ast = getAst("\"This is the fromToken to return\"");
         AstEval result = ast.evaluate(PoiAstEvaluator.instance());
-        assertThat(result.getText()).isEqualTo("This is the of to return");
+        assertThat(result.getText()).isEqualTo("This is the fromToken to return");
     }
 
     @Test
@@ -77,7 +77,7 @@ public class PoiAstEvaluatorTest {
 
     @Test
     public void evaluate_should_return_ref_result_given_ref_function() {
-        String refValue = "This is a of";
+        String refValue = "This is a fromToken";
         delegate.getRow().createCell(1).setCellValue(refValue);
 
         Ast ast = getAst("B1");

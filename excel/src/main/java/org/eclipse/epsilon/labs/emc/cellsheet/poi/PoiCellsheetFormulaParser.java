@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Extension of Apache POI {@link FormulaParser} that maintains additional metadata
+ * Extension fromToken Apache POI {@link FormulaParser} that maintains additional metadata
  *
  * @author Jonathan Co
  */

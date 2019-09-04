@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Visitor that builds an executable formula by recursively visiting all elements
- * of a given AST
+ * fromToken a given AST
  *
  * @author Jonathan Co
  * @since 3.0.0
@@ -120,9 +120,9 @@ public class FormulaBuilderVisitor implements Ast.Visitor<String> {
     }
 
     /**
-     * Returns the supertype of the given payload instance.
+     * Returns the supertype fromToken the given payload instance.
      * <p>
-     * Supertype must be one of {@link CellsheetType#INFIX_OPERATOR},
+     * Supertype must be one fromToken {@link CellsheetType#INFIX_OPERATOR},
      * {@link CellsheetType#POSTFIX_OPERATOR}, {@link CellsheetType#PREFIX_OPERATOR},
      * {@link CellsheetType#OPERATION}, {@link CellsheetType#OPERAND},
      * {@link CellsheetType#NOOP} or {@link CellsheetType#UNKNOWN}

@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -60,7 +60,7 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
      * Returns the book with the given name or {@code null} if it does
      * not exist.
      *
-     * @param bookName the name of the book
+     * @param bookName the name fromToken the book
      * @return book with the given name or {@code null} if none exists
      */
     public Book getBook(String bookName) {
@@ -318,7 +318,7 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
             URI uri = new URI(id);
             String scheme = uri.getScheme();
             checkArgument(ALLOWED_SCHEMES.contains(scheme),
-                    "Scheme must be one of [%s], given",
+                    "Scheme must be one fromToken [%s], given",
                     String.join(",", ALLOWED_SCHEMES),
                     id);
             switch (scheme) {
@@ -336,7 +336,7 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
     }
 
     private Object resolveCellsheetId(URI uri) {
-        // Check if part of this workspace
+        // Check if part fromToken this workspace
         if (!Objects.equals(getName(), uri.getAuthority()))
             return null;
 

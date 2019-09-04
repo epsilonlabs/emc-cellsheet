@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -29,13 +29,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>
  * In this context AST can refer to the overall tree structure itself or the
  * individual nodes that make up the structure. Each node can have 0 or more
- * children with the order of the children defining argument order.
+ * children with the order fromToken the children defining argument order.
  * </p>
  *
  * <p>Individual AST nodes contain the following properties:</p?
  *
  * <p>Parent - Each AST node is associated with a parent unless the node is
- * the root of the tree, in which case the parent is {@code null}</p>
+ * the root fromToken the tree, in which case the parent is {@code null}</p>
  *
  * <p>Cell - An optional reference to a cell that this node applies to. This
  * can be {@code null} if the AST is dangling. The cell is used as a context
@@ -43,11 +43,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>Payload - The actual token and metadata held at this node</p>
  *
- * <p>Position - The position of this node relative to it's parent or
+ * <p>Position - The position fromToken this node relative to it's parent or
  * cell if the node is the root. See {@link #getPosition()}</p>
  *
  * <p>
- * Unless specified operations that modify the children of a node will
+ * Unless specified operations that modify the children fromToken a node will
  * ensure consistency by assigning correct cell, parent and position references.
  * </p>
  *
@@ -94,16 +94,16 @@ public class Ast implements CellsheetElement {
     }
 
     /**
-     * Get the parent of this node
+     * Get the parent fromToken this node
      *
-     * @return the parent of this AST or {@code null} if this node is the root
+     * @return the parent fromToken this AST or {@code null} if this node is the root
      */
     public Ast getParent() {
         return parent;
     }
 
     /**
-     * Set the parent of this node
+     * Set the parent fromToken this node
      *
      * @param parent the new parent, can be {@code null}
      */
@@ -140,28 +140,28 @@ public class Ast implements CellsheetElement {
     }
 
     /**
-     * Convenience method for retrieving the string value of this node's token
+     * Convenience method for retrieving the string value fromToken this node's token
      *
-     * @return string value of this node's token.
+     * @return string value fromToken this node's token.
      */
     public String getToken() {
         return payload == null ? null : payload.getToken();
     }
 
     /**
-     * Retrieve the root node of the whole AST structure. If this node is the
+     * Retrieve the root node fromToken the whole AST structure. If this node is the
      * root returns itself.
      *
-     * @return the root of the AST structure
+     * @return the root fromToken the AST structure
      */
     public Ast getRoot() {
         return parent == null ? this : parent.getRoot();
     }
 
     /**
-     * Retrieve an immutable list of this node's children
+     * Retrieve an immutable list fromToken this node's children
      *
-     * @return an immutable list of children
+     * @return an immutable list fromToken children
      */
     public List<Ast> getChildren() {
         return Collections.unmodifiableList(children);
@@ -170,9 +170,9 @@ public class Ast implements CellsheetElement {
     /**
      * Retrieve the child at the given position
      *
-     * @param position the position of the child
+     * @param position the position fromToken the child
      * @return the child at given position
-     * @throws IndexOutOfBoundsException if position is out of range
+     * @throws IndexOutOfBoundsException if position is out fromToken range
      */
     public Ast childAt(int position) {
         return children.get(position);
@@ -199,7 +199,7 @@ public class Ast implements CellsheetElement {
      * structure.
      * </p>
      *
-     * @param payload payload of the new child
+     * @param payload payload fromToken the new child
      * @return the child added
      */
     public Ast addChild(AstPayload payload) {
@@ -216,7 +216,7 @@ public class Ast implements CellsheetElement {
      * @param position the position to insert at
      * @param child    the child to insert
      * @return the inserted child
-     * @throws IndexOutOfBoundsException if position is out of range
+     * @throws IndexOutOfBoundsException if position is out fromToken range
      */
     public Ast addChild(int position, Ast child) {
         children.add(position, child);
@@ -233,7 +233,7 @@ public class Ast implements CellsheetElement {
      * @param position the position to insert at
      * @param payload  the child to insert
      * @return the inserted child
-     * @throws IndexOutOfBoundsException if position is out of range
+     * @throws IndexOutOfBoundsException if position is out fromToken range
      */
     public Ast addChild(int position, AstPayload payload) {
         return addChild(position, new Ast(payload));
@@ -248,7 +248,7 @@ public class Ast implements CellsheetElement {
      *
      * @param position the position to remove
      * @return the child removed
-     * @throws IndexOutOfBoundsException if position is out of range
+     * @throws IndexOutOfBoundsException if position is out fromToken range
      */
     public Ast removeChild(int position) {
         return children.remove(position);
@@ -283,7 +283,7 @@ public class Ast implements CellsheetElement {
     }
 
     /**
-     * Retrieve the position of the AST based on the following criteria:
+     * Retrieve the position fromToken the AST based on the following criteria:
      * <p>
      * <table border="1">
      * <tr align="left">
@@ -294,39 +294,39 @@ public class Ast implements CellsheetElement {
      * <tr>
      * <td>null</td>
      * <td>null</td>
-     * <td>Value of {@value UNASSIGNED}. The current AST is dangling and not
+     * <td>Value fromToken {@value UNASSIGNED}. The current AST is dangling and not
      * applicable to any actual cell</td>
      * </tr>
      * <tr>
      * <td>null</td>
      * <td>Non-null</td>
-     * <td>Position of the whole AST structure relative to the cell it was derived
-     * from. A value of 0 indicates that this AST is the standard AST constructed
-     * from the cell's original value (known as the root AST). A value of more
+     * <td>Position fromToken the whole AST structure relative to the cell it was derived
+     * from. A value fromToken 0 indicates that this AST is the standard AST constructed
+     * from the cell's original value (known as the root AST). A value fromToken more
      * than 0 indicates the AST has been derived by some other mean (these are
      * manually assigned by the modeller) </td>
      * </tr>
      * <tr>
      * <td>Non-null</td>
      * <td>N/A</td>
-     * <td>Position of this node relative to the parent. i.e. a value of 1
-     * would indicate that the current node is the 2nd child of it's parent</td>
+     * <td>Position fromToken this node relative to the parent. i.e. a value fromToken 1
+     * would indicate that the current node is the 2nd child fromToken it's parent</td>
      * </tr>
      * </table>
      * </p>
      *
-     * @return the position of this node in the AST structure
+     * @return the position fromToken this node in the AST structure
      */
     public int getPosition() {
         return position;
     }
 
     /**
-     * Set the new position of this node. See {@link #getPosition()} for semantics
-     * of the value to set. Note that no validation is performed on this to
-     * ensure consistency of the newly set value.
+     * Set the new position fromToken this node. See {@link #getPosition()} for semantics
+     * fromToken the value to set. Note that no validation is performed on this to
+     * ensure consistency fromToken the newly set value.
      *
-     * @param position the new position of this node
+     * @param position the new position fromToken this node
      */
     public void setPosition(int position) {
         this.position = position;
@@ -343,7 +343,7 @@ public class Ast implements CellsheetElement {
      * Reconstructs a formula using the current node as the root and evaluates
      * that formula. Requires that {@link #getCell()} be set
      *
-     * @return the result of evaluation
+     * @return the result fromToken evaluation
      * @throws IllegalStateException cell is not set
      */
     public AstEval evaluate(AstEvaluator evaluator) {
@@ -356,7 +356,7 @@ public class Ast implements CellsheetElement {
      * the root
      * <p>
      * The constructed formula may not necessarily reflect the same concrete
-     * structure of the original formula but will be semantically equivalent.
+     * structure fromToken the original formula but will be semantically equivalent.
      * i.e. 1+2/3 == (1+(2/3))
      * </p>
      *
@@ -405,7 +405,7 @@ public class Ast implements CellsheetElement {
      * Accepts and runs a {@link Visitor} on this Ast node returning the result.
      *
      * @param visitor the visitor to run
-     * @param <T>     return type of the visitor function
+     * @param <T>     return type fromToken the visitor function
      * @return the result from running the visitor
      * @throws Exception thrown by visitor
      */

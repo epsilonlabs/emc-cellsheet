@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -123,19 +123,19 @@ public class PoiAstBuilderTest {
         String formula = "A1+B1+C1";
 
         Ast a0 = getAst(formula);
-        assertThat(a0.getPayload()).isEqualTo(AstPayloads.of(ADDITION));
+        assertThat(a0.getPayload()).isEqualTo(AstPayloads.fromToken(ADDITION));
 
         Ast a00 = a0.childAt(0);
-        assertThat(a00.getPayload()).isEqualTo(AstPayloads.of(ADDITION));
+        assertThat(a00.getPayload()).isEqualTo(AstPayloads.fromToken(ADDITION));
 
         Ast a01 = a0.childAt(1);
-        assertThat(a01.getPayload()).isEqualTo(AstPayloads.of(REF, "C1"));
+        assertThat(a01.getPayload()).isEqualTo(AstPayloads.fromToken(REF, "C1"));
 
         Ast a000 = a00.childAt(0);
-        assertThat(a000.getPayload()).isEqualTo(AstPayloads.of(REF, "A1"));
+        assertThat(a000.getPayload()).isEqualTo(AstPayloads.fromToken(REF, "A1"));
 
         Ast a001 = a00.childAt(1);
-        assertThat(a001.getPayload()).isEqualTo(AstPayloads.of(REF, "B1"));
+        assertThat(a001.getPayload()).isEqualTo(AstPayloads.fromToken(REF, "B1"));
     }
 
     private Ast getAst(String formula) {

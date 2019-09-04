@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -116,7 +116,7 @@ public class PoiSheet implements Sheet, PoiDelegate<org.apache.poi.ss.usermodel.
 
         @Override
         public Builder withBook(Book book) throws ClassCastException {
-            checkArgument(book instanceof PoiBook, "Must be instance of %s", PoiBook.class.getCanonicalName());
+            checkArgument(book instanceof PoiBook, "Must be instance fromToken %s", PoiBook.class.getCanonicalName());
             this.book = (PoiBook) book;
             return self();
         }

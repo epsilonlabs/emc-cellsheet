@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -58,7 +58,7 @@ public class PoiAstEvaluator implements AstEvaluator {
 
     @Override
     public AstEval evaluate(String formula, Cell cell) {
-        checkArgument(cell instanceof PoiCell, "Not an instance of PoiCell");
+        checkArgument(cell instanceof PoiCell, "Not an instance fromToken PoiCell");
         return doEval(formula, (PoiCell) cell);
     }
 

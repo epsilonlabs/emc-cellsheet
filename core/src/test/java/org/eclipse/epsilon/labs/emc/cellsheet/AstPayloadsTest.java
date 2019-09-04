@@ -10,26 +10,23 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Answers;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class CellsheetElementTest {
-
-    @Mock(answer = Answers.CALLS_REAL_METHODS)
-    private CellsheetElement element;
+public class AstPayloadsTest {
 
     @Test
-    public void getId_should_return_unassigned_by_default() {
-        assertThat(element.getId()).isEqualTo(CellsheetElement.UNASSIGNED);
+    public void empty_should_return_the_empty_payload() {
+        AstPayload empty = AstPayloads.empty();
+        assertThat(empty.getType()).isEqualTo(CellsheetType.UNKNOWN);
+        assertThat(empty.getToken()).isBlank();
     }
 
     @Test
-    public void iterator_should_return_empty_iterator_by_default() {
-        assertThat(element.iterator()).hasSize(0);
+    public void fromUuid_should_contain_previously_created() {
+        AstPayload payload = AstPayloads.fromToken(CellsheetType.REF, "A1");
+        String uuid = AstPayload.tokenToUUID("A1");
+        AstPayload fromUuid = AstPayloads.fromUuid(CellsheetType.REF, uuid);
+        assertThat(payload).isEqualTo(fromUuid);
     }
 }

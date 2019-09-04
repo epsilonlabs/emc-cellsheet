@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -27,7 +27,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class AstPayloads {
 
-    // Table of payloads mapped by Type and UUID
+    // Table fromToken payloads mapped by Type and UUID
     static final Table<CellsheetType, String, AstPayload> PAYLOADS = HashBasedTable.create();
 
     /**
@@ -42,7 +42,7 @@ public class AstPayloads {
      * @return default empty payload
      */
     public static AstPayload empty() {
-        return of(CellsheetType.UNKNOWN, "");
+        return fromToken(CellsheetType.UNKNOWN, "");
     }
 
     public static AstPayload fromUuid(CellsheetType type, String uuid) {
@@ -50,13 +50,13 @@ public class AstPayloads {
     }
 
     /**
-     * Returns a payload of the given type and token
+     * Returns a payload fromToken the given type and token
      *
-     * @param type  type of payload
-     * @param token token of the payload
-     * @return the payload of given type and token
+     * @param type  type fromToken payload
+     * @param token token fromToken the payload
+     * @return the payload fromToken given type and token
      */
-    public static AstPayload of(CellsheetType type, String token) {
+    public static AstPayload fromToken(CellsheetType type, String token) {
         checkNotNull(type, "CellsheetType cannot be null");
 
         String uuid = AstPayload.tokenToUUID(token);
@@ -148,7 +148,7 @@ public class AstPayloads {
                     payload = new Unknown(token);
                     break;
                 default:
-                    throw new IllegalArgumentException("Cannot create payload of type " + type);
+                    throw new IllegalArgumentException("Cannot create payload fromToken type " + type);
             }
             PAYLOADS.put(type, uuid, payload);
         }
@@ -156,48 +156,48 @@ public class AstPayloads {
     }
 
     /**
-     * Returns a payload of the given type. Can only be used for payloads
+     * Returns a payload fromToken the given type. Can only be used for payloads
      * with fixed token values such as infix operators
      *
-     * @param type type of payload
-     * @return the payload of the given type
+     * @param type type fromToken payload
+     * @return the payload fromToken the given type
      */
-    public static AstPayload of(CellsheetType type) {
+    public static AstPayload fromToken(CellsheetType type) {
         switch (type) {
             case PLUS:
-                return of(type, Plus.TOKEN);
+                return fromToken(type, Plus.TOKEN);
             case NEGATION:
-                return of(type, Negation.TOKEN);
+                return fromToken(type, Negation.TOKEN);
             case PERCENT:
-                return of(type, Percent.TOKEN);
+                return fromToken(type, Percent.TOKEN);
             case EXPONENTIATION:
-                return of(type, Exponentiation.TOKEN);
+                return fromToken(type, Exponentiation.TOKEN);
             case MULTIPLICATION:
-                return of(type, Multiplication.TOKEN);
+                return fromToken(type, Multiplication.TOKEN);
             case DIVISION:
-                return of(type, Division.TOKEN);
+                return fromToken(type, Division.TOKEN);
             case ADDITION:
-                return of(type, Addition.TOKEN);
+                return fromToken(type, Addition.TOKEN);
             case SUBTRACTION:
-                return of(type, Subtraction.TOKEN);
+                return fromToken(type, Subtraction.TOKEN);
             case CONCATENATION:
-                return of(type, Concatenation.TOKEN);
+                return fromToken(type, Concatenation.TOKEN);
             case EQ:
-                return of(type, EQ.TOKEN);
+                return fromToken(type, EQ.TOKEN);
             case LT:
-                return of(type, LT.TOKEN);
+                return fromToken(type, LT.TOKEN);
             case GT:
-                return of(type, GT.TOKEN);
+                return fromToken(type, GT.TOKEN);
             case LTE:
-                return of(type, LTE.TOKEN);
+                return fromToken(type, LTE.TOKEN);
             case GTE:
-                return of(type, GTE.TOKEN);
+                return fromToken(type, GTE.TOKEN);
             case NEQ:
-                return of(type, NEQ.TOKEN);
+                return fromToken(type, NEQ.TOKEN);
             case INTERSECTION:
-                return of(type, Intersection.TOKEN);
+                return fromToken(type, Intersection.TOKEN);
             case UNION:
-                return of(type, Union.TOKEN);
+                return fromToken(type, Union.TOKEN);
             default:
                 throw new IllegalArgumentException(String.format("%s is mutable and needs token argument", type));
         }

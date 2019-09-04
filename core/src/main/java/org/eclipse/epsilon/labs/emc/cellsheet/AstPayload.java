@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Model Type representing a the payload held within an {@link Ast}
  * <p>
- * Payloads reside outside of a {@link Workspace} to enable reference by
+ * Payloads reside outside fromToken a {@link Workspace} to enable reference by
  * multiple workspaces and queries across multiple workspaces
  * </p>
  *
@@ -35,7 +35,7 @@ public abstract class AstPayload implements CellsheetElement {
     protected final String uuid;
 
     /**
-     * Super constructor for subclasses, will automatically set the ID of this
+     * Super constructor for subclasses, will automatically set the ID fromToken this
      * token as well.
      *
      * @param token
@@ -60,7 +60,7 @@ public abstract class AstPayload implements CellsheetElement {
     }
 
     /**
-     * Returns the token value of this payload
+     * Returns the token value fromToken this payload
      *
      * @return the token value
      */
@@ -74,10 +74,10 @@ public abstract class AstPayload implements CellsheetElement {
     }
 
     /**
-     * Returns supertype of this Payload
+     * Returns supertype fromToken this Payload
      * <p>Useful for categorising payloads</p>
      *
-     * @return the supertype of this payload
+     * @return the supertype fromToken this payload
      */
     public abstract CellsheetType getSuperType();
 

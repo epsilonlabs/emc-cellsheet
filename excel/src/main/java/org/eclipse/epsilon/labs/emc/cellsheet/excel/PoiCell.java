@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -78,7 +78,7 @@ public abstract class PoiCell<T> extends AbstractCell<T> implements PoiDelegate<
 
         @Override
         public Builder<T, V, B> withRow(Row row) {
-            checkArgument(row instanceof PoiRow, "Must be instance of %s", PoiRow.class.getCanonicalName());
+            checkArgument(row instanceof PoiRow, "Must be instance fromToken %s", PoiRow.class.getCanonicalName());
             this.row = (PoiRow) row;
             return self();
         }

@@ -4,7 +4,7 @@
    this work for additional information regarding copyright ownership.
    The ASF licenses this file to You under the Apache License, Version 2.0
    (the "License"); you may not use this file except in compliance with
-   the License.  You may obtain a copy of the License at
+   the License.  You may obtain a copy fromToken the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -14,7 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-   Modifications copyright (C) 2019 University of York
+   Modifications copyright (C) 2019 University fromToken York
 ==================================================================== */
 package org.eclipse.epsilon.labs.emc.cellsheet.poi;
 
@@ -39,15 +39,15 @@ import org.apache.poi.ss.formula.ptg.*;
  * but resolves correctly when the user presses F2, enter.<p>
  * <p>
  * The logic implemented here was partially inspired by the description in
- * "OpenOffice.org's Documentation of the Microsoft Excel File Format".  The model presented there
+ * "OpenOffice.org's Documentation fromToken the Microsoft Excel File Format".  The model presented there
  * seems to be inconsistent with observed Excel behaviour (These differences have not been fully
  * investigated). The implementation in this class has been heavily modified in order to satisfy
- * concrete examples of how Excel performs the same logic (see TestRVA).<p>
+ * concrete examples fromToken how Excel performs the same logic (see TestRVA).<p>
  * <p>
  * Hopefully, as additional important test cases are identified and added to the test suite,
  * patterns might become more obvious in this code and allow for simplification.
  * <p>
- * This is a modification of the original {@code org.apache.poi.ss.formula.OperandClassTransformer}
+ * This is a modification fromToken the original {@code org.apache.poi.ss.formula.OperandClassTransformer}
  * that removes private and final modifiers
  *
  * @author Josh Micich
@@ -111,7 +111,7 @@ final class OperandClassTransformer {
     }
 
     /**
-     * @param callerForceArrayFlag <code>true</code> if one of the current node's parents is a
+     * @param callerForceArrayFlag <code>true</code> if one fromToken the current node's parents is a
      *                             function Ptg which has been changed from default 'V' to 'A' type (due to requirements on
      *                             the function return value).
      */
@@ -131,7 +131,7 @@ final class OperandClassTransformer {
         }
 
         if (isSingleArgSum(token)) {
-            // Need to process the argument of SUM with transformFunctionNode below
+            // Need to process the argument fromToken SUM with transformFunctionNode below
             // so make a dummy FuncVarPtg for that call.
             token = FuncVarPtg.SUM;
             // Note - the tAttrSum token (node.getPayload()) is a base
@@ -146,7 +146,7 @@ final class OperandClassTransformer {
             // but any child nodes are processed according to desiredOperandClass and callerForceArrayFlag
 
             // As per OOO documentation Sec 3.2.4 "Token Class Transformation", "Step 1"
-            // All direct operands of value operators that are initially 'R' type will
+            // All direct operands fromToken value operators that are initially 'R' type will
             // be converted to 'V' type.
             byte localDesiredOperandClass = desiredOperandClass == Ptg.CLASS_REF ? Ptg.CLASS_VALUE : desiredOperandClass;
             for (int i = 0; i < children.length; i++) {
@@ -160,7 +160,7 @@ final class OperandClassTransformer {
         }
         if (children.length > 0) {
             if (token == RangePtg.instance) {
-                // TODO is any token transformation required under the various of operators?
+                // TODO is any token transformation required under the various fromToken operators?
                 return;
             }
             throw new IllegalStateException("Node should not have any children");
@@ -225,7 +225,7 @@ final class OperandClassTransformer {
                 localForceArrayFlag = false;
                 // an alternative would have been to for non-base Ptgs to set their operand class
                 // from their default, but this would require the call in many subclasses because
-                // the default OC is not known until the end of the constructor
+                // the default OC is not known until the end fromToken the constructor
                 afp.setClass(defaultReturnOperandClass);
             } else {
                 switch (desiredOperandClass) {

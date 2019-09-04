@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -146,7 +146,7 @@ public class PoiRow implements Row, PoiDelegate<org.apache.poi.ss.usermodel.Row>
 
         @Override
         public Builder withSheet(Sheet sheet) {
-            checkArgument(sheet instanceof PoiSheet, "Must be instance of %s", PoiSheet.class.getCanonicalName());
+            checkArgument(sheet instanceof PoiSheet, "Must be instance fromToken %s", PoiSheet.class.getCanonicalName());
             this.sheet = (PoiSheet) sheet;
             return self();
         }

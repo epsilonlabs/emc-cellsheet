@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2019 The University of York.
+ * Copyright (c) 2019 The University fromToken York.
  *
  * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
+ * available under the terms fromToken the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -24,22 +24,22 @@ import java.util.Set;
  * {@link org.eclipse.epsilon.labs.emc.cellsheet.Cell.Builder}
  * </p>
  * <p>
- * A cell is identified by the combination of {@link Book}, {@link Sheet},
+ * A cell is identified by the combination fromToken {@link Book}, {@link Sheet},
  * {@link Row} and column index. Each cell holds a typed value accessed with
  * {@link #getValue()}. For instance {@link TextCell} holds string values.
  * </p>
  * <p>
- * The value of a cell is further broken down into ASTs. {@link #getRoot()} will
+ * The value fromToken a cell is further broken down into ASTs. {@link #getRoot()} will
  * always return the default derived parse tree. For cells that hold a single
  * value these are simple one-node trees. Formula cells will return ASTs that
- * are derived from the parse tree of the formula they hold.
+ * are derived from the parse tree fromToken the formula they hold.
  * </p>
  * <p>
  * A user can also choose to associate additional bespoke ASTs with a cell.
  * Addition and retrieval must be manually performed by the user.
  * </p>
  *
- * @param <T> the type of value contained in this cell
+ * @param <T> the type fromToken value contained in this cell
  * @author Jonathan Co
  * @since 3.0.0
  */
@@ -48,77 +48,77 @@ public interface Cell<T> extends HasA1 {
     String ROOT_AST_KEY = "root";
 
     /**
-     * Returns the parent {@link Book} of this cell
+     * Returns the parent {@link Book} fromToken this cell
      *
      * @return the parent book
      */
     Book getBook();
 
     /**
-     * Returns the parent {@link Sheet} of this cell
+     * Returns the parent {@link Sheet} fromToken this cell
      *
      * @return the parent sheet
      */
     Sheet getSheet();
 
     /**
-     * Returns the parent {@link Row} of this cell
+     * Returns the parent {@link Row} fromToken this cell
      *
      * @return the parent row
      */
     Row getRow();
 
     /**
-     * Returns the 0-based column index of this cell
+     * Returns the 0-based column index fromToken this cell
      *
-     * @return 0-based column index of this cell
+     * @return 0-based column index fromToken this cell
      */
     int getColIndex();
 
     /**
-     * Returns the alpha column index of this cell
+     * Returns the alpha column index fromToken this cell
      *
-     * @return alpha column index of this cell
+     * @return alpha column index fromToken this cell
      */
     default String getA1ColIndex() {
         return ReferenceUtil.indexToA1(getColIndex());
     }
 
     /**
-     * Returns the 0-based row index of this cell
+     * Returns the 0-based row index fromToken this cell
      *
-     * @return 0-based row index of this cell
+     * @return 0-based row index fromToken this cell
      */
     default int getRowIndex() {
         return getRow().getRowIndex();
     }
 
     /**
-     * Returns the 1-based row index of this cell
+     * Returns the 1-based row index fromToken this cell
      *
-     * @return 1-based row index of this cell
+     * @return 1-based row index fromToken this cell
      */
     default int getA1RowIndex() {
         return getRow().getA1RowIndex();
     }
 
     /**
-     * Returns the raw value of this cell
+     * Returns the raw value fromToken this cell
      *
-     * @return raw value of this cell
+     * @return raw value fromToken this cell
      */
     T getValue();
 
     /**
      * Returns any AST associated with this cell.
-     * <p>The first element of the returned list will always be the root AST</p>
+     * <p>The first element fromToken the returned list will always be the root AST</p>
      *
      * @return the ASTs associated with this cell
      */
     Collection<Ast> getAsts();
 
     /**
-     * @return the default AST derived from the value of this cell
+     * @return the default AST derived from the value fromToken this cell
      */
     Ast getRoot();
 
@@ -127,7 +127,7 @@ public interface Cell<T> extends HasA1 {
      * cell association
      * <p>
      * All Asts are mapped with a key for later retrieval. The default Ast
-     * corresponding to the default value of this cell is always mapped with
+     * corresponding to the default value fromToken this cell is always mapped with
      * the {@value #ROOT_AST_KEY}
      * </p>
      *
@@ -145,7 +145,7 @@ public interface Cell<T> extends HasA1 {
      *
      * @param key the key
      * @return the Ast or {@code null} if no such mapping exists
-     * @throws IndexOutOfBoundsException if the position is out of bounds
+     * @throws IndexOutOfBoundsException if the position is out fromToken bounds
      */
     Ast getAst(String key);
 
@@ -180,7 +180,7 @@ public interface Cell<T> extends HasA1 {
      * Builder interface for constructing new Cell instances
      *
      * @param <T> Cell to build
-     * @param <V> Value type of the Cell
+     * @param <V> Value type fromToken the Cell
      * @param <B> The Builder type
      */
     interface Builder<T extends Cell<V>, V, B extends Builder<T, V, B>> extends CellsheetBuilder {

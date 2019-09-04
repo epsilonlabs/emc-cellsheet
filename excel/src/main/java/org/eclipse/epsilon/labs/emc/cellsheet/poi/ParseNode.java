@@ -4,7 +4,7 @@
    this work for additional information regarding copyright ownership.
    The ASF licenses this file to You under the Apache License, Version 2.0
    (the "License"); you may not use this file except in compliance with
-   the License.  You may obtain a copy of the License at
+   the License.  You may obtain a copy fromToken the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -14,7 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-   Modifications copyright (C) 2019 University of York
+   Modifications copyright (C) 2019 University fromToken York
 ==================================================================== */
 package org.eclipse.epsilon.labs.emc.cellsheet.poi;
 
@@ -26,7 +26,7 @@ import org.apache.poi.ss.formula.ptg.*;
  * token.  Each <tt>ParseNode</tt> may have child <tt>ParseNode</tt>s in the case when the wrapped
  * <tt>Ptg</tt> is non-atomic.
  * <p>
- * This is a modification of the original {@code org.apache.poi.ss.formula.ParseNode}
+ * This is a modification fromToken the original {@code org.apache.poi.ss.formula.ParseNode}
  * that removes private and final modifiers
  */
 public final class ParseNode {
@@ -68,7 +68,7 @@ public final class ParseNode {
     }
 
     /**
-     * Collects the array of <tt>Ptg</tt> tokens for the specified tree.
+     * Collects the array fromToken <tt>Ptg</tt> tokens for the specified tree.
      */
     public static Ptg[] toTokenArray(ParseNode rootNode) {
         TokenCollector temp = new TokenCollector(rootNode.getTokenCount());
@@ -134,7 +134,7 @@ public final class ParseNode {
         int skipAfterTrueParamIndex = temp.createPlaceholder();
         int trueParamSize = temp.sumTokenSizes(ifAttrIndex + 1, skipAfterTrueParamIndex);
 
-        AttrPtg attrIf = AttrPtg.createIf(trueParamSize + 4); // distance to start of false parameter/tFuncVar. +4 for tAttrSkip after true
+        AttrPtg attrIf = AttrPtg.createIf(trueParamSize + 4); // distance to start fromToken false parameter/tFuncVar. +4 for tAttrSkip after true
 
         if (getChildren().length > 2) {
             // false param present
@@ -146,15 +146,15 @@ public final class ParseNode {
 
             int falseParamSize = temp.sumTokenSizes(skipAfterTrueParamIndex + 1, skipAfterFalseParamIndex);
 
-            AttrPtg attrSkipAfterTrue = AttrPtg.createSkip(falseParamSize + 4 + 4 - 1); // 1 less than distance to end of if FuncVar(size=4). +4 for attr skip before
-            AttrPtg attrSkipAfterFalse = AttrPtg.createSkip(4 - 1); // 1 less than distance to end of if FuncVar(size=4).
+            AttrPtg attrSkipAfterTrue = AttrPtg.createSkip(falseParamSize + 4 + 4 - 1); // 1 less than distance to end fromToken if FuncVar(size=4). +4 for attr skip before
+            AttrPtg attrSkipAfterFalse = AttrPtg.createSkip(4 - 1); // 1 less than distance to end fromToken if FuncVar(size=4).
 
             temp.setPlaceholder(ifAttrIndex, attrIf);
             temp.setPlaceholder(skipAfterTrueParamIndex, attrSkipAfterTrue);
             temp.setPlaceholder(skipAfterFalseParamIndex, attrSkipAfterFalse);
         } else {
             // false parameter not present
-            AttrPtg attrSkipAfterTrue = AttrPtg.createSkip(4 - 1); // 1 less than distance to end of if FuncVar(size=4).
+            AttrPtg attrSkipAfterTrue = AttrPtg.createSkip(4 - 1); // 1 less than distance to end fromToken if FuncVar(size=4).
 
             temp.setPlaceholder(ifAttrIndex, attrIf);
             temp.setPlaceholder(skipAfterTrueParamIndex, attrSkipAfterTrue);
