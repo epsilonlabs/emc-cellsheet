@@ -14,7 +14,6 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -43,10 +42,6 @@ public interface Book extends HasA1<Sheet> {
     void dispose();
 
     List<Sheet> getSheets();
-
-    @Nonnull
-    @Override
-    Iterator<Sheet> iterator();
 
     @Override
     default String getA1() {

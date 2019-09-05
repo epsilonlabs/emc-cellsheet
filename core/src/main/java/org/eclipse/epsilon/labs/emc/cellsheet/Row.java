@@ -11,7 +11,6 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -32,10 +31,6 @@ public interface Row extends HasA1<Cell> {
     }
 
     List<Cell> getCells();
-
-    @Nonnull
-    @Override
-    Iterator<Cell> iterator();
 
     @Override
     default String getA1() {
