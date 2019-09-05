@@ -29,6 +29,7 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.profiler.Profiler;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -40,7 +41,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 public class PoiBook implements Book, PoiDelegate<Workbook> {
 
-    private static Logger logger = LoggerFactory.getLogger(PoiBook.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoiBook.class);
 
     private Workbook delegate;
     private FormulaParsingWorkbook delegateFpw;
@@ -129,6 +130,11 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
             return;
         }
 
+        // Set up profiler
+        Profiler profiler = new Profiler(String.format("[%s]@%s", bookName, Integer.toHexString(System.identityHashCode(this))));
+        profiler.setLogger(logger);
+        profiler.start("load()");
+
         logger.info("Loading PoiBook with [modelUri: {}, bookName: {}]", modelUri, bookName);
 
         try {
@@ -144,6 +150,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
 
         delegate.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
         logger.info("...Loading Finished");
+        profiler.stop().log();
     }
 
     @Override
@@ -273,7 +280,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
             if (bookName == null) {
                 if (modelUri == null) {
                     poiBook.bookName = "PoiBook"
-                            + Integer.toHexString(System.identityHashCode(this))
+                            + Integer.toHexString(System.identityHashCode(poiBook))
                             + ".xlsx";
                 } else {
                     poiBook.bookName = new File(modelUri).getName();

@@ -9,40 +9,33 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
-import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType.*;
 
 public class RefTest {
 
     @Test
     public void constructor_should_succeed_given_string() {
-        Ast ast = new Ref("A1");
-        assertThat(ast.getTokenValue()).isEqualTo("A1");
-    }
-
-    @Test
-    public void constructor_should_succeed_given_token() {
-        Ast ast = new Ref(new Token("A1"));
-        assertThat(ast.getTokenValue()).isEqualTo("A1");
+        AstPayload payload = new Ref("A1");
+        assertThat(payload.getToken()).isEqualTo("A1");
     }
 
     @Test
     public void getType_should_return_REF() {
-        Ast ast = new Ref(new Token("A1"));
-        assertThat(ast.getType()).isEqualTo(CellsheetType.REF);
+        AstPayload payload = new Ref("A1");
+        assertThat(payload.getType()).isEqualTo(REF);
     }
 
     @Test
     public void getKind_should_return_correct_types() {
-        Ast ast = new Ref(new Token("A1"));
+        AstPayload ast = new Ref("A1");
         assertThat(ast.getKinds()).containsExactlyInAnyOrder(
-                CellsheetType.REF,
-                CellsheetType.OPERAND,
-                CellsheetType.CELLSHEET_ELEMENT,
-                CellsheetType.AST);
+                REF,
+                OPERAND,
+                AST_PAYLOAD,
+                CELLSHEET_ELEMENT);
     }
 }

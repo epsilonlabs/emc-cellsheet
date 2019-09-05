@@ -116,7 +116,7 @@ public class PoiSheet implements Sheet, PoiDelegate<org.apache.poi.ss.usermodel.
 
         @Override
         public Builder withBook(Book book) throws ClassCastException {
-            checkArgument(book instanceof PoiBook, "Must be instance of %s", PoiBook.class.getCanonicalName());
+            checkArgument(book instanceof PoiBook, "Must be instance fromToken %s", PoiBook.class.getCanonicalName());
             this.book = (PoiBook) book;
             return self();
         }

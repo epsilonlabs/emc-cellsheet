@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * A provider for loading {@link Book} implementations by {@link Workspace}.
  * <p>
- * Each provider specifies a number of file extensions that it can load books for.
+ * Each provider specifies a number fromToken file extensions that it can load books for.
  * </p>
  *
  * @author Jonathan Co
@@ -49,7 +49,7 @@ public interface BookProvider<T extends Book> {
     }
 
     /**
-     * Returns the set of file extensions that this provider can support
+     * Returns the set fromToken file extensions that this provider can support
      *
      * @return file extensions supported by this provider
      */
@@ -57,9 +57,9 @@ public interface BookProvider<T extends Book> {
 
     /**
      * Returns a Book for the given URI
-     * <p>The name of the book will be derived from the URI given</p>
+     * <p>The name fromToken the book will be derived from the URI given</p>
      *
-     * @param modelUri  URI of the actual book
+     * @param modelUri  URI fromToken the actual book
      * @param workspace Workspace to assign created book to
      * @return the book pointed at the given URI
      */

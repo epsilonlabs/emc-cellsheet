@@ -16,10 +16,9 @@ import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -30,45 +29,44 @@ public class WorkspaceTest {
 
     private static final String modelName = "Workspace 1";
 
-    private static final int EXPECTED_COUNT = 532;
+    private static final int EXPECTED_COUNT = 40;
 
     private int count;
 
     private Workspace workspace;
     private DummyBook book;
 
-    private Set<Workspace> workspaces;
-    private Set<Book> books;
-    private Set<Sheet> sheets;
-    private Set<Row> rows;
-    private Set<Cell> cells;
-    private Set<Ast> asts;
+    private List<Workspace> workspaces;
+    private List<Book> books;
+    private List<Sheet> sheets;
+    private List<Row> rows;
+    private List<Cell> cells;
+    private List<Ast> asts;
 
     @Before
     public void setUp() {
-        workspaces = new HashSet<>();
-        books = new HashSet<>();
-        sheets = new HashSet<>();
-        rows = new HashSet<>();
-        cells = new HashSet<>();
-        asts = new HashSet<>();
+        workspaces = new ArrayList<>();
+        books = new ArrayList<>();
+        sheets = new ArrayList<>();
+        rows = new ArrayList<>();
+        cells = new ArrayList<>();
+        asts = new ArrayList<>();
 
         workspace = new Workspace();
         workspace.setName(modelName);
         workspaces.add(workspace);
 
         book = new DummyBook();
-        book.setBookName("WorkspaceTest Book 1.xlsx");
         workspace.addBook(book);
         books.add(book);
 
-        for (int s = 0; s < 5; s++) {
+        for (int s = 0; s < 2; s++) {
             Sheet sheet = book.getSheet(s);
             sheets.add(sheet);
-            for (int r = 0; r < 5; r++) {
+            for (int r = 0; r < 2; r++) {
                 Row row = sheet.getRow(r);
                 rows.add(row);
-                for (int c = 0; c < 5; c++) {
+                for (int c = 0; c < 2; c++) {
                     Cell cell = row.getCell(c);
                     cells.add(cell);
                     Ast ast = cell.getRoot();
@@ -151,14 +149,14 @@ public class WorkspaceTest {
 
     @Test
     public void getElementById_should_return_Ast_when_given_ast_id() {
-        Ast ast = (Ast) book.getSheet(52).getRow(100).getCell(34).getAsts().get(45);
+        Ast ast = book.getSheet(52).getRow(100).getCell(34).getRoot();
         Object element = workspace.getElementById(ast.getId());
         assertThat(element).isInstanceOf(Ast.class).isEqualToComparingFieldByFieldRecursively(ast);
     }
 
     @Test
     public void getElementById_should_return_Ast_when_given_ast_child_id() {
-        Ast ast = ((Ast) book.getSheet(52).getRow(100).getCell(34).getAsts().get(45)).childAt(23);
+        Ast ast = book.getSheet(52).getRow(100).getCell(34).getRoot().childAt(23);
         Object element = workspace.getElementById(ast.getId());
         assertThat(element).isInstanceOf(Ast.class).isEqualToComparingFieldByFieldRecursively(ast);
     }
@@ -166,12 +164,6 @@ public class WorkspaceTest {
     @Test
     public void getElementById_should_null_when_given_id_of_another_model() {
         assertThat(workspace.getElementById("cellsheet://Workspace%202/Another.xlsx")).isNull();
-    }
-
-    @Test
-    public void getElementById_should_throw_IAException_when_given_bad_id() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> workspace.getElementById(book.getId() + "/notright"));
     }
 
     @Test
@@ -186,13 +178,6 @@ public class WorkspaceTest {
     @Test
     public void getBooks_should_return_all_books() {
         assertThat(workspace.getBooks()).containsExactly(book);
-    }
-
-    @Test
-    public void getToken_should_return_token_when_given_tokenstr() {
-        String tokenValue = "Some token value";
-        Token expected = Tokens.getToken(tokenValue);
-        assertThat(workspace.getToken(tokenValue)).isEqualTo(expected);
     }
 
     @Test
@@ -313,35 +298,35 @@ public class WorkspaceTest {
     public void allContents_should_return_all_contents() {
         Collection<CellsheetElement> allContents = workspace.allContents();
         assertThat(allContents).hasSize(EXPECTED_COUNT);
-        assertThat(allContents.stream()
-                .filter(Workspace.class::isInstance)
-                .map(Workspace.class::cast)
-                .collect(Collectors.toSet()))
+
+        assertThat(allContents)
+                .filteredOn(c -> c.getType() == CellsheetType.WORKSPACE)
+                .hasSize(1)
                 .containsExactlyInAnyOrderElementsOf(workspaces);
-        assertThat(allContents.stream()
-                .filter(Book.class::isInstance)
-                .map(Book.class::cast)
-                .collect(Collectors.toSet()))
+
+        assertThat(allContents)
+                .filteredOn(c -> c.getType() == CellsheetType.BOOK)
+                .hasSize(1)
                 .containsExactlyInAnyOrderElementsOf(books);
-        assertThat(allContents.stream()
-                .filter(Sheet.class::isInstance)
-                .map(Sheet.class::cast)
-                .collect(Collectors.toSet()))
+
+        assertThat(allContents)
+                .filteredOn(c -> c.getType() == CellsheetType.SHEET)
+                .hasSize(2)
                 .containsExactlyInAnyOrderElementsOf(sheets);
-        assertThat(allContents.stream()
-                .filter(Row.class::isInstance)
-                .map(Row.class::cast)
-                .collect(Collectors.toSet()))
+
+        assertThat(allContents)
+                .filteredOn(c -> c.getType() == CellsheetType.ROW)
+                .hasSize(4)
                 .containsExactlyInAnyOrderElementsOf(rows);
-        assertThat(allContents.stream()
-                .filter(Cell.class::isInstance)
-                .map(Cell.class::cast)
-                .collect(Collectors.toSet()))
+
+        assertThat(allContents)
+                .filteredOn(c -> c.getKinds().contains(CellsheetType.CELL))
+                .hasSize(8)
                 .containsExactlyInAnyOrderElementsOf(cells);
-        assertThat(allContents.stream()
-                .filter(Ast.class::isInstance)
-                .map(Ast.class::cast)
-                .collect(Collectors.toSet()))
+
+        assertThat(allContents)
+                .filteredOn(c -> c.getType() == CellsheetType.AST)
+                .hasSize(24)
                 .containsExactlyInAnyOrderElementsOf(asts);
     }
 

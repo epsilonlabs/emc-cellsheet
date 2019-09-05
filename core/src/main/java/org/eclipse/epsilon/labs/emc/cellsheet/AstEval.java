@@ -10,7 +10,8 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 /**
- * Model Type representing the result from evaluating an AST
+ * Model Type representing the result from evaluating an {@link Ast}.
+ * <p>Instances should be constructed using {@link AstEvals} utility methods</p>
  *
  * @author Jonathan Co
  * @since 3.0.0

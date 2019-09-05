@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
+
 /**
  */
 package org.eclipse.epsilon.labs.emf.cellsheet.impl;
@@ -1693,7 +1703,7 @@ public class CellsheetPackageImpl extends EPackageImpl implements CellsheetPacka
 		initEReference(getToken_UsedBy(), this.getAst(), this.getAst_Token(), "usedBy", null, 0, -1, Token.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(astEvalEClass, AstEval.class, "AstEval", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getAstEval_Text(), ecorePackage.getEString(), "text", null, 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAstEval_Text(), ecorePackage.getEString(), "of", null, 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getAstEval_NumberValue(), ecorePackage.getEDoubleObject(), "numberValue", null, 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getAstEval_IsError(), ecorePackage.getEBoolean(), "isError", "false", 0, 1, AstEval.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

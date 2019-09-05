@@ -9,47 +9,46 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
-import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType.*;
 
 public class LogicalTest {
 
     @Test
     public void constructor_should_succeed_given_true() {
-        Ast ast = new Logical(true);
-        assertThat(ast.getTokenValue()).isEqualTo("TRUE");
+        AstPayload payload = new Logical(true);
+        assertThat(payload.getToken()).isEqualTo("TRUE");
     }
 
     @Test
     public void constructor_should_succeed_given_FALSE() {
-        Ast ast = new Logical(false);
-        assertThat(ast.getTokenValue()).isEqualTo("FALSE");
+        AstPayload payload = new Logical(false);
+        assertThat(payload.getToken()).isEqualTo("FALSE");
     }
 
     @Test
     public void constructor_should_throw_iaexception_when_given_non_bool_token() {
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new Logical(new Token("NOT A BOOL")));
+                .isThrownBy(() -> new Logical("NOT A BOOL"));
     }
 
     @Test
     public void getType_should_return_LOGICAL() {
-        Ast ast = new Logical(true);
-        assertThat(ast.getType()).isEqualTo(CellsheetType.LOGICAL);
+        AstPayload payload = new Logical(true);
+        assertThat(payload.getType()).isEqualTo(LOGICAL);
     }
 
     @Test
     public void getKind_should_return_correct_types() {
-        Ast ast = new Logical(true);
-        assertThat(ast.getKinds()).containsExactlyInAnyOrder(
-                CellsheetType.LOGICAL,
-                CellsheetType.OPERAND,
-                CellsheetType.CELLSHEET_ELEMENT,
-                CellsheetType.AST);
+        AstPayload payload = new Logical(true);
+        assertThat(payload.getKinds()).containsExactlyInAnyOrder(
+                LOGICAL,
+                OPERAND,
+                AST_PAYLOAD,
+                CELLSHEET_ELEMENT);
     }
 }

@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.junit.Test;
 
@@ -19,29 +19,23 @@ public class TextTest {
 
     @Test
     public void constructor_should_succeed_given_string() {
-        Ast ast = new Text("Hello World");
-        assertThat(ast.getTokenValue()).isEqualTo("Hello World");
-    }
-
-    @Test
-    public void constructor_should_succeed_given_token() {
-        Ast ast = new Text("Hello World");
-        assertThat(ast.getTokenValue()).isEqualTo("Hello World");
+        AstPayload payload = new Text("Hello World");
+        assertThat(payload.getToken()).isEqualTo("Hello World");
     }
 
     @Test
     public void getType_should_return_TEXT() {
-        Ast ast = new Text("Hello World");
-        assertThat(ast.getType()).isEqualTo(CellsheetType.TEXT);
+        AstPayload payload = new Text("Hello World");
+        assertThat(payload.getType()).isEqualTo(CellsheetType.TEXT);
     }
 
     @Test
     public void getKind_should_return_correct_types() {
-        Ast ast = new Text("Hello World");
-        assertThat(ast.getKinds()).containsExactlyInAnyOrder(
+        AstPayload payload = new Text("Hello World");
+        assertThat(payload.getKinds()).containsExactlyInAnyOrder(
                 CellsheetType.TEXT,
                 CellsheetType.OPERAND,
-                CellsheetType.CELLSHEET_ELEMENT,
-                CellsheetType.AST);
+                CellsheetType.AST_PAYLOAD,
+                CellsheetType.CELLSHEET_ELEMENT);
     }
 }

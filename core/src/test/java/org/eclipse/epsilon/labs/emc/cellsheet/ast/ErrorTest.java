@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.junit.Test;
 
@@ -20,23 +20,23 @@ public class ErrorTest {
     @Test
     public void constructor_should_succeed_when_given_string() {
         String token = "#REF";
-        Ast ast = new Error(token);
-        assertThat(ast.getTokenValue()).isEqualTo(token);
+        AstPayload payload = new Error(token);
+        assertThat(payload.getToken()).isEqualTo(token);
     }
 
     @Test
     public void getType_should_return_ERROR() {
-        Ast ast = new Error("");
-        assertThat(ast.getType()).isEqualTo(CellsheetType.ERROR);
+        AstPayload payload = new Error("");
+        assertThat(payload.getType()).isEqualTo(CellsheetType.ERROR);
     }
 
     @Test
     public void getKind_should_return_correct_types() {
-        Ast ast = new Error("");
-        assertThat(ast.getKinds()).containsExactlyInAnyOrder(
+        AstPayload payload = new Error("");
+        assertThat(payload.getKinds()).containsExactlyInAnyOrder(
                 CellsheetType.ERROR,
                 CellsheetType.OPERAND,
-                CellsheetType.CELLSHEET_ELEMENT,
-                CellsheetType.AST);
+                CellsheetType.AST_PAYLOAD,
+                CellsheetType.CELLSHEET_ELEMENT);
     }
 }

@@ -13,7 +13,6 @@ import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 public class DepthFirstPreOrderVisitor implements Ast.Visitor<Void> {
 

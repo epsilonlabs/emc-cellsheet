@@ -11,65 +11,37 @@ package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
-import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
-import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Row;
+import org.eclipse.epsilon.labs.emc.cellsheet.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public abstract class PoiCell<T> implements Cell<T>, PoiDelegate<org.apache.poi.ss.usermodel.Cell> {
-
-    protected T value;
-    protected PoiRow row;
-    protected int colIndex;
-    protected List<Ast> asts = new ArrayList<>(1);
+public abstract class PoiCell<T> extends AbstractCell<T> implements PoiDelegate<org.apache.poi.ss.usermodel.Cell> {
 
     @Override
     public PoiBook getBook() {
-        return getSheet().getBook();
+        return (PoiBook) super.getBook();
     }
 
     @Override
     public PoiSheet getSheet() {
-        return getRow().getSheet();
+        return (PoiSheet) super.getSheet();
     }
 
     @Override
     public PoiRow getRow() {
-        return row;
+        return (PoiRow) row;
     }
 
     @Override
-    public int getColIndex() {
-        return colIndex;
-    }
-
-    @Override
-    public T getValue() {
-        return value;
-    }
-
-    @Override
-    public List<Ast> getAsts() {
-        if (asts.isEmpty()) {
-            asts.add(PoiAstFactory.getInstance().of(this));
-        }
-        return asts;
-    }
-
-    @Override
-    public Ast getRoot() {
-        return getAsts().get(0);
+    protected Ast buildRoot() {
+        return PoiAstBuilder.of(this);
     }
 
     @Override
     public org.apache.poi.ss.usermodel.Cell getDelegate() {
-        return row.getDelegate().getCell(colIndex);
+        return ((PoiRow) row).getDelegate().getCell(colIndex);
     }
 
     @Override
@@ -106,7 +78,7 @@ public abstract class PoiCell<T> implements Cell<T>, PoiDelegate<org.apache.poi.
 
         @Override
         public Builder<T, V, B> withRow(Row row) {
-            checkArgument(row instanceof PoiRow, "Must be instance of %s", PoiRow.class.getCanonicalName());
+            checkArgument(row instanceof PoiRow, "Must be instance fromToken %s", PoiRow.class.getCanonicalName());
             this.row = (PoiRow) row;
             return self();
         }

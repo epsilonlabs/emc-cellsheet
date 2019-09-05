@@ -53,7 +53,7 @@ public interface CellsheetElement extends Iterable {
     }
 
     /**
-     * Returns the concrete Type of this model element
+     * Returns the concrete Type fromToken this model element
      *
      * @return the concrete Type
      */
@@ -65,7 +65,7 @@ public interface CellsheetElement extends Iterable {
      * returned will always contain the value returned by {@link #getType()}
      * and {@link CellsheetType#CELLSHEET_ELEMENT}
      *
-     * @return the supertypes of this element
+     * @return the supertypes fromToken this element
      */
     @Nonnull
     Set<CellsheetType> getKinds();

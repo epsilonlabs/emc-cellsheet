@@ -38,7 +38,7 @@ public class PoiBookProviderTest {
 
     @Test
     public void isApplicable_should_return_false_when_given_file_with_no_extension() {
-        assertThat(provider.isApplicable("random string of stuff")).isFalse();
+        assertThat(provider.isApplicable("random string fromToken stuff")).isFalse();
     }
 
     @Test

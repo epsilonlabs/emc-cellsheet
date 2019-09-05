@@ -28,13 +28,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(Parameterized.class)
 @SuppressWarnings("unchecked")
-public class PoiAstFactoryConversionTest {
+public class PoiAstBuilderConversionTest {
 
     private Ptg ptg;
     private Class astClazz;
     private String expectedValue;
 
-    public PoiAstFactoryConversionTest(Ptg ptg, Class astClazz, String expectedValue) {
+    public PoiAstBuilderConversionTest(Ptg ptg, Class astClazz, String expectedValue) {
         this.ptg = ptg;
         this.astClazz = astClazz;
         this.expectedValue = expectedValue;
@@ -43,29 +43,29 @@ public class PoiAstFactoryConversionTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                        {new IntPtg(123), Number.class, "123"},
+                        {new IntPtg(123), Number.class, "123.0"},
                         {new NumberPtg(123.456), Number.class, "123.456"},
                         {new StringPtg("Hello World"), Text.class, "Hello World"},
                         {BoolPtg.valueOf(false), Logical.class, "FALSE"},
                         {new AreaPtg(new AreaReference("A1:A5", null)), Range.class, "A1:A5"},
                         {new RefPtg("A1"), Ref.class, "A1"},
-                        {AddPtg.instance, Addition.class, Addition.TOKEN.getValue()},
-                        {ConcatPtg.instance, Concatenation.class, Concatenation.TOKEN.getValue()},
-                        {DividePtg.instance, Division.class, Division.TOKEN.getValue()},
-                        {EqualPtg.instance, EQ.class, EQ.TOKEN.getValue()},
-                        {GreaterEqualPtg.instance, GTE.class, GTE.TOKEN.getValue()},
-                        {GreaterThanPtg.instance, GT.class, GT.TOKEN.getValue()},
-                        {LessEqualPtg.instance, LTE.class, LTE.TOKEN.getValue()},
-                        {LessThanPtg.instance, LT.class, LT.TOKEN.getValue()},
-                        {MultiplyPtg.instance, Multiplication.class, Multiplication.TOKEN.getValue()},
-                        {NotEqualPtg.instance, NEQ.class, NEQ.TOKEN.getValue()},
-                        {PercentPtg.instance, Percent.class, Percent.TOKEN.getValue()},
-                        {PowerPtg.instance, Exponentiation.class, Exponentiation.TOKEN.getValue()},
-                        {SubtractPtg.instance, Subtraction.class, Subtraction.TOKEN.getValue()},
-                        {UnaryMinusPtg.instance, Negation.class, Negation.TOKEN.getValue()},
-                        {UnaryPlusPtg.instance, Plus.class, Plus.TOKEN.getValue()},
-                        {UnionPtg.instance, Union.class, Union.TOKEN.getValue()},
-                        {IntersectionPtg.instance, Intersection.class, Intersection.TOKEN.getValue()},
+                        {AddPtg.instance, Addition.class, Addition.TOKEN},
+                        {ConcatPtg.instance, Concatenation.class, Concatenation.TOKEN},
+                        {DividePtg.instance, Division.class, Division.TOKEN},
+                        {EqualPtg.instance, EQ.class, EQ.TOKEN},
+                        {GreaterEqualPtg.instance, GTE.class, GTE.TOKEN},
+                        {GreaterThanPtg.instance, GT.class, GT.TOKEN},
+                        {LessEqualPtg.instance, LTE.class, LTE.TOKEN},
+                        {LessThanPtg.instance, LT.class, LT.TOKEN},
+                        {MultiplyPtg.instance, Multiplication.class, Multiplication.TOKEN},
+                        {NotEqualPtg.instance, NEQ.class, NEQ.TOKEN},
+                        {PercentPtg.instance, Percent.class, Percent.TOKEN},
+                        {PowerPtg.instance, Exponentiation.class, Exponentiation.TOKEN},
+                        {SubtractPtg.instance, Subtraction.class, Subtraction.TOKEN},
+                        {UnaryMinusPtg.instance, Negation.class, Negation.TOKEN},
+                        {UnaryPlusPtg.instance, Plus.class, Plus.TOKEN},
+                        {UnionPtg.instance, Union.class, Union.TOKEN},
+                        {IntersectionPtg.instance, Intersection.class, Intersection.TOKEN},
                         {FuncVarPtg.create("VLOOKUP", 3), Function.class, "VLOOKUP"}
                 }
         );
@@ -73,8 +73,9 @@ public class PoiAstFactoryConversionTest {
 
     @Test
     public void of_given_ptg_should_correctly_convert_ptg_to_ast() {
-        Ast ast = PoiAstFactory.getInstance().of(ptg);
-        assertThat(ast).isNotNull().isInstanceOf(astClazz);
-        assertThat(ast.getTokenValue()).isEqualTo(expectedValue);
+        Ast ast = PoiAstBuilder.of(ptg);
+        assertThat(ast).isNotNull();
+        assertThat(ast.getPayload()).isInstanceOf(astClazz);
+        assertThat(ast.getPayload().getToken()).isEqualTo(expectedValue);
     }
 }

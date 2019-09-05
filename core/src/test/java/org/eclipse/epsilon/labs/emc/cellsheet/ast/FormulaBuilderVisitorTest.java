@@ -29,7 +29,7 @@ public class FormulaBuilderVisitorTest {
      */
     @Test
     public void visit_should_rebuild_formula_with_text() throws Exception {
-        Ast ast = new Function("TEXT");
+        Ast ast = new Ast(new Function("TEXT"));
         ast.addChild(new Number(0.285));
         ast.addChild(new Text("0.0%"));
         assertThat(visitor.visit(ast)).isEqualTo("TEXT(0.285,\"0.0%\")");
@@ -37,13 +37,13 @@ public class FormulaBuilderVisitorTest {
 
     @Test
     public void visit_should_rebuild_formula_when_given_numeric_operand() throws Exception {
-        Ast ast = new Number(123.456);
+        Ast ast = new Ast(new Number(123.456));
         assertThat(visitor.visit(ast)).isEqualTo("123.456");
     }
 
     @Test
     public void visit_should_rebuild_formula_when_given_function() throws Exception {
-        Ast ast = new Function("VLOOKUP");
+        Ast ast = new Ast(new Function("VLOOKUP"));
         ast.addChild(new Ref("A1"));
         ast.addChild(new Range("B1:C5"));
         ast.addChild(new Number(1));
@@ -52,12 +52,11 @@ public class FormulaBuilderVisitorTest {
 
     @Test
     public void visit_should_rebuild_formula_when_given_nested_function() throws Exception {
-        Ast ast = new Function("VLOOKUP");
+        Ast ast = new Ast(new Function("VLOOKUP"));
         ast.addChild(new Ref("A5"));
         ast.addChild(new Range("B1:C5"));
 
-        Function child = new Function("HLOOKUP");
-        ast.addChild(child);
+        Ast child = ast.addChild(new Function("HLOOKUP"));
         child.addChild(new Ref("D1"));
         child.addChild(new Range("E1:F5"));
         child.addChild(new Number(2));
@@ -67,7 +66,7 @@ public class FormulaBuilderVisitorTest {
 
     @Test
     public void visit_should_build_infix_formula() throws Exception {
-        Ast ast = new Addition();
+        Ast ast = new Ast(new Addition());
         ast.addChild(new Number(1));
         ast.addChild(new Number(2));
         assertThat(visitor.visit(ast)).isEqualTo("(1+2)");
@@ -75,7 +74,7 @@ public class FormulaBuilderVisitorTest {
 
     @Test
     public void visit_should_build_prefix_formula() throws Exception {
-        Ast ast = new Percent();
+        Ast ast = new Ast(new Percent());
         ast.addChild(new Number(1));
         assertThat(visitor.visit(ast)).isEqualTo("1%");
     }

@@ -4,7 +4,7 @@
    this work for additional information regarding copyright ownership.
    The ASF licenses this file to You under the Apache License, Version 2.0
    (the "License"); you may not use this file except in compliance with
-   the License.  You may obtain a copy of the License at
+   the License.  You may obtain a copy fromToken the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -14,7 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-   Modifications copyright (C) 2019 University of York
+   Modifications copyright (C) 2019 University fromToken York
 ==================================================================== */
 package org.eclipse.epsilon.labs.emc.cellsheet.poi;
 
@@ -39,18 +39,18 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
- * This class parses a formula string into a List of tokens in RPN order.
+ * This class parses a formula string into a List fromToken tokens in RPN order.
  * Inspired by
  * Lets Build a Compiler, by Jack Crenshaw
  * BNF for the formula expression is :
  * <expression> ::= <term> [<addop> <term>]*
  * <term> ::= <factor>  [ <mulop> <factor> ]*
- * <factor> ::= <number> | (<expression>) | <cellRef> | <function>
+ * <factor> ::= <fromToken> | (<expression>) | <cellRef> | <function>
  * <function> ::= <functionName> ([expression [, expression]*])
  * <p>
  * For POI internal use only
  * <p>
- * This is a modification of the original {@link org.apache.poi.ss.formula.FormulaParser}
+ * This is a modification fromToken the original {@link org.apache.poi.ss.formula.FormulaParser}
  * that removes private and final modifiers
  */
 public class FormulaParser {
@@ -86,7 +86,7 @@ public class FormulaParser {
      */
     protected int look;
     /**
-     * Tracks whether the run of whitespace preceding "look" could be an
+     * Tracks whether the run fromToken whitespace preceding "look" could be an
      * intersection operator.  See GetChar.
      */
     protected boolean _inIntersection;
@@ -114,21 +114,21 @@ public class FormulaParser {
     }
 
     /**
-     * Parse a formula into an array of tokens
+     * Parse a formula into an array fromToken tokens
      * Side effect: creates name ({@link org.apache.poi.ss.usermodel.Workbook#createName})
      * if formula contains unrecognized names (names are likely UDFs)
      *
      * @param formula     the formula to parse
      * @param workbook    the parent workbook
-     * @param formulaType the type of the formula
-     * @param sheetIndex  the 0-based index of the sheet this formula belongs to.
+     * @param formulaType the type fromToken the formula
+     * @param sheetIndex  the 0-based index fromToken the sheet this formula belongs to.
      *                    The sheet index is required to resolve sheet-level names. <code>-1</code> means that
-     *                    the scope of the name will be ignored and  the parser will match names only by name
+     *                    the scope fromToken the name will be ignored and  the parser will match names only by name
      * @param rowIndex    - the related cell's row index in 0-based form (-1 if the formula is not cell related)
      *                    used to handle structured references that have the "#This Row" quantifier.
      *                    Use rowIndex=-1 or {@link #parseStructuredReference(String, FormulaParsingWorkbook, int)} if formula
      *                    does not contain structured references.
-     * @return array of parsed tokens
+     * @return array fromToken parsed tokens
      * @throws FormulaParseException if the formula has incorrect syntax or is otherwise invalid
      */
     public static Ptg[] parse(String formula, FormulaParsingWorkbook workbook, FormulaType formulaType, int sheetIndex, int rowIndex) {
@@ -138,17 +138,17 @@ public class FormulaParser {
     }
 
     /**
-     * Parse a formula into an array of tokens
+     * Parse a formula into an array fromToken tokens
      * Side effect: creates name ({@link org.apache.poi.ss.usermodel.Workbook#createName})
      * if formula contains unrecognized names (names are likely UDFs)
      *
      * @param formula     the formula to parse
      * @param workbook    the parent workbook
-     * @param formulaType the type of the formula
-     * @param sheetIndex  the 0-based index of the sheet this formula belongs to.
+     * @param formulaType the type fromToken the formula
+     * @param sheetIndex  the 0-based index fromToken the sheet this formula belongs to.
      *                    The sheet index is required to resolve sheet-level names. <code>-1</code> means that
-     *                    the scope of the name will be ignored and  the parser will match names only by name
-     * @return array of parsed tokens
+     *                    the scope fromToken the name will be ignored and  the parser will match names only by name
+     * @return array fromToken parsed tokens
      * @throws FormulaParseException if the formula has incorrect syntax or is otherwise invalid
      */
     public static Ptg[] parse(String formula, FormulaParsingWorkbook workbook, FormulaType formulaType, int sheetIndex) {
@@ -159,7 +159,7 @@ public class FormulaParser {
      * Parse a structured reference. Converts the structured
      * reference to the area that represent it.
      *
-     * @param tableText - The structured reference text
+     * @param tableText - The structured reference fromToken
      * @param workbook  - the parent workbook
      * @param rowIndex  - the 0-based cell's row index ( used to handle "#This Row" quantifiers )
      * @return the area that being represented by the structured reference.
@@ -205,7 +205,7 @@ public class FormulaParser {
     }
 
     /**
-     * From OOO doc: "Whenever one operand of the reference subexpression is a function,
+     * From OOO doc: "Whenever one operand fromToken the reference subexpression is a function,
      * a defined name, a 3D reference, or an external reference (and no error occurs),
      * a tMemFunc token is used"
      */
@@ -242,24 +242,24 @@ public class FormulaParser {
     protected static void checkValidRangeOperand(String sideName, int currentParsePosition, ParseNode pn) {
         if (!isValidRangeOperand(pn)) {
             throw new FormulaParseException("The " + sideName
-                    + " of the range operator ':' at position "
+                    + " fromToken the range operator ':' at position "
                     + currentParsePosition + " is not a proper reference.");
         }
     }
 
     /**
      * @return <code>false</code> if sub-expression represented the specified ParseNode definitely
-     * cannot appear on either side of the range (':') operator
+     * cannot appear on either side fromToken the range (':') operator
      */
     protected static boolean isValidRangeOperand(ParseNode a) {
         Ptg tkn = a.getToken();
-        // Note - order is important for these instance-of checks
+        // Note - order is important for these instance-fromToken checks
         if (tkn instanceof OperandPtg) {
             // notably cell refs and area refs
             return true;
         }
 
-        // next 2 are special cases of OperationPtg
+        // next 2 are special cases fromToken OperationPtg
         if (tkn instanceof AbstractFunctionPtg) {
             AbstractFunctionPtg afp = (AbstractFunctionPtg) tkn;
             byte returnClass = afp.getDefaultOperandClass();
@@ -272,13 +272,13 @@ public class FormulaParser {
             return true;
         }
 
-        // one special case of ControlPtg
+        // one special case fromToken ControlPtg
         if (tkn instanceof ParenthesisPtg) {
             // parenthesis Ptg should have only one child
             return isValidRangeOperand(a.getChildren()[0]);
         }
 
-        // one special case of ScalarConstantPtg
+        // one special case fromToken ScalarConstantPtg
         return tkn == ErrPtg.REF_INVALID;
 
         // All other ControlPtgs and ScalarConstantPtgs cannot be used with ':'
@@ -301,7 +301,7 @@ public class FormulaParser {
             case '.':
             case '_':
             case '?':
-            case '\\': // of all things
+            case '\\': // fromToken all things
                 return true;
         }
         // includes special non-name control characters like ! $ : , ( ) [ ] and space
@@ -354,7 +354,7 @@ public class FormulaParser {
 
     /**
      * Get a PTG for an integer from its string representation.
-     * return Int or Number Ptg based on size of input
+     * return Int or Number Ptg based on size fromToken input
      */
     protected static Ptg getNumberPtgFromString(String number1, String number2, String exponent) {
         StringBuilder number = new StringBuilder();
@@ -399,7 +399,7 @@ public class FormulaParser {
      * Read New Character From Input Stream
      */
     protected void GetChar() {
-        // The intersection operator is a space.  We track whether the run of
+        // The intersection operator is a space.  We track whether the run fromToken
         // whitespace preceeding "look" counts as an intersection operator.
         if (IsWhite(look)) {
             if (look == ' ') {
@@ -409,7 +409,7 @@ public class FormulaParser {
             _inIntersection = false;
         }
 
-        // Check to see if we've walked off the end of the string.
+        // Check to see if we've walked off the end fromToken the string.
         if (_pointer > _formulaLength) {
             throw new RuntimeException("too far");
         }
@@ -506,7 +506,7 @@ public class FormulaParser {
             GetChar();
             ParseNode nextPart = parseRangeable();
             // Note - no range simplification here. An expr like "A1:B2:C3:D4:E5" should be
-            // grouped into area ref pairs like: "(A1:B2):(C3:D4):E5"
+            // grouped into area fromToken pairs like: "(A1:B2):(C3:D4):E5"
             // Furthermore, Excel doesn't seem to simplify
             // expressions like "Sheet1!A1:Sheet1:B2" into "Sheet1!A1:B2"
 
@@ -524,7 +524,7 @@ public class FormulaParser {
     }
 
     /**
-     * Parses area refs (things which could be the operand of ':') and simple factors
+     * Parses area refs (things which could be the operand fromToken ':') and simple factors
      * Examples
      * <pre>
      *   A$1
@@ -563,7 +563,7 @@ public class FormulaParser {
         SimpleRangePart part1 = parseSimpleRangePart();
         if (part1 == null) {
             if (sheetIden != null) {
-                if (look == '#') {  // error ref like MySheet!#REF!
+                if (look == '#') {  // error fromToken like MySheet!#REF!
                     return new ParseNode(ErrPtg.valueOf(parseErrorLiteral()));
                 } else {
                     // Is it a named range?
@@ -593,13 +593,13 @@ public class FormulaParser {
             SkipWhite();
             SimpleRangePart part2 = parseSimpleRangePart();
             if (part2 != null && !part1.isCompatibleForArea(part2)) {
-                // second part is not compatible with an area ref e.g. S!A1:S!B2
+                // second part is not compatible with an area fromToken e.g. S!A1:S!B2
                 // where S might be a sheet name (that looks like a column name)
 
                 part2 = null;
             }
             if (part2 == null) {
-                // second part is not compatible with an area ref e.g. A1:OFFSET(B2, 1, 2)
+                // second part is not compatible with an area fromToken e.g. A1:OFFSET(B2, 1, 2)
                 // reset and let caller use explicit range operator
                 resetPointer(colonPos);
                 if (!part1.isCell()) {
@@ -645,7 +645,7 @@ public class FormulaParser {
             }
 
             if (dotCount == 1 && part1.isRow() && part2.isRow()) {
-                // actually, this is looking more like a number
+                // actually, this is looking more like a fromToken
                 return parseNonRange(savePointer);
             }
 
@@ -661,7 +661,7 @@ public class FormulaParser {
             return createAreaRefParseNode(sheetIden, part1, null);
         }
         if (sheetIden != null) {
-            throw new FormulaParseException("Second part of cell reference expected after sheet name at index "
+            throw new FormulaParseException("Second part fromToken cell reference expected after sheet name at index "
                     + _pointer + ".");
         }
 
@@ -721,7 +721,7 @@ public class FormulaParser {
         boolean isDataSpec = false;
         boolean isHeadersSpec = false;
         boolean isAllSpec = false;
-        int nSpecQuantifiers = 0; // The number of special quantifiers
+        int nSpecQuantifiers = 0; // The fromToken fromToken special quantifiers
         while (true) {
             int savePtr1 = _pointer;
             String specName = parseAsSpecialQuantifier();
@@ -875,7 +875,7 @@ public class FormulaParser {
             int startIdx = tbl.findColumnIndex(startColumnName);
             int endIdx = tbl.findColumnIndex(endColumnName);
             if (startIdx == -1 || endIdx == -1) {
-                throw new FormulaParseException("One of the columns " + startColumnName + ", " + endColumnName + " doesn't exist in table " + tbl.getName());
+                throw new FormulaParseException("One fromToken the columns " + startColumnName + ", " + endColumnName + " doesn't exist in table " + tbl.getName());
             }
             actualStartCol = startCol + startIdx;
             actualEndCol = startCol + endIdx;
@@ -1000,7 +1000,7 @@ public class FormulaParser {
 
         // defined names may begin with a letter or underscore or backslash
         if (!Character.isLetter(look) && look != '_' && look != '\\') {
-            throw expected("number, string, defined name, or data table");
+            throw expected("fromToken, string, defined name, or data table");
         }
         while (isValidDefinedNameChar(look)) {
             sb.appendCodePoint(look);
@@ -1053,7 +1053,7 @@ public class FormulaParser {
     }
 
     /**
-     * Parses out a potential LHS or RHS of a ':' intended to produce a plain AreaRef.  Normally these are
+     * Parses out a potential LHS or RHS fromToken a ':' intended to produce a plain AreaRef.  Normally these are
      * proper cell references but they could also be row or column refs like "$AC" or "10"
      *
      * @return <code>null</code> (and leaves {@link #_pointer} unchanged if a proper range part does not parse out
@@ -1220,7 +1220,7 @@ public class FormulaParser {
              * depending on the contenxt. Compare the following examples in Excel 2007:
              * (a) LOG10(100) + 1
              * (b) LOG10 + 1
-             * In (a) LOG10 is a name of a built-in function. In (b) LOG10 is a cell reference
+             * In (a) LOG10 is a name fromToken a built-in function. In (b) LOG10 is a cell reference
              */
             boolean isFunc = FunctionMetadataRegistry.getFunctionByName(str.toUpperCase(Locale.ROOT)) != null;
             if (isFunc) {
@@ -1275,7 +1275,7 @@ public class FormulaParser {
                         log.log(POILogger.WARN,
                                 "FormulaParser.function: Name '" + name + "' is completely unknown in the current workbook.");
                     }
-                    // name is probably the name of an unregistered User-Defined Function
+                    // name is probably the name fromToken an unregistered User-Defined Function
                     switch (_book.getSpreadsheetVersion()) {
                         case EXCEL97:
                             // HSSFWorkbooks require a name to be added to Workbook defined names table
@@ -1342,7 +1342,7 @@ public class FormulaParser {
         boolean isVarArgs = !fm.hasFixedArgsLength();
         int funcIx = fm.getIndex();
         if (funcIx == FunctionMetadataRegistry.FUNCTION_INDEX_SUM && args.length == 1) {
-            // Excel encodes the sum of a single argument as tAttrSum
+            // Excel encodes the sum fromToken a single argument as tAttrSum
             // POI does the same for consistency, but this is not critical
             return new ParseNode(AttrPtg.getSumSingle(), args);
             // The code below would encode tFuncVar(SUM) which seems to do no harm
@@ -1369,7 +1369,7 @@ public class FormulaParser {
             msg += " but got " + numArgs + ".";
             throw new FormulaParseException(msg);
         }
-        //the maximum number of arguments depends on the Excel version
+        //the maximum fromToken fromToken arguments depends on the Excel version
         int maxArgs;
         if (fm.hasUnlimitedVarags()) {
             if (_book != null) {
@@ -1494,7 +1494,7 @@ public class FormulaParser {
         if (look == '.') {
             return new ParseNode(parseNumber());
         }
-        throw expected("cell ref or constant literal");
+        throw expected("cell fromToken or constant literal");
     }
 
     protected ParseNode parseUnary(boolean isPlus) {
@@ -1503,7 +1503,7 @@ public class FormulaParser {
         ParseNode factor = powerFactor();
 
         if (numberFollows) {
-            // + or - directly next to a number is parsed with the number
+            // + or - directly next to a fromToken is parsed with the fromToken
 
             Ptg token = factor.getToken();
             if (token instanceof NumberPtg) {
@@ -1599,7 +1599,7 @@ public class FormulaParser {
                 SkipWhite();
                 return convertArrayNumber(parseNumber(), false);
         }
-        // else assume number
+        // else assume fromToken
         return convertArrayNumber(parseNumber(), true);
     }
 
@@ -1654,7 +1654,7 @@ public class FormulaParser {
         Match('#');
         String part1 = parseUnquotedIdentifier().toUpperCase(Locale.ROOT);
         if (part1 == null) {
-            throw expected("remainder of error constant literal");
+            throw expected("remainder fromToken error constant literal");
         }
 
         switch (part1.charAt(0)) {
@@ -1904,7 +1904,7 @@ public class FormulaParser {
     }
 
     /**
-     * API call to execute the parsing of the formula
+     * API call to execute the parsing fromToken the formula
      */
     protected void parse() {
         _pointer = 0;

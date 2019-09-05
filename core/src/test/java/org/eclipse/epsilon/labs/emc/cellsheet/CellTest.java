@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyAst;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyCell;
 import org.junit.Before;
@@ -77,12 +76,11 @@ public class CellTest {
     @Test
     public void addAst_should_add_ast_and_set_ast_position() {
         Ast root = cell.getRoot();
-        assertThat(cell.getAst(0)).isSameAs(root);
+        assertThat(cell.getAst("root")).isSameAs(root);
 
-        Ast newAst = new DummyAst();
-        assertThat(newAst.getPosition()).isEqualTo(Ast.UNASSIGNED);
-        int position = cell.addAst(newAst);
-        assertThat(cell.getAst(position)).isSameAs(newAst);
-        assertThat(newAst.getPosition()).isEqualTo(position);
+        Ast other = new Ast();
+        assertThat(other.getPosition()).isEqualTo(Ast.UNASSIGNED);
+        cell.putAst("other", other);
+        assertThat(other.getPosition()).isEqualTo(0);
     }
 }

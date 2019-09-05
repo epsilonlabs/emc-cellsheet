@@ -111,14 +111,16 @@ public class PoiWorkspaceTest {
         Ast childA = root.childAt(0);
         Ast childB = root.childAt(1);
 
-        assertThat(elements).hasSize(8).containsExactlyInAnyOrder(workspace,
-                book,
-                sheet,
-                row,
-                cell,
-                root,
-                childA,
-                childB);
+        assertThat(elements).hasSize(8)
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsExactlyInAnyOrder(workspace,
+                        book,
+                        sheet,
+                        row,
+                        cell,
+                        root,
+                        childA,
+                        childB);
     }
 
     private String getModelUriFromResource(String resourceName) throws UnsupportedEncodingException {

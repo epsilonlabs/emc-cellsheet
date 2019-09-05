@@ -10,32 +10,26 @@
 package org.eclipse.epsilon.labs.emc.cellsheet.test;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
-import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.ast.AbstractAst;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
+import org.eclipse.epsilon.labs.emc.cellsheet.ast.Noop;
 
-import javax.annotation.Nonnull;
-import java.util.EnumSet;
-import java.util.Set;
+public class DummyAst extends Ast {
 
-public class DummyAst extends AbstractAst {
+    private static final AstPayload DEFAULT_PAYLOAD = new Noop("dummy");
 
     public DummyAst() {
-        this.evaluator = new DummyAstEvaluator();
-    }
-
-    public DummyAst(String token) {
-        super(token);
+        super(DEFAULT_PAYLOAD);
     }
 
     @Override
     public Ast childAt(int position) {
-        while (children.size() < position + 1) {
+        while (getChildren().size() < position + 1) {
             DummyAst ast = new DummyAst();
             ast.setPosition(position);
             ast.setParent(this);
             addChild(ast);
         }
-        return children.get(position);
+        return super.childAt(position);
     }
 
     @Override
@@ -43,15 +37,4 @@ public class DummyAst extends AbstractAst {
         throw new UnsupportedOperationException();
     }
 
-    @Nonnull
-    @Override
-    public CellsheetType getType() {
-        return CellsheetType.UNKNOWN;
-    }
-
-    @Nonnull
-    @Override
-    public Set<CellsheetType> getKinds() {
-        return EnumSet.of(CellsheetType.UNKNOWN, CellsheetType.AST, CellsheetType.CELLSHEET_ELEMENT);
-    }
 }

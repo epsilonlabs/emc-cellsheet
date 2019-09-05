@@ -9,22 +9,14 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
-import org.eclipse.epsilon.labs.emc.cellsheet.Token;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
 import java.util.Set;
 
-public abstract class Operation extends AbstractAst {
-
-    protected Operation() {
-        super();
-    }
-
-    protected Operation(Token token) {
-        super(token);
-    }
+public abstract class Operation extends AstPayload {
 
     protected Operation(String token) {
         super(token);
@@ -33,6 +25,11 @@ public abstract class Operation extends AbstractAst {
     @Nonnull
     @Override
     public Set<CellsheetType> getKinds() {
-        return EnumSet.of(getType(), CellsheetType.OPERATION, CellsheetType.AST, CellsheetType.CELLSHEET_ELEMENT);
+        return EnumSet.of(getType(), CellsheetType.OPERATION, CellsheetType.AST_PAYLOAD, CellsheetType.CELLSHEET_ELEMENT);
+    }
+
+    @Override
+    public CellsheetType getSuperType() {
+        return CellsheetType.OPERATION;
     }
 }

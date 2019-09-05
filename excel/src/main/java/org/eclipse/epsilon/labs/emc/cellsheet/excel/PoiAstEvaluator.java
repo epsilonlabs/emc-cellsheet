@@ -14,7 +14,7 @@ import org.apache.poi.ss.formula.eval.*;
 import org.apache.poi.ss.util.CellReference;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.AstEval;
-import org.eclipse.epsilon.labs.emc.cellsheet.AstEvalFactory;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstEvals;
 import org.eclipse.epsilon.labs.emc.cellsheet.Cell;
 import org.eclipse.epsilon.labs.emc.cellsheet.ast.AstEvaluator;
 
@@ -28,7 +28,7 @@ public class PoiAstEvaluator implements AstEvaluator {
     private PoiAstEvaluator() {
     }
 
-    public static PoiAstEvaluator getInstance() {
+    public static PoiAstEvaluator instance() {
         return ourInstance;
     }
 
@@ -39,15 +39,14 @@ public class PoiAstEvaluator implements AstEvaluator {
 
         switch (ast.getType()) {
             case ERROR:
-                return AstEvalFactory.error(ast.getTokenValue());
+                return AstEvals.error(ast.getToken());
             case LOGICAL:
-                return AstEvalFactory.bool(Boolean.parseBoolean(ast.getTokenValue()));
+                return AstEvals.of(Boolean.parseBoolean(ast.getToken()));
             case TEXT:
-                return AstEvalFactory.text(ast.getTokenValue());
             case UNKNOWN:
-                return AstEvalFactory.text(ast.getToken().getValue());
+                return AstEvals.of(ast.getToken());
             case NUMBER:
-                return AstEvalFactory.number(Double.parseDouble(ast.getTokenValue()));
+                return AstEvals.of(Double.parseDouble(ast.getToken()));
             case NOOP:
                 return AstEval.EMPTY;
             default:
@@ -59,7 +58,7 @@ public class PoiAstEvaluator implements AstEvaluator {
 
     @Override
     public AstEval evaluate(String formula, Cell cell) {
-        checkArgument(cell instanceof PoiCell, "Not an instance of PoiCell");
+        checkArgument(cell instanceof PoiCell, "Not an instance fromToken PoiCell");
         return doEval(formula, (PoiCell) cell);
     }
 
@@ -74,13 +73,13 @@ public class PoiAstEvaluator implements AstEvaluator {
                         true));
 
         if (result instanceof ErrorEval)
-            return AstEvalFactory.error(((ErrorEval) result).getErrorString());
+            return AstEvals.error(((ErrorEval) result).getErrorString());
         if (result instanceof NumberEval)
-            return AstEvalFactory.number(((NumberEval) result).getNumberValue());
+            return AstEvals.of(((NumberEval) result).getNumberValue());
 
         if (result instanceof RefEval) {
             RefEval cast = (RefEval) result;
-            return AstEvalFactory.ref(cell
+            return AstEvals.of(cell
                     .getBook()
                     .getSheet(cast.getFirstSheetIndex())
                     .getRow(cast.getRow())
@@ -89,7 +88,7 @@ public class PoiAstEvaluator implements AstEvaluator {
         }
 
         if (result instanceof StringValueEval) {
-            return AstEvalFactory.text(((StringValueEval) result).getStringValue());
+            return AstEvals.of(((StringValueEval) result).getStringValue());
         }
 
         throw new AssertionError("Unknown ValueEval given: " + result);

@@ -33,11 +33,12 @@ public enum CellsheetType {
     FORMULA_CELL("FormulaCell"),
     ERROR_CELL("ErrorCell"),
 
-    TOKEN("Token"),
     CELL_FORMAT("CellFormat"),
 
-    AST("AST"),
-    NOOP("NoOp"),
+    AST("Ast"),
+
+    AST_PAYLOAD("AstPayload"),
+    NOOP("Noop"),
     OPERAND("Operand"),
     OPERATION("Operation"),
     PREFIX_OPERATOR("PrefixOperator"),

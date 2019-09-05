@@ -9,20 +9,14 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.test;
 
-import com.google.common.collect.ForwardingList;
-import com.google.common.collect.ImmutableList;
 import org.eclipse.epsilon.labs.emc.cellsheet.*;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-public class DummyCell implements Cell {
+public class DummyCell extends AbstractCell<Object> {
 
     Row row;
     int colIndex;
-    List<Ast> asts = new DummyAstList();
 
     @Override
     public Book getBook() {
@@ -58,14 +52,8 @@ public class DummyCell implements Cell {
     }
 
     @Override
-    public List<Ast> getAsts() {
-        return asts;
-    }
-
-    @Nonnull
-    @Override
-    public Iterator<CellsheetElement> iterator() {
-        return ImmutableList.<CellsheetElement>copyOf(getAsts()).iterator();
+    protected Ast buildRoot() {
+        return new DummyAst();
     }
 
     @Nonnull
@@ -74,23 +62,4 @@ public class DummyCell implements Cell {
         return CellsheetType.BLANK_CELL;
     }
 
-    class DummyAstList extends ForwardingList<Ast> {
-        private final List<Ast> delegate = new ArrayList<>();
-
-        @Override
-        public Ast get(int index) {
-            while (delegate.size() < index + 1) {
-                DummyAst ast = new DummyAst();
-                ast.setPosition(index);
-                ast.setCell(DummyCell.this);
-                delegate.add(ast);
-            }
-            return delegate.get(index);
-        }
-
-        @Override
-        protected List<Ast> delegate() {
-            return delegate;
-        }
-    }
 }

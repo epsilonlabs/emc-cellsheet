@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
+import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
 import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.junit.Test;
 
@@ -20,23 +20,23 @@ public class FunctionTest {
     @Test
     public void constructor_should_succeed_given_string() {
         String token = "VLOOKUP";
-        Ast ast = new Function(token);
-        assertThat(ast.getTokenValue()).isEqualTo(token);
+        AstPayload payload = new Function(token);
+        assertThat(payload.getToken()).isEqualTo(token);
     }
 
     @Test
     public void getType_should_return_FUNCTION() {
-        Ast ast = new Function("");
-        assertThat(ast.getType()).isEqualTo(CellsheetType.FUNCTION);
+        AstPayload payload = new Function("");
+        assertThat(payload.getType()).isEqualTo(CellsheetType.FUNCTION);
     }
 
     @Test
     public void getKind_should_return_correct_types() {
-        Ast ast = new Function("");
-        assertThat(ast.getKinds()).containsExactlyInAnyOrder(
+        AstPayload payload = new Function("");
+        assertThat(payload.getKinds()).containsExactlyInAnyOrder(
                 CellsheetType.FUNCTION,
                 CellsheetType.OPERATION,
-                CellsheetType.CELLSHEET_ELEMENT,
-                CellsheetType.AST);
+                CellsheetType.AST_PAYLOAD,
+                CellsheetType.CELLSHEET_ELEMENT);
     }
 }

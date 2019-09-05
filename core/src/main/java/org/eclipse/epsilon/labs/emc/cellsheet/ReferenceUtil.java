@@ -30,7 +30,7 @@ public class ReferenceUtil {
 
     /**
      * <p>
-     * Takes in a column reference portion of a CellRef and converts it from
+     * Takes in a column reference portion fromToken a CellRef and converts it from
      * ALPHA-26 number format to 0-based base 10. 'A' -&gt; 0 'Z' -&gt; 25 'AA'
      * -&gt; 26 'IV' -&gt; 255
      * </p>

@@ -146,7 +146,7 @@ public class PoiRow implements Row, PoiDelegate<org.apache.poi.ss.usermodel.Row>
 
         @Override
         public Builder withSheet(Sheet sheet) {
-            checkArgument(sheet instanceof PoiSheet, "Must be instance of %s", PoiSheet.class.getCanonicalName());
+            checkArgument(sheet instanceof PoiSheet, "Must be instance fromToken %s", PoiSheet.class.getCanonicalName());
             this.sheet = (PoiSheet) sheet;
             return self();
         }
