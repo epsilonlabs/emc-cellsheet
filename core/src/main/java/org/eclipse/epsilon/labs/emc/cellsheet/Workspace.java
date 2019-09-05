@@ -26,6 +26,7 @@ import org.eclipse.epsilon.eol.models.CachedModel;
 import org.eclipse.epsilon.eol.models.IRelativePathResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.profiler.Profiler;
 
 import javax.annotation.Nonnull;
 import java.net.URI;
@@ -42,7 +43,7 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
 
     private static final Set<String> ALLOWED_SCHEMES = ImmutableSet.of(SCHEME, AstPayload.SCHEME);
 
-    private static Logger logger = LoggerFactory.getLogger(Workspace.class);
+    private static final Logger logger = LoggerFactory.getLogger(Workspace.class);
 
     protected Map<String, BookProvider> providerRegistry = new HashMap<>();
     protected Map<String, Book> books = new LinkedHashMap<>();
@@ -50,6 +51,7 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
     private String id = null;
 
     public Workspace() {
+        this(null);
     }
 
     public Workspace(String name) {
@@ -101,7 +103,11 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
 
     @Override
     protected Collection<CellsheetElement> allContentsFromModel() {
-        return new AllContentsCollection(this);
+        Profiler profiler = getProfiler();
+        profiler.start("allContentsFromModel");
+        AllContentsCollection allContents = new AllContentsCollection(this);
+        profiler.stop().log();
+        return allContents;
     }
 
     public Collection<CellsheetElement> getAllOfType(CellsheetType type) throws EolModelElementTypeNotFoundException {
@@ -141,6 +147,8 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
 
     @Override
     public void load(StringProperties properties, IRelativePathResolver resolver) throws EolModelLoadingException {
+        Profiler profiler = getProfiler();
+        profiler.start("load(String, IRelativePathResolver)");
         super.load(properties, resolver);
         checkState(!providerRegistry.isEmpty(), "No BookProvider's registered");
 
@@ -174,6 +182,7 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
         }
 
         load();
+        profiler.stop().log();
     }
 
     @Override
@@ -406,6 +415,12 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
         checkArgument(type != null, "Malformed ID given %s", id);
 
         return AstPayloads.fromUuid(type, id);
+    }
+
+    protected Profiler getProfiler() {
+        Profiler profiler = new Profiler(String.format("[%s]@%s", name, Integer.toHexString(System.identityHashCode(this))));
+        profiler.setLogger(logger);
+        return profiler;
     }
 
     class AllContentsCollection extends AbstractCollection<CellsheetElement> {
