@@ -363,9 +363,6 @@ public class Ast implements CellsheetElement {
      * @return the formula.
      */
     public String getFormula() {
-        if (isRoot() && cell != null) {
-            return cell.getValue().toString();
-        }
         try {
             return new FormulaBuilderVisitor().visit(this);
         } catch (Exception e) {
@@ -493,12 +490,8 @@ public class Ast implements CellsheetElement {
         @Override
         public boolean add(Ast ast) {
             checkArgument(!delegate.contains(ast), "AST already present at index %s", ast.getPosition());
-            if (ast.getParent() != null && !ast.getParent().equals(Ast.this))
-                ast.getParent().removeChild(ast);
-            reindex();
-            ast.setParent(Ast.this);
-            ast.setPosition(delegate.size());
-            return super.add(ast);
+            add(delegate.size(), ast);
+            return true;
         }
 
         @Override
@@ -507,7 +500,8 @@ public class Ast implements CellsheetElement {
             super.add(index, ast);
             if (ast.getParent() != null && !ast.getParent().equals(Ast.this))
                 ast.getParent().removeChild(ast);
-            ast.setParent(Ast.this);
+            ast.parent = Ast.this;
+            ast.cell = null;
             reindex();
         }
 
@@ -526,8 +520,10 @@ public class Ast implements CellsheetElement {
 
         void reindex() {
             if (delegate.isEmpty()) return;
-            for (int i = 0, n = delegate.size(); i < n; i++)
-                delegate.get(i).setPosition(i);
+            for (int i = 0, n = delegate.size(); i < n; i++) {
+                Ast ast = delegate.get(i);
+                if (ast != null) ast.setPosition(i);
+            }
         }
 
         void resetParent(Ast ast) {
