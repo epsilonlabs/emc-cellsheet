@@ -468,7 +468,7 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
 
         @Override
         public void clear() {
-            throw new UnsupportedOperationException();
+            // Do nothing
         }
     }
 
