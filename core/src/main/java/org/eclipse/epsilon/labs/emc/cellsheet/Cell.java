@@ -43,7 +43,7 @@ import java.util.Set;
  * @author Jonathan Co
  * @since 3.0.0
  */
-public interface Cell<T> extends HasA1 {
+public interface Cell<T> extends HasA1<CellsheetElement> {
 
     String ROOT_AST_KEY = "root";
 

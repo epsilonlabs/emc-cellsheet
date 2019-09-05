@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public interface Sheet extends HasA1 {
+public interface Sheet extends HasA1<Row> {
 
     Book getBook();
 

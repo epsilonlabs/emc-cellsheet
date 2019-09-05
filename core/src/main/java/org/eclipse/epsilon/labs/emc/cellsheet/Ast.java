@@ -54,7 +54,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Jonathan Co
  * @since 3.0.0
  */
-public class Ast implements CellsheetElement {
+public class Ast implements CellsheetElement<Ast> {
 
     /**
      * Position value indicating the AST is dangling and is not assigned to a parent or cell.

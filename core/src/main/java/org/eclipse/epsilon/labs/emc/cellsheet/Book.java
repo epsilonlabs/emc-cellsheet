@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public interface Book extends HasA1 {
+public interface Book extends HasA1<Sheet> {
 
     Workspace getWorkspace();
 

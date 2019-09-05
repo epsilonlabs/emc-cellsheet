@@ -18,8 +18,9 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
  *
  * @author Jonathan Co
  * @since 3.0.0
+ * @param T child CellsheetElement provided during iteration
  */
-public interface HasA1 extends CellsheetElement {
+public interface HasA1<T extends CellsheetElement> extends CellsheetElement<T> {
 
     /**
      * The default A1 identifier to use when a model element is dangling.

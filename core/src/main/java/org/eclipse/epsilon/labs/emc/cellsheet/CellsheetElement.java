@@ -10,9 +10,11 @@
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Supertype for all model types in a Cellsheet model.
@@ -23,8 +25,9 @@ import java.util.Set;
  *
  * @author Jonathan Co
  * @since 3.0.0
+ * @param T child CellsheetElement provided during iteration
  */
-public interface CellsheetElement extends Iterable {
+public interface CellsheetElement<T extends CellsheetElement> extends Iterable<T> {
 
     /**
      * The default identifier to use when a model element is dangling.
@@ -48,7 +51,7 @@ public interface CellsheetElement extends Iterable {
 
     @Nonnull
     @Override
-    default Iterator<? extends CellsheetElement> iterator() {
+    default Iterator<T> iterator() {
         return Collections.emptyIterator();
     }
 
@@ -69,5 +72,9 @@ public interface CellsheetElement extends Iterable {
      */
     @Nonnull
     Set<CellsheetType> getKinds();
+
+    default Collection<String> getKindsAsString() {
+        return getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.toList());
+    }
 
 }
