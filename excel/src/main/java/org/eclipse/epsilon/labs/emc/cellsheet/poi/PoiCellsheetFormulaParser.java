@@ -13,6 +13,7 @@ import org.apache.poi.ss.formula.FormulaType;
 import org.apache.poi.ss.formula.ptg.FuncVarPtg;
 import org.apache.poi.ss.formula.ptg.OperandPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
+import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.excel.PoiBook;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,14 @@ public class PoiCellsheetFormulaParser extends FormulaParser implements Iterable
 
     public PoiCellsheetFormulaParser(String formula, PoiBook book, int sheetIndex, int rowIndex) {
         super(formula, book.getFpw(), sheetIndex, rowIndex);
+    }
+
+    public PoiCellsheetFormulaParser(Ast ast) {
+        this(ast.getFormula(),
+                (PoiBook) ast.getCell().getBook(),
+                ast.getCell().getSheet().getSheetIndex(),
+                ast.getCell().getRowIndex()
+        );
     }
 
     @Override
