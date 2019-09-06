@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 public class DummySheet implements Sheet {
 
@@ -47,7 +48,7 @@ public class DummySheet implements Sheet {
 
     @Override
     public String getSheetName() {
-        return "Default Dummy Sheet " + sheetIndex;
+        return Optional.ofNullable(sheetName).orElse("Default Dummy Sheet " + sheetIndex);
     }
 
     public void setSheetName(String sheetName) {

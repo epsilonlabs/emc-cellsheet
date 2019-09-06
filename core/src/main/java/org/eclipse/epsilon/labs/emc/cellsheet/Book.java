@@ -14,11 +14,10 @@ import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public interface Book extends HasA1 {
+public interface Book extends HasA1<Sheet> {
 
     Workspace getWorkspace();
 
@@ -44,14 +43,15 @@ public interface Book extends HasA1 {
 
     List<Sheet> getSheets();
 
-    @Nonnull
     @Override
-    Iterator<Sheet> iterator();
+    default String getQualifiedA1() {
+        if (getBookName() == null) return HasA1.super.getQualifiedA1();
+        return "[" + getBookName() + "]";
+    }
 
     @Override
-    default String getA1() {
-        if (getBookName() == null) return HasA1.super.getA1();
-        return "[" + getBookName() + "]";
+    default String getRelativeA1() {
+        return getQualifiedA1();
     }
 
     @Nonnull

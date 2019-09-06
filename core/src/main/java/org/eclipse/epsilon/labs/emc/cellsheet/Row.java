@@ -11,11 +11,10 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public interface Row extends HasA1 {
+public interface Row extends HasA1<Cell> {
 
     default Book getBook() {
         return getSheet().getBook();
@@ -33,14 +32,16 @@ public interface Row extends HasA1 {
 
     List<Cell> getCells();
 
-    @Nonnull
     @Override
-    Iterator<Cell> iterator();
+    default String getQualifiedA1() {
+        if (getSheet() == null) return HasA1.super.getQualifiedA1();
+        return getSheet().getQualifiedA1() + "!A$" + getA1RowIndex();
+    }
 
     @Override
-    default String getA1() {
-        if (getSheet() == null) return HasA1.super.getA1();
-        return getSheet().getA1() + "!$A" + getA1RowIndex();
+    default String getRelativeA1() {
+        String a1 = "A$" + getA1RowIndex();
+        return getSheet() == null ? a1 : getSheet().getRelativeA1() + "!" + a1;
     }
 
     @Nonnull

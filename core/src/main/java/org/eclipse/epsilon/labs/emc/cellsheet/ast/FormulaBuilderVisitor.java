@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.ast;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 import com.google.common.math.DoubleMath;
 import org.eclipse.epsilon.labs.emc.cellsheet.Ast;
 import org.eclipse.epsilon.labs.emc.cellsheet.AstPayload;
@@ -132,6 +130,6 @@ public class FormulaBuilderVisitor implements Ast.Visitor<String> {
      * @return
      */
     private CellsheetType getSupertype(AstPayload payload) {
-        return Iterables.getOnlyElement(Sets.intersection(payload.getKinds(), SUPERTYPES));
+        return payload.getSuperType();
     }
 }

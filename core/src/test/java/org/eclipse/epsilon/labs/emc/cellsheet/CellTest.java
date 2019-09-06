@@ -11,6 +11,7 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyBook;
 import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyCell;
+import org.eclipse.epsilon.labs.emc.cellsheet.test.DummyRow;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,14 +47,31 @@ public class CellTest {
     }
 
     @Test
-    public void getA1_should_return_a1() {
-        assertThat(cell.getA1()).isEqualTo("[Default Dummy Book 1.xlsx]'Default Dummy Sheet 0'!A1");
+    public void getQualifiedA1_should_return_qualified_a1() {
+        assertThat(cell.getQualifiedA1()).isEqualTo("[Default Dummy Book 1.xlsx]'Default Dummy Sheet 0'!A1");
     }
 
     @Test
-    public void getA1_should_return_unassigned_when_dangling() {
+    public void getQualifiedA1_should_return_unassigned_when_dangling() {
         cell.setRow(null);
-        assertThat(cell.getA1()).isEqualTo(HasA1.UNASSIGNED);
+        assertThat(cell.getQualifiedA1()).isEqualTo(HasA1.UNASSIGNED);
+    }
+
+    @Test
+    public void getRelativeA1_should_return_full_relative_a1_with_sheet() {
+        assertThat(cell.getRelativeA1()).isEqualTo("'Default Dummy Sheet 0'!A1");
+    }
+
+    @Test
+    public void getRelativeA1_should_return_relative_a1_without_sheet_when_sheet_is_null() {
+        ((DummyRow) cell.getRow()).setSheet(null);
+        assertThat(cell.getRelativeA1()).isEqualTo("A1");
+    }
+
+    @Test
+    public void getRelativeA1_should_return_unassigned_when_dangling() {
+        cell.setRow(null);
+        assertThat(cell.getRelativeA1()).isEqualTo(HasA1.UNASSIGNED);
     }
 
     @Test

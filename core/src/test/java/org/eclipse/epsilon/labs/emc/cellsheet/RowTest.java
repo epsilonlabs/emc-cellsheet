@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+import org.eclipse.epsilon.labs.emc.cellsheet.test.DummySheet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -39,16 +40,30 @@ public class RowTest {
     }
 
     @Test
-    public void getA1_should_return_a1() {
+    public void getQualifiedA1_should_return_qualified_a1() {
         Sheet sheet = mock(Sheet.class);
-        when(sheet.getA1()).thenReturn("[Example Workbook 1.xlsx]'Example Sheet 1'");
+        when(sheet.getQualifiedA1()).thenReturn("[Example Workbook 1.xlsx]'Example Sheet 1'");
         when(row.getSheet()).thenReturn(sheet);
-        assertThat(row.getA1()).isEqualTo("[Example Workbook 1.xlsx]'Example Sheet 1'!$A1");
+        assertThat(row.getQualifiedA1()).isEqualTo("[Example Workbook 1.xlsx]'Example Sheet 1'!A$1");
     }
 
     @Test
-    public void getA1_should_return_unassigned_when_dangling() {
-        assertThat(row.getA1()).isEqualTo(HasA1.UNASSIGNED);
+    public void getQualifiedA1_should_return_unassigned_when_dangling() {
+        assertThat(row.getQualifiedA1()).isEqualTo(HasA1.UNASSIGNED);
+    }
+
+    @Test
+    public void getRelativeA1_should_return_relative_a1() {
+        DummySheet sheet = new DummySheet();
+        sheet.setSheetName("Example Sheet 1");
+        when(row.getSheet()).thenReturn(sheet);
+        assertThat(row.getRelativeA1()).isEqualTo("'Example Sheet 1'!A$1");
+    }
+
+    @Test
+    public void getRelativeA1_should_return_relative_a1_without_sheet_when_sheet_is_null() {
+        when(row.getRowIndex()).thenReturn(3);
+        assertThat(row.getRelativeA1()).isEqualTo("A$4");
     }
 
     @Test

@@ -16,10 +16,11 @@ package org.eclipse.epsilon.labs.emc.cellsheet;
  * cells - elements that can normally be addressed in a standard spreadsheet.
  * </p>
  *
+ * @param T child CellsheetElement provided during iteration
  * @author Jonathan Co
  * @since 3.0.0
  */
-public interface HasA1 extends CellsheetElement {
+public interface HasA1<T extends CellsheetElement> extends CellsheetElement<T> {
 
     /**
      * The default A1 identifier to use when a model element is dangling.
@@ -35,7 +36,23 @@ public interface HasA1 extends CellsheetElement {
      *
      * @return A1 identifier or {@code null} if element is dangling.
      */
-    default String getA1() {
+    default String getQualifiedA1() {
+        return UNASSIGNED;
+    }
+
+    /**
+     * The relative A1 identifier for this model element. In most cases will
+     * return the {@link #getQualifiedA1()} without the workbook reference. Useful for
+     * single workbook environments
+     * <p>
+     * For dangling model elements (i.e. elements not associated with an
+     * appropriate parent) this will return {@link #UNASSIGNED}.
+     * </p>
+     *
+     *
+     * @return relative A1 identifier or {@code null} if element is dangling.
+     */
+    default String getRelativeA1() {
         return UNASSIGNED;
     }
 

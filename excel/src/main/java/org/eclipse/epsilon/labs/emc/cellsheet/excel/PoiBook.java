@@ -219,8 +219,6 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         if (o == null || getClass() != o.getClass()) return false;
         PoiBook poiBook = (PoiBook) o;
         return Objects.equal(getDelegate(), poiBook.getDelegate()) &&
-                Objects.equal(delegateFpw, poiBook.delegateFpw) &&
-                Objects.equal(delegateEvaluator, poiBook.delegateEvaluator) &&
                 Objects.equal(getWorkspace(), poiBook.getWorkspace()) &&
                 Objects.equal(getModelUri(), poiBook.getModelUri()) &&
                 Objects.equal(getBookName(), poiBook.getBookName());
@@ -229,8 +227,6 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
     @Override
     public int hashCode() {
         return Objects.hashCode(getDelegate(),
-                delegateFpw,
-                delegateEvaluator,
                 getWorkspace(),
                 getModelUri(),
                 getBookName());

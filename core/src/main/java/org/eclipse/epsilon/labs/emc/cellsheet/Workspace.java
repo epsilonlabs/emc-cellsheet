@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.*;
 
-public class Workspace extends CachedModel<CellsheetElement> implements CellsheetElement {
+public class Workspace extends CachedModel<CellsheetElement> implements CellsheetElement<Book> {
 
     public static final String SCHEME = "cellsheet";
     public static final String PROPERTY_MODEL_URI = "modelUri";
@@ -213,9 +213,7 @@ public class Workspace extends CachedModel<CellsheetElement> implements Cellshee
     @Override
     protected Collection<String> getAllTypeNamesOf(Object instance) {
         if (instance instanceof CellsheetElement) {
-            return ((CellsheetElement) instance).getKinds().stream()
-                    .map(CellsheetType::getTypeName)
-                    .collect(Collectors.toList());
+            return ((CellsheetElement<?>) instance).getKindsAsString();
         }
         return null;
     }
