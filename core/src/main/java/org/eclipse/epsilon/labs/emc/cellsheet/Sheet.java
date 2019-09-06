@@ -27,10 +27,16 @@ public interface Sheet extends HasA1<Row> {
     List<Row> getRows();
 
     @Override
-    default String getA1() {
+    default String getQualifiedA1() {
         if (getBook() == null || getSheetName() == null)
-            return HasA1.super.getA1();
-        return getBook().getA1() + "'" + getSheetName() + "'";
+            return HasA1.super.getQualifiedA1();
+        return getBook().getQualifiedA1() + "'" + getSheetName() + "'";
+    }
+
+    @Override
+    default String getRelativeA1() {
+        if (getSheetName() == null) return HasA1.super.getRelativeA1();
+        return "'" + getSheetName() + "'";
     }
 
     @Nonnull

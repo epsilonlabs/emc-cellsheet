@@ -158,9 +158,16 @@ public interface Cell<T> extends HasA1<CellsheetElement> {
     }
 
     @Override
-    default String getA1() {
-        if (getRow() == null) return HasA1.super.getA1();
-        return getSheet().getA1() + "!" + getA1ColIndex() + getA1RowIndex();
+    default String getQualifiedA1() {
+        if (getRow() == null) return HasA1.super.getQualifiedA1();
+        return getSheet().getQualifiedA1() + "!" + getA1ColIndex() + getA1RowIndex();
+    }
+
+    @Override
+    default String getRelativeA1() {
+        if (getRow() == null) return HasA1.super.getRelativeA1();
+        String a1 = getA1ColIndex() + getA1RowIndex();
+        return getSheet() == null ? a1 : getSheet().getRelativeA1() + "!" + a1;
     }
 
     @Nonnull

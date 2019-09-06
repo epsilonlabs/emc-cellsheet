@@ -44,9 +44,14 @@ public interface Book extends HasA1<Sheet> {
     List<Sheet> getSheets();
 
     @Override
-    default String getA1() {
-        if (getBookName() == null) return HasA1.super.getA1();
+    default String getQualifiedA1() {
+        if (getBookName() == null) return HasA1.super.getQualifiedA1();
         return "[" + getBookName() + "]";
+    }
+
+    @Override
+    default String getRelativeA1() {
+        return getQualifiedA1();
     }
 
     @Nonnull

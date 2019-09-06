@@ -42,14 +42,25 @@ public class BookTest {
     }
 
     @Test
-    public void getA1_should_return_a1() {
+    public void getQualifiedA1_should_return_qualified_a1() {
         stubName();
-        assertThat(book.getA1()).isEqualTo("[Example Book 1.xlsx]");
+        assertThat(book.getQualifiedA1()).isEqualTo("[Example Book 1.xlsx]");
     }
 
     @Test
-    public void getA1_should_return_unassigned_when_dangling() {
-        assertThat(book.getA1()).isEqualTo(HasA1.UNASSIGNED);
+    public void getQualifiedA1_should_return_unassigned_when_dangling() {
+        assertThat(book.getQualifiedA1()).isEqualTo(HasA1.UNASSIGNED);
+    }
+
+    @Test
+    public void getRelativeA1_should_return_relative_a1() {
+        stubName();
+        assertThat(book.getRelativeA1()).isEqualTo("[Example Book 1.xlsx]");
+    }
+
+    @Test
+    public void getRelativeA1_should_return_unassigned_when_dangling() {
+        assertThat(book.getRelativeA1()).isEqualTo(HasA1.UNASSIGNED);
     }
 
     @Test

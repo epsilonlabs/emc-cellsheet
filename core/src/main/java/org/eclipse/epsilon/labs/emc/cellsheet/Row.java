@@ -33,9 +33,15 @@ public interface Row extends HasA1<Cell> {
     List<Cell> getCells();
 
     @Override
-    default String getA1() {
-        if (getSheet() == null) return HasA1.super.getA1();
-        return getSheet().getA1() + "!$A" + getA1RowIndex();
+    default String getQualifiedA1() {
+        if (getSheet() == null) return HasA1.super.getQualifiedA1();
+        return getSheet().getQualifiedA1() + "!A$" + getA1RowIndex();
+    }
+
+    @Override
+    default String getRelativeA1() {
+        String a1 = "A$" + getA1RowIndex();
+        return getSheet() == null ? a1 : getSheet().getRelativeA1() + "!" + a1;
     }
 
     @Nonnull
