@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
 import com.google.common.collect.ImmutableMap;
@@ -7,7 +16,7 @@ import java.util.Arrays;
 
 public enum CellsheetType {
 
-    HAS_ID("HasId"),
+    CELLSHEET_ELEMENT("CellsheetElement"),
     HAS_A1("HasA1"),
 
     WORKSPACE("Workspace"),
@@ -24,11 +33,12 @@ public enum CellsheetType {
     FORMULA_CELL("FormulaCell"),
     ERROR_CELL("ErrorCell"),
 
-    TOKEN("Token"),
     CELL_FORMAT("CellFormat"),
 
-    AST("AST"),
-    NOOP("NoOp"),
+    AST("Ast"),
+
+    AST_PAYLOAD("AstPayload"),
+    NOOP("Noop"),
     OPERAND("Operand"),
     OPERATION("Operation"),
     PREFIX_OPERATOR("PrefixOperator"),
@@ -76,16 +86,12 @@ public enum CellsheetType {
         this.typeName = typeName;
     }
 
-    public String getTypeName() {
-        return typeName;
-    }
-
     public static CellsheetType fromTypeName(String typeName) {
         return reverseLookup.get(typeName);
     }
 
-    public static void main(String[] args) {
-        System.out.println(GT.getTypeName());
-        System.out.println(CELL_FORMAT.getTypeName());
+    public String getTypeName() {
+        return typeName;
     }
+
 }

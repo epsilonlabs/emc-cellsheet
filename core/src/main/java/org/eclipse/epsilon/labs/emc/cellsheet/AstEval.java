@@ -1,57 +1,91 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet;
 
+/**
+ * Model Type representing the result from evaluating an {@link Ast}.
+ * <p>Instances should be constructed using {@link AstEvals} utility methods</p>
+ *
+ * @author Jonathan Co
+ * @since 3.0.0
+ */
 public class AstEval {
 
-    private String stringValue = "";
-    private double numberValue = 0.0;
-    private boolean isString = false;
-    private boolean isNumber = false;
-    private boolean isError = false;
+    public static final AstEval EMPTY = new AstEval(null, null, null, null, null);
 
-    public String getStringValue() {
-        return stringValue;
+    private final String text;
+    private final Double number;
+    private final Boolean bool;
+    private final Cell ref;
+    private final String error;
+
+    AstEval(String text, Double number, Boolean bool, Cell ref, String error) {
+        this.text = text;
+        this.number = number;
+        this.bool = bool;
+        this.ref = ref;
+        this.error = error;
     }
 
-    public void setStringValue(String stringValue) {
-        this.stringValue = stringValue;
+    public String getText() {
+        if (isRef() && ref.getType() == CellsheetType.TEXT_CELL)
+            return ((TextCell) ref).getValue();
+        return text;
     }
 
-    public double getNumberValue() {
-        return numberValue;
+    public Double getNumber() {
+        if (isRef() && ref.getType() == CellsheetType.NUMERIC_CELL)
+            return ((NumericCell) ref).getValue();
+        return number;
     }
 
-    public void setNumberValue(double numberValue) {
-        this.numberValue = numberValue;
+    public Boolean getBoolean() {
+        return bool == null ? false : bool;
     }
 
-    public boolean setIsString() {
-        return isString;
+    public Cell getRef() {
+        return ref;
     }
 
-    public void setString(boolean string) {
-        isString = string;
+    public String getError() {
+        return error;
     }
 
-    public boolean setIsNumber() {
-        return isNumber;
+    public boolean isText() {
+        return text != null;
     }
 
-    public void setNumber(boolean number) {
-        isNumber = number;
+    public boolean isNumber() {
+        return number != null;
     }
 
-    public boolean hasError() {
-        return isError;
+    public boolean isBoolean() {
+        return bool != null;
     }
 
-    public void setIsError(boolean error) {
-        this.isError = error;
+    public boolean isRef() {
+        return ref != null;
+    }
+
+    public boolean isError() {
+        return error != null;
     }
 
     @Override
     public String toString() {
-        if (isNumber) return Double.toString(numberValue);
-        if (isError) return stringValue;
-        return stringValue;
+        if (isText()) return text;
+        if (isNumber()) return number.toString();
+        if (isBoolean()) return bool.toString();
+        if (isRef()) return ref.getId();
+        if (isError()) return error;
+        return "";
     }
+
 }

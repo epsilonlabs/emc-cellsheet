@@ -1,5 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
@@ -15,22 +26,22 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.epsilon.eol.exceptions.models.EolModelLoadingException;
-import org.eclipse.epsilon.labs.emc.cellsheet.Book;
-import org.eclipse.epsilon.labs.emc.cellsheet.CellFormat;
-import org.eclipse.epsilon.labs.emc.cellsheet.Sheet;
-import org.eclipse.epsilon.labs.emc.cellsheet.Workspace;
+import org.eclipse.epsilon.labs.emc.cellsheet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.profiler.Profiler;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 public class PoiBook implements Book, PoiDelegate<Workbook> {
 
-    private static Logger logger = LoggerFactory.getLogger(PoiBook.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoiBook.class);
 
     private Workbook delegate;
     private FormulaParsingWorkbook delegateFpw;
@@ -39,13 +50,6 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
     private Workspace workspace;
     private String modelUri;
     private String bookName;
-
-    public PoiBook() {
-    }
-
-    public PoiBook(Workbook delegate) {
-        this.delegate = delegate;
-    }
 
     @Override
     public Workspace getWorkspace() {
@@ -105,6 +109,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         return ImmutableList.copyOf(iterator());
     }
 
+    @Nonnull
     @Override
     public Iterator<Sheet> iterator() {
         return Iterators.transform(
@@ -120,25 +125,32 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
 
     @Override
     public void load() throws EolModelLoadingException {
-        logger.debug("Loading PoiBook...");
-        logger.debug("bookName: " + getBookName());
-        logger.debug("modelUri: " + getModelUri());
-
         if (delegate != null) {
-            logger.debug("...POI Delegate already set bypassing load()");
+            logger.debug("PoiBook already loaded, skipping");
             return;
         }
 
-        checkArgument(modelUri != null, "No modelUri set");
+        // Set up profiler
+        Profiler profiler = new Profiler(String.format("[%s]@%s", bookName, Integer.toHexString(System.identityHashCode(this))));
+        profiler.setLogger(logger);
+        profiler.start("load()");
+
+        logger.info("Loading PoiBook with [modelUri: {}, bookName: {}]", modelUri, bookName);
 
         try {
-            setDelegate(WorkbookFactory.create(new File(getModelUri())));
-            delegate.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            if (modelUri == null) {
+                logger.info("No modelUri set, creating in-memory XSSF-based book");
+                delegate = WorkbookFactory.create(true);
+            } else {
+                delegate = WorkbookFactory.create(new File(modelUri));
+            }
         } catch (Exception e) {
             throw new EolModelLoadingException(e, workspace);
         }
 
-        logger.debug("...Loading Finished");
+        delegate.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        logger.info("...Loading Finished");
+        profiler.stop().log();
     }
 
     @Override
@@ -148,6 +160,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
                 delegate.close();
                 delegate = null;
                 delegateFpw = null;
+                delegateEvaluator = null;
             } catch (Exception e) {
                 throw new IllegalStateException(e);
             }
@@ -163,8 +176,8 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         this.delegate = delegate;
     }
 
-    protected FormulaParsingWorkbook getFpw() {
-        checkArgument(delegate != null,"Delegate not initialised");
+    public FormulaParsingWorkbook getFpw() {
+        checkArgument(delegate != null, "Delegate not initialised");
         if (delegateFpw == null) {
             if (delegate instanceof HSSFWorkbook)
                 delegateFpw = HSSFEvaluationWorkbook.create((HSSFWorkbook) delegate);
@@ -176,7 +189,7 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         return delegateFpw;
     }
 
-    protected WorkbookEvaluator getInternalEvaluator() {
+    public WorkbookEvaluator getInternalEvaluator() {
         checkArgument(delegate != null, "Delegate not initialised");
         if (delegateEvaluator == null) {
             delegateEvaluator = ((BaseFormulaEvaluator) delegate
@@ -187,12 +200,47 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         return delegateEvaluator;
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", getId())
+                .add("workspace", workspace.getId())
+                .add("bookName", bookName)
+                .add("modelUri", modelUri)
+                .add("delegate", delegate)
+                .add("type", getType().getTypeName())
+                .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
+                .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PoiBook poiBook = (PoiBook) o;
+        return Objects.equal(getDelegate(), poiBook.getDelegate()) &&
+                Objects.equal(getWorkspace(), poiBook.getWorkspace()) &&
+                Objects.equal(getModelUri(), poiBook.getModelUri()) &&
+                Objects.equal(getBookName(), poiBook.getBookName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getDelegate(),
+                getWorkspace(),
+                getModelUri(),
+                getBookName());
+    }
+
     /**
      * Builder for POI Based Books
      */
     public static class Builder implements Book.Builder<PoiBook, Builder> {
 
+        private static Logger logger = LoggerFactory.getLogger(PoiBook.Builder.class);
+
         Workspace workspace;
+        String bookName;
         String modelUri;
 
         @Override
@@ -207,6 +255,12 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         }
 
         @Override
+        public Builder withBookName(String bookName) {
+            this.bookName = bookName;
+            return self();
+        }
+
+        @Override
         public Builder withModelUri(String modelUri) {
             this.modelUri = modelUri;
             return self();
@@ -215,9 +269,23 @@ public class PoiBook implements Book, PoiDelegate<Workbook> {
         @Override
         public PoiBook build() {
             PoiBook poiBook = new PoiBook();
-            poiBook.workspace = workspace;
-            poiBook.setModelUri(modelUri);
-            poiBook.setBookName(new File(modelUri).getName());
+            poiBook.setWorkspace(workspace);
+            poiBook.modelUri = modelUri;
+            poiBook.bookName = bookName;
+
+            if (bookName == null) {
+                if (modelUri == null) {
+                    poiBook.bookName = "PoiBook"
+                            + Integer.toHexString(System.identityHashCode(poiBook))
+                            + ".xlsx";
+                } else {
+                    poiBook.bookName = new File(modelUri).getName();
+                }
+                logger.debug("No explicit bookName set, deriving bookName: [{}]", poiBook.bookName);
+            } else {
+                poiBook.bookName = bookName;
+            }
+
             return poiBook;
         }
     }

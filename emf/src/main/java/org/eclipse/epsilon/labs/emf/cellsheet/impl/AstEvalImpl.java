@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
+
 /**
  */
 package org.eclipse.epsilon.labs.emf.cellsheet.impl;
@@ -20,10 +30,8 @@ import org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstEvalImpl#getStringValue <em>String Value</em>}</li>
+ *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstEvalImpl#getText <em>Text</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstEvalImpl#getNumberValue <em>Number Value</em>}</li>
- *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstEvalImpl#isIsString <em>Is String</em>}</li>
- *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstEvalImpl#isIsNumber <em>Is Number</em>}</li>
  *   <li>{@link org.eclipse.epsilon.labs.emf.cellsheet.impl.AstEvalImpl#isIsError <em>Is Error</em>}</li>
  * </ul>
  *
@@ -31,24 +39,24 @@ import org.eclipse.epsilon.labs.emf.cellsheet.CellsheetPackage;
  */
 public class AstEvalImpl extends EObjectImpl implements AstEval {
 	/**
-	 * The default value of the '{@link #getStringValue() <em>String Value</em>}' attribute.
+	 * The default value of the '{@link #getText() <em>Text</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getStringValue()
+	 * @see #getText()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String STRING_VALUE_EDEFAULT = null;
+	protected static final String TEXT_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getStringValue() <em>String Value</em>}' attribute.
+	 * The cached value of the '{@link #getText() <em>Text</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getStringValue()
+	 * @see #getText()
 	 * @generated
 	 * @ordered
 	 */
-	protected String stringValue = STRING_VALUE_EDEFAULT;
+	protected String text = TEXT_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getNumberValue() <em>Number Value</em>}' attribute.
@@ -58,7 +66,7 @@ public class AstEvalImpl extends EObjectImpl implements AstEval {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double NUMBER_VALUE_EDEFAULT = 0.0;
+	protected static final Double NUMBER_VALUE_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getNumberValue() <em>Number Value</em>}' attribute.
@@ -68,47 +76,7 @@ public class AstEvalImpl extends EObjectImpl implements AstEval {
 	 * @generated
 	 * @ordered
 	 */
-	protected double numberValue = NUMBER_VALUE_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #isIsString() <em>Is String</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isIsString()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean IS_STRING_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isIsString() <em>Is String</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isIsString()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean isString = IS_STRING_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #isIsNumber() <em>Is Number</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isIsNumber()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean IS_NUMBER_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isIsNumber() <em>Is Number</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isIsNumber()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean isNumber = IS_NUMBER_EDEFAULT;
+	protected Double numberValue = NUMBER_VALUE_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isIsError() <em>Is Error</em>}' attribute.
@@ -155,8 +123,8 @@ public class AstEvalImpl extends EObjectImpl implements AstEval {
 	 * @generated
 	 */
 	@Override
-	public String getStringValue() {
-		return stringValue;
+	public String getText() {
+		return text;
 	}
 
 	/**
@@ -165,11 +133,11 @@ public class AstEvalImpl extends EObjectImpl implements AstEval {
 	 * @generated
 	 */
 	@Override
-	public void setStringValue(String newStringValue) {
-		String oldStringValue = stringValue;
-		stringValue = newStringValue;
+	public void setText(String newText) {
+		String oldText = text;
+		text = newText;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CellsheetPackage.AST_EVAL__STRING_VALUE, oldStringValue, stringValue));
+			eNotify(new ENotificationImpl(this, Notification.SET, CellsheetPackage.AST_EVAL__TEXT, oldText, text));
 	}
 
 	/**
@@ -178,7 +146,7 @@ public class AstEvalImpl extends EObjectImpl implements AstEval {
 	 * @generated
 	 */
 	@Override
-	public double getNumberValue() {
+	public Double getNumberValue() {
 		return numberValue;
 	}
 
@@ -188,57 +156,11 @@ public class AstEvalImpl extends EObjectImpl implements AstEval {
 	 * @generated
 	 */
 	@Override
-	public void setNumberValue(double newNumberValue) {
-		double oldNumberValue = numberValue;
+	public void setNumberValue(Double newNumberValue) {
+		Double oldNumberValue = numberValue;
 		numberValue = newNumberValue;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CellsheetPackage.AST_EVAL__NUMBER_VALUE, oldNumberValue, numberValue));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public boolean isIsString() {
-		return isString;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setIsString(boolean newIsString) {
-		boolean oldIsString = isString;
-		isString = newIsString;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CellsheetPackage.AST_EVAL__IS_STRING, oldIsString, isString));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public boolean isIsNumber() {
-		return isNumber;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void setIsNumber(boolean newIsNumber) {
-		boolean oldIsNumber = isNumber;
-		isNumber = newIsNumber;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CellsheetPackage.AST_EVAL__IS_NUMBER, oldIsNumber, isNumber));
 	}
 
 	/**
@@ -272,14 +194,10 @@ public class AstEvalImpl extends EObjectImpl implements AstEval {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case CellsheetPackage.AST_EVAL__STRING_VALUE:
-				return getStringValue();
+			case CellsheetPackage.AST_EVAL__TEXT:
+				return getText();
 			case CellsheetPackage.AST_EVAL__NUMBER_VALUE:
 				return getNumberValue();
-			case CellsheetPackage.AST_EVAL__IS_STRING:
-				return isIsString();
-			case CellsheetPackage.AST_EVAL__IS_NUMBER:
-				return isIsNumber();
 			case CellsheetPackage.AST_EVAL__IS_ERROR:
 				return isIsError();
 		}
@@ -294,17 +212,11 @@ public class AstEvalImpl extends EObjectImpl implements AstEval {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case CellsheetPackage.AST_EVAL__STRING_VALUE:
-				setStringValue((String)newValue);
+			case CellsheetPackage.AST_EVAL__TEXT:
+				setText((String)newValue);
 				return;
 			case CellsheetPackage.AST_EVAL__NUMBER_VALUE:
 				setNumberValue((Double)newValue);
-				return;
-			case CellsheetPackage.AST_EVAL__IS_STRING:
-				setIsString((Boolean)newValue);
-				return;
-			case CellsheetPackage.AST_EVAL__IS_NUMBER:
-				setIsNumber((Boolean)newValue);
 				return;
 			case CellsheetPackage.AST_EVAL__IS_ERROR:
 				setIsError((Boolean)newValue);
@@ -321,17 +233,11 @@ public class AstEvalImpl extends EObjectImpl implements AstEval {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case CellsheetPackage.AST_EVAL__STRING_VALUE:
-				setStringValue(STRING_VALUE_EDEFAULT);
+			case CellsheetPackage.AST_EVAL__TEXT:
+				setText(TEXT_EDEFAULT);
 				return;
 			case CellsheetPackage.AST_EVAL__NUMBER_VALUE:
 				setNumberValue(NUMBER_VALUE_EDEFAULT);
-				return;
-			case CellsheetPackage.AST_EVAL__IS_STRING:
-				setIsString(IS_STRING_EDEFAULT);
-				return;
-			case CellsheetPackage.AST_EVAL__IS_NUMBER:
-				setIsNumber(IS_NUMBER_EDEFAULT);
 				return;
 			case CellsheetPackage.AST_EVAL__IS_ERROR:
 				setIsError(IS_ERROR_EDEFAULT);
@@ -348,14 +254,10 @@ public class AstEvalImpl extends EObjectImpl implements AstEval {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case CellsheetPackage.AST_EVAL__STRING_VALUE:
-				return STRING_VALUE_EDEFAULT == null ? stringValue != null : !STRING_VALUE_EDEFAULT.equals(stringValue);
+			case CellsheetPackage.AST_EVAL__TEXT:
+				return TEXT_EDEFAULT == null ? text != null : !TEXT_EDEFAULT.equals(text);
 			case CellsheetPackage.AST_EVAL__NUMBER_VALUE:
-				return numberValue != NUMBER_VALUE_EDEFAULT;
-			case CellsheetPackage.AST_EVAL__IS_STRING:
-				return isString != IS_STRING_EDEFAULT;
-			case CellsheetPackage.AST_EVAL__IS_NUMBER:
-				return isNumber != IS_NUMBER_EDEFAULT;
+				return NUMBER_VALUE_EDEFAULT == null ? numberValue != null : !NUMBER_VALUE_EDEFAULT.equals(numberValue);
 			case CellsheetPackage.AST_EVAL__IS_ERROR:
 				return isError != IS_ERROR_EDEFAULT;
 		}
@@ -372,14 +274,10 @@ public class AstEvalImpl extends EObjectImpl implements AstEval {
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (stringValue: ");
-		result.append(stringValue);
+		result.append(" (of: ");
+		result.append(text);
 		result.append(", numberValue: ");
 		result.append(numberValue);
-		result.append(", isString: ");
-		result.append(isString);
-		result.append(", isNumber: ");
-		result.append(isNumber);
 		result.append(", isError: ");
 		result.append(isError);
 		result.append(')');

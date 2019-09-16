@@ -83,12 +83,8 @@
         eType="#//Ast" eOpposite="#//Ast/token"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AstEval">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stringValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isString" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-        defaultValueLiteral="false"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isNumber" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="text" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDoubleObject"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="isError" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="false"/>
   </eClassifiers>

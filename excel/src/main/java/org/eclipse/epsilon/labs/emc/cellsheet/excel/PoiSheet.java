@@ -1,13 +1,27 @@
+/*******************************************************************************
+ * Copyright (c) 2019 The University of York.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package org.eclipse.epsilon.labs.emc.cellsheet.excel;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import org.eclipse.epsilon.labs.emc.cellsheet.Book;
+import org.eclipse.epsilon.labs.emc.cellsheet.CellsheetType;
 import org.eclipse.epsilon.labs.emc.cellsheet.Row;
 import org.eclipse.epsilon.labs.emc.cellsheet.Sheet;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -53,12 +67,40 @@ public class PoiSheet implements Sheet, PoiDelegate<org.apache.poi.ss.usermodel.
         return ImmutableList.copyOf(iterator());
     }
 
+    @Nonnull
     @Override
     public Iterator<Row> iterator() {
         return Iterators.transform(
                 getDelegate().rowIterator(),
                 r -> getRow(r.getRowNum())
         );
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", getId())
+                .add("book", book)
+                .add("sheetIndex", sheetIndex)
+                .add("sheetName", sheetName)
+                .add("type", getType().getTypeName())
+                .add("kinds", getKinds().stream().map(CellsheetType::getTypeName).collect(Collectors.joining(",")))
+                .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PoiSheet poiSheet = (PoiSheet) o;
+        return getSheetIndex() == poiSheet.getSheetIndex() &&
+                Objects.equal(getBook(), poiSheet.getBook()) &&
+                Objects.equal(getSheetName(), poiSheet.getSheetName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getBook(), getSheetName(), getSheetIndex());
     }
 
     public static class Builder implements Sheet.Builder<PoiSheet, Builder> {
@@ -74,7 +116,7 @@ public class PoiSheet implements Sheet, PoiDelegate<org.apache.poi.ss.usermodel.
 
         @Override
         public Builder withBook(Book book) throws ClassCastException {
-            checkArgument(book instanceof PoiBook, "Must be instance of %s", PoiBook.class.getCanonicalName());
+            checkArgument(book instanceof PoiBook, "Must be instance fromToken %s", PoiBook.class.getCanonicalName());
             this.book = (PoiBook) book;
             return self();
         }

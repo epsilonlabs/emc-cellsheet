@@ -15,30 +15,5 @@
         <transformation>IGNORE</transformation>
       </transformations>
     </branchPolicy>
-    <branchPolicy>
-        <pattern>(release.*)</pattern>
-        <transformations>
-          <transformation>IGNORE</transformation>
-        </transformations>
-      </branchPolicy>
-    <branchPolicy>
-      <pattern>(feature.*)</pattern>
-      <transformations>
-        <transformation>IGNORE</transformation>
-      </transformations>
-    </branchPolicy>
-    <branchPolicy>
-      <pattern>(hotfix.*)</pattern>
-      <transformations>
-        <transformation>IGNORE</transformation>
-      </transformations>
-    </branchPolicy>
-    <branchPolicy>
-      <pattern>(refactor.*)</pattern>
-      <transformations>
-        <transformation>IGNORE</transformation>
-      </transformations>
-    </branchPolicy>
-
   </branchPolicies>
 </configuration>
