@@ -71,7 +71,7 @@
         <gpg.executable>gpg</gpg.executable>
 
         <epsilon.version>1.5.1</epsilon.version>
-        <guava.version>28.0-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <junit.version>4.12</junit.version>
         <mockito.version>2.28.2</mockito.version>
     </properties>
